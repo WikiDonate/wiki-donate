@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Main Page",
+        "link": "/",
+        "type": "MainMenu",
+        "onLogin": ""
+    },
+    {
+        "name": "Donate",
+        "link": "/donate",
+        "type": "",
+        "onLogin": "show"
+    },
+    {
+        "name": "Create Account",
+        "link": "/create-account",
+        "type": "TopMenu",
+        "onLogin": "hide"
+    },
+    {
+        "name": "Login",
+        "link": "/login",
+        "type": "TopMenu",
+        "onLogin": "hide"
+    },
+    {
+        "name": "Preferences",
+        "link": "/preferences",
+        "type": "LogoutMenu",
+        "onLogin": "show"
+    },
+    {
+        "name": "Logout",
+        "link": "/logout",
+        "type": "LogoutMenu",
+        "onLogin": "show"
+    }
+]
