@@ -2,6 +2,8 @@
 
 Wiki Donate is a platform designed to streamline and facilitate donations for a variety of causes. This project includes robust features such as user authentication, article contributions, community discussions, donation management, and more. Built with a modular architecture, it ensures scalability and maintainability.
 
+The API documentation can be accessed at [https://api.wikidonate.org/api/documentation](https://api.wikidonate.org/api/documentation).
+
 ## Project Structure
 
 The project is structured as follows:
