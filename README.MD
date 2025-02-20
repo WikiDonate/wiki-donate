@@ -23,7 +23,7 @@ The project is structured as follows:
 
 ### Deployment and Hosting
 
-- GoDaddy: hosting solution for deployment
+- BlueHost: hosting solution for deployment
 
 ## Features
 
