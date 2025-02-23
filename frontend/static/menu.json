@@ -1,7 +1,7 @@
 [
     {
         "name": "Main Page",
-        "link": "/",
+        "link": "/main",
         "type": "MainMenu",
         "onLogin": ""
     },
