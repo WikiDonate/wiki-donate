@@ -4,7 +4,14 @@
         <div
             class="container mb-2 mx-auto mt-1 flex justify-end items-baseline pr-12"
         >
-            <GoogleTranslate />
+            <GoogleTranslateSelect
+                ref="translateSelect"
+                default-language-code="en"
+                default-page-language-code="en"
+                :fetch-browser-language="false"
+                trigger="click"
+                display-mode="flag"
+            />
         </div>
 
         <div class="container mx-auto flex items-center justify-between pl-4">
@@ -122,6 +129,7 @@
 </template>
 
 <script setup>
+import GoogleTranslateSelect from '@google-translate-select/vue3'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { authService } from '~/services/authService'
