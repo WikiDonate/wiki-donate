@@ -17,16 +17,9 @@
         <div class="container mx-auto flex items-center justify-between pl-4">
             <!-- Logo -->
             <div class="flex items-center mr-1">
-                <span class="logo-font text-2xl lg:text-4xl lg:pl-4"
+                <span class="font-bold text-2xl lg:text-4xl lg:pl-4"
                     >WikiDonate</span
                 >
-                <!-- <NuxtLink to="/" exact>
-                    <Image
-                        image-src="https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"
-                        image-alt="Logo"
-                        custom-class="w-full sm:W-18 md:w-22 lg:w-24"
-                    />
-                </NuxtLink> -->
             </div>
 
             <!-- Search box -->
@@ -135,7 +128,6 @@ import { useRoute } from 'vue-router'
 import { authService } from '~/services/authService'
 import menuData from '~/static/menu.json'
 
-// Define reactive variables
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
@@ -225,7 +217,6 @@ const handleLogout = async (event) => {
     }
 }
 
-// Lifecycle hooks
 onMounted(() => {
     handleMenu()
     document.addEventListener('click', onClickOutside)
@@ -241,10 +232,3 @@ watch(route, () => {
     isDropdownMenuOpen.value = false
 })
 </script>
-
-<!-- extra css include here -->
-<style scoped>
-.logo-font {
-    font-family: 'Bell MT' !important;
-}
-</style>

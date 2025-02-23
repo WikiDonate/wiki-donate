@@ -2,7 +2,7 @@
     <main class="w-full mx-auto">
         <!-- Logo -->
         <div class="flex justify-center justify-items-center">
-            <span class="logo-font font-bold text-2xl lg:text-4xl lg:pl-4"
+            <span class="font-bold text-2xl lg:text-4xl lg:pl-4"
                 >WikiDonate</span
             >
         </div>
