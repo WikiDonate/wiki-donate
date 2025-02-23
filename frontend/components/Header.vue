@@ -1,8 +1,8 @@
 <template>
     <header>
-        <!-- google translate-widget added -->
+        <!-- google translate -->
         <div
-            class="container mb-2 mx-auto mt-1 flex justify-end items-baseline pr-12"
+            class="container mb-2 mx-auto mt-1 flex justify-center sm:justify-end items-baseline"
         >
             <GoogleTranslateSelect
                 ref="translateSelect"
