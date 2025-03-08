@@ -1,149 +1,301 @@
 <template>
-    <main class="w-full mx-auto">
+    <main class="w-full mx-auto max-w-4xl">
         <div class="container mx-auto p-4 md:p-6 w-full sm:w-2/3">
-            <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-                <h1
-                    class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center"
+            <h1
+                class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center"
+            >
+                Make A Donation
+            </h1>
+            <!-- Message -->
+            <AlertMessage
+                v-if="showAlert"
+                :variant="alertVariant"
+                :message="alertMessage"
+                @close="showAlert = false"
+            />
+
+            <form @submit.prevent="submitPayment">
+                <!-- Your Information Section -->
+                <div
+                    class="bg-white rounded-lg shadow-md border border-gray-200 mb-6"
                 >
-                    Make A Donation
-                </h1>
-                <!-- Message -->
-                <AlertMessage
-                    v-if="showAlert"
-                    :variant="alertVariant"
-                    :message="alertMessage"
-                    @close="showAlert = false"
-                />
-
-                <form @submit.prevent="submitPayment">
-                    <!-- Card Holder Name -->
-                    <div class="mb-4">
-                        <label
-                            for="name"
-                            class="block text-sm font-medium text-gray-700"
-                            >Card Holder Name
-                        </label>
-                        <FormInput
-                            v-model="name"
-                            type="text"
-                            placeholder="Enter your name"
-                            class="mb-3"
-                            v-bind="nameProps"
-                            :error-message="errors['name']"
-                        />
+                    <div
+                        class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg"
+                    >
+                        <h2 class="text-xl font-semibold">Your Information</h2>
                     </div>
-
-                    <!-- Email -->
-                    <div class="mb-4">
-                        <label
-                            for="email"
-                            class="block text-sm font-medium text-gray-700"
-                            >Email
-                        </label>
-                        <FormInput
-                            v-model="email"
-                            type="email"
-                            placeholder="Enter your email"
-                            class="mb-3"
-                            v-bind="emailProps"
-                            :error-message="errors['email']"
-                        />
+                    <div class="p-6">
+                        <form>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="fullName"
+                                >
+                                    Full Name
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="fullName"
+                                    type="text"
+                                    placeholder="Enter full name"
+                                    class="mb-3"
+                                    v-bind="fullNameProps"
+                                    :error-message="errors['fullName']"
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="email"
+                                >
+                                    Email Address
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="email"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    class="mb-3"
+                                    v-bind="emailProps"
+                                    :error-message="errors['email']"
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="phone"
+                                >
+                                    Phone Number
+                                </label>
+                                <FormInput
+                                    v-model="phone"
+                                    type="text"
+                                    placeholder="Phone number"
+                                    class="mb-3"
+                                    v-bind="phoneProps"
+                                    :error-message="errors['phone']"
+                                />
+                            </div>
+                        </form>
                     </div>
+                </div>
 
-                    <!-- Card Number -->
-                    <div class="mb-4">
-                        <label
-                            for="cardNumber"
-                            class="block text-sm font-medium text-gray-700"
-                            >Card Number
-                        </label>
-                        <FormInput
-                            v-model="cardNumber"
-                            type="text"
-                            placeholder="1234 5678 9012 3456"
-                            class="mb-3"
-                            v-bind="cardNumberProps"
-                            :error-message="errors['cardNumber']"
-                        />
+                <!-- Billing Information Section -->
+                <div
+                    class="bg-white rounded-lg shadow-md border border-gray-200 mb-6"
+                >
+                    <div
+                        class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg"
+                    >
+                        <h2 class="text-xl font-semibold">
+                            Billing Information
+                        </h2>
                     </div>
-
-                    <!-- Expiry Date -->
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label
-                                for="expiryMonth"
-                                class="block text-sm font-medium text-gray-700"
-                                >Expiry Month
-                            </label>
-                            <FormInput
-                                v-model="expiryMonth"
-                                type="text"
-                                placeholder="MM"
-                                class="mb-3"
-                                v-bind="expiryMonthProps"
-                                :error-message="errors['expiryMonth']"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                for="expiryYear"
-                                class="block text-sm font-medium text-gray-700"
-                                >Expiry Year
-                            </label>
-                            <FormInput
-                                v-model="expiryYear"
-                                type="text"
-                                placeholder="YYYY"
-                                class="mb-3"
-                                v-bind="expiryYearProps"
-                                :error-message="errors['expiryYear']"
-                            />
-                        </div>
+                    <div class="p-6">
+                        <form>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="address"
+                                >
+                                    Address <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="address"
+                                    type="text"
+                                    placeholder="Enter address"
+                                    class="mb-3"
+                                    v-bind="addressProps"
+                                    :error-message="errors['address']"
+                                />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="city"
+                                    >
+                                        City <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="city"
+                                        type="text"
+                                        placeholder="Enter city"
+                                        class="mb-3"
+                                        v-bind="cityProps"
+                                        :error-message="errors['city']"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="state"
+                                    >
+                                        State
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="state"
+                                        type="text"
+                                        placeholder="Enter state"
+                                        class="mb-3"
+                                        v-bind="stateProps"
+                                        :error-message="errors['state']"
+                                    />
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="zipCode"
+                                >
+                                    ZIP Code <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="zipCode"
+                                    type="text"
+                                    placeholder="Enter full name"
+                                    class="mb-3"
+                                    v-bind="zipCodeProps"
+                                    :error-message="errors['zipCode']"
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="country"
+                                >
+                                    Country <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="country"
+                                    type="text"
+                                    placeholder="Enter full name"
+                                    class="mb-3"
+                                    v-bind="countryProps"
+                                    :error-message="errors['country']"
+                                />
+                            </div>
+                        </form>
                     </div>
+                </div>
 
-                    <!-- CVV -->
-                    <div class="mb-4">
-                        <label
-                            for="cvv"
-                            class="block text-sm font-medium text-gray-700"
-                            >CVV
-                        </label>
-                        <FormInput
-                            v-model="cvv"
-                            type="text"
-                            placeholder="123"
-                            class="mb-3"
-                            v-bind="cvvProps"
-                            :error-message="errors['cvv']"
-                        />
+                <!-- Payment Information Section -->
+                <div
+                    class="bg-white rounded-lg shadow-md border border-gray-200 mb-6"
+                >
+                    <div
+                        class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg"
+                    >
+                        <h2 class="text-xl font-semibold">
+                            Payment Information
+                        </h2>
                     </div>
-
-                    <!-- Amount -->
-                    <div class="mb-6">
-                        <label
-                            for="amount"
-                            class="block text-sm font-medium text-gray-700"
-                            >Amount
-                        </label>
-                        <FormInput
-                            v-model="amount"
-                            type="text"
-                            placeholder="50.00"
-                            class="mb-3"
-                            v-bind="amountProps"
-                            :error-message="errors['amount']"
-                        />
+                    <div class="p-6">
+                        <form>
+                            <div class="mb-4">
+                                <label
+                                    class="block text-gray-700 text-sm font-bold mb-2"
+                                    for="card-number"
+                                >
+                                    Card Number
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <FormInput
+                                    v-model="cardNumber"
+                                    type="text"
+                                    placeholder="1234 5678 9012 3456"
+                                    class="mb-3"
+                                    v-bind="cardNumberProps"
+                                    :error-message="errors['cardNumber']"
+                                />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label
+                                        for="expiryMonth"
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        >Expiry Month
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="expiryMonth"
+                                        type="text"
+                                        placeholder="MM"
+                                        class="mb-3"
+                                        v-bind="expiryMonthProps"
+                                        :error-message="errors['expiryMonth']"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        for="expiryYear"
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        >Expiry Year
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="expiryYear"
+                                        type="text"
+                                        placeholder="YYYY"
+                                        class="mb-3"
+                                        v-bind="expiryYearProps"
+                                        :error-message="errors['expiryYear']"
+                                    />
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="cvv"
+                                    >
+                                        CVV <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="cvv"
+                                        type="text"
+                                        placeholder="123"
+                                        class="mb-3"
+                                        v-bind="cvvProps"
+                                        :error-message="errors['cvv']"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="amount"
+                                    >
+                                        Amount
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <FormInput
+                                        v-model="amount"
+                                        type="text"
+                                        placeholder="123"
+                                        class="mb-3"
+                                        v-bind="amountProps"
+                                        :error-message="errors['amount']"
+                                    />
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                </div>
 
-                    <!-- Submit Button -->
+                <!-- Submit Button -->
+                <div
+                    class="flex items-center justify-center width-full mx-auto"
+                >
                     <FormSubmitButton
+                        class="sm:w-1/2 md:w-1/2"
                         text="Donate Now"
                         type="submit"
                         variant="primary"
                         @click="onSubmit"
                     />
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </main>
 </template>
@@ -168,15 +320,23 @@ const alertVariant = ref('')
 const alertMessage = ref('')
 
 const validationSchema = yup.object({
-    name: yup.string().required('Name is required'),
-    cardNumber: yup
-        .string()
-        .required('Card Number is required')
-        .matches(/^\d{16}$/, 'Card number must be exactly 16 digits'),
+    fullName: yup.string().required('Full name is required'),
     email: yup
         .string()
         .required('Email is required')
         .email('Email must be a valid email'),
+    phone: yup
+        .string()
+        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+    address: yup.string().required('Address is required'),
+    city: yup.string().required('City is required'),
+    state: yup.string().required('state is required'),
+    zipCode: yup.string().required('ZIP Code is required'),
+    country: yup.string().required('Country is required'),
+    cardNumber: yup
+        .string()
+        .required('Card Number is required')
+        .matches(/^\d{16}$/, 'Card number must be exactly 16 digits'),
     expiryMonth: yup
         .string()
         .required('Expiry month is required')
@@ -196,7 +356,11 @@ const validationSchema = yup.object({
         .string()
         .required('CVV is required')
         .matches(/^\d{3,4}$/, 'CVV must be 3 or 4 digits long'),
-    amount: yup.string().required('Amount is required'),
+    amount: yup
+        .number()
+        .required('Amount is required')
+        .typeError('Amount must be a valid number')
+        .moreThan(0, 'Amount must be greater than 0'),
 })
 
 // Setup VeeValidate
@@ -208,8 +372,14 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
 })
 
 // Define fields using defineField
-const [name, nameProps] = defineField('name')
+const [fullName, fullNameProps] = defineField('fullName')
 const [email, emailProps] = defineField('email')
+const [phone, phoneProps] = defineField('phone')
+const [address, addressProps] = defineField('address')
+const [city, cityProps] = defineField('city')
+const [state, stateProps] = defineField('state')
+const [zipCode, zipCodeProps] = defineField('zipCode')
+const [country, countryProps] = defineField('country')
 const [cardNumber, cardNumberProps] = defineField('cardNumber')
 const [expiryMonth, expiryMonthProps] = defineField('expiryMonth')
 const [expiryYear, expiryYearProps] = defineField('expiryYear')
