@@ -29,18 +29,18 @@
                             <div class="mb-4">
                                 <label
                                     class="block text-gray-700 text-sm font-bold mb-2"
-                                    for="fullName"
+                                    for="name"
                                 >
                                     Full Name
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <FormInput
-                                    v-model="fullName"
+                                    v-model="name"
                                     type="text"
                                     placeholder="Enter full name"
                                     class="mb-3"
-                                    v-bind="fullNameProps"
-                                    :error-message="errors['fullName']"
+                                    v-bind="nameProps"
+                                    :error-message="errors['name']"
                                 />
                             </div>
                             <div class="mb-4">
@@ -320,7 +320,7 @@ const alertVariant = ref('')
 const alertMessage = ref('')
 
 const validationSchema = yup.object({
-    fullName: yup.string().required('Full name is required'),
+    name: yup.string().required('Full name is required'),
     email: yup
         .string()
         .required('Email is required')
@@ -372,7 +372,7 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
 })
 
 // Define fields using defineField
-const [fullName, fullNameProps] = defineField('fullName')
+const [name, nameProps] = defineField('name')
 const [email, emailProps] = defineField('email')
 const [phone, phoneProps] = defineField('phone')
 const [address, addressProps] = defineField('address')
