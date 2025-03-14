@@ -31,7 +31,6 @@
 
             <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center space-x-3 pr-4">
-                <GoogleTranslate class="hidden lg:block" />
                 <NuxtLink
                     v-for="(item, index) in topMenu"
                     :key="index"
@@ -53,6 +52,7 @@
                         class="text-gray-800"
                         @click="toggleDropdownMenu"
                     >
+                        <span class="mr-1">{{ authStore.user.username }}</span>
                         <font-awesome-icon :icon="['fas', 'user']" />
                     </button>
 

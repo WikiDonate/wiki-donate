@@ -8,7 +8,7 @@
     {
         "name": "Donate",
         "link": "/donate",
-        "type": "",
+        "type": "MainMenu",
         "onLogin": "show"
     },
     {
@@ -26,6 +26,12 @@
     {
         "name": "Preferences",
         "link": "/preferences",
+        "type": "LogoutMenu",
+        "onLogin": "show"
+    },
+    {
+        "name": "User Page",
+        "link": "/user/page",
         "type": "LogoutMenu",
         "onLogin": "show"
     },
