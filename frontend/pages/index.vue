@@ -35,6 +35,7 @@ definePageMeta({
     layout: 'full-layout',
 })
 
+const router = useRouter()
 const searchBox = ref(null)
 
 // Configure your supported languages
@@ -57,14 +58,11 @@ const changeLanguage = (langCode) => {
             googleTranslateSelect.value = langCode
             googleTranslateSelect.dispatchEvent(new Event('change'))
             searchBox.value.setValueOnLanguageChange(langCode)
+            router.push('/main')
         } else {
             setTimeout(attempt, 50)
         }
     }
     attempt()
 }
-
-onMounted(() => {
-    changeLanguage('en')
-})
 </script>

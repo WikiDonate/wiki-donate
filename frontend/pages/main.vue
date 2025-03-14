@@ -47,15 +47,9 @@
                     This website is open-source on GitHub.
                 </p>
                 <a
-                    href="https://github.com/WikiDonate/wiki-donate-frontend"
+                    href="https://github.com/WikiDonate/wiki-donate"
                     class="text-lg text-blue-500 font-semibold hover:text-blue-700"
-                    >Frontend Repository</a
-                >
-                <br />
-                <a
-                    href="https://github.com/WikiDonate/wiki-donate-backend"
-                    class="text-lg text-blue-500 font-semibold hover:text-blue-700"
-                    >Backend Repository</a
+                    >Repository</a
                 >
             </div>
         </div>
