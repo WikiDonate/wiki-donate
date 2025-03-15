@@ -1,3 +1,5 @@
+<!-- eslint-disable vue/html-self-closing -->
+<!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
         <!-- Top bar -->
@@ -11,19 +13,19 @@
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
+                    link: `/user/talk?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/page/edit-source',
+                    link: `/user/page/edit-source?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
                 {
                     name: 'View History',
-                    link: '/user/page/view-history',
+                    link: `/user/page/view-history?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
@@ -38,12 +40,34 @@
                 @close="showAlert = false"
             />
         </div>
+
+        <!-- Sections -->
         <section class="bg-white p-2">
-            <div>
-                <QuillEditor v-model:content="editorContent" />
+            <div v-if="sections.length === 0">
+                <div>
+                    <QuillEditor v-model:content="editorContent" />
+                </div>
+                <div class="w-40 mt-4">
+                    <FormSubmitButton @click="handleSubmit" />
+                </div>
             </div>
-            <div class="w-40 mt-4">
-                <FormSubmitButton @click="handleSubmit" />
+            <div v-else>
+                <div
+                    v-for="(item, index) in sections"
+                    :key="`section-${index}`"
+                >
+                    <div class="flex justify-between">
+                        <div v-html="item.title" />
+                        <NuxtLink
+                            v-if="authStore.isAuthenticated && editable"
+                            :to="`/user/page/edit-section?username=${title}&uuid=${index}`"
+                            exact
+                            >[Edit]</NuxtLink
+                        >
+                    </div>
+                    <div v-html="item.content" />
+                    <br />
+                </div>
             </div>
         </section>
     </main>

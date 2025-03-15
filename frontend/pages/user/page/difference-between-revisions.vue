@@ -1,33 +1,31 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
-        <!-- Top bar Title -->
-        <TopBarTitle :page-title="`${title} : Difference between revisions`" />
-
         <!-- Top bar -->
+        <TopBarTitle :page-title="`${title} : Difference between revisions`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${authStore.user.username}`,
+                    isAuthenticated: authStore.isAuthenticated,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${authStore.user.username}`,
+                    isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/article/edit-source?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/page/edit-source?username=${authStore.user.username}`,
+                    isAuthenticated: authStore.isAuthenticated,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/article/view-history?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/page/view-history?username=${authStore.user.username}`,
+                    isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
         />
@@ -61,9 +59,10 @@ import DiffMatchPatch from 'diff-match-patch'
 import { onMounted, ref } from 'vue'
 
 const route = useRoute()
-const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const uuid = route.query.uuid || ''
 const articleStore = useArticleStore()
+const authStore = useAuthStore()
 const curHtml = ref('')
 const diffHtml = ref('')
 

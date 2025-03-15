@@ -13,19 +13,19 @@
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
+                    link: `/user/talk?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/page/edit-source',
+                    link: `/user/page/edit-source?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
                 {
                     name: 'View History',
-                    link: '/user/page/view-history',
+                    link: `/user/page/view-history?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
             ]"
@@ -75,7 +75,7 @@ const articleStore = useArticleStore()
 const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
-const title = decodeURIComponent(route.query.title)
+// const title = decodeURIComponent(route.query.title)
 const uuid = route.query.uuid || ''
 const showAlert = ref(false)
 const alertVariant = ref('')
@@ -145,7 +145,7 @@ const handleSubmit = async () => {
         }
 
         router.push(
-            `/article?title=${encodeURIComponent(articleStore.article.slug)}`
+            `/user/page?username=${encodeURIComponent(articleStore.article.slug)}`
         )
     } catch (error) {
         alertVariant.value = 'error'
