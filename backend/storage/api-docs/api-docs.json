@@ -118,6 +118,15 @@
                                     "content": {
                                         "type": "string",
                                         "example": "<p>Content of article</p>"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "article",
+                                            "userPage"
+                                        ],
+                                        "example": "article",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"

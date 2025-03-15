@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    protected $fillable = ['user_id', 'title',  'slug', 'sections', 'is_active'];
+    protected $fillable = ['user_id', 'title',  'slug', 'sections', 'type', 'is_active'];
 
     protected static function boot()
     {

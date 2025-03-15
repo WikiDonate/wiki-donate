@@ -234,6 +234,13 @@ class ArticleController extends Controller
      *
      *             @OA\Property(property="title", type="string", example="Title of article"),
      *             @OA\Property(property="content", type="string", example="<p>Content of article</p>"),
+     *             @OA\Property(
+     *                 property="type",
+     *                 type="string",
+     *                 example="article",
+     *                 enum={"article", "userPage"},
+     *                 nullable=true
+     *             ),
      *         ),
      *     ),
      *
@@ -311,6 +318,7 @@ class ArticleController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'content' => 'required|string',
+            'type' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -342,18 +350,27 @@ class ArticleController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            $message = 'The article has been created successfully';
+
             // Create article
-            $article = Article::create([
+            $articleParams = [
                 'user_id' => $request->user()->id,
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
-                // 'content' => $request->content,
                 'sections' => json_encode($sections),
-            ]);
+            ];
+
+            if (! empty($request->type) && $request->type == 'userPage') {
+                $message = 'The user page has been created successfully';
+                $articleParams['slug'] = $request->title;
+                $articleParams['type'] = 'user page';
+            }
+
+            $article = Article::create($articleParams);
 
             return response()->json([
                 'success' => true,
-                'message' => 'The article has been created successfully',
+                'message' => $message,
                 'data' => new ArticleResource($article),
             ], Response::HTTP_CREATED);
 
