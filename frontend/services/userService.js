@@ -20,10 +20,15 @@ const getNotifications = () => {
     return api.get('/user/notifications')
 }
 
+const getUserPage = (slug) => {
+    return api.get(`/articles/${slug}`)
+}
+
 export const userService = {
     register,
     forgotPassword,
     changePassword,
     updateNotifications,
     getNotifications,
+    getUserPage,
 }
