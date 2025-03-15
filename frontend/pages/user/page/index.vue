@@ -6,7 +6,7 @@
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: '/user/page',
+                    link: `/user/page?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
                 {
@@ -59,7 +59,7 @@ useHead({
 const articleStore = useArticleStore()
 const authStore = useAuthStore()
 const route = useRoute()
-const title = ref(decodeURIComponent(route.query.title))
+const title = ref(decodeURIComponent(route.query.username))
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
@@ -85,6 +85,7 @@ const handleSubmit = async () => {
         const params = {
             title: title.value,
             content: editorContent.value,
+            type: 'userPage',
         }
 
         const response = await articleService.saveArticle(params)

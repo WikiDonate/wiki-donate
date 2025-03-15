@@ -65,7 +65,7 @@
                             <NuxtLink
                                 v-for="(item, index) in logoutMenu"
                                 :key="index"
-                                :to="item.name === 'Logout' ? '#' : item.link"
+                                :to="resolveLink(item)"
                                 exact
                                 :class="
                                     isActiveRoute(item.link, $route)
@@ -137,6 +137,13 @@ const isDropdownMenuOpen = ref(false) // For the logout dropdown
 const topMenu = ref([]) // To store top menu items
 const mobileMenu = ref([]) // To store mobile menu items
 const logoutMenu = ref([]) // To store logout dropdown menu items
+
+const resolveLink = (item) => {
+    if (item.name === 'Logout') return '#'
+    if (item.name === 'User Page')
+        return `/user/page?username=${authStore.user.username}`
+    return item.link
+}
 
 const toggleMenu = () => {
     isMobileMenuOpen.value = !isMobileMenuOpen.value

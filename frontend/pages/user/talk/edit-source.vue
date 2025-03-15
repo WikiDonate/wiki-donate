@@ -6,7 +6,7 @@
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: '/user/page',
+                    link: `/user/page?username=${authStore.user.username}`,
                     isAuthenticated: authStore.isAuthenticated,
                 },
                 {
