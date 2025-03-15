@@ -36,17 +36,21 @@
             <ul class="list-disc pl-5">
                 <li v-for="history in revisionHistory" :key="history.uuid">
                     (<NuxtLink
-                        :to="`/user/page/difference-between-revisions?title=${title}&uuid=${history.uuid}`"
+                        :to="`/user/page/difference-between-revisions?username=${title}&uuid=${history.uuid}`"
                         class="underline"
                         >cur</NuxtLink
                     >
                     |
                     <NuxtLink
-                        :to="`/user/page/difference-between-revisions?title=${title}&uuid=${history.uuid}`"
+                        :to="`/user/page/difference-between-revisions?username=${title}&uuid=${history.uuid}`"
                         class="underline"
                         >prev</NuxtLink
                     >) - {{ history.createdAt }} update by
-                    {{ history.user.username }}
+                    <NuxtLink
+                        :to="`/user/page?username=${history.user.username}`"
+                        class="underline"
+                        >{{ history.user.username }}</NuxtLink
+                    >
                 </li>
             </ul>
         </section>
