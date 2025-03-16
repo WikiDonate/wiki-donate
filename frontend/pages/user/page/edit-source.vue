@@ -1,30 +1,30 @@
 <!-- edit source page -->
 <template>
     <main class="w-full">
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: `/user/talk?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: `/user/page/edit-source?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: `/user/page/view-history?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -68,7 +68,6 @@ useHead({
 })
 
 const articleStore = useArticleStore()
-const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 const showAlert = ref(false)

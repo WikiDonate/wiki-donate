@@ -1,30 +1,30 @@
 <!-- edit source page -->
 <template>
     <main class="w-full">
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/talk/edit-source',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: '/user/talk/view-history',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -63,14 +63,13 @@ useHead({
 })
 
 const articleStore = useArticleStore()
-const authStore = useAuthStore()
 const talkStore = useTalkStore()
 const route = useRoute()
 const router = useRouter()
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
-const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const talkTitle = ref('')
 const talk = ref({})
 const editorContent = ref('')

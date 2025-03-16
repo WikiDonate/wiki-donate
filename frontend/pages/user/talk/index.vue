@@ -2,30 +2,30 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/talk/edit-source',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: '/user/talk/view-history',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -59,7 +59,7 @@
                         <div v-html="item.title" />
                         <NuxtLink
                             v-if="authStore.isAuthenticated"
-                            :to="`/talk/edit-section?title=${title}&uuid=${index}`"
+                            :to="`/user/talk/edit-section?username=${title}&uuid=${index}`"
                             exact
                             >[Edit]</NuxtLink
                         >
@@ -83,7 +83,7 @@ const articleStore = useArticleStore()
 const authStore = useAuthStore()
 const talkStore = useTalkStore()
 const route = useRoute()
-const title = ref(decodeURIComponent(route.query.title))
+const title = ref(decodeURIComponent(route.query.username))
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
@@ -108,6 +108,7 @@ const handleSubmit = async () => {
             articleUuid: articleStore.article.uuid,
             title: title.value,
             content: editorContent.value,
+            type: 'userPage',
         }
 
         const response = await talkService.saveTalk(params)
@@ -156,12 +157,5 @@ const loadTalk = async (title) => {
 
 onMounted(async () => {
     await loadTalk(title.value)
-})
-
-watch(route, (newRoute) => {
-    if (newRoute.query.title) {
-        title.value = decodeURIComponent(newRoute.query.title)
-        loadTalk(newRoute.query.title)
-    }
 })
 </script>

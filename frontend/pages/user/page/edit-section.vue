@@ -3,30 +3,30 @@
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: `/user/talk?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: `/user/page/edit-source?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: `/user/page/view-history?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -72,10 +72,10 @@ useHead({
 })
 
 const articleStore = useArticleStore()
-const authStore = useAuthStore()
+// const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
-// const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const uuid = route.query.uuid || ''
 const showAlert = ref(false)
 const alertVariant = ref('')

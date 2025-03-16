@@ -1,30 +1,30 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/talk/edit-source',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: '/user/talk/view-history',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -57,9 +57,8 @@
 import DiffMatchPatch from 'diff-match-patch'
 import { onMounted, ref } from 'vue'
 
-const authStore = useAuthStore()
 const route = useRoute()
-const title = decodeURIComponent(route.query.title) || ''
+const title = decodeURIComponent(route.query.username)
 const uuid = route.query.uuid || ''
 const talkStore = useTalkStore()
 const curHtml = ref('')

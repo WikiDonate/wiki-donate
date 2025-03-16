@@ -2,30 +2,30 @@
 <!-- view history page -->
 <template>
     <main class="w-full">
-        <TopBarTitle :page-title="`Hello, ${authStore.user.username}!`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
-                    link: `/user/page?username=${authStore.user.username}`,
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/page?username=${title}`,
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/user/talk',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link: '/user/talk/edit-source',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/edit-source?username=${title}`,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link: '/user/talk/view-history',
-                    isAuthenticated: authStore.isAuthenticated,
+                    link: `/user/talk/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -35,17 +35,21 @@
             <ul class="list-disc pl-5">
                 <li v-for="history in revisionHistory" :key="history.uuid">
                     (<NuxtLink
-                        :to="`/talk/difference-between-revisions?title=${title}&uuid=${history.uuid}`"
+                        :to="`/user/talk/difference-between-revisions?username=${title}&uuid=${history.uuid}`"
                         class="underline"
                         >cur</NuxtLink
                     >
                     |
                     <NuxtLink
-                        :to="`/talk/difference-between-revisions?title=${title}&uuid=${history.uuid}`"
+                        :to="`/user/talk/difference-between-revisions?username=${title}&uuid=${history.uuid}`"
                         class="underline"
                         >prev</NuxtLink
                     >) - {{ history.createdAt }} update by
-                    {{ history.user.username }}
+                    <NuxtLink
+                        :to="`/user/page?username=${title}`"
+                        class="underline"
+                        >{{ history.user.username }}</NuxtLink
+                    >
                 </li>
             </ul>
         </section>
@@ -59,11 +63,9 @@ useHead({
     title: 'Revision History',
 })
 
-const articleStore = useArticleStore()
-const authStore = useAuthStore()
 const talkStore = useTalkStore()
 const route = useRoute()
-const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const revisionHistory = ref({})
 
 const loadHistory = async (slug) => {
