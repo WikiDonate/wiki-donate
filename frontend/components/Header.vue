@@ -104,14 +104,21 @@
                 class="lg:hidden absolute right-0 w-48 bg-white shadow-lg rounded-md mt-2 p-4 z-50"
             >
                 <NuxtLink
-                    v-for="(item, index) in mobileMenu"
+                    v-for="(item, index) in [
+                        topMenu,
+                        mobileMenu,
+                        logoutMenu,
+                    ].flat()"
                     :key="index"
-                    :to="item.link"
+                    :to="resolveLink(item)"
                     exact
                     :class="
                         isActiveRoute(item.link, $route)
                             ? 'block underline text-blue-500'
                             : 'block text-gray-800 hover:text-blue-500 py-2'
+                    "
+                    @click="
+                        item.name === 'Logout' ? handleLogout($event) : null
                     "
                 >
                     {{ item.name }}
@@ -193,8 +200,8 @@ const handleMenu = () => {
             )
         } else {
             return (
-                item.type === 'MainMenu' ||
-                (item.type === '' && item.onLogin !== 'show')
+                (item.type === 'MainMenu' || item.type === '') &&
+                item.onLogin !== 'show'
             )
         }
     })
