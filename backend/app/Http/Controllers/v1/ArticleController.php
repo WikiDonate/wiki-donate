@@ -658,6 +658,7 @@ class ArticleController extends Controller
 
         // Search for articles by title
         $articles = Article::where('title', 'LIKE', '%'.$query.'%')
+            ->where('type', 'article')
             ->orderBy('title')
             ->limit(20)
             ->get();
