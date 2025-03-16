@@ -1279,6 +1279,15 @@
                                     "content": {
                                         "type": "string",
                                         "example": "<p>Content of talk</p>"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "article",
+                                            "userPage"
+                                        ],
+                                        "example": "article",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
