@@ -46,7 +46,7 @@
                         >prev</NuxtLink
                     >) - {{ history.createdAt }} update by
                     <NuxtLink
-                        :to="`/user/page?username=${title}`"
+                        :to="`/user/page?username=${history.user.username}`"
                         class="underline"
                         >{{ history.user.username }}</NuxtLink
                     >

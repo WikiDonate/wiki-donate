@@ -13,10 +13,12 @@
                 {
                     name: 'Article',
                     link: '/article?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
                     link: '/talk?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
@@ -24,11 +26,13 @@
                     name: 'Edit Source',
                     link:
                         '/talk/edit-source?title=' + encodeURIComponent(title),
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
                     link:
                         '/talk/view-history?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -48,7 +52,11 @@
                         class="underline"
                         >prev</NuxtLink
                     >) - {{ history.createdAt }} update by
-                    {{ history.user.username }}
+                    <NuxtLink
+                        :to="`/user/page?title=${history.user.username}`"
+                        class="underline"
+                        >{{ history.user.username }}</NuxtLink
+                    >
                 </li>
             </ul>
         </section>

@@ -23,7 +23,7 @@
                     link:
                         '/article/edit-source?title=' +
                         encodeURIComponent(title),
-                    isAuthenticated: authStore.isAuthenticated,
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',

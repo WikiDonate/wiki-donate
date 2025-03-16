@@ -8,10 +8,12 @@
                 {
                     name: 'Article',
                     link: '/article?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
                     link: '/talk?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
@@ -19,11 +21,13 @@
                     name: 'Edit Source',
                     link:
                         '/talk/edit-source?title=' + encodeURIComponent(title),
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
                     link:
                         '/talk/view-history?title=' + encodeURIComponent(title),
+                    isAuthenticated: true,
                 },
             ]"
         />

@@ -9,10 +9,12 @@
                 {
                     name: 'Article',
                     link: '/article?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
                     link: '/talk?title=' + encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
@@ -21,12 +23,14 @@
                     link:
                         '/article/edit-source?title=' +
                         encodeURIComponent(title),
+                    isAuthenticated: true,
                 },
                 {
                     name: 'View History',
                     link:
                         '/article/view-history?title=' +
                         encodeURIComponent(title),
+                    isAuthenticated: false,
                 },
             ]"
         />
