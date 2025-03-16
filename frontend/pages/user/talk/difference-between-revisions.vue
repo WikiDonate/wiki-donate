@@ -1,36 +1,29 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
-        <!-- Top bar Title -->
-        <TopBarTitle :page-title="`${title} : Difference between revisions`" />
-
-        <!-- Top bar -->
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${title}`,
                     isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/article/edit-source?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/talk/edit-source?username=${title}`,
                     isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/article/view-history?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/talk/view-history?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
@@ -65,9 +58,9 @@ import DiffMatchPatch from 'diff-match-patch'
 import { onMounted, ref } from 'vue'
 
 const route = useRoute()
-const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const uuid = route.query.uuid || ''
-const articleStore = useArticleStore()
+const talkStore = useTalkStore()
 const curHtml = ref('')
 const diffHtml = ref('')
 
@@ -86,7 +79,7 @@ const generateDiffHtml = (diffs) => {
 }
 
 const fetchAndCompare = async (uuid) => {
-    const version = articleStore.history.find((item) => item.uuid == uuid)
+    const version = talkStore.history.find((item) => item.uuid == uuid)
     // Old content prepare
     let oldContent = ''
     JSON.parse(version.oldContent).forEach((item) => {

@@ -1,33 +1,32 @@
-<!-- edit source page -->
+<!-- eslint-disable vue/html-self-closing -->
+<!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleStore.article.title} : Editing`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${title}`,
                     isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/talk/edit-source?title=' + encodeURIComponent(title),
+                    link: `/user/page/edit-source?username=${title}`,
                     isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/talk/view-history?title=' + encodeURIComponent(title),
-                    isAuthenticated: true,
+                    link: `/user/page/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -42,8 +41,11 @@
             />
         </div>
 
-        <!-- edit source section -->
-        <section class="bg-white p-2 mt-4">
+        <!-- Content -->
+        <section
+            v-if="editorContent && articleStore.article.editable"
+            class="bg-white p-2"
+        >
             <div>
                 <QuillEditor
                     v-if="editorContent"
@@ -55,56 +57,48 @@
                 <FormSubmitButton text="Update" @click="handleSubmit" />
             </div>
         </section>
+        <p v-else class="text-center">
+            You don't have permission to edit this page.
+        </p>
     </main>
 </template>
 
 <script setup>
-import { talkService } from '~/services/talkService'
+import { onMounted, ref } from 'vue'
+import { articleService } from '~/services/articleService'
 
 useHead({
-    title: 'Edit Source',
+    title: 'Edit Section',
 })
 
 const articleStore = useArticleStore()
-const talkStore = useTalkStore()
+// const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
+const title = decodeURIComponent(route.query.username)
+const uuid = route.query.uuid || ''
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
-const title = decodeURIComponent(route.query.title)
-const talkTitle = ref('')
-const talk = ref({})
 const editorContent = ref('')
+const section = ref({})
 
-const loadTalk = async (title) => {
-    try {
-        const response = await talkService.getTalk(title)
-        if (response.success) {
-            talkTitle.value = response.data.title
-            talk.value = JSON.parse(response.data.sections)
+const loadSection = async (uuid) => {
+    section.value = JSON.parse(articleStore.article.sections).find(
+        (item, idx) => idx == uuid
+    )
 
-            let talkString = ''
-            talk.value.forEach((item) => {
-                if (typeof item === 'string') {
-                    talkString += item
-                } else {
-                    if (item.title) talkString += item.title
-                    if (item.content) talkString += item.content
-                }
-            })
+    if (!section.value) {
+        alertVariant.value = 'error'
+        alertMessage.value = 'Section not found'
+        setTimeout(() => {
+            showAlert.value = true
+        }, 0)
 
-            editorContent.value = talkString
-            talkStore.addTalk(response.data)
-        } else {
-            article.value = []
-            talkStore.clearArticle()
-        }
-    } catch (error) {
-        sections.value = []
-        talkStore.clearArticle()
-        console.error(error)
+        return
     }
+
+    editorContent.value = section.value.title + '' + section.value.content
 }
 
 const handleSubmit = async () => {
@@ -120,15 +114,27 @@ const handleSubmit = async () => {
             return
         }
 
+        const content = JSON.parse(articleStore.article.sections)
+        content[uuid] = editorContent.value
+
+        let resultString = ''
+        content.forEach((item) => {
+            if (typeof item === 'string') {
+                resultString += item
+            } else {
+                if (item.title) resultString += item.title
+                if (item.content) resultString += item.content
+            }
+        })
+
         // Prepare params
         const params = {
-            uuid: talkStore.talk.uuid,
             title: articleStore.article.title,
             slug: articleStore.article.slug,
-            content: editorContent.value,
+            content: resultString,
         }
 
-        const response = await talkService.updateTalk(params)
+        const response = await articleService.updateArticle(params)
         if (!response.success) {
             alertVariant.value = 'error'
             alertMessage.value = response.errors[0]
@@ -139,10 +145,9 @@ const handleSubmit = async () => {
         }
 
         router.push(
-            `/talk?title=${encodeURIComponent(articleStore.article.slug)}`
+            `/user/page?username=${encodeURIComponent(articleStore.article.slug)}`
         )
     } catch (error) {
-        console.error(error)
         alertVariant.value = 'error'
         alertMessage.value = error.errors[0]
         setTimeout(() => {
@@ -152,6 +157,6 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-    await loadTalk(title)
+    await loadSection(uuid)
 })
 </script>

@@ -115,7 +115,7 @@ const onSubmit = handleSubmit(async (values) => {
 
         authStore.login(response.data)
         localStorage.setItem('token', response.data.token)
-        router.push('/')
+        router.push('/main')
     } catch (error) {
         alertVariant.value = 'error'
         alertMessage.value = error.errors[0]

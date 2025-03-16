@@ -7,7 +7,24 @@ use Illuminate\Support\Str;
 
 class Donate extends Model
 {
-    protected $fillable = ['user_id', 'name', 'email', 'card_number', 'expiry_month', 'expiry_year', 'cvv', 'amount', 'currency', 'status'];
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'zip_code',
+        'country',
+        'card_number',
+        'expiry_month',
+        'expiry_year',
+        'cvv',
+        'amount',
+        'currency',
+        'status',
+    ];
 
     protected static function boot()
     {

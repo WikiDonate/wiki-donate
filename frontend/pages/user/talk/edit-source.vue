@@ -1,33 +1,30 @@
 <!-- edit source page -->
 <template>
     <main class="w-full">
-        <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleStore.article.title} : Editing`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${title}`,
                     isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/talk/edit-source?title=' + encodeURIComponent(title),
+                    link: `/user/talk/edit-source?username=${title}`,
                     isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/talk/view-history?title=' + encodeURIComponent(title),
-                    isAuthenticated: true,
+                    link: `/user/talk/view-history?username=${title}`,
+                    isAuthenticated: false,
                 },
             ]"
         />
@@ -72,7 +69,7 @@ const router = useRouter()
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
-const title = decodeURIComponent(route.query.title)
+const title = decodeURIComponent(route.query.username)
 const talkTitle = ref('')
 const talk = ref({})
 const editorContent = ref('')

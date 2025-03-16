@@ -1,25 +1,25 @@
 <template>
     <header>
-        <!-- google translate-widget added -->
+        <!-- google translate -->
         <div
-            class="container mb-2 mx-auto mt-1 flex justify-end items-baseline pr-12"
+            class="container mb-2 mx-auto mt-1 flex justify-center sm:justify-end items-baseline"
         >
-            <GoogleTranslate />
+            <GoogleTranslateSelect
+                ref="translateSelect"
+                default-language-code="en"
+                default-page-language-code="en"
+                :fetch-browser-language="false"
+                trigger="click"
+                display-mode="flag"
+            />
         </div>
 
         <div class="container mx-auto flex items-center justify-between pl-4">
             <!-- Logo -->
             <div class="flex items-center mr-1">
-                <span class="logo-font text-2xl lg:text-4xl lg:pl-4"
+                <span class="font-bold text-2xl lg:text-4xl lg:pl-4"
                     >WikiDonate</span
                 >
-                <!-- <NuxtLink to="/" exact>
-                    <Image
-                        image-src="https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"
-                        image-alt="Logo"
-                        custom-class="w-full sm:W-18 md:w-22 lg:w-24"
-                    />
-                </NuxtLink> -->
             </div>
 
             <!-- Search box -->
@@ -31,7 +31,6 @@
 
             <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center space-x-3 pr-4">
-                <GoogleTranslate class="hidden lg:block" />
                 <NuxtLink
                     v-for="(item, index) in topMenu"
                     :key="index"
@@ -53,6 +52,7 @@
                         class="text-gray-800"
                         @click="toggleDropdownMenu"
                     >
+                        <span class="mr-1">{{ authStore.user.username }}</span>
                         <font-awesome-icon :icon="['fas', 'user']" />
                     </button>
 
@@ -65,7 +65,7 @@
                             <NuxtLink
                                 v-for="(item, index) in logoutMenu"
                                 :key="index"
-                                :to="item.name === 'Logout' ? '#' : item.link"
+                                :to="resolveLink(item)"
                                 exact
                                 :class="
                                     isActiveRoute(item.link, $route)
@@ -104,14 +104,21 @@
                 class="lg:hidden absolute right-0 w-48 bg-white shadow-lg rounded-md mt-2 p-4 z-50"
             >
                 <NuxtLink
-                    v-for="(item, index) in mobileMenu"
+                    v-for="(item, index) in [
+                        topMenu,
+                        mobileMenu,
+                        logoutMenu,
+                    ].flat()"
                     :key="index"
-                    :to="item.link"
+                    :to="resolveLink(item)"
                     exact
                     :class="
                         isActiveRoute(item.link, $route)
                             ? 'block underline text-blue-500'
                             : 'block text-gray-800 hover:text-blue-500 py-2'
+                    "
+                    @click="
+                        item.name === 'Logout' ? handleLogout($event) : null
                     "
                 >
                     {{ item.name }}
@@ -122,12 +129,12 @@
 </template>
 
 <script setup>
+import GoogleTranslateSelect from '@google-translate-select/vue3'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { authService } from '~/services/authService'
 import menuData from '~/static/menu.json'
 
-// Define reactive variables
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
@@ -137,6 +144,13 @@ const isDropdownMenuOpen = ref(false) // For the logout dropdown
 const topMenu = ref([]) // To store top menu items
 const mobileMenu = ref([]) // To store mobile menu items
 const logoutMenu = ref([]) // To store logout dropdown menu items
+
+const resolveLink = (item) => {
+    if (item.name === 'Logout') return '#'
+    if (item.name === 'User Page')
+        return `/user/page?username=${authStore.user.username}`
+    return item.link
+}
 
 const toggleMenu = () => {
     isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -186,8 +200,8 @@ const handleMenu = () => {
             )
         } else {
             return (
-                item.type === 'MainMenu' ||
-                (item.type === '' && item.onLogin !== 'show')
+                (item.type === 'MainMenu' || item.type === '') &&
+                item.onLogin !== 'show'
             )
         }
     })
@@ -217,7 +231,6 @@ const handleLogout = async (event) => {
     }
 }
 
-// Lifecycle hooks
 onMounted(() => {
     handleMenu()
     document.addEventListener('click', onClickOutside)
@@ -233,10 +246,3 @@ watch(route, () => {
     isDropdownMenuOpen.value = false
 })
 </script>
-
-<!-- extra css include here -->
-<style scoped>
-.logo-font {
-    font-family: 'Bell MT' !important;
-}
-</style>

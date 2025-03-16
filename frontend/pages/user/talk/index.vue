@@ -2,34 +2,29 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
     <main class="w-full">
-        <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleTitle || title}`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${title}`,
                     isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/article/edit-source?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/talk/edit-source?username=${title}`,
                     isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/article/view-history?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/talk/view-history?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
@@ -45,7 +40,7 @@
             />
         </div>
 
-        <!-- article page -->
+        <!-- Talk page -->
         <section class="bg-white p-2">
             <div v-if="sections.length === 0">
                 <div>
@@ -63,8 +58,8 @@
                     <div class="flex justify-between">
                         <div v-html="item.title" />
                         <NuxtLink
-                            v-if="authStore.isAuthenticated && editable"
-                            :to="`/article/edit-section?title=${title}&uuid=${index}`"
+                            v-if="authStore.isAuthenticated"
+                            :to="`/user/talk/edit-section?username=${title}&uuid=${index}`"
                             exact
                             >[Edit]</NuxtLink
                         >
@@ -78,23 +73,23 @@
 </template>
 
 <script setup>
-import { articleService } from '~/services/articleService'
+import { talkService } from '~/services/talkService'
 
 useHead({
-    title: 'Article',
+    title: 'Talk',
 })
 
 const articleStore = useArticleStore()
 const authStore = useAuthStore()
+const talkStore = useTalkStore()
 const route = useRoute()
-const title = ref(decodeURIComponent(route.query.title))
+const title = ref(decodeURIComponent(route.query.username))
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
 const editorContent = ref('')
-const articleTitle = ref('')
+const talkTitle = ref('')
 const sections = ref({})
-const editable = ref(false)
 
 const handleSubmit = async () => {
     showAlert.value = false
@@ -109,13 +104,14 @@ const handleSubmit = async () => {
             return
         }
 
-        // Save article
         const params = {
+            articleUuid: articleStore.article.uuid,
             title: title.value,
             content: editorContent.value,
+            type: 'userPage',
         }
 
-        const response = await articleService.saveArticle(params)
+        const response = await talkService.saveTalk(params)
         if (!response.success) {
             alertVariant.value = 'error'
             alertMessage.value = response.errors[0]
@@ -129,7 +125,7 @@ const handleSubmit = async () => {
         alertMessage.value = response.message
         setTimeout(() => {
             showAlert.value = true
-            loadArticle(response.data.slug)
+            loadTalk(response.data.slug)
         }, 0)
     } catch (error) {
         console.error(error)
@@ -141,35 +137,25 @@ const handleSubmit = async () => {
     }
 }
 
-const loadArticle = async (slug) => {
+const loadTalk = async (title) => {
     try {
-        const response = await articleService.getArticle(slug)
+        const response = await talkService.getTalk(title)
         if (response.success) {
-            articleTitle.value = response.data.title
+            talkTitle.value = response.data.title
             sections.value = JSON.parse(response.data.sections)
-            editable.value = response.data.editable
-            articleStore.addArticle(response.data)
+            talkStore.addTalk(response.data)
         } else {
             sections.value = []
-            editable.value = false
-            articleStore.clearArticle()
+            talkStore.clearTalk()
         }
     } catch (error) {
         sections.value = []
-        editable.value = false
-        articleStore.clearArticle()
+        talkStore.clearTalk()
         console.error(error)
     }
 }
 
 onMounted(async () => {
-    await loadArticle(title.value)
-})
-
-watch(route, (newRoute) => {
-    if (newRoute.query.title) {
-        title.value = decodeURIComponent(newRoute.query.title)
-        loadArticle(decodeURIComponent(newRoute.query.title))
-    }
+    await loadTalk(title.value)
 })
 </script>

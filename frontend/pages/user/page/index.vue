@@ -3,33 +3,29 @@
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleTitle || title}`" />
+        <TopBarTitle :page-title="`Hello, ${title}!`" />
         <TopBar
             :left-menu-items="[
                 {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
+                    name: 'User Page',
+                    link: `/user/page?username=${title}`,
                     isAuthenticated: false,
                 },
                 {
                     name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
+                    link: `/user/talk?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
             :right-menu-items="[
                 {
                     name: 'Edit Source',
-                    link:
-                        '/article/edit-source?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/page/edit-source?username=${title}`,
                     isAuthenticated: true,
                 },
                 {
                     name: 'View History',
-                    link:
-                        '/article/view-history?title=' +
-                        encodeURIComponent(title),
+                    link: `/user/page/view-history?username=${title}`,
                     isAuthenticated: false,
                 },
             ]"
@@ -45,7 +41,7 @@
             />
         </div>
 
-        <!-- article page -->
+        <!-- Sections -->
         <section class="bg-white p-2">
             <div v-if="sections.length === 0">
                 <div>
@@ -64,7 +60,7 @@
                         <div v-html="item.title" />
                         <NuxtLink
                             v-if="authStore.isAuthenticated && editable"
-                            :to="`/article/edit-section?title=${title}&uuid=${index}`"
+                            :to="`/user/page/edit-section?username=${title}&uuid=${index}`"
                             exact
                             >[Edit]</NuxtLink
                         >
@@ -81,13 +77,13 @@
 import { articleService } from '~/services/articleService'
 
 useHead({
-    title: 'Article',
+    title: 'User Page',
 })
 
 const articleStore = useArticleStore()
 const authStore = useAuthStore()
 const route = useRoute()
-const title = ref(decodeURIComponent(route.query.title))
+const title = ref(decodeURIComponent(route.query.username))
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
@@ -113,6 +109,7 @@ const handleSubmit = async () => {
         const params = {
             title: title.value,
             content: editorContent.value,
+            type: 'userPage',
         }
 
         const response = await articleService.saveArticle(params)
@@ -164,12 +161,5 @@ const loadArticle = async (slug) => {
 
 onMounted(async () => {
     await loadArticle(title.value)
-})
-
-watch(route, (newRoute) => {
-    if (newRoute.query.title) {
-        title.value = decodeURIComponent(newRoute.query.title)
-        loadArticle(decodeURIComponent(newRoute.query.title))
-    }
 })
 </script>

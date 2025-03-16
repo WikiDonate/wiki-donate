@@ -146,6 +146,13 @@ class TalkController extends Controller
      *             @OA\Property(property="articleUuid", type="string", example="ad1f4c0c-0b6f-4a5f-8f1f-9b3b6a5f5d9d"),
      *             @OA\Property(property="title", type="string", example="Title of talk"),
      *             @OA\Property(property="content", type="string", example="<p>Content of talk</p>"),
+     *             @OA\Property(
+     *                 property="type",
+     *                 type="string",
+     *                 example="article",
+     *                 enum={"article", "userPage"},
+     *                 nullable=true
+     *             ),
      *         ),
      *     ),
      *
@@ -225,6 +232,7 @@ class TalkController extends Controller
             'articleUuid' => 'required|exists:articles,uuid',
             'title' => 'required|string',
             'content' => 'required|string',
+            'type' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -256,18 +264,28 @@ class TalkController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            $message = 'The talk has been created successfully';
+
             // Create talk
-            $talk = Talk::create([
+            $talkParams = [
                 'user_id' => $request->user()->id,
                 'article_id' => Article::where('uuid', $request->articleUuid)->first()->id,
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'sections' => json_encode($sections),
-            ]);
+            ];
+
+            if (! empty($request->type) && $request->type == 'userPage') {
+                $message = 'The user page talk has been created successfully';
+                $articleParams['slug'] = $request->title;
+                $articleParams['type'] = 'user page';
+            }
+
+            $talk = Talk::create($talkParams);
 
             return response()->json([
                 'success' => true,
-                'message' => 'The talk has been created successfully',
+                'message' => $message,
                 'data' => new TalkResource($talk),
             ], Response::HTTP_CREATED);
 
