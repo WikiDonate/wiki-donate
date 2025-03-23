@@ -57,6 +57,7 @@
                 <div
                     v-for="(item, index) in sections"
                     :key="`section-${index}`"
+                    class="ql-content"
                 >
                     <div class="flex justify-between">
                         <div v-html="item.title" />

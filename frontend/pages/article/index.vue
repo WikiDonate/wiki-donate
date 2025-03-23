@@ -59,6 +59,7 @@
                 <div
                     v-for="(item, index) in sections"
                     :key="`section-${index}`"
+                    class="ql-content"
                 >
                     <div class="flex justify-between">
                         <div v-html="item.title" />
@@ -69,7 +70,8 @@
                             >[Edit]</NuxtLink
                         >
                     </div>
-                    <div v-html="item.content" />
+                    <div v-html="item.content"></div>
+
                     <br />
                 </div>
             </div>
