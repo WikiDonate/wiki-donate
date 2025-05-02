@@ -43,6 +43,7 @@
         "interactjs": "^1.10.27",
         "nuxt": "^3.13.0",
         "pinia-plugin-persistedstate": "^4.1.3",
+        "playwright": "^1.52.0",
         "vee-validate": "^4.13.2",
         "vue": "latest",
         "vue-quill-editor": "^3.0.6",
