@@ -53,3 +53,19 @@
 .ql-content iframe {
     @apply w-full h-64 rounded-lg;
 }
+
+.ql-text p {
+    @apply text-gray-800 mb-4 leading-relaxed;
+}
+
+.ql-text p:empty {
+    min-height: 1rem;
+}
+
+.ql-text ul {
+    @apply list-disc ml-5 mb-4;
+}
+
+.ql-text h1 {
+    @apply text-2xl font-bold mb-2;
+}

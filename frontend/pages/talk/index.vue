@@ -68,7 +68,7 @@
                             >[Edit]</NuxtLink
                         >
                     </div>
-                    <div v-html="item.content" />
+                    <div class="ql-text" v-html="item.content" />
                     <br />
                 </div>
             </div>
