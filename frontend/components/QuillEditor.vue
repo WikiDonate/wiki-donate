@@ -7,7 +7,7 @@
                 :options="editorOptions"
                 content-type="html"
                 placeholder="Create an article..."
-                @input="handleInput"
+                @editor-change="handleInput"
             />
         </ClientOnly>
     </div>
@@ -225,18 +225,75 @@ onMounted(() => {
 </script>
 
 <style>
+/* Quill Editor Base Styles */
 .ql-container {
-    min-height: 100px;
-    height: 50%;
+    @apply border border-gray-300 rounded-lg shadow-sm bg-white;
+    min-height: 200px;
 }
 
 .ql-editor {
-    min-height: 100px;
-    height: 100%;
+    @apply min-h-[150px] text-gray-800 leading-relaxed;
 }
 
+/* Toolbar Buttons */
+.ql-toolbar {
+    @apply bg-gray-100 border-b border-gray-300 p-2 rounded-t-lg;
+}
+
+/* Active Toolbar Buttons */
+.ql-toolbar .ql-active {
+    @apply bg-gray-200;
+}
+
+/* Styling for Headings */
+.ql-editor h1 {
+    @apply text-3xl font-bold my-2;
+}
+
+.ql-editor h2 {
+    @apply text-2xl font-semibold my-2;
+}
+
+.ql-editor h3 {
+    @apply text-xl font-semibold my-2;
+}
+
+/* Lists */
+.ql-editor ul {
+    @apply list-disc list-inside pl-4;
+}
+
+.ql-editor ol {
+    @apply list-decimal list-inside pl-4;
+}
+
+/* Blockquotes */
+.ql-editor blockquote {
+    @apply border-l-4 border-gray-400 pl-4 italic text-gray-600;
+}
+
+/* Code Block */
+.ql-editor pre {
+    @apply bg-gray-900 text-white p-3 rounded-md overflow-x-auto;
+}
+
+/* Inline Code */
+.ql-editor code {
+    @apply bg-gray-200 text-sm p-1 rounded;
+}
+
+/* Links */
+.ql-editor a {
+    @apply text-blue-600 underline hover:text-blue-800;
+}
+
+/* Images */
 .ql-editor img {
-    max-width: 100%; /* Responsive images */
-    cursor: nwse-resize; /* Show resize cursor */
+    @apply max-w-full rounded-lg shadow;
+}
+
+/* Video */
+.ql-editor iframe {
+    @apply w-full h-64 rounded-lg;
 }
 </style>

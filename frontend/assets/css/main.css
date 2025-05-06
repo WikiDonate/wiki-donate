@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Styling for Headings */
+.ql-content h1 {
+    @apply text-3xl font-bold my-2;
+}
+
+.ql-content h2 {
+    @apply text-2xl font-semibold my-2;
+}
+
+.ql-content h3 {
+    @apply text-xl font-semibold my-2;
+}
+
+/* Lists */
+.ql-content ul {
+    @apply list-disc list-inside pl-4;
+}
+
+.ql-content ol {
+    @apply list-decimal list-inside pl-4;
+}
+
+/* Blockquotes */
+.ql-content blockquote {
+    @apply border-l-4 border-gray-400 pl-4 italic text-gray-600;
+}
+
+/* Code Block */
+.ql-content pre {
+    @apply bg-gray-900 text-white p-3 rounded-md overflow-x-auto;
+}
+
+/* Inline Code */
+.ql-content code {
+    @apply bg-gray-200 text-sm p-1 rounded;
+}
+
+/* Links */
+.ql-content a {
+    @apply text-blue-600 underline hover:text-blue-800;
+}
+
+/* Images */
+.ql-content img {
+    @apply max-w-full rounded-lg shadow;
+}
+
+/* Video */
+.ql-content iframe {
+    @apply w-full h-64 rounded-lg;
+}
+
+.ql-text p {
+    @apply text-gray-800 mb-4 leading-relaxed;
+}
+
+.ql-text p:empty {
+    min-height: 1rem;
+}
+
+.ql-text ul {
+    @apply list-disc ml-5 mb-4;
+}
+
+.ql-text h1 {
+    @apply text-2xl font-bold mb-2;
+}

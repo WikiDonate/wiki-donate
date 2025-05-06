@@ -56,8 +56,9 @@ if (! function_exists('parseHtmlSection')) {
                 $nextElement = $nextElement->nextSibling;
             }
 
-            // Clean up any extra <br> tags or empty content
-            $content = preg_replace('/<p>\s*<br>\s*<\/p>/', '', trim($content));
+            // Clean up extra <br> tags and trim whitespace
+            $content = preg_replace('/(<br\s*\/?>\s*)+/', '', $content);
+            $content = trim($content);
 
             // Add the title and content to the result
             $data[] = [

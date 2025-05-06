@@ -390,6 +390,13 @@ const onSubmit = handleSubmit(async (values) => {
     showAlert.value = false
 
     try {
+        // const doctorsWithoutBordersDonationUrl =
+        //     'https://give.doctorswithoutborders.org/checkout'
+        // const campaignId = '675296'
+        // const orderId = '244588'
+        // const donationUrlWithParams = `${doctorsWithoutBordersDonationUrl}?cid=${campaignId}&oid=${orderId}&amount=${values.amount}&frequency=one-time&currency=USD`
+        // window.open(donationUrlWithParams, '_blank')
+        // return
         const response = await donateService.saveDonate(values)
         if (!response.success) {
             setTimeout(() => {
