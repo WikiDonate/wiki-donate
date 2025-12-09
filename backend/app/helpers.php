@@ -29,14 +29,18 @@ if (! function_exists('parseHtmlSection')) {
             return [];
         }
 
+        // Wrap the HTML in a container div to ensure proper DOM structure
+        $wrappedHtml = '<div>' . $htmlText . '</div>';
+        
         $dom = new DOMDocument;
-        @$dom->loadHTML($htmlText, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHTML($wrappedHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        
         // Get all <h2> elements
         $headings = $dom->getElementsByTagName('h2');
         $data = [];
 
-        foreach ($headings as $heading) {
-            // Extract the title text, including any child elements like <u>
+        foreach ($headings as $index => $heading) {
+            // Extract the title with HTML formatting preserved
             $title = trim($dom->saveHTML($heading));
             // Get the next sibling of the <h2> tag
             $nextElement = $heading->nextSibling;
@@ -56,9 +60,8 @@ if (! function_exists('parseHtmlSection')) {
                 $nextElement = $nextElement->nextSibling;
             }
 
-            // Clean up extra <br> tags and trim whitespace
-            $content = preg_replace('/(<br\s*\/?>\s*)+/', '', $content);
-            $content = trim($content);
+            // Clean up any extra <br> tags or empty content
+            $content = preg_replace('/<p>\s*<br>\s*<\/p>/', '', trim($content));
 
             // Add the title and content to the result
             $data[] = [

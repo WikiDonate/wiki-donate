@@ -98,7 +98,7 @@ class UserController extends Controller
                 'password' => 'required',
                 'confirmPassword' => 'required|same:password',
                 'email' => 'nullable|email|unique:users',
-                'token' => 'required',
+                // 'token' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -109,13 +109,13 @@ class UserController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            if (! verifyRecaptcha($request->token)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'reCAPTCHA verification failed',
-                    'errors' => 'reCAPTCHA verification failed',
-                ], Response::HTTP_FORBIDDEN);
-            }
+            // if (! verifyRecaptcha($request->token)) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'reCAPTCHA verification failed',
+            //         'errors' => 'reCAPTCHA verification failed',
+            //     ], Response::HTTP_FORBIDDEN);
+            // }
 
             if (! empty($user->email)) {
                 $disposable = Http::get("https://open.kickbox.com/v1/disposable/$email");
@@ -259,4 +259,65 @@ class UserController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
+//Get Login user details
+    public function getUserDetails(Request $request)
+    {
+    try {
+        $user = $request->user();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User details retrieved successfully',
+            'data' => new UserResource($user)
+        ]);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Server Error',
+            'errors' => [$e->getMessage()],
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+   }
+
+   //Update login user details
+   public function updateUser(Request $request)
+{
+    try {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $input = $request->all();
+
+        $user->update($input);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User details updated successfully',
+            'data' => new UserResource($user),
+        ], Response::HTTP_OK);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error',
+            'errors' => [$e->getMessage()],
+        ], Response::HTTP_EXPECTATION_FAILED);
+    }
+}
+
+
 }

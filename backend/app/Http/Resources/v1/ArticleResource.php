@@ -30,7 +30,9 @@ class ArticleResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'sections' => $this->sections,
-            'createdAt' => $this->created_at->format('d F, Y'),
+            'createdAt' => $this->created_at->format('d F, Y H:i'),
+            'updatedAt' => $this->updated_at->format('d F, Y H:i'),
+            'accessType' => $this->access_type ?? 'public',
             'user' => [
                 'uuid' => $this->user->uuid,
                 'username' => $this->user->username,

@@ -226,77 +226,106 @@ class TalkController extends Controller
      *     ),
      * )
      */
-    public function save(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'articleUuid' => 'required|exists:articles,uuid',
-            'title' => 'required|string',
-            'content' => 'required|string',
-            'type' => 'nullable|string',
-        ]);
+ public function save(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'articleUuid' => 'required|exists:articles,uuid',
+        'title' => 'required|string',
+        'content' => 'required|string',
+        'type' => 'nullable|string',
+    ]);
 
-        if ($validator->fails()) {
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error',
+            'errors' => $validator->errors()->all(),
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    try {
+        $content = $request->content;
+
+       /**
+ * Signature replacement:
+ * Replace only exact occurrences of '~~~~' with
+ * [[User:username|username]] HH:mm, DD Month YYYY (UTC)
+ */
+if (Str::contains($content, '~~~~')) {
+    $user = $request->user();
+
+    // Replace only exact matches of 4 tildes, not 3 or 5+
+    $content = preg_replace_callback('/(?<!~)~~~~(?!~)/', function () use ($user) {
+        $utcTime = now('UTC')->format('H:i, j F Y (\\U\\T\\C)');
+        return "[[User:{$user->username}|{$user->username}]] {$utcTime}";
+    }, $content);
+}
+
+
+        // Parse HTML sections
+        $sections = parseHtmlSection($content);
+        if (empty($sections)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error',
-                'errors' => $validator->errors()->all(),
+                'errors' => ['No sections found'],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        try {
-            // Parse HTML sections
-            $sections = parseHtmlSection($request->content);
-            if (empty($sections)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => ['No sections found'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Check duplicate slug
-            $duplicateSlug = Talk::where('slug', Str::slug($request->title))->first();
-            if ($duplicateSlug) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Duplicate slug found',
-                    'errors' => ['Duplicate slug found'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            $message = 'The talk has been created successfully';
-
-            // Create talk
-            $talkParams = [
-                'user_id' => $request->user()->id,
-                'article_id' => Article::where('uuid', $request->articleUuid)->first()->id,
-                'title' => $request->title,
-                'slug' => Str::slug($request->title),
-                'sections' => json_encode($sections),
+        // Add uuid + metadata to each section
+        $sections = collect($sections)->map(function ($section) use ($request) {
+            return [
+                'uuid'       => Str::uuid()->toString(),
+                'title'      => $section['title'] ?? null,
+                'content'    => $section['content'] ?? null,
+                'edited_by'  => $request->user()->id,
+                'edited_at'  => now()->toDateTimeString(),
             ];
+        })->toArray();
 
-            if (! empty($request->type) && $request->type == 'userPage') {
-                $message = 'The user page talk has been created successfully';
-                $articleParams['slug'] = $request->title;
-                $articleParams['type'] = 'user page';
-            }
-
-            $talk = Talk::create($talkParams);
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'data' => new TalkResource($talk),
-            ], Response::HTTP_CREATED);
-
-        } catch (Exception $e) {
+        // Check duplicate slug
+        $duplicateSlug = Talk::where('slug', Str::slug($request->title))->first();
+        if ($duplicateSlug) {
             return response()->json([
                 'success' => false,
-                'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
-            ], Response::HTTP_EXPECTATION_FAILED);
+                'message' => 'Duplicate slug found',
+                'errors'  => ['Duplicate slug found'],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $message = 'The talk has been created successfully';
+
+        $talkParams = [
+            'user_id'    => $request->user()->id,
+            'article_id' => Article::where('uuid', $request->articleUuid)->first()->id,
+            'title'      => $request->title,
+            'slug'       => Str::slug($request->title),
+            'sections'   => json_encode($sections),
+        ];
+
+        if (!empty($request->type) && $request->type === 'userPage') {
+            $message = 'The user page talk has been created successfully';
+            $talkParams['slug'] = $request->title;
+            $talkParams['type'] = 'user page';
+        }
+
+        $talk = Talk::create($talkParams);
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => new TalkResource($talk),
+        ], Response::HTTP_CREATED);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Exceptions error',
+            'errors' => [$e->getMessage()],
+        ], Response::HTTP_EXPECTATION_FAILED);
     }
+}
+
 
     /**
      * @OA\Put(
@@ -375,86 +404,139 @@ class TalkController extends Controller
      *     )
      * )
      */
-    public function update(Request $request, $slug)
-    {
-        $validator = Validator::make($request->all(), [
-            'uuid' => 'required|exists:talks,uuid',
-            'title' => 'required|string',
-            'content' => 'required|string',
-        ]);
+public function update(Request $request, $slug)
+{
+    $validator = Validator::make($request->all(), [
+        'uuid'    => 'required|exists:talks,uuid',
+        'title'   => 'required|string',
+        'content' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error',
+            'errors'  => $validator->errors()->all(),
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    try {
+        $existsTalk = Talk::where('uuid', $request->uuid)->first();
+        if (!$existsTalk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Talk not found',
+                'errors'  => ['Talk not found'],
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $oldSections = json_decode($existsTalk->sections, true);
+
+        $content = $request->content;
+
+        /**
+         * Signature replacement:
+         * Replace only exact occurrences of '~~~~' with
+         * [[User:username|username]] HH:mm, DD Month YYYY (UTC)
+         */
+        if (Str::contains($content, '~~~~')) {
+            $user = $request->user();
+
+            // Replace only exact matches of 4 tildes, not 3 or 5+
+            $content = preg_replace_callback('/(?<!~)~~~~(?!~)/', function () use ($user) {
+                $utcTime = now('UTC')->format('H:i, j F Y (\\U\\T\\C)');
+                return "[[User:{$user->username}|{$user->username}]] {$utcTime}";
+            }, $content);
+        }
+
+        // Parse fresh sections from HTML after signature handling
+        $parsedSections = parseHtmlSection($content);
+        if (empty($parsedSections)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error',
-                'errors' => $validator->errors()->all(),
+                'errors'  => ['No sections found'],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        try {
-            // Check existing talk
-            $existsTalk = Talk::where('uuid', $request->uuid)->first();
-            if (! $existsTalk) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Talk not found',
-                    'errors' => ['Talk not found'],
-                ], Response::HTTP_NOT_FOUND);
+        // Create a map of old sections by content signature for matching
+        $oldSectionsMap = [];
+        foreach ($oldSections as $oldSection) {
+            $signature = md5(($oldSection['title'] ?? '') . '|' . ($oldSection['content'] ?? ''));
+            $oldSectionsMap[$signature] = $oldSection;
+        }
+
+        $newSections = [];
+        foreach ($parsedSections as $section) {
+            $signature = md5(($section['title'] ?? '') . '|' . ($section['content'] ?? ''));
+
+            // Check if this exact section existed before
+            if (isset($oldSectionsMap[$signature])) {
+                // Section is untouched - keep everything from old section
+                $old = $oldSectionsMap[$signature];
+                $newSections[] = [
+                    'uuid'      => $old['uuid'],
+                    'title'     => $old['title'],
+                    'content'   => $old['content'],
+                    'edited_by' => $old['edited_by'] ?? $request->user()->id,
+                    'edited_at' => $old['edited_at'] ?? now()->toDateTimeString(),
+                ];
+
+                // Remove from map so it can't be matched again
+                unset($oldSectionsMap[$signature]);
+            } else {
+                // New or modified section - assign new UUID and update metadata
+                $newSections[] = [
+                    'uuid'      => Str::uuid()->toString(),
+                    'title'     => $section['title'] ?? null,
+                    'content'   => $section['content'] ?? null,
+                    'edited_by' => $request->user()->id,
+                    'edited_at' => now()->toDateTimeString(),
+                ];
             }
+        }
 
-            $oldSections = json_decode($existsTalk->sections, true);
-
-            // Parse HTML sections
-            $sections = parseHtmlSection($request->content);
-            if (empty($sections)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => ['No sections found'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Check if the section changed or not
-            if (json_encode($oldSections) === json_encode($sections)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => ['There is no change in article'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Update talk
-            $existsTalk->update([
-                'title' => $request->title,
-                'sections' => json_encode($sections),
-            ]);
-
-            $latestVersionNumber = TalkRevision::where('talk_id', $existsTalk->id)->max('version') ?? 0;
-
-            // Create versions
-            TalkRevision::create([
-                'talk_id' => $existsTalk->id,
-                'user_id' => $request->user()->id,
-                'version' => $latestVersionNumber + 1,
-                'old_content' => json_encode($oldSections),
-                'new_content' => json_encode($sections),
-
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'The talk updated successfully',
-                'data' => new TalkResource(Talk::find($existsTalk->id)),
-            ], Response::HTTP_OK);
-
-        } catch (Exception $e) {
+        // No changes check
+        if (json_encode($oldSections) === json_encode($newSections)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
-            ], Response::HTTP_EXPECTATION_FAILED);
+                'message' => 'Error',
+                'errors'  => ['There is no change in article'],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        // Update talk
+        $existsTalk->update([
+            'title'    => $request->title,
+            'sections' => json_encode($newSections),
+        ]);
+
+        // Save revision
+        $latestVersionNumber = TalkRevision::where('talk_id', $existsTalk->id)->max('version') ?? 0;
+
+        TalkRevision::create([
+            'talk_id'     => $existsTalk->id,
+            'user_id'     => $request->user()->id,
+            'version'     => $latestVersionNumber + 1,
+            'old_content' => json_encode($oldSections),
+            'new_content' => json_encode($newSections),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'The talk has been updated successfully',
+            'data'    => new TalkResource(Talk::find($existsTalk->id)),
+        ], Response::HTTP_OK);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Exceptions error',
+            'errors'  => [$e->getMessage()],
+        ], Response::HTTP_EXPECTATION_FAILED);
     }
+}
+
 
     public function search(Request $request)
     {
