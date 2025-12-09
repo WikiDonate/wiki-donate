@@ -1,34 +1,69 @@
 <template>
-    <main class="w-full mx-auto">
-        <!-- Logo -->
-        <div class="flex justify-center justify-items-center">
-            <span class="font-bold text-2xl lg:text-4xl lg:pl-4"
-                >WikiDonate</span
-            >
+    <main
+        class="w-full flex flex-col items-center justify-center px-2 sm:px-4 py-8"
+    >
+        <!-- Header with logo -->
+        <div class="w-full max-w-4xl flex flex-col items-center mb-8">
+            <div class="flex items-center justify-center mb-2">
+                <div
+                    class="w-12 h-12 lg:w-16 lg:h-16 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg mr-3"
+                >
+                    <font-awesome-icon
+                        :icon="['fas', 'hands-praying']"
+                        class="h-8 w-8 lg:h-10 lg:w-10 text-white"
+                    />
+                </div>
+                <h1
+                    class="font-bold text-2xl sm:text-3xl lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+                >
+                    WikiDonate
+                </h1>
+            </div>
+            <p class="text-sm sm:text-base text-gray-600 text-center max-w-md">
+                Discover charities and make a difference through knowledge
+            </p>
         </div>
 
         <!-- Search -->
-        <div class="w-full sm:w-1/2 mx-auto p-4 flex">
+        <div
+            class="w-full max-w-2xl mx-auto mb-10 px-2 sm:px-4 transform transition-all duration-300 hover:scale-[1.02]"
+        >
             <SearchBoxHome ref="searchBox" />
         </div>
 
-        <!-- Language buttons -->
-        <div class="w-full sm:w-1/2 mx-auto p-5 grid grid-cols-3 gap-3">
-            <button
-                v-for="lang in languages"
-                :key="lang.code"
-                class="bg-gray-200 p-2 rounded-md cursor-pointer hover:bg-gray-300 transition-colors"
-                @click="changeLanguage(lang.code)"
+        <!-- Language selection -->
+        <div class="w-full max-w-4xl mx-auto px-2 sm:px-4">
+            <h2
+                class="text-center text-gray-700 font-medium mb-5 text-base sm:text-lg"
             >
-                {{ lang.name }}
-            </button>
+                Choose your language
+            </h2>
+            <div
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+            >
+                <button
+                    v-for="lang in languages"
+                    :key="lang.code"
+                    class="bg-white p-3 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center group hover:-translate-y-1 border border-gray-100 hover:border-indigo-200"
+                    @click="changeLanguage(lang.code)"
+                >
+                    <span
+                        class="text-base sm:text-lg font-medium text-gray-800 group-hover:text-indigo-600 transition-colors"
+                    >
+                        {{ lang.name }}
+                    </span>
+                    <span class="text-xs uppercase text-gray-500 mt-1">
+                        {{ lang.code }}
+                    </span>
+                </button>
+            </div>
         </div>
     </main>
 </template>
 
 <script setup>
 useHead({
-    title: 'Home',
+    title: 'WikiDonate - Discover Charities',
 })
 
 definePageMeta({

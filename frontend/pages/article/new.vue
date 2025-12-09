@@ -5,34 +5,39 @@
         <TopBarTitle :page-title="'Search Results'" />
 
         <!-- new article search result option -->
-        <section class="bg-white p-2">
+        <section class="bg-white rounded-2xl shadow-md mt-4 p-4 sm:p-6">
             <p
                 v-if="authStore.isAuthenticated"
-                class="bg-white-100 mb-4 text-justify text-sm"
+                class="text-gray-700 text-sm sm:text-base leading-relaxed"
             >
                 The page
                 <NuxtLink
                     :to="`/article?title=${encodeURIComponent(title)}`"
-                    exact
-                    >" <span class="text-red-500 text-sm">{{ title }}</span
-                    >"</NuxtLink
+                    class="font-semibold text-red-500 hover:text-red-600"
                 >
+                    “{{ title }}”
+                </NuxtLink>
                 does not exist. You can create a draft and submit it for review
                 or request that a redirect be created.
             </p>
             <p
                 v-if="!authStore.isAuthenticated"
-                class="bg-white-100 mb-4 text-justify text-sm"
+                class="text-gray-700 text-sm sm:text-base leading-relaxed"
             >
                 The page
                 <span class="text-red-500 text-sm">{{ title }}</span> does not
                 exist. You can create a draft and submit it for review or
                 request that a redirect be created.
-                <span class="text-green-500 text-sm"
-                    >Please
-                    <NuxtLink to="/login" exact> login</NuxtLink>
-                    to continue.</span
-                >
+                <span class="text-green-600 font-medium">
+                    Please
+                    <NuxtLink
+                        to="/login"
+                        class="underline hover:text-green-700"
+                    >
+                        login
+                    </NuxtLink>
+                    to continue.
+                </span>
             </p>
         </section>
     </main>

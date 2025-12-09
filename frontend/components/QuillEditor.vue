@@ -6,9 +6,9 @@
                 v-model:content="content"
                 :options="editorOptions"
                 content-type="html"
-                placeholder="Create an article..."
-                @editor-change="handleInput"
+                :placeholder="placeholder"
             />
+            <!-- @input="handleInput" -->
         </ClientOnly>
     </div>
 </template>
@@ -17,20 +17,26 @@
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import interact from 'interactjs'
-import { defineEmits, onMounted, ref } from 'vue'
+import { defineEmits, onMounted, ref, computed, nextTick } from 'vue'
 
 const props = defineProps({
     initialContent: {
         type: String,
         default: '',
     },
+    toolbarOptions: { type: Array, default: () => [] },
+    placeholder: { type: String, default: 'Create an article...' },
 })
 
 // Emits the updated content to the parent
 const emit = defineEmits(['update:content'])
 
+// Editor content
+const content = ref('')
+const quillEditor = ref(null)
+
 // Toolbar options
-const toolbarOptions = [
+const defaultToolbar = [
     ['bold', 'italic', 'underline', 'strike'],
     ['blockquote', 'code-block'],
     ['link', 'image', 'video', 'formula'],
@@ -47,25 +53,24 @@ const toolbarOptions = [
     ['clean'],
 ]
 
-// Editor options
-const editorOptions = ref({
+// Editor options (computed so it reacts to props)
+const editorOptions = computed(() => ({
     modules: {
         toolbar: {
-            container: toolbarOptions,
-            handlers: {
-                image: imageHandler,
-            },
+            container: props.toolbarOptions.length
+                ? props.toolbarOptions
+                : defaultToolbar,
+            handlers: { image: imageHandler },
         },
     },
-    placeholder: 'Compose an epic...',
+    placeholder: props.placeholder,
     readOnly: false,
     theme: 'snow',
-})
+}))
 
-// Define content with default text
-const content = ref('') // Editor content
-
-const quillEditor = ref(null)
+// =============================
+// Helpers
+// =============================
 
 function imageHandler() {
     const input = document.createElement('input')
@@ -161,7 +166,7 @@ function convertToH2(htmlString) {
 }
 
 // Emit updated content on input
-function handleInput() {
+function emitContent() {
     const quill = quillEditor.value?.getQuill()
     if (quill) {
         const currentContent = quill.root.innerHTML // Get the editor content as HTML
@@ -205,6 +210,16 @@ function setupTitleListener() {
     })
 }
 
+// Ensure payload updates on format changes
+function setupContentListeners() {
+    const quill = quillEditor.value?.getQuill()
+    if (!quill) return
+
+    quill.on('text-change', emitContent)
+    quill.on('selection-change', emitContent)
+    quill.on('editor-change', emitContent) // ensures formats are captured
+}
+
 // Wait for QuillEditor to render
 onMounted(async () => {
     await nextTick()
@@ -212,6 +227,7 @@ onMounted(async () => {
     // Check if editor is ready
     if (quillEditor.value) {
         setupTitleListener()
+        setupContentListeners()
     } else {
         console.error('QuillEditor is not ready')
     }
@@ -225,75 +241,21 @@ onMounted(() => {
 </script>
 
 <style>
-/* Quill Editor Base Styles */
 .ql-container {
-    @apply border border-gray-300 rounded-lg shadow-sm bg-white;
-    min-height: 200px;
+    min-height: 100px;
+    height: 50%;
 }
 
 .ql-editor {
-    @apply min-h-[150px] text-gray-800 leading-relaxed;
+    min-height: 100px;
+    height: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
-/* Toolbar Buttons */
-.ql-toolbar {
-    @apply bg-gray-100 border-b border-gray-300 p-2 rounded-t-lg;
-}
-
-/* Active Toolbar Buttons */
-.ql-toolbar .ql-active {
-    @apply bg-gray-200;
-}
-
-/* Styling for Headings */
-.ql-editor h1 {
-    @apply text-3xl font-bold my-2;
-}
-
-.ql-editor h2 {
-    @apply text-2xl font-semibold my-2;
-}
-
-.ql-editor h3 {
-    @apply text-xl font-semibold my-2;
-}
-
-/* Lists */
-.ql-editor ul {
-    @apply list-disc list-inside pl-4;
-}
-
-.ql-editor ol {
-    @apply list-decimal list-inside pl-4;
-}
-
-/* Blockquotes */
-.ql-editor blockquote {
-    @apply border-l-4 border-gray-400 pl-4 italic text-gray-600;
-}
-
-/* Code Block */
-.ql-editor pre {
-    @apply bg-gray-900 text-white p-3 rounded-md overflow-x-auto;
-}
-
-/* Inline Code */
-.ql-editor code {
-    @apply bg-gray-200 text-sm p-1 rounded;
-}
-
-/* Links */
-.ql-editor a {
-    @apply text-blue-600 underline hover:text-blue-800;
-}
-
-/* Images */
 .ql-editor img {
-    @apply max-w-full rounded-lg shadow;
-}
-
-/* Video */
-.ql-editor iframe {
-    @apply w-full h-64 rounded-lg;
+    max-width: 100%; /* Responsive images */
+    cursor: nwse-resize; /* Show resize cursor */
 }
 </style>

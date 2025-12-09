@@ -23,7 +23,13 @@ const getNotifications = () => {
 const getUserPage = (slug) => {
     return api.get(`/articles/${slug}`)
 }
+const getUserDetails = () => {
+    return api.get('/user/get')
+}
 
+const updateUserDetails = (params) => {
+    return api.put('/user/update', params)
+}
 export const userService = {
     register,
     forgotPassword,
@@ -31,4 +37,6 @@ export const userService = {
     updateNotifications,
     getNotifications,
     getUserPage,
+    getUserDetails,
+    updateUserDetails,
 }

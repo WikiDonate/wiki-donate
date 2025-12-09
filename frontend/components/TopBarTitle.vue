@@ -1,16 +1,19 @@
 <template>
     <section
-        class="container mx-auto bg-white border-b border-b-gray-300 py-2 px-1 flex justify-between"
+        class="container mx-auto bg-white border-b border-b-indigo-300 py-2 px-2 sm:px-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
     >
         <!-- Left Title -->
-        <div class="space-x-4 text-sm flex basis-6/12 justify-start">
-            <h1 class="font-bold text-xl mb-2">
-                {{ pageTitle }}
-            </h1>
-        </div>
+        <h1
+            class="font-bold text-lg sm:text-xl md:text-2xl text-center sm:text-left bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+        >
+            {{ pageTitle }}
+        </h1>
 
         <!-- Right items -->
-        <div class="space-x-4 text-sm flex basis-6/12 justify-end items-center">
+        <div
+            v-if="rightSide"
+            class="text-sm text-indigo-600 text-center sm:text-right"
+        >
             {{ rightSide }}
         </div>
     </section>

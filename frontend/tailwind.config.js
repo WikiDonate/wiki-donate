@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import typography from '@tailwindcss/typography'
-
 export default {
     content: [
         './components/**/*.{js,vue,ts}',
@@ -11,7 +9,11 @@ export default {
         './error.vue',
     ],
     theme: {
-        extend: {},
+        extend: {
+            screens: {
+                xs: '476px',
+            },
+        },
     },
-    plugins: [typography],
+    plugins: [],
 }

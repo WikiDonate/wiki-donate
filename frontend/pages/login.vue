@@ -1,67 +1,94 @@
 <template>
-    <main class="w-full mx-auto">
-        <div class="container mx-auto p-4 md:p-6 w-full sm:w-2/3">
-            <h1
-                class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center"
+    <main class="w-full bg-white py-8">
+        <div class="container mx-auto px-2 sm:px-4 max-w-lg">
+            <!-- Card Container -->
+            <div
+                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
             >
-                Login
-            </h1>
+                <!-- Header -->
+                <div
+                    class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                >
+                    <h1 class="text-2xl md:text-3xl font-bold">
+                        Login to Your Account
+                    </h1>
+                    <p class="mt-2 text-sm">
+                        Welcome back! Please sign in to continue
+                    </p>
+                </div>
 
-            <!-- Message -->
-            <AlertMessage
-                v-if="showAlert"
-                :variant="alertVariant"
-                :message="alertMessage"
-                @close="showAlert = false"
-            />
-
-            <!-- Form -->
-            <form @submit.prevent="onSubmit">
-                <label
-                    for="username"
-                    class="block text-sm font-medium text-gray-700"
-                    >Username
-                </label>
-                <FormInput
-                    v-model="username"
-                    type="text"
-                    placeholder="Enter your username"
-                    class="mb-3"
-                    v-bind="usernameProps"
-                    :error-message="errors['username']"
-                />
-                <label
-                    for="password"
-                    class="block text-sm font-medium text-gray-700"
-                    >Password
-                </label>
-                <FormInput
-                    v-model="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    class="mb-3"
-                    v-bind="passwordProps"
-                    :error-message="errors['password']"
-                />
-
-                <!-- Submit Button -->
-                <div class="flex justify-center">
-                    <FormSubmitButton
-                        text="Login"
-                        type="submit"
-                        variant="primary"
-                        @click="onSubmit"
+                <div class="p-3 sm:p-4 md:p-6">
+                    <!-- Message -->
+                    <AlertMessage
+                        v-if="showAlert"
+                        :variant="alertVariant"
+                        :message="alertMessage"
+                        class="mb-6"
+                        @close="showAlert = false"
                     />
+
+                    <!-- Form -->
+                    <form class="space-y-4" @submit.prevent="onSubmit">
+                        <label
+                            for="username"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <FormInput
+                            v-model="username"
+                            type="text"
+                            placeholder="Enter your username"
+                            v-bind="usernameProps"
+                            :error-message="errors['username']"
+                        />
+                        <label
+                            for="password"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Password <span class="text-red-500">*</span>
+                        </label>
+                        <FormInput
+                            v-model="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            v-bind="passwordProps"
+                            :error-message="errors['password']"
+                        />
+                        <!-- Forgot Password Link -->
+                        <div class="text-right mb-1">
+                            <NuxtLink
+                                to="/forgot-password"
+                                class="text-sm font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
+                            >
+                                Forgot Password?
+                            </NuxtLink>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-center mt-4">
+                            <FormSubmitButton
+                                :text="
+                                    isLoading ? 'Authenticating...' : 'Login'
+                                "
+                                type="submit"
+                                variant="primary"
+                                :disabled="isLoading"
+                            />
+                        </div>
+
+                        <!-- Sign Up Link -->
+                        <div class="text-center text-sm text-gray-600 mt-6">
+                            Don't have an account?
+                            <NuxtLink
+                                to="/create-account"
+                                class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline ml-1"
+                            >
+                                Create Account
+                            </NuxtLink>
+                        </div>
+                    </form>
                 </div>
-                <!-- Forgot Password Link -->
-                <div class="text-right mb-3">
-                    <NuxtLink
-                        to="/forgot-password"
-                        class="text-sm text-blue-600 hover:underline"
-                        >Forgot Password?</NuxtLink
-                    >
-                </div>
-            </form>
+            </div>
         </div>
     </main>
 </template>
@@ -80,6 +107,7 @@ const router = useRouter()
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
+const isLoading = ref(false)
 const authStore = useAuthStore()
 
 const validationSchema = yup.object({
@@ -99,6 +127,7 @@ const [password, passwordProps] = defineField('password')
 const onSubmit = handleSubmit(async (values) => {
     // Reset alert visibility
     showAlert.value = false
+    isLoading.value = true
 
     try {
         const response = await authService.login({
@@ -110,6 +139,7 @@ const onSubmit = handleSubmit(async (values) => {
             alertVariant.value = 'error'
             alertMessage.value = response.errors[0]
             showAlert.value = true
+            isLoading.value = false
             return
         }
 
@@ -118,8 +148,10 @@ const onSubmit = handleSubmit(async (values) => {
         router.push('/main')
     } catch (error) {
         alertVariant.value = 'error'
-        alertMessage.value = error.errors[0]
+        alertMessage.value = error.errors?.[0] || 'Login failed'
         showAlert.value = true
+    } finally {
+        isLoading.value = false
     }
 })
 </script>

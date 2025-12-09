@@ -1,46 +1,70 @@
 <template>
-    <main class="w-full mx-auto">
-        <div class="container mx-auto p-4 md:p-6 w-full sm:w-2/3">
-            <h1
-                class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center"
+    <main class="w-full bg-white py-8">
+        <div class="container mx-auto px-2 sm:px-4 max-w-lg">
+            <!-- Card Container -->
+            <div
+                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
             >
-                Password Recovery
-            </h1>
-
-            <!-- Message -->
-            <AlertMessage
-                v-if="showAlert"
-                :variant="alertVariant"
-                :message="alertMessage"
-                @close="showAlert = false"
-            />
-
-            <!-- Form -->
-            <form @submit.prevent="onSubmit">
-                <label
-                    for="email"
-                    class="block text-sm font-medium text-gray-700"
-                    >Email
-                </label>
-                <FormInput
-                    v-model="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    class="mb-3"
-                    v-bind="emailProps"
-                    :error-message="errors['email']"
-                />
-
-                <!-- Submit Button -->
-                <div class="flex justify-center">
-                    <FormSubmitButton
-                        text="Send"
-                        type="submit"
-                        variant="primary"
-                        @click="onSubmit"
-                    />
+                <!-- Header -->
+                <div
+                    class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                >
+                    <h1 class="text-2xl md:text-3xl font-bold">
+                        Password Recovery
+                    </h1>
+                    <p class="mt-2 text-sm">
+                        Enter your email to reset your password
+                    </p>
                 </div>
-            </form>
+
+                <div class="p-3 sm:p-4 md:p-6">
+                    <!-- Message -->
+                    <AlertMessage
+                        v-if="showAlert"
+                        :variant="alertVariant"
+                        :message="alertMessage"
+                        class="mb-6"
+                        @close="showAlert = false"
+                    />
+
+                    <!-- Form -->
+                    <form class="space-y-4" @submit.prevent="onSubmit">
+                        <label
+                            for="email"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Email <span class="text-red-500">*</span>
+                        </label>
+                        <FormInput
+                            v-model="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            v-bind="emailProps"
+                            :error-message="errors['email']"
+                        />
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-center mt-4">
+                            <FormSubmitButton
+                                :text="isLoading ? 'Sending...' : 'Send'"
+                                type="submit"
+                                variant="primary"
+                                :disabled="isLoading"
+                            />
+                        </div>
+
+                        <!-- Back to Login Link -->
+                        <div class="text-center text-sm text-gray-600 mt-6">
+                            Remember your password?
+                            <NuxtLink
+                                to="/login"
+                                class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline ml-1"
+                            >
+                                Back to Login
+                            </NuxtLink>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </main>
 </template>
@@ -57,6 +81,7 @@ useHead({
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
+const isLoading = ref(false)
 
 const validationSchema = yup.object({
     email: yup
@@ -75,6 +100,7 @@ const [email, emailProps] = defineField('email')
 
 const onSubmit = handleSubmit(async (values) => {
     showAlert.value = false
+    isLoading.value = true
 
     try {
         const response = await userService.forgotPassword({
@@ -85,6 +111,7 @@ const onSubmit = handleSubmit(async (values) => {
             alertVariant.value = 'error'
             alertMessage.value = response.errors[0]
             showAlert.value = true
+            isLoading.value = false
             return
         }
 
@@ -95,6 +122,8 @@ const onSubmit = handleSubmit(async (values) => {
         alertVariant.value = 'error'
         alertMessage.value = error.errors[0]
         showAlert.value = true
+    } finally {
+        isLoading.value = false
     }
 })
 </script>

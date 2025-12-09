@@ -12,6 +12,8 @@ export const useArticleStore = defineStore('article', {
     },
     state: () => ({
         article: {},
+        articles: [],
+        articlesMeta: {},
         history: [],
     }),
     actions: {
@@ -20,6 +22,14 @@ export const useArticleStore = defineStore('article', {
         },
         clearArticle() {
             this.article = {}
+        },
+        addArticles({ articles, articlesMeta }) {
+            this.articles = articles
+            this.articlesMeta = articlesMeta
+        },
+        clearArticles() {
+            this.articles = []
+            this.articlesMeta = {}
         },
         addHistory(entry) {
             this.history = entry
