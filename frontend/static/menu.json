@@ -1,0 +1,73 @@
+[
+    {
+        "name": "Main Page",
+        "link": "/main",
+        "type": "MainMenu",
+        "onLogin": "",
+        "icon": ["fas", "home"]
+    },
+    {
+        "name": "Donate",
+        "link": "/donate",
+        "type": "MainMenu",
+        "onLogin": "show",
+        "icon": ["fas", "hand-holding-heart"]
+    },
+    {
+        "name": "Payment Method",
+        "link": "/billing",
+        "type": "MainMenu",
+        "onLogin": "show",
+        "icon": ["fas", "credit-card"]
+    },
+
+    {
+        "name": "Create Account",
+        "link": "/create-account",
+        "type": "TopMenu",
+        "onLogin": "hide",
+        "icon": ["fas", "user-plus"]
+    },
+    {
+        "name": "Login",
+        "link": "/login",
+        "type": "TopMenu",
+        "onLogin": "hide",
+        "icon": ["fas", "sign-in-alt"]
+    },
+    {
+        "name": "Profile Settings",
+        "link": "/profile",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "user-cog"]
+    },
+    {
+        "name": "My Articles",
+        "link": "/article/my",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "book-open"]
+    },
+    {
+        "name": "Preferences",
+        "link": "/preferences",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "cog"]
+    },
+    {
+        "name": "User Page",
+        "link": "/user/page",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "user"]
+    },
+    {
+        "name": "Logout",
+        "link": "/logout",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "sign-out-alt"]
+    }
+]

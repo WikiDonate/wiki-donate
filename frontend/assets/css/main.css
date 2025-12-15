@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.google-translate-select-dropdown__menu{
+    right: 0 !important;
+    left: auto !important;
+}
+
+@media (max-width: 639px) {
+    .google-translate-select-dropdown__menu {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        width: max-content !important; /* makes the width fit the content */
+    }
+}
