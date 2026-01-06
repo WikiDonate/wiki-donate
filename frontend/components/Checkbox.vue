@@ -5,7 +5,7 @@
             :id="checkboxId"
             type="checkbox"
             :checked="modelValue"
-            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-0 focus:outline-none"
+            class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-0 focus:outline-none"
             @change="emitChange"
         />
     </div>

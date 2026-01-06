@@ -2,7 +2,7 @@
     <div
         v-if="visible"
         :class="alertClass"
-        class="flex items-center p-4 rounded-lg mb-4"
+        class="flex items-start p-4 rounded-lg mb-4"
         role="alert"
     >
         <span class="flex-shrink-0">
@@ -46,7 +46,10 @@
                 />
             </svg>
         </span>
-        <span class="ml-3">{{ message }}</span>
+        <span class="ml-3 break-all whitespace-pre-wrap w-full">{{
+            message
+        }}</span>
+
         <button
             class="ml-auto text-gray-400 hover:text-gray-500"
             @click="closeAlert"

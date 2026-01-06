@@ -319,6 +319,7 @@ class ArticleController extends Controller
             'title' => 'required|string',
             'content' => 'required|string',
             'type' => 'nullable|string',
+            'accessType' => 'nullable|in:public,private',
         ]);
 
         if ($validator->fails()) {
@@ -352,12 +353,21 @@ class ArticleController extends Controller
 
             $message = 'The article has been created successfully';
 
+            // Determine default access type based on article type
+            $defaultAccessType = (empty($request->type) || $request->type === 'article') ? 'public' : 'private';
+
             // Create article
             $articleParams = [
                 'user_id' => $request->user()->id,
-                'title' => $request->title,
+                        // Prefix "Formula: " only when access type is private
+    'title' => ($request->input('accessType') === 'private')
+        ? (Str::startsWith($request->title, 'Formula:')
+            ? $request->title
+            : 'Formula:' . $request->title)
+        : $request->title,
                 'slug' => Str::slug($request->title),
                 'sections' => json_encode($sections),
+                'access_type' => $request->input('accessType', $defaultAccessType),
             ];
 
             if (! empty($request->type) && $request->type == 'userPage') {
@@ -487,6 +497,7 @@ class ArticleController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'content' => 'required|string',
+            'accessType' => 'nullable|in:public,private',
         ]);
 
         if ($validator->fails()) {
@@ -498,15 +509,22 @@ class ArticleController extends Controller
         }
 
         try {
-            // Check existing article
-            $existsArticle = Article::with('user')->where('slug', Str::slug($request->title))->first();
-            if (! $existsArticle) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Article not found',
-                    'errors' => ['Article not found'],
-                ], Response::HTTP_NOT_FOUND);
-            }
+           // Clean title
+$cleanTitle = trim(str_replace('Formula:', '', $request->title));
+
+// Prefer using the slug from route if available
+$existsArticle = Article::with('user')
+    ->where('slug', $slug ?? Str::slug($cleanTitle))
+    ->first();
+
+if (! $existsArticle) {
+    return response()->json([
+        'success' => false,
+        'message' => 'Article not found',
+        'errors' => ['Article not found'],
+    ], Response::HTTP_NOT_FOUND);
+}
+
 
             // Only admin can edit the admin's article
             if ($existsArticle->user->hasRole(['Admin'])) {
@@ -531,8 +549,13 @@ class ArticleController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            // Check if the section changed or not
-            if (json_encode($oldSections) === json_encode($sections)) {
+            // Keep original behavior: block when sections have not changed,
+            // except allow update if accessType is provided and actually changed
+            $noSectionsChange = json_encode($oldSections) === json_encode($sections);
+            $accessTypeProvided = $request->filled('accessType');
+            $accessTypeChanged = $accessTypeProvided && ($existsArticle->access_type !== $request->input('accessType'));
+
+            if ($noSectionsChange && ! $accessTypeChanged) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Error',
@@ -540,11 +563,35 @@ class ArticleController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+           // Build update payload; only change access_type if explicitly provided
+$updatePayload = [
+    'sections' => json_encode($sections),
+];
+
+// Handle access type and title logic
+if ($request->filled('accessType')) {
+    $newAccessType = $request->input('accessType');
+    $updatePayload['access_type'] = $newAccessType;
+
+    // Update title based on access type change
+    if ($newAccessType === 'private') {
+        // Add "Formula:" if missing
+        $updatePayload['title'] = Str::startsWith($request->title, 'Formula:')
+            ? $request->title
+            : 'Formula:' . $request->title;
+    } elseif ($newAccessType === 'public') {
+        // Remove "Formula:" if present
+        $updatePayload['title'] = preg_replace('/^Formula:/', '', $request->title);
+    } else {
+        $updatePayload['title'] = $request->title;
+    }
+} else {
+    $updatePayload['title'] = $request->title;
+}
+
+
             // Update article
-            $existsArticle->update([
-                'title' => $request->title,
-                'sections' => json_encode($sections),
-            ]);
+            $existsArticle->update($updatePayload);
 
             $latestVersionNumber = Revision::where('article_id', $existsArticle->id)->max('version') ?? 0;
 
@@ -785,5 +832,56 @@ class ArticleController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
+    }
+
+    /**
+     * Get paginated articles for the logged-in user (type: article)
+     */
+    public function myArticles(Request $request)
+    {
+        try {
+            $perPage = (int) ($request->input('per_page') ?? 10);
+            $perPage = $perPage > 0 && $perPage <= 100 ? $perPage : 10;
+            
+            $articles = Article::where('user_id', Auth::id())
+                ->where(function ($q) {
+                    $q->whereNull('type')->orWhere('type', 'article');
+                })
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
+
+            if ($articles->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No articles found',
+                    'data' => [],
+                    'meta' => [
+                        'currentPage' => $articles->currentPage(),
+                        'perPage' => $articles->perPage(),
+                        'total' => $articles->total(),
+                        'lastPage' => $articles->lastPage(),
+                    ],
+                ], Response::HTTP_OK);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Articles found successfully',
+                'data' => ArticleResource::collection($articles->items()),
+                'meta' => [
+                    'currentPage' => $articles->currentPage(),
+                    'perPage' => $articles->perPage(),
+                    'total' => $articles->total(),
+                    'lastPage' => $articles->lastPage(),
+                ],
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Exceptions error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
     }
 }

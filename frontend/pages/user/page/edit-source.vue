@@ -39,23 +39,49 @@
             />
         </div>
 
+        <!-- loader -->
+        <div v-if="loading" class="flex items-center justify-center py-12">
+            <LoadingSpinner text="Loading Article" />
+        </div>
+
         <!-- edit source section -->
-        <section
-            v-if="editorContent && articleStore.article.editable"
-            class="bg-white p-2 mt-4"
-        >
+        <!-- v-else-if="editorContent && articleStore.article.editable" -->
+        <section v-else-if="canEdit" class="bg-white p-2 mt-4">
             <div>
                 <QuillEditor
+                    v-if="editorContent"
                     v-model:content="editorContent"
                     :initial-content="editorContent"
                 />
             </div>
             <div class="w-40 mt-4">
-                <FormSubmitButton text="Update" @click="handleSubmit" />
+                <FormSubmitButton
+                    :text="submitting ? 'Updating...' : 'Update Article'"
+                    :disabled="submitting"
+                    @click="handleSubmit"
+                />
             </div>
         </section>
-        <p v-else class="text-center">
-            You don't have permission to edit this page.
+        <p v-else class="text-center mt-5 text-gray-600">
+            <span v-if="!authStore.isAuthenticated">
+                You must
+                <NuxtLink
+                    to="/login"
+                    class="text-green-600 underline hover:text-green-700"
+                    >log in</NuxtLink
+                >
+                to edit this article.
+            </span>
+            <span v-else-if="!currentArticle || !currentArticle.uuid">
+                This article does not exist yet. Please create it first before
+                editing.
+            </span>
+            <span v-else-if="!editorContent">
+                This article has no content to edit.
+            </span>
+            <span v-else>
+                You don't have permission to edit this article.
+            </span>
         </p>
     </main>
 </template>
@@ -68,8 +94,13 @@ useHead({
 })
 
 const articleStore = useArticleStore()
+const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
+
+const currentUser = computed(() => authStore.user)
+const currentArticle = computed(() => articleStore.article)
+
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
@@ -77,8 +108,32 @@ const title = decodeURIComponent(route.query.username)
 const articleTitle = ref('')
 const article = ref({})
 const editorContent = ref('')
+const loading = ref(false)
+const submitting = ref(false)
+const accessType = ref(null)
+
+// check if current user is owner
+const isOwner = computed(() => {
+    return (
+        currentUser.value &&
+        currentUser.value?.uuid === currentArticle.value?.user?.uuid
+    )
+})
+
+// computed: can user edit?
+const canEdit = computed(() => {
+    if (!authStore.isAuthenticated) return false
+    if (!editorContent.value) return false
+    if (!currentArticle.value?.editable) return false
+
+    if (accessType.value === 'public') return true
+    if (accessType.value === 'private' && isOwner.value) return true
+
+    return false
+})
 
 const loadArticle = async (slug) => {
+    loading.value = true
     try {
         const response = await articleService.getArticle(slug)
         if (response.success) {
@@ -96,29 +151,30 @@ const loadArticle = async (slug) => {
             })
 
             editorContent.value = articleString
+
             articleStore.addArticle(response.data)
+            accessType.value = response.data.accessType || 'public'
         } else {
             article.value = []
             articleStore.clearArticle()
         }
     } catch (error) {
-        sections.value = []
-        articleStore.clearArticle()
         console.error(error)
+        article.value = []
+        articleStore.clearArticle()
+    } finally {
+        loading.value = false
     }
 }
 
 const handleSubmit = async () => {
+    if (submitting.value) return
+    submitting.value = true
     showAlert.value = false
 
     try {
         if (!editorContent.value) {
-            alertVariant.value = 'error'
-            alertMessage.value = 'Please enter some content'
-            setTimeout(() => {
-                showAlert.value = true
-            }, 0)
-            return
+            throw new Error('Please enter some content')
         }
 
         // Prepare params
@@ -130,12 +186,7 @@ const handleSubmit = async () => {
 
         const response = await articleService.updateArticle(params)
         if (!response.success) {
-            alertVariant.value = 'error'
-            alertMessage.value = response.errors[0]
-            setTimeout(() => {
-                showAlert.value = true
-            }, 0)
-            return
+            throw new Error(response.errors?.[0] || 'Failed to update article')
         }
 
         router.push(
@@ -144,10 +195,13 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error(error)
         alertVariant.value = 'error'
-        alertMessage.value = error.errors[0]
+        alertMessage.value =
+            error.errors[0] || error.message || 'Unexpected error'
         setTimeout(() => {
             showAlert.value = true
         }, 0)
+    } finally {
+        submitting.value = false
     }
 }
 

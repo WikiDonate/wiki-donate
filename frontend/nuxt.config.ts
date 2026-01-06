@@ -1,12 +1,16 @@
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     devtools: { enabled: true },
-    css: ['~/assets/css/main.css'],
-    plugins: ['~/plugins/fontawesome.js'],
+    css: [
+        '~/assets/css/main.css',
+        'vue-toast-notification/dist/theme-default.css',
+    ],
+    plugins: ['~/plugins/fontawesome.js', '~/plugins/paypal.client.js'],
     modules: [
         '@nuxt/eslint',
         '@pinia/nuxt',
         'pinia-plugin-persistedstate/nuxt',
+        '@unlok-co/nuxt-stripe',
     ],
     build: {
         transpile: ['vee-validate'],
@@ -28,6 +32,12 @@ export default defineNuxtConfig({
                 'http://localhost:8000/api/v1',
 
             recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
+            paypalClientId: process.env.NUXT_PUBLIC_PAYPAL_CLIENT_ID,
+        },
+    },
+    stripe: {
+        client: {
+            key: process.env.NUXT_STRIPE_PUBLIC_KEYS,
         },
     },
 })

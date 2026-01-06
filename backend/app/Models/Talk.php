@@ -7,12 +7,22 @@ use Illuminate\Support\Str;
 
 class Talk extends Model
 {
-    protected $fillable = ['user_id', 'article_id', 'title',  'slug', 'sections', 'is_active'];
+    protected $fillable = [
+        'user_id',
+        'article_id',
+        'title',
+        'slug',
+        'sections',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'sections' => 'array', // store sections as JSON array
+    ];
 
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($model) {
             if (empty($model->uuid)) {
                 $model->uuid = Str::uuid()->toString();

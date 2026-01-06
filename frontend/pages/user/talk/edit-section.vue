@@ -40,8 +40,16 @@
             />
         </div>
 
+        <!-- loader -->
+        <div v-if="loading" class="flex items-center justify-center py-12">
+            <LoadingSpinner text="Loading Section" />
+        </div>
+
         <!-- Content -->
-        <section v-if="editorContent" class="bg-white p-2">
+        <section
+            v-else-if="editorContent && authStore.isAuthenticated"
+            class="bg-white p-2"
+        >
             <div>
                 <QuillEditor
                     v-if="editorContent"
@@ -49,10 +57,42 @@
                     :initial-content="editorContent"
                 />
             </div>
+            <div
+                class="text-xs sm:text-sm text-gray-600 mt-3 flex items-center gap-2"
+            >
+                <span class="text-gray-700"
+                    >💬 Sign your posts on talk pages by typing</span
+                >
+                <span
+                    class="inline-block font-mono text-indigo-600 border border-gray-300 bg-indigo-50 px-2 py-0.5 rounded-md shadow-sm"
+                >
+                    ~~~~
+                </span>
+            </div>
             <div class="w-40 mt-4">
-                <FormSubmitButton text="Update" @click="handleSubmit" />
+                <FormSubmitButton
+                    :text="submitting ? 'Submitting...' : 'Submit'"
+                    :disabled="submitting"
+                    @click="handleSubmit"
+                />
             </div>
         </section>
+        <p v-else class="text-center mt-5 text-gray-600">
+            <span v-if="!authStore.isAuthenticated">
+                You must
+                <NuxtLink
+                    to="/login"
+                    class="text-green-600 underline hover:text-green-700"
+                    >log in</NuxtLink
+                >
+                to edit this article.
+            </span>
+            <span v-else-if="!talkStore.talk || !talkStore.talk.uuid">
+                This talk page does not exist yet. Please start a discussion
+                first before editing.
+            </span>
+            <span v-else> This talk has no content to edit. </span>
+        </p>
     </main>
 </template>
 
@@ -64,7 +104,8 @@ useHead({
     title: 'Edit Section',
 })
 
-const articleStore = useArticleStore()
+// const articleStore = useArticleStore()
+const authStore = useAuthStore()
 const talkStore = useTalkStore()
 const route = useRoute()
 const router = useRouter()
@@ -75,11 +116,12 @@ const alertVariant = ref('')
 const alertMessage = ref('')
 const editorContent = ref('')
 const section = ref({})
+const submitting = ref(false)
+const loading = ref(false)
 
 const loadSection = async (uuid) => {
-    section.value = JSON.parse(talkStore.talk.sections).find(
-        (item, idx) => idx == uuid
-    )
+    loading.value = true
+    section.value = talkStore.talk.sections.find((item, idx) => idx == uuid)
 
     if (!section.value) {
         alertVariant.value = 'error'
@@ -92,22 +134,20 @@ const loadSection = async (uuid) => {
     }
 
     editorContent.value = section.value.title + '' + section.value.content
+    loading.value = false
 }
 
 const handleSubmit = async () => {
+    if (submitting.value) return
+    submitting.value = true
     showAlert.value = false
 
     try {
         if (!editorContent.value) {
-            alertVariant.value = 'error'
-            alertMessage.value = 'Please enter some content'
-            setTimeout(() => {
-                showAlert.value = true
-            }, 0)
-            return
+            throw new Error('Please enter some content')
         }
 
-        const content = JSON.parse(talkStore.talk.sections)
+        const content = talkStore.talk.sections
         content[uuid] = editorContent.value
 
         let resultString = ''
@@ -130,23 +170,20 @@ const handleSubmit = async () => {
 
         const response = await talkService.updateTalk(params)
         if (!response.success) {
-            alertVariant.value = 'error'
-            alertMessage.value = response.errors[0]
-            setTimeout(() => {
-                showAlert.value = true
-            }, 0)
-            return
+            throw new Error(response.errors?.[0] || 'Failed to update talk')
         }
 
-        router.push(
-            `/talk?title=${encodeURIComponent(articleStore.article.slug)}`
-        )
+        router.push(`/talk?title=${encodeURIComponent(talkStore.talk.slug)}`)
     } catch (error) {
+        console.error(error)
         alertVariant.value = 'error'
-        alertMessage.value = error.errors[0]
+        alertMessage.value =
+            error.errors[0] || error.message || 'Unexpected error'
         setTimeout(() => {
             showAlert.value = true
         }, 0)
+    } finally {
+        submitting.value = false
     }
 }
 

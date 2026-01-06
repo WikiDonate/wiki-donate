@@ -15,10 +15,20 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+         
+            'token' => $this->createToken('authToken')->plainTextToken,
             'uuid' => $this->uuid,
             'username' => $this->username,
+            'name' => $this->name,
             'email' => $this->email,
-            'token' => $this->createToken('authToken')->plainTextToken,
+            'customer_id' => $this->customer_id,
+            'card_id' => $this->card_id,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'city' => $this->city,
+            'state' => $this->state,
+            'country' => $this->country,
+            'zip_code' => $this->zip_code,
             'roles' => $this->roles->pluck('name'),
             'createdAt' => $this->created_at->format('d F, Y'),
         ];

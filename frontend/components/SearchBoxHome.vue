@@ -1,32 +1,43 @@
 <!-- eslint-disable vue/html-self-closing -->
 <template>
-    <div ref="searchContainer" class="relative w-full">
-        <form class="flex" @submit.prevent="handleSearch">
+    <div ref="searchContainer" class="relative w-full max-w-2xl mx-auto">
+        <form
+            class="flex items-stretch shadow-lg rounded-full bg-white border border-gray-200"
+            @submit.prevent="handleSearch"
+        >
             <!-- Search Input Field -->
             <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Search Wikidonate"
-                class="flex-grow border border-gray-300 p-2 rounded-l focus:outline-none focus:ring-1 focus:ring-blue-200 w-full"
+                placeholder="Search Wikidonate..."
+                class="flex-grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
                 @input="fetchSuggestions"
             />
 
             <!-- Language Dropdown -->
-            <GoogleTranslateSelect
-                ref="translateSelect"
-                class="border border-gray-300 p-1 rounded-l focus:outline-none focus:ring-1 focus:ring-blue-200"
-                default-language-code="en"
-                default-page-language-code="en"
-                :fetch-browser-language="true"
-                trigger="click"
-            />
+            <div
+                class="flex items-center justify-center border-l border-gray-200"
+            >
+                <GoogleTranslateSelect
+                    ref="translateSelect"
+                    class="px-0 sm:px-2 uppercase text-sm font-semibold text-gray-700 focus:outline-none"
+                    default-language-code="en"
+                    default-page-language-code="en"
+                    :fetch-browser-language="true"
+                    :languages="languagesList"
+                    trigger="click"
+                />
+            </div>
 
             <!-- Submit Button -->
             <button
                 type="submit"
-                class="bg-gray-400 text-white px-4 rounded-r hover:bg-gray-300"
+                class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-full"
             >
-                Search
+                <font-awesome-icon
+                    :icon="['fas', 'magnifying-glass']"
+                    class="h-4 w-4 text-white"
+                />
             </button>
         </form>
 
@@ -34,16 +45,24 @@
         <div
             v-if="suggestions.length > 0"
             id="suggestionsbar"
-            class="absolute top-full mt-1 w-full bg-white border border-gray-300 rounded shadow-md z-50"
+            class="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden animate-fadeIn"
         >
             <ul>
                 <li
                     v-for="suggestion in suggestions"
                     :key="suggestion"
-                    class="cursor-pointer hover:bg-gray-200 px-4 py-2"
+                    class="cursor-pointer px-5 py-3 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
                     @click="selectSuggestion(suggestion)"
                 >
-                    {{ suggestion.title }}
+                    <div class="flex items-center">
+                        <font-awesome-icon
+                            :icon="['fas', 'magnifying-glass']"
+                            class="h-4 w-4 text-indigo-500 mr-3"
+                        />
+                        <span class="text-gray-700">{{
+                            suggestion.title
+                        }}</span>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -55,6 +74,7 @@ import GoogleTranslateSelect from '@google-translate-select/vue3'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { articleService } from '~/services/articleService'
+import languagesList from '~/static/languages.json'
 
 const router = useRouter()
 const searchQuery = ref('')

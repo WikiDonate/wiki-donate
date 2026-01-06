@@ -1,10 +1,17 @@
 <template>
-    <div class="container mx-auto bg-white-100 text-gray-800">
+    <div class="min-h-screen flex flex-col bg-white text-gray-800">
         <Header />
-        <div class="container mx-auto mt-6 flex space-x-4">
+
+        <div class="container mx-auto flex flex-1 w-full">
             <Sidebar />
-            <slot />
+
+            <div class="flex-1 flex flex-col">
+                <div class="flex-1 p-4">
+                    <slot />
+                </div>
+
+                <Footer />
+            </div>
         </div>
-        <Footer />
     </div>
 </template>
