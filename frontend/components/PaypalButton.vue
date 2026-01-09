@@ -7,7 +7,7 @@
             <span class="font-semibold">Processing payment...</span>
         </div>
         <div v-else-if="amountValid">
-            <div ref="paypalRef" class="paypal-button-container"></div>
+            <div ref="paypalRef" class="paypal-button-container"/>
         </div>
         <div
             v-else

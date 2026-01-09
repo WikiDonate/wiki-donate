@@ -123,7 +123,7 @@
                                         :src="generateAvatar(ngo.name)"
                                         :alt="`${ngo.name} Logo`"
                                         class="rounded-full w-full h-full object-cover border border-gray-200"
-                                    />
+                                    >
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h3
@@ -174,8 +174,8 @@
                                         v-for="quickAmount in quickAmounts"
                                         :key="quickAmount"
                                         type="button"
-                                        @click="amount = quickAmount"
                                         class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                                        @click="amount = quickAmount"
                                     >
                                         ${{ quickAmount }}
                                     </button>
@@ -192,8 +192,8 @@
                                 "
                                 type="submit"
                                 variant="primary"
-                                @click="onSubmit"
                                 :disabled="!hasPaymentMethod || isDonating"
+                                @click="onSubmit"
                             />
                             <h2 class="text-center py-2">OR</h2>
                             <PaypalButton
@@ -201,8 +201,8 @@
                                 :disabled="
                                     !hasPaymentMethod || !amount || amount <= 0
                                 "
-                                @paymentSuccess="handlePayPalSuccess"
-                                @paymentError="handlePayPalError"
+                                @payment-success="handlePayPalSuccess"
+                                @payment-error="handlePayPalError"
                             />
                         </div>
                     </div>

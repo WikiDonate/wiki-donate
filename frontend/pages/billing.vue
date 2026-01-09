@@ -105,7 +105,7 @@
                             <div
                                 id="card-number"
                                 class="p-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-indigo-500"
-                            ></div>
+                            />
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -119,7 +119,7 @@
                                 <div
                                     id="card-expiry"
                                     class="p-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-indigo-500"
-                                ></div>
+                                />
                             </div>
                             <div>
                                 <label
@@ -130,7 +130,7 @@
                                 <div
                                     id="card-cvc"
                                     class="p-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-indigo-500"
-                                ></div>
+                                />
                             </div>
                         </div>
 
