@@ -21,7 +21,6 @@ class ArticleController extends Controller
      *     path="/api/v1/articles",
      *     summary="Get all articles",
      *     tags={"Articles"},
-     *     security={{"sanctum":{}}},
      *
      *     @OA\Response(
      *         response=200,
