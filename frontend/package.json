@@ -20,7 +20,7 @@
         "@fortawesome/vue-fontawesome": "^3.0.8",
         "@google-translate-select/vue3": "^0.1.9",
         "@paypal/paypal-js": "^8.2.0",
-        "@pinia/nuxt": "^0.7.0",
+        "@pinia/nuxt": "^0.11.3",
         "@tiptap/core": "^2.8.0",
         "@tiptap/extension-blockquote": "^2.8.0",
         "@tiptap/extension-bullet-list": "^2.8.0",
