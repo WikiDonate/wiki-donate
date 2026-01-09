@@ -15,15 +15,15 @@ class AddColumnsToPaymentLogsTable extends Migration
     {
         Schema::table('payment_logs', function (Blueprint $table) {
             // Add user_id foreign key if not exists
-            if (!Schema::hasColumn('payment_logs', 'user_id')) {
+            if (! Schema::hasColumn('payment_logs', 'user_id')) {
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
             }
-            
+
             // Add currency column if not exists
-            if (!Schema::hasColumn('payment_logs', 'currency')) {
+            if (! Schema::hasColumn('payment_logs', 'currency')) {
                 $table->string('currency', 3)->default('USD');
             }
-            
+
             // Add PayPal related columns
             $table->string('paypal_payout_id')->nullable()->after('currency');
             $table->string('paypal_status')->nullable()->after('paypal_payout_id');

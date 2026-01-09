@@ -5,18 +5,15 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Mail\DonationConfirmationMail;
 use App\Models\Donate;
-use Stripe\PaymentIntent;
-use Stripe\Stripe;
 use App\Models\Payment;
 use App\Models\PaymentLog;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Log;
-
-
 
 class DonateController extends Controller
 {
@@ -24,6 +21,7 @@ class DonateController extends Controller
     {
         Stripe::setApiKey(config('services.stripe.secret'));
     }
+
     /**
      * @OA\Post(
      *     path="/api/v1/donate",
@@ -193,14 +191,12 @@ class DonateController extends Controller
         }
     }
 
-
     public function donateNow(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
             'cause_id' => 'required|exists:causes,id',
         ]);
-        
 
         if ($validator->fails()) {
             return response()->json([
@@ -212,7 +208,7 @@ class DonateController extends Controller
 
         $user = auth()->user();
 
-        if (!$user->card_id || !$user->customer_id) {
+        if (! $user->card_id || ! $user->customer_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'No saved payment method found',
@@ -223,16 +219,15 @@ class DonateController extends Controller
         try {
             // Create payment intent
             $paymentIntent = PaymentIntent::create([
-                'amount' => $request->amount * 100, 
+                'amount' => $request->amount * 100,
                 'currency' => 'usd',
                 'customer' => $user->customer_id,
                 'payment_method' => $user->card_id,
                 'off_session' => true,
                 'confirm' => true,
-               
+
             ]);
 
-            
             $payment = Payment::recordPayment([
                 'user_id' => $user->id,
                 'payment_id' => $paymentIntent->id,
@@ -242,11 +237,9 @@ class DonateController extends Controller
                 'status' => $paymentIntent->status,
                 'cause_id' => $request->cause_id,
             ]);
-            
 
-             // Create payment logs for NGOS
-            $paymentLogs =  PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id,$user->id);
-
+            // Create payment logs for NGOS
+            $paymentLogs = PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
 
             return response()->json([
                 'success' => true,
@@ -265,7 +258,7 @@ class DonateController extends Controller
 
     public function recordPaymentApi(Request $request)
     {
-    
+
         $validator = Validator::make($request->all(), [
             'payment_id' => 'required',
             'customer_id' => 'required',
@@ -275,7 +268,7 @@ class DonateController extends Controller
             'cause_id' => 'nullable|exists:causes,id',
             'source' => 'nullable|string',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -283,11 +276,11 @@ class DonateController extends Controller
                 'errors' => $validator->errors()->all(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-    
+
         try {
-           
+
             $user = auth()->user();
-           
+
             $paymentData = [
                 'user_id' => $request->user_id ?? $user->id,
                 'payment_id' => $request->payment_id,
@@ -299,14 +292,12 @@ class DonateController extends Controller
                 'source' => $request->source ?? 'stripe',
             ];
 
+            // 3. Record the payment
+            $payment = Payment::recordPayment($paymentData);
 
-    
-          // 3. Record the payment
-        $payment = Payment::recordPayment($paymentData);
+            // 4. Create payment logs
+            $paymentLogs = PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
 
-        // 4. Create payment logs
-        $paymentLogs = PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
-    
             return response()->json([
                 'success' => true,
                 'message' => 'Payment recorded successfully',

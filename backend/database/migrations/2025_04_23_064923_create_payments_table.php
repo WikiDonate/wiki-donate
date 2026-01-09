@@ -10,18 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {Schema::create('payments', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-        $table->string('payment_id'); 
-        $table->string('customer_id'); 
-        $table->decimal('amount', 10, 2);
-        $table->string('currency')->default('usd');
-        $table->string('status');
-        $table->timestamps();
-        
-      
-    });
+    {
+        Schema::create('payments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('payment_id');
+            $table->string('customer_id');
+            $table->decimal('amount', 10, 2);
+            $table->string('currency')->default('usd');
+            $table->string('status');
+            $table->timestamps();
+
+        });
     }
 
     /**

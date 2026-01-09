@@ -2,16 +2,15 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\CauseController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonateController;
 use App\Http\Controllers\v1\NotificationController;
+use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
-use App\Http\Controllers\v1\StripeController;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\v1\CauseController; 
-
 
 Route::prefix('v1')->group(function () {
     Route::post('user', [UserController::class, 'register'])->middleware('throttle:5,10');
@@ -38,25 +37,25 @@ Route::prefix('v1')->group(function () {
     });
 
     // Articles routes
-   Route::prefix('articles')->group(function () { 
-    Route::middleware(OptionalAuth::class)->group(function () { 
-        Route::get('/', [ArticleController::class, 'index']); 
-        // Move specific routes BEFORE dynamic slug routes
-    }); 
+    Route::prefix('articles')->group(function () {
+        Route::middleware(OptionalAuth::class)->group(function () {
+            Route::get('/', [ArticleController::class, 'index']);
+            // Move specific routes BEFORE dynamic slug routes
+        });
 
-    Route::middleware('auth:sanctum')->group(function () { 
-        // Put /my route FIRST before any slug routes
-        Route::get('my', [ArticleController::class, 'myArticles']); 
-        Route::post('/', [ArticleController::class, 'save']); 
-        Route::put('update/{slug}', [ArticleController::class, 'update']); 
-    }); 
-    
-    // Put dynamic slug routes LAST
-    Route::middleware(OptionalAuth::class)->group(function () { 
-        Route::get('{slug}', [ArticleController::class, 'show']); 
-        Route::get('{slug}/history', [ArticleController::class, 'history']); 
-    }); 
-});
+        Route::middleware('auth:sanctum')->group(function () {
+            // Put /my route FIRST before any slug routes
+            Route::get('my', [ArticleController::class, 'myArticles']);
+            Route::post('/', [ArticleController::class, 'save']);
+            Route::put('update/{slug}', [ArticleController::class, 'update']);
+        });
+
+        // Put dynamic slug routes LAST
+        Route::middleware(OptionalAuth::class)->group(function () {
+            Route::get('{slug}', [ArticleController::class, 'show']);
+            Route::get('{slug}/history', [ArticleController::class, 'history']);
+        });
+    });
 
     // Talk routes
     Route::prefix('talks')->group(function () {
@@ -79,7 +78,6 @@ Route::prefix('v1')->group(function () {
         Route::get('search', [CauseController::class, 'searchCause']);
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
 
-       
     });
-    
+
 });

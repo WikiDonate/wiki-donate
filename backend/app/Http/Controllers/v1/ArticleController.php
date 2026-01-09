@@ -359,12 +359,12 @@ class ArticleController extends Controller
             // Create article
             $articleParams = [
                 'user_id' => $request->user()->id,
-                        // Prefix "Formula: " only when access type is private
-    'title' => ($request->input('accessType') === 'private')
-        ? (Str::startsWith($request->title, 'Formula:')
-            ? $request->title
-            : 'Formula:' . $request->title)
-        : $request->title,
+                // Prefix "Formula: " only when access type is private
+                'title' => ($request->input('accessType') === 'private')
+                    ? (Str::startsWith($request->title, 'Formula:')
+                        ? $request->title
+                        : 'Formula:'.$request->title)
+                    : $request->title,
                 'slug' => Str::slug($request->title),
                 'sections' => json_encode($sections),
                 'access_type' => $request->input('accessType', $defaultAccessType),
@@ -509,22 +509,21 @@ class ArticleController extends Controller
         }
 
         try {
-           // Clean title
-$cleanTitle = trim(str_replace('Formula:', '', $request->title));
+            // Clean title
+            $cleanTitle = trim(str_replace('Formula:', '', $request->title));
 
-// Prefer using the slug from route if available
-$existsArticle = Article::with('user')
-    ->where('slug', $slug ?? Str::slug($cleanTitle))
-    ->first();
+            // Prefer using the slug from route if available
+            $existsArticle = Article::with('user')
+                ->where('slug', $slug ?? Str::slug($cleanTitle))
+                ->first();
 
-if (! $existsArticle) {
-    return response()->json([
-        'success' => false,
-        'message' => 'Article not found',
-        'errors' => ['Article not found'],
-    ], Response::HTTP_NOT_FOUND);
-}
-
+            if (! $existsArticle) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Article not found',
+                    'errors' => ['Article not found'],
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             // Only admin can edit the admin's article
             if ($existsArticle->user->hasRole(['Admin'])) {
@@ -563,32 +562,31 @@ if (! $existsArticle) {
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-           // Build update payload; only change access_type if explicitly provided
-$updatePayload = [
-    'sections' => json_encode($sections),
-];
+            // Build update payload; only change access_type if explicitly provided
+            $updatePayload = [
+                'sections' => json_encode($sections),
+            ];
 
-// Handle access type and title logic
-if ($request->filled('accessType')) {
-    $newAccessType = $request->input('accessType');
-    $updatePayload['access_type'] = $newAccessType;
+            // Handle access type and title logic
+            if ($request->filled('accessType')) {
+                $newAccessType = $request->input('accessType');
+                $updatePayload['access_type'] = $newAccessType;
 
-    // Update title based on access type change
-    if ($newAccessType === 'private') {
-        // Add "Formula:" if missing
-        $updatePayload['title'] = Str::startsWith($request->title, 'Formula:')
-            ? $request->title
-            : 'Formula:' . $request->title;
-    } elseif ($newAccessType === 'public') {
-        // Remove "Formula:" if present
-        $updatePayload['title'] = preg_replace('/^Formula:/', '', $request->title);
-    } else {
-        $updatePayload['title'] = $request->title;
-    }
-} else {
-    $updatePayload['title'] = $request->title;
-}
-
+                // Update title based on access type change
+                if ($newAccessType === 'private') {
+                    // Add "Formula:" if missing
+                    $updatePayload['title'] = Str::startsWith($request->title, 'Formula:')
+                        ? $request->title
+                        : 'Formula:'.$request->title;
+                } elseif ($newAccessType === 'public') {
+                    // Remove "Formula:" if present
+                    $updatePayload['title'] = preg_replace('/^Formula:/', '', $request->title);
+                } else {
+                    $updatePayload['title'] = $request->title;
+                }
+            } else {
+                $updatePayload['title'] = $request->title;
+            }
 
             // Update article
             $existsArticle->update($updatePayload);
@@ -842,7 +840,7 @@ if ($request->filled('accessType')) {
         try {
             $perPage = (int) ($request->input('per_page') ?? 10);
             $perPage = $perPage > 0 && $perPage <= 100 ? $perPage : 10;
-            
+
             $articles = Article::where('user_id', Auth::id())
                 ->where(function ($q) {
                     $q->whereNull('type')->orWhere('type', 'article');

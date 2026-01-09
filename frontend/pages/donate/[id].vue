@@ -151,7 +151,7 @@
                                                 "
                                                 :alt="`${ngo?.title} Logo`"
                                                 class="rounded-full w-10 h-10 sm:w-12 sm:h-12 object-cover border border-gray-200"
-                                            />
+                                            >
                                         </div>
                                         <div class="min-w-0 flex-1">
                                             <h3
@@ -238,24 +238,24 @@
                                     "
                                     type="submit"
                                     variant="primary"
-                                    @click="onSubmit"
                                     :disabled="
                                         !hasPaymentMethod ||
                                         isDonating ||
                                         processingPaypalPayment
                                     "
+                                    @click="onSubmit"
                                 />
 
                                 <div class="flex items-center my-4">
                                     <div
                                         class="flex-grow border-t border-gray-300"
-                                    ></div>
+                                    />
                                     <span class="mx-3 text-gray-500 text-sm"
                                         >OR</span
                                     >
                                     <div
                                         class="flex-grow border-t border-gray-300"
-                                    ></div>
+                                    />
                                 </div>
 
                                 <PaypalButton
@@ -265,12 +265,12 @@
                                         !amount ||
                                         amount <= 0
                                     "
-                                    @paymentSuccess="handlePayPalSuccess"
-                                    @paymentError="handlePayPalError"
-                                    :processingPaypalPayment="
+                                    :processing-paypal-payment="
                                         processingPaypalPayment
                                     "
                                     class="w-full"
+                                    @payment-success="handlePayPalSuccess"
+                                    @payment-error="handlePayPalError"
                                 />
                             </div>
                         </div>

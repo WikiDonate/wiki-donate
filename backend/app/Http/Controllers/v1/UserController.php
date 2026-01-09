@@ -259,65 +259,64 @@ class UserController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
-//Get Login user details
+
+    // Get Login user details
     public function getUserDetails(Request $request)
     {
-    try {
-        $user = $request->user();
-        
-        if (!$user) {
+        try {
+            $user = $request->user();
+
+            if (! $user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated',
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User details retrieved successfully',
+                'data' => new UserResource($user),
+            ]);
+
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'User not authenticated',
-            ], Response::HTTP_UNAUTHORIZED);
+                'message' => 'Server Error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User details retrieved successfully',
-            'data' => new UserResource($user)
-        ]);
-
-    } catch (Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Server Error',
-            'errors' => [$e->getMessage()],
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-   }
 
-   //Update login user details
-   public function updateUser(Request $request)
-{
-    try {
-        $user = $request->user();
+    // Update login user details
+    public function updateUser(Request $request)
+    {
+        try {
+            $user = $request->user();
 
-        if (! $user) {
+            if (! $user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated',
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            $input = $request->all();
+
+            $user->update($input);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User details updated successfully',
+                'data' => new UserResource($user),
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'User not authenticated',
-            ], Response::HTTP_UNAUTHORIZED);
+                'message' => 'Error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
         }
-
-        $input = $request->all();
-
-        $user->update($input);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User details updated successfully',
-            'data' => new UserResource($user),
-        ], Response::HTTP_OK);
-
-    } catch (Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error',
-            'errors' => [$e->getMessage()],
-        ], Response::HTTP_EXPECTATION_FAILED);
     }
-}
-
-
 }

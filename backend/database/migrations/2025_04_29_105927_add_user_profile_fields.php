@@ -29,7 +29,7 @@ return new class extends Migration
                 'city',
                 'state',
                 'country',
-                'zip_code'
+                'zip_code',
             ]);
         });
     }

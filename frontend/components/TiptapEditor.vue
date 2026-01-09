@@ -21,7 +21,7 @@
             <button @click="addTable">Insert Table</button>
 
             <!-- Text color -->
-            <input type="color" @input="setColor($event.target.value)" />
+            <input type="color" @input="setColor($event.target.value)" >
 
             <!-- Undo/Redo -->
             <button @click="undo">Undo</button>

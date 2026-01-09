@@ -22,7 +22,7 @@ class CauseController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Causes retrieved successfully',
-                'data' => $causes
+                'data' => $causes,
             ]);
 
         } catch (\Exception $e) {
@@ -37,7 +37,6 @@ class CauseController extends Controller
     /**
      * Search causes by title
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function searchCause(Request $request)
@@ -47,12 +46,12 @@ class CauseController extends Controller
                 'title' => 'required|string|min:2',
             ]);
 
-            $causes = Cause::where('title', 'like', '%' . $request->title . '%')->get();
+            $causes = Cause::where('title', 'like', '%'.$request->title.'%')->get();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Causes search results',
-                'data' => $causes
+                'data' => $causes,
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -75,18 +74,18 @@ class CauseController extends Controller
     /**
      * Get cause details with associated NGOs
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function getCauseDetails($id)
     {
         try {
-            $cause = Cause::with(['ngos' => function($query) {
+            $cause = Cause::with(['ngos' => function ($query) {
                 $query->select('ngos.id', 'ngos.title', 'paypal_account', 'address')
-                      ->withPivot('percentage');
+                    ->withPivot('percentage');
             }])->findOrFail($id);
 
-            $formattedNgos = $cause->ngos->map(function($ngo) {
+            $formattedNgos = $cause->ngos->map(function ($ngo) {
                 return [
                     'id' => $ngo->id,
                     'title' => $ngo->title,
@@ -108,7 +107,7 @@ class CauseController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Cause details retrieved successfully',
-                'data' => $responseData
+                'data' => $responseData,
             ]);
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

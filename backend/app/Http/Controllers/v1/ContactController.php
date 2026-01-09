@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\v1;
+
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\ContactResource;
 use App\Models\Contact;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,13 +57,13 @@ class ContactController extends Controller
                 'last_name' => $request->lastName,
                 'email' => $request->email,
                 'subject' => $request->subject,
-                'details' => $request->details
+                'details' => $request->details,
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Contact submission successful',
-                'data' => new ContactResource($contact)
+                'data' => new ContactResource($contact),
             ], Response::HTTP_CREATED);
 
         } catch (Exception $e) {
