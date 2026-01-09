@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('cause_id')->nullable()->constrained('causes')->onDelete('set null');
         });
     }
-    
+
     public function down()
     {
         Schema::table('payments', function (Blueprint $table) {
@@ -25,5 +25,4 @@ return new class extends Migration
             $table->dropColumn('cause_id');
         });
     }
-    
 };

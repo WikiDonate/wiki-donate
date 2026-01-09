@@ -30,11 +30,11 @@ if (! function_exists('parseHtmlSection')) {
         }
 
         // Wrap the HTML in a container div to ensure proper DOM structure
-        $wrappedHtml = '<div>' . $htmlText . '</div>';
-        
+        $wrappedHtml = '<div>'.$htmlText.'</div>';
+
         $dom = new DOMDocument;
         @$dom->loadHTML($wrappedHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        
+
         // Get all <h2> elements
         $headings = $dom->getElementsByTagName('h2');
         $data = [];

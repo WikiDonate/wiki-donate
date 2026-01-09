@@ -1,5 +1,12 @@
 {
     "recommendations": [
-        "open-southeners.laravel-pint"
+        "open-southeners.laravel-pint",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next",
+        "laravel.vscode-laravel",
+        "open-southeners.laravel-pint",
+        "bmewburn.vscode-intelephense-client",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
     ]
 }

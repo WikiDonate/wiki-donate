@@ -23,17 +23,17 @@ class User extends Authenticatable
     protected $fillable = [
         'uuid',
         'username',
-        'name',      
+        'name',
         'email',
         'password',
         'customer_id',
         'card_id',
-        'phone',      
-        'address',   
-        'city',      
-        'state',      
-        'country',    
-        'zip_code'    
+        'phone',
+        'address',
+        'city',
+        'state',
+        'country',
+        'zip_code',
     ];
 
     protected $hidden = [

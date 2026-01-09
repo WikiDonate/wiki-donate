@@ -15,7 +15,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-         
+
             'token' => $this->createToken('authToken')->plainTextToken,
             'uuid' => $this->uuid,
             'username' => $this->username,

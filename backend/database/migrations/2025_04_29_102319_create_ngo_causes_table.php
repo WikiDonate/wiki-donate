@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('ngo_id')->constrained()->onDelete('cascade');
             $table->decimal('percentage', 5, 2);
             $table->timestamps();
-            
+
             $table->unique(['cause_id', 'ngo_id']);
         });
     }

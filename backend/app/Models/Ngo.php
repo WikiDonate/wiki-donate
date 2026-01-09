@@ -18,7 +18,7 @@ class Ngo extends Model
     public function causes()
     {
         return $this->belongsToMany(Cause::class, 'ngo_causes')
-                    ->withPivot('percentage')
-                    ->withTimestamps();
+            ->withPivot('percentage')
+            ->withTimestamps();
     }
 }

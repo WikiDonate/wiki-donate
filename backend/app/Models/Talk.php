@@ -13,7 +13,7 @@ class Talk extends Model
         'title',
         'slug',
         'sections',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [

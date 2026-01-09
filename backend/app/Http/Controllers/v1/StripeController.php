@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Stripe\Stripe;
 use Stripe\Customer;
-use Stripe\PaymentMethod;
 use Stripe\Exception\ApiErrorException;
-use App\Models\User;
+use Stripe\PaymentMethod;
+use Stripe\Stripe;
 
 class StripeController extends Controller
 {
@@ -28,7 +28,7 @@ class StripeController extends Controller
 
         try {
             // Create customer if not exists
-            if (!$user->customer_id) {
+            if (! $user->customer_id) {
                 $customer = Customer::create([
                     'name' => $user->username,
                 ]);
@@ -48,7 +48,7 @@ class StripeController extends Controller
             }
 
             // Attach to customer if not already attached
-            if (!$paymentMethod->customer || $paymentMethod->customer !== $user->customer_id) {
+            if (! $paymentMethod->customer || $paymentMethod->customer !== $user->customer_id) {
                 $paymentMethod->attach(['customer' => $user->customer_id]);
             }
 
@@ -59,14 +59,14 @@ class StripeController extends Controller
             // Set as default payment method
             Customer::update($user->customer_id, [
                 'invoice_settings' => [
-                    'default_payment_method' => $paymentMethod->id
-                ]
+                    'default_payment_method' => $paymentMethod->id,
+                ],
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Card saved successfully',
-                'data' => $this->formatCardResponse($paymentMethod)
+                'data' => $this->formatCardResponse($paymentMethod),
             ]);
 
         } catch (ApiErrorException $e) {
@@ -83,11 +83,11 @@ class StripeController extends Controller
         $user = auth()->user();
 
         try {
-            if (!$user->card_id) {
+            if (! $user->card_id) {
                 return response()->json([
                     'success' => true,
                     'message' => 'No card found',
-                    'data' => null
+                    'data' => null,
                 ]);
             }
 
@@ -96,7 +96,7 @@ class StripeController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Card retrieved successfully',
-                'data' => $this->formatCardResponse($paymentMethod)
+                'data' => $this->formatCardResponse($paymentMethod),
             ]);
 
         } catch (ApiErrorException $e) {
@@ -111,6 +111,7 @@ class StripeController extends Controller
     private function formatCardResponse(PaymentMethod $paymentMethod): array
     {
         $card = $paymentMethod->card;
+
         return [
             'card_id' => $paymentMethod->id,
             'brand' => $card->brand,
