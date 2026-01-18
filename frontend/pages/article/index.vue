@@ -113,51 +113,47 @@
                     v-for="(item, index) in sections"
                     :key="`section-${index}`"
                 >
-                    <div class="flex justify-between">
-                        <!-- Article -->
-                        <div class="flex flex-col justify-between items-start">
-                            <div
-                                class="font-semibold text-lg mb-2 break-words break-all text-gray-900"
-                                v-html="item.title"
+                    <div class="flex justify-between items-start">
+                        <div
+                            class="font-semibold text-lg mb-2 break-words break-all text-gray-900"
+                            v-html="item.title"
+                        />
+                        <NuxtLink
+                            v-if="canEdit"
+                            :to="`/article/edit-section?title=${title}&uuid=${index}`"
+                            exact
+                            class="flex items-center gap-1 text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
+                        >
+                            <font-awesome-icon
+                                :icon="['fas', 'pen']"
+                                class="w-3 h-3"
                             />
-                            <div
-                                class="text-gray-700 leading-relaxed break-words break-all"
-                                v-html="item.content"
-                            />
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="flex flex-col gap-1 justify-end items-end">
-                            <NuxtLink
-                                v-if="canEdit"
-                                :to="`/article/edit-section?title=${title}&uuid=${index}`"
-                                exact
-                                class="flex items-center gap-1 text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
-                            >
-                                <font-awesome-icon
-                                    :icon="['fas', 'pen']"
-                                    class="w-3 h-3"
-                                />
-                                <span class="hidden sm:inline">Edit</span>
-                            </NuxtLink>
-                            <NuxtLink
-                                class="flex items-center gap-1 text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
-                            >
-                                <font-awesome-icon
-                                    :icon="['fas', 'money-bill']"
-                                    class="w-3 h-3"
-                                />
-                                <span class="hidden sm:inline"
-                                    >Create Donation Formula</span
-                                >
-                            </NuxtLink>
-                        </div>
+                            <span class="hidden sm:inline">Edit</span>
+                        </NuxtLink>
                     </div>
-
+                    <div
+                        class="text-gray-700 leading-relaxed break-words break-all"
+                        v-html="item.content"
+                    />
                     <div
                         v-if="index < sections.length - 1"
                         class="border-t border-indigo-300 mt-6 pt-6"
                     />
+                </div>
+
+                <!-- Donation Formula-->
+                <div
+                    class="flex justify-center lg:justify-end items-center mt-10"
+                >
+                    <NuxtLink
+                        class="flex items-center gap-1 text-xl lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'money-bill']"
+                            class="w-5 h-5"
+                        />
+                        <span>Create Donation Formula</span>
+                    </NuxtLink>
                 </div>
             </div>
         </section>
