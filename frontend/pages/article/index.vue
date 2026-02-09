@@ -159,8 +159,30 @@
                         class="border-t border-indigo-300 mt-6 pt-6"
                     />
                 </div>
+
+                <!-- Donation Formula-->
+                <div
+                    class="flex justify-center lg:justify-end items-center mt-10"
+                >
+                    <button
+                        class="flex items-center gap-1 text-xl lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
+                        @click="showDonationModal = true"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'money-bill']"
+                            class="w-5 h-5"
+                        />
+                        <span>Create Donation Formula</span>
+                    </button>
+                </div>
             </div>
         </section>
+
+        <!-- Donation Formula Modal -->
+        <DonationFormulaModal
+            v-model="showDonationModal"
+            @save="handleSaveDonationFormula"
+        />
     </main>
 </template>
 
@@ -187,6 +209,9 @@ const loading = ref(false)
 const submitting = ref(false)
 const accessType = ref('public')
 
+// Donation formula modal visibility state
+const showDonationModal = ref(false)
+
 // check if current user is owner
 const isOwner = computed(() => {
     return (
@@ -204,6 +229,18 @@ const canEdit = computed(() => {
 
     return false
 })
+
+/**
+ * Handles the saving of a donation formula from the modal
+ * @param {Array} data - List of organizations and their percentage allocations
+ */
+const handleSaveDonationFormula = (data) => {
+    console.log('Donation Formula Saved:', data)
+    // TODO: Integrate with backend API to persist the formula
+    alertVariant.value = 'success'
+    alertMessage.value = 'Donation formula saved successfully!'
+    showAlert.value = true
+}
 
 const handleSubmit = async () => {
     if (submitting.value) return
