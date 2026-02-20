@@ -51,46 +51,7 @@
         </div>
 
         <!-- edit source section -->
-        <!-- v-else-if="editorContent && articleStore.article.editable" -->
         <section v-else-if="canEdit" class="bg-white p-2">
-            <div class="mt-2 w-full flex justify-start items-center">
-                <!-- Dropdown for access -->
-                <div
-                    v-if="isOwner"
-                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6"
-                >
-                    <label
-                        class="text-base sm:text-lg font-semibold text-gray-900 whitespace-nowrap"
-                    >
-                        Donation Formula Page
-                    </label>
-
-                    <div class="flex flex-wrap gap-4 sm:gap-6 items-center">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input
-                                v-model="accessType"
-                                type="radio"
-                                value="private"
-                                class="accent-indigo-600"
-                            />
-                            <span class="text-sm sm:text-base text-gray-700"
-                                >Yes</span
-                            >
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input
-                                v-model="accessType"
-                                type="radio"
-                                value="public"
-                                class="accent-indigo-600"
-                            />
-                            <span class="text-sm sm:text-base text-gray-700"
-                                >No</span
-                            >
-                        </label>
-                    </div>
-                </div>
-            </div>
             <div class="mt-4">
                 <QuillEditor
                     v-if="editorContent"
