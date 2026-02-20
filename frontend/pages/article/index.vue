@@ -143,6 +143,7 @@
 
                 <!-- Donation Formula-->
                 <div
+                    v-if="authStore.isAuthenticated"
                     class="flex justify-center lg:justify-end items-center mt-10"
                 >
                     <button

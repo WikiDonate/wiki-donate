@@ -1,7 +1,7 @@
 <template>
     <Modal
         :model-value="modelValue"
-        title="Donation"
+        :title="`${authStore.user?.username || 'Guest'}:1`"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="space-y-4">
@@ -115,6 +115,9 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useAuthStore } from '~/stores/authStore'
+
+const authStore = useAuthStore()
 
 const props = defineProps({
     modelValue: {
