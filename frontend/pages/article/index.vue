@@ -4,7 +4,7 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`${articleTitle || title}`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -33,7 +33,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">
@@ -196,7 +196,6 @@ const handleSubmit = async () => {
         const params = {
             title: title.value,
             content: editorContent.value,
-            accessType: accessType.value,
         }
 
         const response = await articleService.saveArticle(params)

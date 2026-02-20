@@ -4,7 +4,7 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`${articleTitle || title} : Editing`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -33,7 +33,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">

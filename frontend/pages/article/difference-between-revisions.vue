@@ -5,7 +5,7 @@
         <TopBarTitle :page-title="`${title} : Difference between revisions`" />
 
         <!-- Top bar -->
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -34,7 +34,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- view history list -->
         <section class="bg-white p-2">

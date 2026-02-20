@@ -4,7 +4,7 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`${title} : Section`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -31,7 +31,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">
