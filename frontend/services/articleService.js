@@ -23,6 +23,14 @@ const getHistory = (slug) => {
     return api.get(`/articles/${slug}/history`)
 }
 
+const saveDonationFormula = (params) => {
+    return api.post('/donation-formulas', params)
+}
+
+const getDonationFormula = (slug) => {
+    return api.get(`/donation-formulas/${slug}`)
+}
+
 export const articleService = {
     searchArticles,
     saveArticle,
@@ -30,4 +38,6 @@ export const articleService = {
     updateArticle,
     getHistory,
     getMyArticles,
+    saveDonationFormula,
+    getDonationFormula,
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\CauseController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonateController;
+use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
@@ -26,6 +27,12 @@ Route::prefix('v1')->group(function () {
         Route::post('donate', [DonateController::class, 'store']);
         Route::post('donate-now', [DonateController::class, 'donateNow']);
         Route::post('record-payment', [DonateController::class, 'recordPaymentApi']);
+    });
+
+    // Donation Formula routes
+    Route::prefix('donation-formulas')->middleware('auth:sanctum')->group(function () {
+        Route::post('/', [DonationFormulaController::class, 'store']);
+        Route::get('{slug}', [DonationFormulaController::class, 'show']);
     });
 
     // User authenticated routes

@@ -121,6 +121,8 @@
         <!-- Donation Formula Modal -->
         <DonationFormulaModal
             v-model="showDonationModal"
+            :initial-data="donationFormula"
+            :is-saving="submittingFormula"
             @save="handleSaveDonationFormula"
         />
     </main>
@@ -147,10 +149,12 @@ const sections = ref([])
 const editable = ref(false)
 const loading = ref(false)
 const submitting = ref(false)
+const submittingFormula = ref(false)
 const accessType = ref('public')
 
 // Donation formula modal visibility state
 const showDonationModal = ref(false)
+const donationFormula = ref([])
 
 // check if current user is owner
 const isOwner = computed(() => {
@@ -174,12 +178,34 @@ const canEdit = computed(() => {
  * Handles the saving of a donation formula from the modal
  * @param {Array} data - List of organizations and their percentage allocations
  */
-const handleSaveDonationFormula = (data) => {
-    console.log('Donation Formula Saved:', data)
-    // TODO: Integrate with backend API to persist the formula
-    alertVariant.value = 'success'
-    alertMessage.value = 'Donation formula saved successfully!'
-    showAlert.value = true
+const handleSaveDonationFormula = async (data) => {
+    if (submittingFormula.value) return
+    submittingFormula.value = true
+    showAlert.value = false
+    try {
+        const response = await articleService.saveDonationFormula({
+            article_slug: articleStore.article.slug,
+            formula: data,
+        })
+
+        if (response.success) {
+            donationFormula.value = response.data
+            alertVariant.value = 'success'
+            alertMessage.value = 'Donation formula saved successfully!'
+            showDonationModal.value = false
+        } else {
+            throw new Error(
+                response.message || 'Failed to save donation formula'
+            )
+        }
+    } catch (error) {
+        console.error(error)
+        alertVariant.value = 'error'
+        alertMessage.value = error.message || 'Unexpected error'
+    } finally {
+        submittingFormula.value = false
+        showAlert.value = true
+    }
 }
 
 const handleSubmit = async () => {
@@ -233,6 +259,9 @@ const loadArticle = async (slug) => {
             editable.value = response.data.editable
             accessType.value = response.data.accessType
             articleStore.addArticle(response.data)
+
+            // Load donation formula
+            await loadDonationFormula(response.data.slug)
         } else {
             sections.value = []
             editable.value = false
@@ -247,6 +276,21 @@ const loadArticle = async (slug) => {
         console.error(error)
     } finally {
         loading.value = false
+    }
+}
+
+const loadDonationFormula = async (slug) => {
+    if (!authStore.isAuthenticated) return
+    try {
+        const response = await articleService.getDonationFormula(slug)
+        if (response.success && response.data) {
+            donationFormula.value = response.data
+        } else {
+            donationFormula.value = []
+        }
+    } catch (error) {
+        console.error('Error loading donation formula:', error)
+        donationFormula.value = []
     }
 }
 

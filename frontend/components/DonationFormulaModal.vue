@@ -103,10 +103,10 @@
             />
             <Button
                 variant="primary"
-                text="Save"
+                :text="localIsSaving || props.isSaving ? 'Saving...' : 'Save'"
                 width="auto"
                 class="px-6"
-                :disabled="!isValid || isSaving"
+                :disabled="!isValid || localIsSaving || props.isSaving"
                 @click="handleSave"
             />
         </template>
@@ -128,11 +128,15 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    isSaving: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue', 'save'])
 const rows = ref([])
-const isSaving = ref(false)
+const localIsSaving = ref(false)
 
 // Reset or initialize rows when modal becomes visible
 watch(
@@ -196,9 +200,9 @@ const deleteRow = (index) => {
  */
 const handleSave = async () => {
     // Double check validity before proceeding
-    if (!isValid.value) return
+    if (!isValid.value || props.isSaving || localIsSaving.value) return
 
-    isSaving.value = true
+    localIsSaving.value = true
     try {
         // Sanitize data: trim strings and ensure percentages are numeric
         const sanitizedRows = rows.value.map((row) => ({
@@ -206,11 +210,10 @@ const handleSave = async () => {
             percentage: parseFloat(row.percentage),
         }))
 
-        // Emit the save event with data and close modal
+        // Emit the save event with data
         emit('save', sanitizedRows)
-        emit('update:modelValue', false)
     } finally {
-        isSaving.value = false
+        localIsSaving.value = false
     }
 }
 </script>
