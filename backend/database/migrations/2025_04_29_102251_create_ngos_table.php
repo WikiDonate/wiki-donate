@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('ngos')) {
+        if (! Schema::hasTable('ngos')) {
             Schema::create('ngos', function (Blueprint $table) {
                 $table->id();
                 $table->string('title');

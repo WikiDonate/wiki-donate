@@ -1,64 +1,66 @@
 <template>
     <Modal
         :model-value="modelValue"
-        :title="`${authStore.user?.username || 'Guest'}:1`"
+        :title="modalTitle"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="space-y-4">
-            <!-- Header for the list -->
-            <div
-                class="grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
-            >
-                <div class="col-span-7">Organization</div>
-                <div class="col-span-4">Percentage (%)</div>
-                <div class="col-span-1" />
-            </div>
-
-            <!-- Rows of charities -->
-            <div class="max-h-[60vh] overflow-y-auto space-y-3 pr-2">
+            <div class="border-t border-gray-100 pt-4">
+                <!-- Header for the list -->
                 <div
-                    v-for="(row, index) in rows"
-                    :key="index"
-                    class="grid grid-cols-12 gap-4 items-center"
+                    class="grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
                 >
-                    <div class="col-span-7">
-                        <FormInput
-                            v-model="row.organization"
-                            placeholder="e.g. Red Cross"
-                        />
-                    </div>
-                    <div class="col-span-4">
-                        <FormInput
-                            v-model.number="row.percentage"
-                            type="number"
-                            placeholder="0"
-                            min="0"
-                            max="100"
-                        />
-                    </div>
-                    <div class="col-span-1 text-center">
-                        <button
-                            type="button"
-                            class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
-                            title="Delete Row"
-                            @click="deleteRow(index)"
-                        >
-                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
-                        </button>
+                    <div class="col-span-7 text-sm">Organization</div>
+                    <div class="col-span-4 text-sm text-center">Percentage (%)</div>
+                    <div class="col-span-1" />
+                </div>
+
+                <!-- Rows of charities -->
+                <div class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 mt-2">
+                    <div
+                        v-for="(row, index) in rows"
+                        :key="index"
+                        class="grid grid-cols-12 gap-4 items-center"
+                    >
+                        <div class="col-span-7">
+                            <FormInput
+                                v-model="row.organization"
+                                placeholder="e.g. Red Cross"
+                            />
+                        </div>
+                        <div class="col-span-4">
+                            <FormInput
+                                v-model.number="row.percentage"
+                                type="number"
+                                placeholder="0"
+                                min="0"
+                                max="100"
+                            />
+                        </div>
+                        <div class="col-span-1 text-center">
+                            <button
+                                type="button"
+                                class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
+                                title="Delete Row"
+                                @click="deleteRow(index)"
+                            >
+                                <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Add Button Row -->
-            <div class="flex justify-start">
-                <button
-                    type="button"
-                    class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-semibold transition-colors py-2"
-                    @click="addRow"
-                >
-                    <font-awesome-icon :icon="['fas', 'plus-circle']" />
-                    <span>Add Charity</span>
-                </button>
+                <!-- Add Button Row -->
+                <div class="flex justify-start">
+                    <button
+                        type="button"
+                        class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-semibold transition-colors py-2 text-sm"
+                        @click="addRow"
+                    >
+                        <font-awesome-icon :icon="['fas', 'plus-circle']" />
+                        <span>Add Charity</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Total display and Footer Note -->
@@ -103,7 +105,7 @@
             />
             <Button
                 variant="primary"
-                :text="localIsSaving || props.isSaving ? 'Saving...' : 'Save'"
+                :text="localIsSaving || props.isSaving ? 'Saving...' : (props.isEdit ? 'Update' : 'Save')"
                 width="auto"
                 class="px-6"
                 :disabled="!isValid || localIsSaving || props.isSaving"
@@ -125,10 +127,14 @@ const props = defineProps({
         default: false,
     },
     initialData: {
-        type: Array,
-        default: () => [],
+        type: Object,
+        default: () => ({ formula: [] }),
     },
     isSaving: {
+        type: Boolean,
+        default: false,
+    },
+    isEdit: {
         type: Boolean,
         default: false,
     },
@@ -138,15 +144,19 @@ const emit = defineEmits(['update:modelValue', 'save'])
 const rows = ref([])
 const localIsSaving = ref(false)
 
+const modalTitle = computed(() => {
+    return props.isEdit ? 'Edit Donation Formula' : 'Create Donation Formula'
+})
+
 // Reset or initialize rows when modal becomes visible
 watch(
     () => props.modelValue,
     (val) => {
         if (val) {
             // Always reset when opening
-            if (props.initialData && props.initialData.length > 0) {
+            if (props.initialData && props.initialData.formula && props.initialData.formula.length > 0) {
                 // Clone initial data to avoid direct mutation
-                rows.value = JSON.parse(JSON.stringify(props.initialData))
+                rows.value = JSON.parse(JSON.stringify(props.initialData.formula))
             } else {
                 // Reset to default empty state
                 rows.value = [{ organization: '', percentage: 0 }]
@@ -211,7 +221,9 @@ const handleSave = async () => {
         }))
 
         // Emit the save event with data
-        emit('save', sanitizedRows)
+        emit('save', {
+            formula: sanitizedRows
+        })
     } finally {
         localIsSaving.value = false
     }

@@ -4,36 +4,6 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`${articleTitle || title}`" />
-        <!-- <TopBar
-            :left-menu-items="[
-                {
-                    name: 'Article',
-                    link: '/article?title=' + encodeURIComponent(title),
-                    isAuthenticated: false,
-                },
-                {
-                    name: 'Talk',
-                    link: '/talk?title=' + encodeURIComponent(title),
-                    isAuthenticated: false,
-                },
-            ]"
-            :right-menu-items="[
-                {
-                    name: 'Edit Source',
-                    link:
-                        '/article/edit-source?title=' +
-                        encodeURIComponent(title),
-                    isAuthenticated: true,
-                },
-                {
-                    name: 'View History',
-                    link:
-                        '/article/view-history?title=' +
-                        encodeURIComponent(title),
-                    isAuthenticated: false,
-                },
-            ]"
-        /> -->
 
         <!-- Message -->
         <div class="mt-2">
@@ -52,17 +22,43 @@
 
         <!-- article page -->
         <section v-else class="bg-white p-2">
-            <div v-if="sections.length === 0 && authStore.isAuthenticated">
-                <div class="mt-4">
-                    <QuillEditor v-model:content="editorContent" />
-                </div>
+            <div v-if="sections.length === 0">
+                <div v-if="authStore.isAuthenticated">
+                    <div class="mt-4">
+                        <QuillEditor v-model:content="editorContent" />
+                    </div>
 
-                <div class="w-40 mt-4">
-                    <FormSubmitButton
-                        :text="submitting ? 'Saving...' : 'Save Article'"
-                        :disabled="submitting"
-                        @click="handleSubmit"
+                    <div class="w-40 mt-4">
+                        <FormSubmitButton
+                            :text="submitting ? 'Saving...' : 'Save Article'"
+                            :disabled="submitting"
+                            @click="handleSubmit"
+                        />
+                    </div>
+                </div>
+                <div
+                    v-else
+                    class="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-300"
+                >
+                    <font-awesome-icon
+                        :icon="['fas', 'file-alt']"
+                        class="text-gray-400 text-5xl mb-4"
                     />
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">
+                        No Content Yet
+                    </h2>
+                    <p class="text-gray-500 max-w-md mx-auto">
+                        This article doesn't have any content yet. Please log in
+                        to contribute or check back later.
+                    </p>
+                    <div class="mt-6">
+                        <NuxtLink
+                            to="/login"
+                            class="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                        >
+                            Log In to Edit
+                        </NuxtLink>
+                    </div>
                 </div>
             </div>
             <div v-else>
@@ -99,21 +95,154 @@
                     />
                 </div>
 
-                <!-- Donation Formula-->
+                <!-- Create Donation Formula Button -->
                 <div
                     v-if="authStore.isAuthenticated"
                     class="flex justify-center lg:justify-end items-center mt-10"
                 >
                     <button
-                        class="flex items-center gap-1 text-xl lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
-                        @click="showDonationModal = true"
+                        class="flex items-center gap-2 text-base lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md whitespace-nowrap"
+                        @click="openCreateFormulaModal"
                     >
                         <font-awesome-icon
-                            :icon="['fas', 'money-bill']"
+                            :icon="['fas', 'plus-circle']"
                             class="w-5 h-5"
                         />
                         <span>Create Donation Formula</span>
                     </button>
+                </div>
+
+                <!-- Donation Formulas List (Publicly visible) -->
+                <div v-if="donationFormulas.length > 0" class="mt-12">
+                    <h3
+                        class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'hand-holding-heart']"
+                            class="text-indigo-600"
+                        />
+                        Community Donation Formulas
+                    </h3>
+                    <div class="space-y-4">
+                        <div
+                            v-for="formula in donationFormulas"
+                            :key="formula.uuid"
+                            class="bg-white border border-indigo-100 rounded-xl shadow-sm overflow-hidden"
+                        >
+                            <!-- Accordion Header -->
+                            <div
+                                class="flex justify-between items-center p-4 bg-indigo-50/30 cursor-pointer hover:bg-indigo-50 transition-colors"
+                                @click="toggleFormula(formula.uuid)"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <font-awesome-icon
+                                        :icon="[
+                                            'fas',
+                                            isFormulaOpen(formula.uuid)
+                                                ? 'eye'
+                                                : 'eye-slash',
+                                        ]"
+                                        class="text-indigo-400 text-sm"
+                                    />
+                                    <h4 class="font-bold text-indigo-700">
+                                        {{ formula.user?.username }}:
+                                        {{ getUserFormulaIndex(formula) }}
+                                    </h4>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        v-if="
+                                            authStore.user?.username ===
+                                            formula.user?.username
+                                        "
+                                        class="flex gap-2"
+                                        @click.stop
+                                    >
+                                        <button
+                                            class="text-indigo-600 hover:text-indigo-800 p-1 transition-colors"
+                                            title="Edit Formula"
+                                            @click="
+                                                openEditFormulaModal(formula)
+                                            "
+                                        >
+                                            <font-awesome-icon
+                                                :icon="['fas', 'edit']"
+                                            />
+                                        </button>
+                                        <button
+                                            class="text-red-500 hover:text-red-700 p-1 transition-colors"
+                                            title="Delete Formula"
+                                            @click="
+                                                handleDeleteFormula(
+                                                    formula.uuid
+                                                )
+                                            "
+                                        >
+                                            <font-awesome-icon
+                                                :icon="['fas', 'trash-alt']"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accordion Body -->
+                            <div
+                                v-show="isFormulaOpen(formula.uuid)"
+                                class="p-4 border-t border-indigo-50"
+                            >
+                                <div class="space-y-2">
+                                    <div
+                                        v-for="(item, i) in formula.formula"
+                                        :key="i"
+                                        class="flex justify-between items-center text-sm border-b border-gray-50 pb-2"
+                                    >
+                                        <span class="text-gray-700">{{
+                                            item.organization
+                                        }}</span>
+                                        <span
+                                            class="font-semibold text-indigo-600"
+                                            >{{ item.percentage }}%</span
+                                        >
+                                    </div>
+                                    <!-- Total Row -->
+                                    <div
+                                        class="flex justify-between items-center pt-2 font-bold text-gray-800"
+                                    >
+                                        <span>Total</span>
+                                        <span class="text-indigo-700"
+                                            >100%</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    v-else-if="!loading"
+                    class="mt-12 text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300"
+                >
+                    <font-awesome-icon
+                        :icon="['fas', 'info-circle']"
+                        class="text-gray-400 text-3xl mb-3"
+                    />
+                    <p class="text-gray-500">
+                        No donation formulas created yet.
+                        <template v-if="authStore.isAuthenticated">
+                            Be the first to create one!
+                        </template>
+                        <template v-else>
+                            <NuxtLink
+                                to="/login"
+                                class="text-indigo-600 font-semibold hover:underline"
+                            >
+                                Log in to create one!
+                            </NuxtLink>
+                        </template>
+                    </p>
                 </div>
             </div>
         </section>
@@ -121,9 +250,21 @@
         <!-- Donation Formula Modal -->
         <DonationFormulaModal
             v-model="showDonationModal"
-            :initial-data="donationFormula"
+            :initial-data="selectedFormula"
             :is-saving="submittingFormula"
+            :is-edit="!!selectedFormula.uuid"
             @save="handleSaveDonationFormula"
+        />
+
+        <!-- Confirm Modal for Deletion -->
+        <ConfirmModal
+            v-model="showConfirmDelete"
+            title="Delete Donation Formula"
+            message-title="Confirm Deletion"
+            message="Are you sure you want to delete this donation formula? This action cannot be undone."
+            confirm-text="Delete Formula"
+            :is-loading="submittingDelete"
+            @confirm="handleConfirmDelete"
         />
     </main>
 </template>
@@ -150,13 +291,42 @@ const editable = ref(false)
 const loading = ref(false)
 const submitting = ref(false)
 const submittingFormula = ref(false)
+const submittingDelete = ref(false)
 const accessType = ref('public')
 
-// Donation formula modal visibility state
+// Donation formulas list
+const donationFormulas = ref([])
+const openFormulas = ref([])
 const showDonationModal = ref(false)
-const donationFormula = ref([])
+const showConfirmDelete = ref(false)
+const formulaToDelete = ref(null)
+const selectedFormula = ref({ formula: [] })
 
-// check if current user is owner
+/**
+ * Returns the index of a formula among all formulas from the same user
+ */
+const getUserFormulaIndex = (currentFormula) => {
+    const userFormulas = donationFormulas.value.filter(
+        (f) => f.user?.uuid === currentFormula.user?.uuid
+    )
+    const index = userFormulas.findIndex((f) => f.uuid === currentFormula.uuid)
+    return index + 1
+}
+
+const toggleFormula = (uuid) => {
+    const index = openFormulas.value.indexOf(uuid)
+    if (index > -1) {
+        openFormulas.value.splice(index, 1)
+    } else {
+        openFormulas.value.push(uuid)
+    }
+}
+
+const isFormulaOpen = (uuid) => {
+    return openFormulas.value.includes(uuid)
+}
+
+// check if current user is owner of the article
 const isOwner = computed(() => {
     return (
         authStore.user &&
@@ -164,7 +334,7 @@ const isOwner = computed(() => {
     )
 })
 
-// computed: can user edit?
+// computed: can user edit the article?
 const canEdit = computed(() => {
     if (!authStore.isAuthenticated || !editable.value) return false
 
@@ -174,25 +344,51 @@ const canEdit = computed(() => {
     return false
 })
 
+const openCreateFormulaModal = () => {
+    selectedFormula.value = {
+        formula: [{ organization: '', percentage: 0 }],
+    }
+    showDonationModal.value = true
+}
+
+const openEditFormulaModal = (formula) => {
+    selectedFormula.value = JSON.parse(JSON.stringify(formula))
+    showDonationModal.value = true
+}
+
 /**
  * Handles the saving of a donation formula from the modal
- * @param {Array} data - List of organizations and their percentage allocations
  */
 const handleSaveDonationFormula = async (data) => {
     if (submittingFormula.value) return
     submittingFormula.value = true
     showAlert.value = false
     try {
-        const response = await articleService.saveDonationFormula({
-            article_slug: articleStore.article.slug,
-            formula: data,
-        })
+        let response
+        if (selectedFormula.value.uuid) {
+            // Update existing
+            response = await articleService.updateDonationFormula(
+                selectedFormula.value.uuid,
+                {
+                    formula: data.formula,
+                }
+            )
+        } else {
+            // Create new
+            response = await articleService.saveDonationFormula({
+                article_slug: articleStore.article.slug,
+                formula: data.formula,
+            })
+        }
 
         if (response.success) {
-            donationFormula.value = response.data
             alertVariant.value = 'success'
-            alertMessage.value = 'Donation formula saved successfully!'
+            alertMessage.value = selectedFormula.value.uuid
+                ? 'Donation formula updated successfully!'
+                : 'Donation formula created successfully!'
             showDonationModal.value = false
+            // Refresh the list
+            await loadDonationFormulas(articleStore.article.slug)
         } else {
             throw new Error(
                 response.message || 'Failed to save donation formula'
@@ -204,6 +400,40 @@ const handleSaveDonationFormula = async (data) => {
         alertMessage.value = error.message || 'Unexpected error'
     } finally {
         submittingFormula.value = false
+        showAlert.value = true
+    }
+}
+
+const handleDeleteFormula = (uuid) => {
+    formulaToDelete.value = uuid
+    showConfirmDelete.value = true
+}
+
+const handleConfirmDelete = async () => {
+    if (!formulaToDelete.value || submittingDelete.value) return
+
+    submittingDelete.value = true
+    showAlert.value = false
+    try {
+        const response = await articleService.deleteDonationFormula(
+            formulaToDelete.value
+        )
+        if (response.success) {
+            alertVariant.value = 'success'
+            alertMessage.value = 'Donation formula deleted successfully!'
+            showConfirmDelete.value = false
+            formulaToDelete.value = null
+            // Refresh the list
+            await loadDonationFormulas(articleStore.article.slug)
+        } else {
+            throw new Error(response.message || 'Failed to delete formula')
+        }
+    } catch (error) {
+        console.error(error)
+        alertVariant.value = 'error'
+        alertMessage.value = error.message || 'Failed to delete formula'
+    } finally {
+        submittingDelete.value = false
         showAlert.value = true
     }
 }
@@ -260,8 +490,19 @@ const loadArticle = async (slug) => {
             accessType.value = response.data.accessType
             articleStore.addArticle(response.data)
 
-            // Load donation formula
-            await loadDonationFormula(response.data.slug)
+            // Update page title
+            useHead({
+                title: `${articleTitle.value} - WikiDonate`,
+                meta: [
+                    {
+                        name: 'description',
+                        content: `Read about ${articleTitle.value} on WikiDonate.`,
+                    },
+                ],
+            })
+
+            // Load donation formulas
+            await loadDonationFormulas(response.data.slug)
         } else {
             sections.value = []
             editable.value = false
@@ -279,18 +520,21 @@ const loadArticle = async (slug) => {
     }
 }
 
-const loadDonationFormula = async (slug) => {
-    if (!authStore.isAuthenticated) return
+const loadDonationFormulas = async (slug) => {
     try {
-        const response = await articleService.getDonationFormula(slug)
+        const response = await articleService.getDonationFormulasByArticle(slug)
         if (response.success && response.data) {
-            donationFormula.value = response.data
+            donationFormulas.value = response.data
+            // Open all formulas by default
+            openFormulas.value = response.data.map((f) => f.uuid)
         } else {
-            donationFormula.value = []
+            donationFormulas.value = []
+            openFormulas.value = []
         }
     } catch (error) {
-        console.error('Error loading donation formula:', error)
-        donationFormula.value = []
+        console.error('Error loading donation formulas:', error)
+        donationFormulas.value = []
+        openFormulas.value = []
     }
 }
 

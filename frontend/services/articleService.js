@@ -27,8 +27,20 @@ const saveDonationFormula = (params) => {
     return api.post('/donation-formulas', params)
 }
 
-const getDonationFormula = (slug) => {
-    return api.get(`/donation-formulas/${slug}`)
+const getDonationFormulasByArticle = (slug) => {
+    return api.get(`/donation-formulas/article/${slug}`)
+}
+
+const getDonationFormula = (uuid) => {
+    return api.get(`/donation-formulas/${uuid}`)
+}
+
+const updateDonationFormula = (uuid, params) => {
+    return api.put(`/donation-formulas/${uuid}`, params)
+}
+
+const deleteDonationFormula = (uuid) => {
+    return api.delete(`/donation-formulas/${uuid}`)
 }
 
 export const articleService = {
@@ -39,5 +51,8 @@ export const articleService = {
     getHistory,
     getMyArticles,
     saveDonationFormula,
+    getDonationFormulasByArticle,
     getDonationFormula,
+    updateDonationFormula,
+    deleteDonationFormula,
 }
