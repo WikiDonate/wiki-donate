@@ -96,7 +96,7 @@
                 </div>
 
                 <!-- Donation Formulas List (Publicly visible) -->
-                <div v-if="donationFormulas.length > 0" class="mt-20">
+                <div v-if="donationFormulas.length > 0" class="mt-12">
                     <h3
                         class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
                     >
