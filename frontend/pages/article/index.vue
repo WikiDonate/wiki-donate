@@ -109,8 +109,9 @@
                     <div class="space-y-4">
                         <div
                             v-for="formula in donationFormulas"
+                            :id="`formula-${formula.uuid}`"
                             :key="formula.uuid"
-                            class="bg-white border border-indigo-100 rounded-xl shadow-sm overflow-hidden"
+                            class="bg-white border border-indigo-100 rounded-xl shadow-sm transition-all duration-500"
                         >
                             <!-- Accordion Header -->
                             <div
@@ -146,38 +147,74 @@
 
                                 <!-- Action Buttons -->
                                 <div class="flex items-center gap-4">
-                                    <div
-                                        v-if="
-                                            authStore.user?.username ===
-                                            formula.user?.username
-                                        "
-                                        class="flex gap-2"
-                                        @click.stop
-                                    >
-                                        <button
-                                            class="text-indigo-600 hover:text-indigo-800 p-1 transition-colors"
-                                            title="Edit Formula"
-                                            @click="
-                                                openEditFormulaModal(formula)
+                                    <div class="flex gap-2" @click.stop>
+                                        <div class="relative">
+                                            <transition
+                                                enter-active-class="transition duration-200 ease-out"
+                                                enter-from-class="transform -translate-y-1 opacity-0"
+                                                enter-to-class="transform translate-y-0 opacity-100"
+                                                leave-active-class="transition duration-150 ease-in"
+                                                leave-from-class="opacity-100"
+                                                leave-to-class="opacity-0"
+                                            >
+                                                <div
+                                                    v-if="
+                                                        copiedUuid ===
+                                                        formula.uuid
+                                                    "
+                                                    class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[12px] px-2 py-1 rounded shadow-2xl whitespace-nowrap z-50 animate-bounce"
+                                                >
+                                                    Copied!
+                                                    <div
+                                                        class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"
+                                                    ></div>
+                                                </div>
+                                            </transition>
+                                            <button
+                                                class="text-indigo-400 hover:text-indigo-600 p-1 transition-colors"
+                                                title="Copy Formula URL"
+                                                @click="
+                                                    copyFormulaUrl(formula.uuid)
+                                                "
+                                            >
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'link']"
+                                                />
+                                            </button>
+                                        </div>
+                                        <template
+                                            v-if="
+                                                authStore.user?.username ===
+                                                formula.user?.username
                                             "
                                         >
-                                            <font-awesome-icon
-                                                :icon="['fas', 'edit']"
-                                            />
-                                        </button>
-                                        <button
-                                            class="text-red-500 hover:text-red-700 p-1 transition-colors"
-                                            title="Delete Formula"
-                                            @click="
-                                                handleDeleteFormula(
-                                                    formula.uuid
-                                                )
-                                            "
-                                        >
-                                            <font-awesome-icon
-                                                :icon="['fas', 'trash-alt']"
-                                            />
-                                        </button>
+                                            <button
+                                                class="text-indigo-600 hover:text-indigo-800 p-1 transition-colors"
+                                                title="Edit Formula"
+                                                @click="
+                                                    openEditFormulaModal(
+                                                        formula
+                                                    )
+                                                "
+                                            >
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'edit']"
+                                                />
+                                            </button>
+                                            <button
+                                                class="text-red-500 hover:text-red-700 p-1 transition-colors"
+                                                title="Delete Formula"
+                                                @click="
+                                                    handleDeleteFormula(
+                                                        formula.uuid
+                                                    )
+                                                "
+                                            >
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'trash-alt']"
+                                                />
+                                            </button>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -312,6 +349,22 @@ const showDonationModal = ref(false)
 const showConfirmDelete = ref(false)
 const formulaToDelete = ref(null)
 const selectedFormula = ref({ formula: [] })
+const focusedFormula = ref(null)
+const copiedUuid = ref(null)
+
+const copyFormulaUrl = (uuid) => {
+    const url = new URL(window.location.href)
+    url.hash = `formula-${uuid}`
+    navigator.clipboard.writeText(url.toString())
+
+    // Show local tooltip
+    copiedUuid.value = uuid
+    setTimeout(() => {
+        if (copiedUuid.value === uuid) {
+            copiedUuid.value = null
+        }
+    }, 2000)
+}
 
 /**
  * Returns the index of a formula among all formulas from the same user
@@ -398,8 +451,11 @@ const handleSaveDonationFormula = async (data) => {
                 ? 'Donation formula updated successfully!'
                 : 'Donation formula created successfully!'
             showDonationModal.value = false
-            // Refresh the list
-            await loadDonationFormulas(articleStore.article.slug)
+            // Refresh the list and open the new/updated formula
+            await loadDonationFormulas(
+                articleStore.article.slug,
+                response.data.uuid
+            )
         } else {
             throw new Error(
                 response.message || 'Failed to save donation formula'
@@ -530,13 +586,38 @@ const loadArticle = async (slug) => {
         loading.value = false
     }
 }
-
-const loadDonationFormulas = async (slug) => {
+const loadDonationFormulas = async (slug, uuidToOpen = null) => {
     try {
         const response = await articleService.getDonationFormulasByArticle(slug)
         if (response.success && response.data) {
             donationFormulas.value = response.data
+            // Keep formulas closed by default
             openFormulas.value = []
+
+            if (uuidToOpen) {
+                openFormulas.value = [uuidToOpen]
+            }
+
+            // Check if there's a specific formula in the hash to focus on (only if not manually opening one)
+            const hash = route.hash
+            if (!uuidToOpen && hash && hash.startsWith('#formula-')) {
+                const uuid = hash.replace('#formula-', '')
+                const formulaExists = response.data.some((f) => f.uuid === uuid)
+                if (formulaExists) {
+                    openFormulas.value = [uuid]
+                    focusedFormula.value = uuid
+                    // Scroll to it after a short delay to ensure rendering and images are loaded
+                    setTimeout(() => {
+                        const el = document.getElementById(`formula-${uuid}`)
+                        if (el) {
+                            el.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                            })
+                        }
+                    }, 500)
+                }
+            }
         } else {
             donationFormulas.value = []
             openFormulas.value = []
