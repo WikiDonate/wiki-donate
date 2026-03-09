@@ -95,25 +95,8 @@
                     />
                 </div>
 
-                <!-- Create Donation Formula Button -->
-                <div
-                    v-if="authStore.isAuthenticated"
-                    class="flex justify-center lg:justify-end items-center mt-10"
-                >
-                    <button
-                        class="flex items-center gap-2 text-base lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md whitespace-nowrap"
-                        @click="openCreateFormulaModal"
-                    >
-                        <font-awesome-icon
-                            :icon="['fas', 'plus-circle']"
-                            class="w-5 h-5"
-                        />
-                        <span>Create Donation Formula</span>
-                    </button>
-                </div>
-
                 <!-- Donation Formulas List (Publicly visible) -->
-                <div v-if="donationFormulas.length > 0" class="mt-12">
+                <div v-if="donationFormulas.length > 0" class="mt-20">
                     <h3
                         class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
                     >
@@ -148,6 +131,17 @@
                                         {{ formula.user?.username }}:
                                         {{ getUserFormulaIndex(formula) }}
                                     </h4>
+                                    <Button
+                                        width="auto"
+                                        class="!py-1 !px-2 !text-xs !rounded-lg !bg-green-600 hover:!bg-green-700 border-none shadow-sm flex items-center gap-1"
+                                        @click.stop=""
+                                    >
+                                        <font-awesome-icon
+                                            :icon="['fas', 'heart']"
+                                            class="w-3 h-3"
+                                        />
+                                        <span>Donate</span>
+                                    </Button>
                                 </div>
 
                                 <!-- Action Buttons -->
@@ -243,6 +237,23 @@
                             </NuxtLink>
                         </template>
                     </p>
+                </div>
+
+                <!-- Create Donation Formula Button -->
+                <div
+                    v-if="authStore.isAuthenticated"
+                    class="flex justify-center lg:justify-end items-center mt-5"
+                >
+                    <button
+                        class="flex items-center gap-2 text-base lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md whitespace-nowrap"
+                        @click="openCreateFormulaModal"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'plus-circle']"
+                            class="w-5 h-5"
+                        />
+                        <span>Create Donation Formula</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -525,8 +536,7 @@ const loadDonationFormulas = async (slug) => {
         const response = await articleService.getDonationFormulasByArticle(slug)
         if (response.success && response.data) {
             donationFormulas.value = response.data
-            // Open all formulas by default
-            openFormulas.value = response.data.map((f) => f.uuid)
+            openFormulas.value = []
         } else {
             donationFormulas.value = []
             openFormulas.value = []
