@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.google-translate-select-dropdown__menu{
+.google-translate-select-dropdown__menu {
     right: 0 !important;
     left: auto !important;
 }

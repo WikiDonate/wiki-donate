@@ -11,7 +11,9 @@
                     class="grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
                 >
                     <div class="col-span-7 text-sm">Organization</div>
-                    <div class="col-span-4 text-sm text-center">Percentage (%)</div>
+                    <div class="col-span-4 text-sm text-center">
+                        Percentage (%)
+                    </div>
                     <div class="col-span-1" />
                 </div>
 
@@ -44,7 +46,9 @@
                                 title="Delete Row"
                                 @click="deleteRow(index)"
                             >
-                                <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                                <font-awesome-icon
+                                    :icon="['fas', 'trash-alt']"
+                                />
                             </button>
                         </div>
                     </div>
@@ -105,7 +109,13 @@
             />
             <Button
                 variant="primary"
-                :text="localIsSaving || props.isSaving ? 'Saving...' : (props.isEdit ? 'Update' : 'Save')"
+                :text="
+                    localIsSaving || props.isSaving
+                        ? 'Saving...'
+                        : props.isEdit
+                          ? 'Update'
+                          : 'Save'
+                "
                 width="auto"
                 class="px-6"
                 :disabled="!isValid || localIsSaving || props.isSaving"
@@ -117,9 +127,6 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { useAuthStore } from '~/stores/authStore'
-
-const authStore = useAuthStore()
 
 const props = defineProps({
     modelValue: {
@@ -154,9 +161,15 @@ watch(
     (val) => {
         if (val) {
             // Always reset when opening
-            if (props.initialData && props.initialData.formula && props.initialData.formula.length > 0) {
+            if (
+                props.initialData &&
+                props.initialData.formula &&
+                props.initialData.formula.length > 0
+            ) {
                 // Clone initial data to avoid direct mutation
-                rows.value = JSON.parse(JSON.stringify(props.initialData.formula))
+                rows.value = JSON.parse(
+                    JSON.stringify(props.initialData.formula)
+                )
             } else {
                 // Reset to default empty state
                 rows.value = [{ organization: '', percentage: 0 }]
@@ -222,7 +235,7 @@ const handleSave = async () => {
 
         // Emit the save event with data
         emit('save', {
-            formula: sanitizedRows
+            formula: sanitizedRows,
         })
     } finally {
         localIsSaving.value = false

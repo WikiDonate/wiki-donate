@@ -5,13 +5,17 @@
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="flex flex-col items-center text-center p-4">
-            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <div
+                class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4"
+            >
                 <font-awesome-icon
                     :icon="['fas', 'exclamation-triangle']"
                     class="text-red-500 text-3xl"
                 />
             </div>
-            <h4 class="text-xl font-bold text-gray-900 mb-2">{{ messageTitle }}</h4>
+            <h4 class="text-xl font-bold text-gray-900 mb-2">
+                {{ messageTitle }}
+            </h4>
             <p class="text-gray-600">{{ message }}</p>
         </div>
 

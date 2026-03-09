@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { causeService } from '@/services/causeService'
 import { useToastify } from '@/composables/useToastify'
 
-const { notifyError, notifySuccess } = useToastify()
+const { notifyError } = useToastify()
 
 export const useCauseStore = defineStore('cause', {
     state: () => ({

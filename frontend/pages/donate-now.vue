@@ -123,7 +123,7 @@
                                         :src="generateAvatar(ngo.name)"
                                         :alt="`${ngo.name} Logo`"
                                         class="rounded-full w-full h-full object-cover border border-gray-200"
-                                    >
+                                    />
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h3
@@ -297,7 +297,6 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
 
 // Define fields using defineField
 const [name, nameProps] = defineField('name')
-const [phone, phoneProps] = defineField('phone')
 const [amount, amountProps] = defineField('amount')
 
 const checkPaymentMethod = async () => {
