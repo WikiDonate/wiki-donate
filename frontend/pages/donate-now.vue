@@ -123,7 +123,7 @@
                                         :src="generateAvatar(ngo.name)"
                                         :alt="`${ngo.name} Logo`"
                                         class="rounded-full w-full h-full object-cover border border-gray-200"
-                                    />
+                                    >
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h3

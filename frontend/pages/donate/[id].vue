@@ -151,7 +151,7 @@
                                                 "
                                                 :alt="`${ngo?.title} Logo`"
                                                 class="rounded-full w-10 h-10 sm:w-12 sm:h-12 object-cover border border-gray-200"
-                                            />
+                                            >
                                         </div>
                                         <div class="min-w-0 flex-1">
                                             <h3
