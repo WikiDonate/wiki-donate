@@ -94,17 +94,6 @@
                                 />
                                 <span class="hidden sm:inline">Edit</span>
                             </NuxtLink>
-                            <NuxtLink
-                                class="flex items-center gap-1 text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-semibold py-1 px-2 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-sm whitespace-nowrap"
-                            >
-                                <font-awesome-icon
-                                    :icon="['fas', 'money-bill']"
-                                    class="w-3 h-3"
-                                />
-                                <span class="hidden sm:inline"
-                                    >Create Donation Formula</span
-                                >
-                            </NuxtLink>
                         </div>
                     </div>
 
