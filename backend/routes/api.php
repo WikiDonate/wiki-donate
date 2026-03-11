@@ -5,6 +5,7 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\CauseController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonateController;
+use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
@@ -13,10 +14,17 @@ use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::post('user', [UserController::class, 'register'])->middleware('throttle:5,10');
+    Route::post('user', [UserController::class, 'register'])->middleware(
+        'throttle:5,10',
+    );
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-    Route::post('changePassword', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
+    Route::post('logout', [AuthController::class, 'logout'])->middleware(
+        'auth:sanctum',
+    );
+    Route::post('changePassword', [
+        UserController::class,
+        'changePassword',
+    ])->middleware('auth:sanctum');
     Route::post('forgotPassword', [AuthController::class, 'forgotPassword']);
     Route::get('search', [ArticleController::class, 'search']);
     Route::post('contact', [ContactController::class, 'store']);
@@ -25,16 +33,47 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('donate', [DonateController::class, 'store']);
         Route::post('donate-now', [DonateController::class, 'donateNow']);
-        Route::post('record-payment', [DonateController::class, 'recordPaymentApi']);
+        Route::post('record-payment', [
+            DonateController::class,
+            'recordPaymentApi',
+        ]);
+    });
+
+    // Donation Formula routes
+    Route::prefix('donation-formulas')->group(function () {
+        // Publicly accessible route
+        Route::get('/article/{slug}', [
+            DonationFormulaController::class,
+            'index',
+        ]);
+
+        // Protected routes
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/', [DonationFormulaController::class, 'store']);
+            Route::get('{uuid}', [DonationFormulaController::class, 'show']);
+            Route::put('{uuid}', [DonationFormulaController::class, 'update']);
+            Route::delete('{uuid}', [
+                DonationFormulaController::class,
+                'destroy',
+            ]);
+        });
     });
 
     // User authenticated routes
-    Route::prefix('user')->middleware('auth:sanctum')->group(function () {
-        Route::post('notifications', [NotificationController::class, 'update']);
-        Route::get('notifications', [NotificationController::class, 'show']);
-        Route::get('get', [UserController::class, 'getUserDetails']);
-        Route::put('update', [UserController::class, 'updateUser']);
-    });
+    Route::prefix('user')
+        ->middleware('auth:sanctum')
+        ->group(function () {
+            Route::post('notifications', [
+                NotificationController::class,
+                'update',
+            ]);
+            Route::get('notifications', [
+                NotificationController::class,
+                'show',
+            ]);
+            Route::get('get', [UserController::class, 'getUserDetails']);
+            Route::put('update', [UserController::class, 'updateUser']);
+        });
 
     // Articles routes
     Route::prefix('articles')->group(function () {
@@ -77,7 +116,5 @@ Route::prefix('v1')->group(function () {
         Route::get('/', [CauseController::class, 'getCauses']);
         Route::get('search', [CauseController::class, 'searchCause']);
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
-
     });
-
 });

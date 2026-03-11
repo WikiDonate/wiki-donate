@@ -23,6 +23,26 @@ const getHistory = (slug) => {
     return api.get(`/articles/${slug}/history`)
 }
 
+const saveDonationFormula = (params) => {
+    return api.post('/donation-formulas', params)
+}
+
+const getDonationFormulasByArticle = (slug) => {
+    return api.get(`/donation-formulas/article/${slug}`)
+}
+
+const getDonationFormula = (uuid) => {
+    return api.get(`/donation-formulas/${uuid}`)
+}
+
+const updateDonationFormula = (uuid, params) => {
+    return api.put(`/donation-formulas/${uuid}`, params)
+}
+
+const deleteDonationFormula = (uuid) => {
+    return api.delete(`/donation-formulas/${uuid}`)
+}
+
 export const articleService = {
     searchArticles,
     saveArticle,
@@ -30,4 +50,9 @@ export const articleService = {
     updateArticle,
     getHistory,
     getMyArticles,
+    saveDonationFormula,
+    getDonationFormulasByArticle,
+    getDonationFormula,
+    updateDonationFormula,
+    deleteDonationFormula,
 }

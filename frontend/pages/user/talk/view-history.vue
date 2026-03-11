@@ -3,7 +3,7 @@
 <template>
     <main class="w-full">
         <TopBarTitle :page-title="`Hello, ${title}!`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
@@ -28,7 +28,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- loader -->
         <div v-if="loading" class="flex items-center justify-center py-12">

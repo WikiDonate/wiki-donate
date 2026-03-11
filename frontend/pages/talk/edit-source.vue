@@ -5,7 +5,7 @@
         <TopBarTitle
             :page-title="`${articleStore.article.title || title} : Editing`"
         />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -32,7 +32,7 @@
                     isAuthenticated: true,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">

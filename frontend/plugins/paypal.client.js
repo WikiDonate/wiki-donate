@@ -2,7 +2,7 @@ import { loadScript } from '@paypal/paypal-js'
 
 let paypal
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async () => {
     const config = useRuntimeConfig()
 
     try {

@@ -3,7 +3,7 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`${title} : Difference between revisions`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
@@ -28,7 +28,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- view history list -->
         <section class="bg-white p-2">

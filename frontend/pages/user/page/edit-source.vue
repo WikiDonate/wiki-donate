@@ -2,7 +2,7 @@
 <template>
     <main class="w-full">
         <TopBarTitle :page-title="`Hello, ${title}!`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
@@ -27,7 +27,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">

@@ -4,7 +4,7 @@
     <main class="w-full">
         <!-- Top bar -->
         <TopBarTitle :page-title="`Hello, ${title}!`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
@@ -29,7 +29,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- Message -->
         <div class="mt-2">

@@ -344,7 +344,7 @@ const checkPaymentMethod = async () => {
     try {
         const response = await paymentMethodService.getCard()
         hasPaymentMethod.value = response.success && response.data !== null
-    } catch (error) {
+    } catch {
         hasPaymentMethod.value = false
     } finally {
         isFetchingCard.value = false

@@ -8,7 +8,7 @@
         />
 
         <!-- Top bar -->
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'Article',
@@ -37,7 +37,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
 
         <!-- loader -->
         <div v-if="loading" class="flex items-center justify-center py-12">

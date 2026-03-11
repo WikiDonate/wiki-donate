@@ -8,13 +8,15 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('ngos', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('paypal_account');
-            $table->text('address');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('ngos')) {
+            Schema::create('ngos', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->string('paypal_account');
+                $table->text('address');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down()

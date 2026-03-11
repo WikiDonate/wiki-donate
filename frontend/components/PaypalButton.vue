@@ -7,7 +7,7 @@
             <span class="font-semibold">Processing payment...</span>
         </div>
         <div v-else-if="amountValid">
-            <div ref="paypalRef" class="paypal-button-container"/>
+            <div ref="paypalRef" class="paypal-button-container" />
         </div>
         <div
             v-else
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
     amount: {

@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            if (! Schema::hasColumn('articles', 'access_type')) {
-                $table->enum('access_type', ['public', 'private'])->default('public')->after('sections');
-            }
+        Schema::table('donation_formulas', function (Blueprint $blueprint) {
+            $blueprint->dropColumn('title');
         });
     }
 
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('access_type');
+        Schema::table('donation_formulas', function (Blueprint $blueprint) {
+            $blueprint->string('title')->nullable();
         });
     }
 };

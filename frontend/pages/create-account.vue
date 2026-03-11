@@ -122,7 +122,6 @@
 
 <script setup>
 import { useForm } from 'vee-validate'
-import { RecaptchaV2 } from 'vue3-recaptcha-v2'
 import * as yup from 'yup'
 import { userService } from '~/services/userService'
 
@@ -133,17 +132,7 @@ useHead({
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
-const reCaptchaToken = ref('')
-
-const handleErrorCallback = () => {
-    reCaptchaToken.value = null
-}
-const handleExpiredCallback = () => {
-    reCaptchaToken.value = null
-}
-const handleLoadCallback = (response) => {
-    reCaptchaToken.value = response
-}
+// const reCaptchaToken = ref('')
 
 const validationSchema = yup.object({
     username: yup

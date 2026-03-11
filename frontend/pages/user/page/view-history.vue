@@ -4,7 +4,7 @@
     <main class="w-full">
         <!-- Top bar Title -->
         <TopBarTitle :page-title="`Hello, ${title}!`" />
-        <TopBar
+        <!-- <TopBar
             :left-menu-items="[
                 {
                     name: 'User Page',
@@ -29,7 +29,7 @@
                     isAuthenticated: false,
                 },
             ]"
-        />
+        /> -->
         <!-- loader -->
         <div v-if="loading" class="flex items-center justify-center py-12">
             <LoadingSpinner text="Loading History" />

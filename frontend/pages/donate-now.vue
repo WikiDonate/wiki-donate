@@ -297,7 +297,6 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
 
 // Define fields using defineField
 const [name, nameProps] = defineField('name')
-const [phone, phoneProps] = defineField('phone')
 const [amount, amountProps] = defineField('amount')
 
 const checkPaymentMethod = async () => {
