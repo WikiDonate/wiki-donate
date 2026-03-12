@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed } from 'vue'
 
 // Define props
 const props = defineProps({

@@ -1,4 +1,7 @@
 export default defineNuxtConfig({
+    future: {
+        compatibilityVersion: 4,
+    },
     compatibilityDate: '2024-04-03',
     devtools: { enabled: true },
     css: [
@@ -12,12 +15,31 @@ export default defineNuxtConfig({
         'pinia-plugin-persistedstate/nuxt',
         '@unlok-co/nuxt-stripe',
     ],
+    vite: {
+        optimizeDeps: {
+            include: [
+                '@vue/devtools-core',
+                '@vue/devtools-kit',
+                '@fortawesome/fontawesome-svg-core',
+                '@fortawesome/vue-fontawesome',
+                '@fortawesome/free-brands-svg-icons',
+                '@fortawesome/free-regular-svg-icons',
+                '@fortawesome/free-solid-svg-icons',
+                '@paypal/paypal-js',
+                'vue3-recaptcha-v2',
+                '@vueup/vue-quill',
+                'interactjs',
+                'axios',
+                '@google-translate-select/vue3',
+                'vue-toast-notification',
+            ],
+        },
+    },
     build: {
         transpile: ['vee-validate'],
     },
-    dir: {
-        assets: 'assets',
-    },
+    // Nuxt 4 default srcDir is 'app/'
+    // Removing custom 'dir' config as Nuxt 4 handles this via app/ directory structure
     postcss: {
         plugins: {
             tailwindcss: {},

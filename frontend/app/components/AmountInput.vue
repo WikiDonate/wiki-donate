@@ -11,8 +11,6 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from 'vue'
-
 defineProps({
     id: {
         type: String,

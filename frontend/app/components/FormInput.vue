@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 // Define props
 const props = defineProps({

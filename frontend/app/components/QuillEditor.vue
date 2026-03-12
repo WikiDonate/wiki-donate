@@ -17,7 +17,7 @@
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import interact from 'interactjs'
-import { defineEmits, onMounted, ref, computed, nextTick } from 'vue'
+import { onMounted, ref, computed, nextTick } from 'vue'
 
 const props = defineProps({
     initialContent: {
