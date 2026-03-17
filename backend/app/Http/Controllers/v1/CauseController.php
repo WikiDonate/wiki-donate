@@ -4,15 +4,18 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cause;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class CauseController extends Controller
 {
     /**
      * Get all causes
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getCauses()
     {
@@ -37,7 +40,7 @@ class CauseController extends Controller
     /**
      * Search causes by title
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function searchCause(Request $request)
     {
@@ -54,7 +57,7 @@ class CauseController extends Controller
                 'data' => $causes,
             ]);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Specific catch for validation errors
             return response()->json([
                 'success' => false,
@@ -75,7 +78,7 @@ class CauseController extends Controller
      * Get cause details with associated NGOs
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getCauseDetails($id)
     {
@@ -110,7 +113,7 @@ class CauseController extends Controller
                 'data' => $responseData,
             ]);
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             // Specific catch when cause is not found
             return response()->json([
                 'success' => false,

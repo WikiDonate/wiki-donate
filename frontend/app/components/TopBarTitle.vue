@@ -20,8 +20,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-
 // Define props to accept dynamic content
 defineProps({
     pageTitle: {
