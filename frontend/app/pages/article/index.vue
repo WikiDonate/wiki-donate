@@ -21,7 +21,7 @@
         </div>
 
         <!-- article page -->
-        <section v-else class="bg-white p-2">
+        <section v-else class="bg-white p-2 md:p-4 lg:p-6">
             <div v-if="sections.length === 0">
                 <div v-if="authStore.isAuthenticated">
                     <div class="mt-4">
@@ -104,17 +104,20 @@
                 </div>
 
                 <!-- Donation Formulas List (Publicly visible) -->
-                <div v-if="donationFormulas.length > 0" class="mt-12">
+                <div v-if="donationFormulas.length > 0" class="mt-8 md:mt-12">
                     <h3
-                        class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+                        class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 flex items-center gap-2"
                     >
                         <font-awesome-icon
                             :icon="['fas', 'hand-holding-heart']"
                             class="text-indigo-600"
                         />
-                        Community Donation Formulas
+                        <span class="hidden sm:inline"
+                            >Community Donation Formulas</span
+                        >
+                        <span class="sm:hidden">Donation Formulas</span>
                     </h3>
-                    <div class="space-y-4">
+                    <div class="space-y-3 md:space-y-4">
                         <div
                             v-for="formula in donationFormulas"
                             :id="`formula-${formula.uuid}`"
@@ -123,10 +126,12 @@
                         >
                             <!-- Accordion Header -->
                             <div
-                                class="flex justify-between items-center p-4 bg-indigo-50/30 cursor-pointer hover:bg-indigo-50 transition-colors"
+                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-indigo-50/30 cursor-pointer hover:bg-indigo-50 transition-colors"
                                 @click="toggleFormula(formula.uuid)"
                             >
-                                <div class="flex items-center gap-3">
+                                <div
+                                    class="flex flex-wrap items-center gap-2 md:gap-3"
+                                >
                                     <font-awesome-icon
                                         :icon="[
                                             'fas',
@@ -136,7 +141,9 @@
                                         ]"
                                         class="text-indigo-400 text-sm"
                                     />
-                                    <h4 class="font-bold text-indigo-700">
+                                    <h4
+                                        class="font-bold text-indigo-700 text-sm md:text-base"
+                                    >
                                         {{ formula.user?.username }}:
                                         {{ getUserFormulaIndex(formula) }}
                                     </h4>
@@ -154,7 +161,9 @@
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="flex items-center gap-4">
+                                <div
+                                    class="flex items-center gap-3 sm:gap-4 pb-1 sm:pb-0"
+                                >
                                     <div class="flex gap-2" @click.stop>
                                         <div class="relative">
                                             <transition
@@ -230,7 +239,7 @@
                             <!-- Accordion Body -->
                             <div
                                 v-show="isFormulaOpen(formula.uuid)"
-                                class="p-4 border-t border-indigo-50"
+                                class="p-3 sm:p-4 border-t border-indigo-50"
                             >
                                 <div class="space-y-2">
                                     <div
@@ -335,6 +344,7 @@ useHead({
 const articleStore = useArticleStore()
 const authStore = useAuthStore()
 const route = useRoute()
+const { clearToasts, notifySuccess, notifyError } = useToastify()
 
 const title = ref(decodeURIComponent(route.query.title))
 const showAlert = ref(false)
@@ -434,11 +444,10 @@ const openEditFormulaModal = (formula) => {
 const handleSaveDonationFormula = async (data) => {
     if (submittingFormula.value) return
     submittingFormula.value = true
-    showAlert.value = false
+    clearToasts()
     try {
         let response
         if (selectedFormula.value.uuid) {
-            // Update existing
             response = await articleService.updateDonationFormula(
                 selectedFormula.value.uuid,
                 {
@@ -446,7 +455,6 @@ const handleSaveDonationFormula = async (data) => {
                 }
             )
         } else {
-            // Create new
             response = await articleService.saveDonationFormula({
                 article_slug: articleStore.article.slug,
                 formula: data.formula,
@@ -454,12 +462,12 @@ const handleSaveDonationFormula = async (data) => {
         }
 
         if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = selectedFormula.value.uuid
-                ? 'Donation formula updated successfully!'
-                : 'Donation formula created successfully!'
             showDonationModal.value = false
-            // Refresh the list and open the new/updated formula
+            notifySuccess(
+                selectedFormula.value.uuid
+                    ? 'Donation formula updated successfully!'
+                    : 'Donation formula created successfully!'
+            )
             await loadDonationFormulas(
                 articleStore.article.slug,
                 response.data.uuid
@@ -471,11 +479,9 @@ const handleSaveDonationFormula = async (data) => {
         }
     } catch (error) {
         console.error(error)
-        alertVariant.value = 'error'
-        alertMessage.value = error.message || 'Unexpected error'
+        notifyError(error.message || 'Unexpected error')
     } finally {
         submittingFormula.value = false
-        showAlert.value = true
     }
 }
 
@@ -488,28 +494,24 @@ const handleConfirmDelete = async () => {
     if (!formulaToDelete.value || submittingDelete.value) return
 
     submittingDelete.value = true
-    showAlert.value = false
+    clearToasts()
     try {
         const response = await articleService.deleteDonationFormula(
             formulaToDelete.value
         )
         if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = 'Donation formula deleted successfully!'
             showConfirmDelete.value = false
             formulaToDelete.value = null
-            // Refresh the list
+            notifySuccess('Donation formula deleted successfully!')
             await loadDonationFormulas(articleStore.article.slug)
         } else {
             throw new Error(response.message || 'Failed to delete formula')
         }
     } catch (error) {
         console.error(error)
-        alertVariant.value = 'error'
-        alertMessage.value = error.message || 'Failed to delete formula'
+        notifyError(error.message || 'Failed to delete formula')
     } finally {
         submittingDelete.value = false
-        showAlert.value = true
     }
 }
 
