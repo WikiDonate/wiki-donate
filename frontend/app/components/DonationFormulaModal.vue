@@ -6,9 +6,8 @@
     >
         <div class="space-y-4">
             <div class="border-t border-gray-100 pt-4">
-                <!-- Header for the list -->
                 <div
-                    class="grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
+                    class="hidden sm:grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
                 >
                     <div class="col-span-7 text-sm">Organization</div>
                     <div class="col-span-4 text-sm text-center">
@@ -17,20 +16,30 @@
                     <div class="col-span-1" />
                 </div>
 
-                <!-- Rows of charities -->
                 <div class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 mt-2">
                     <div
                         v-for="(row, index) in rows"
                         :key="index"
-                        class="grid grid-cols-12 gap-4 items-center"
+                        class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-start sm:items-center"
                     >
-                        <div class="col-span-7">
-                            <FormInput
+                        <div class="col-span-12 sm:col-span-7">
+                            <label
+                                class="block sm:hidden text-xs font-medium text-gray-600 mb-1"
+                            >
+                                Organization
+                            </label>
+                            <SearchableSelect
                                 v-model="row.organization"
-                                placeholder="e.g. Red Cross"
+                                :options="organizations"
+                                placeholder="Search or type organization..."
                             />
                         </div>
-                        <div class="col-span-4">
+                        <div class="col-span-10 sm:col-span-4">
+                            <label
+                                class="block sm:hidden text-xs font-medium text-gray-600 mb-1"
+                            >
+                                Percentage (%)
+                            </label>
                             <FormInput
                                 v-model.number="row.percentage"
                                 type="number"
@@ -39,7 +48,9 @@
                                 max="100"
                             />
                         </div>
-                        <div class="col-span-1 text-center">
+                        <div
+                            class="col-span-2 sm:col-span-1 flex justify-center sm:block"
+                        >
                             <button
                                 type="button"
                                 class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
@@ -54,7 +65,6 @@
                     </div>
                 </div>
 
-                <!-- Add Button Row -->
                 <div class="flex justify-start">
                     <button
                         type="button"
@@ -67,34 +77,41 @@
                 </div>
             </div>
 
-            <!-- Total display and Footer Note -->
             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div
-                    class="flex justify-between items-center font-bold text-lg"
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
                 >
                     <span
-                        :class="
+                        :class="[
+                            'font-bold text-base sm:text-lg',
                             totalPercentage === 100
                                 ? 'text-green-600'
-                                : 'text-red-600'
-                        "
+                                : 'text-red-600',
+                        ]"
                     >
                         Total Allocation: {{ totalPercentage }}%
                     </span>
-                    <font-awesome-icon
-                        v-if="totalPercentage === 100"
-                        :icon="['fas', 'check-circle']"
-                        class="text-green-600"
-                    />
-                    <font-awesome-icon
-                        v-else
-                        :icon="['fas', 'exclamation-triangle']"
-                        class="text-red-500"
-                    />
+                    <div class="flex items-center gap-2">
+                        <font-awesome-icon
+                            v-if="totalPercentage === 100"
+                            :icon="['fas', 'check-circle']"
+                            class="text-green-600"
+                        />
+                        <font-awesome-icon
+                            v-else
+                            :icon="['fas', 'exclamation-triangle']"
+                            class="text-red-500"
+                        />
+                        <span
+                            v-if="totalPercentage !== 100"
+                            class="text-xs text-red-500"
+                        >
+                            Must equal 100%
+                        </span>
+                    </div>
                 </div>
                 <p class="text-xs text-gray-600 mt-2 italic">
-                    * Total must be 100%. All organizations and percentages ( >
-                    0) are required.
+                    * Select from list or type custom. Total must be 100%.
                 </p>
             </div>
         </div>
@@ -127,6 +144,9 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useOrganizations } from '~/composables/useOrganizations'
+
+const { organizations } = useOrganizations()
 
 const props = defineProps({
     modelValue: {
