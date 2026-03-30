@@ -17,7 +17,10 @@ export const useArticleStore = defineStore(
             article.value = {}
         }
 
-        function addArticles({ articles: newArticles, articlesMeta: newArticlesMeta }) {
+        function addArticles({
+            articles: newArticles,
+            articlesMeta: newArticlesMeta,
+        }) {
             articles.value = newArticles
             articlesMeta.value = newArticlesMeta
         }
