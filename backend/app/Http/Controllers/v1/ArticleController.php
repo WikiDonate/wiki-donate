@@ -8,95 +8,70 @@ use App\Http\Resources\v1\RevisionResource;
 use App\Models\Article;
 use App\Models\Revision;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 class ArticleController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/v1/articles",
-     *     summary="Get all articles",
-     *     tags={"Articles"},
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success response",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Success message"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *
-     *                 @OA\Items(
-     *                     type="object"
-     *                 )
-     *             ),
-     *         ),
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=400,
-     *         description="Error response",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="status",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Error message"
-     *             ),
-     *             @OA\Property(
-     *                 property="errors",
-     *                 type="array",
-     *
-     *                 @OA\Items(
-     *                     type="string"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=417,
-     *         description="Exception error",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="status",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Exception message"
-     *             ),
-     *             @OA\Property(
-     *                 property="errors",
-     *                 type="array",
-     *
-     *                 @OA\Items(
-     *                     type="string"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     * )
-     */
-    public function index()
+    #[OA\Get(
+        path: '/api/v1/articles',
+        summary: 'Get all articles',
+        tags: ['Articles']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Success response',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'status', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Success message'),
+                new OA\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OA\Items(type: 'object')
+                ),
+            ],
+            type: 'object'
+        )
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Error response',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'status', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Error message'),
+                new OA\Property(
+                    property: 'errors',
+                    type: 'array',
+                    items: new OA\Items(type: 'string')
+                ),
+            ],
+            type: 'object'
+        )
+    )]
+    #[OA\Response(
+        response: 417,
+        description: 'Exception error',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'status', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Exception message'),
+                new OA\Property(
+                    property: 'errors',
+                    type: 'array',
+                    items: new OA\Items(type: 'string')
+                ),
+            ],
+            type: 'object'
+        )
+    )]
+    public function index(): JsonResponse
     {
         try {
             $articles = Article::get();
@@ -190,7 +165,7 @@ class ArticleController extends Controller
      *     ),
      * )
      */
-    public function show($slug)
+    public function show($slug): JsonResponse
     {
         try {
             $article = Article::where('slug', $slug)->first();

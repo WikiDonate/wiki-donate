@@ -17,7 +17,12 @@ export default defineNuxtPlugin(async () => {
             provide: { paypal },
         }
     } catch (error) {
-        console.error('Failed to load PayPal JS SDK:', error)
-        throw error // Or handle gracefully
+        console.warn(
+            'PayPal SDK failed to load. PayPal features may be unavailable:',
+            error.message
+        )
+        return {
+            provide: { paypal: null },
+        }
     }
 })
