@@ -1,0 +1,62 @@
+# Backend (Laravel)
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpunit.result.cache
+backend/.php-cs-fixer.cache
+backend/storage/*.key
+backend/storage/debugbar/
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/bootstrap/cache/*
+backend/.idea/
+backend/.vscode/
+
+# Frontend (Nuxt.js)
+frontend/.nuxt/
+frontend/.output/
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+frontend/!.env.example
+frontend/dist/
+frontend/.DS_Store
+frontend/.eslintcache
+frontend/.cache/
+
+# General
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Composer
+composer.phar
+
+# Coverage reports
+coverage/
+htmlcov/
+.phpunit.result.cache
+
+# Build artifacts
+*.cache
+
+AGENTS.md
