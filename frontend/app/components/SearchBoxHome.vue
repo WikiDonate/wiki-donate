@@ -84,12 +84,11 @@ const selectedSuggestions = ref(null)
 const translateSelect = ref(null)
 
 const fetchSuggestions = async () => {
-    if (searchQuery.value.length > 1) {
+    const query = searchQuery.value.replace(/\s+/g, '')
+    if (query.length > 1) {
         try {
             selectedSuggestions.value = []
-            const response = await articleService.searchArticles(
-                searchQuery.value
-            )
+            const response = await articleService.searchArticles(query)
             suggestions.value = response.data
             selectedSuggestions.value = response.data
         } catch (error) {
@@ -101,19 +100,21 @@ const fetchSuggestions = async () => {
 }
 
 const handleSearch = () => {
-    if (searchQuery.value) {
-        let searchUrl = `/article/new?title=${encodeURIComponent(searchQuery.value)}`
+    const query = searchQuery.value.replace(/\s+/g, '')
+    if (query) {
+        let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
         const foundSuggestion = selectedSuggestions.value.find(
             (suggestion) =>
-                suggestion.title.toLowerCase() ===
-                searchQuery.value.toLowerCase()
+                suggestion.title.toLowerCase() === query.toLowerCase()
         )
 
         if (foundSuggestion) {
             searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
         }
 
+        searchQuery.value = ''
         suggestions.value = []
+        selectedSuggestions.value = []
         router.push(searchUrl)
     }
 }

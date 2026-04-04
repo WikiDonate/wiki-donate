@@ -96,8 +96,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { articleService } from '~/services/articleService'
 import { useCauseStore } from '~/stores/causeStore'
 
@@ -132,21 +132,18 @@ const onInput = () => {
 }
 
 const fetchSuggestions = async () => {
+    const query = searchQuery.value.replace(/\s+/g, '')
     if (isOnDonatePage.value) {
-        // Cause search logic
-        if (searchQuery.value.length > 1) {
-            await causeStore.searchCauses({ title: searchQuery.value })
+        if (query.length > 1) {
+            await causeStore.searchCauses({ title: query })
         } else {
             causeStore.clearSearchResults()
         }
     } else {
-        // Article search logic
-        if (searchQuery.value.length > 1) {
+        if (query.length > 1) {
             isLoadingArticles.value = true
             try {
-                const response = await articleService.searchArticles(
-                    searchQuery.value
-                )
+                const response = await articleService.searchArticles(query)
                 suggestions.value = response.data
             } finally {
                 isLoadingArticles.value = false
@@ -166,21 +163,22 @@ const clearSearch = () => {
 }
 
 const handleSearch = () => {
-    if (isOnDonatePage.value || !searchQuery.value) {
+    const query = searchQuery.value.replace(/\s+/g, '')
+
+    if (isOnDonatePage.value || !query) {
         return
     } else {
-        let searchUrl = `/article/new?title=${encodeURIComponent(searchQuery.value)}`
+        let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
         const foundSuggestion = suggestions.value.find(
             (suggestion) =>
-                suggestion.title.toLowerCase() ===
-                searchQuery.value.toLowerCase()
+                suggestion.title.toLowerCase() === query.toLowerCase()
         )
 
         if (foundSuggestion) {
             searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
         }
 
-        suggestions.value = []
+        clearSearch()
         router.push(searchUrl)
     }
 }
