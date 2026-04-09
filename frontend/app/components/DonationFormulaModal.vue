@@ -143,10 +143,12 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { usePayPalCharities } from '~/composables/usePayPalCharities'
+import { useToastify } from '~/composables/useToastify'
 
 const { charities, fetchCharities } = usePayPalCharities()
+const { notifyError } = useToastify()
 
 const allOrganizations = ref([])
 
@@ -234,11 +236,15 @@ const isValid = computed(() => {
 const loadAllCharities = async () => {
     if (allOrganizations.value.length === 0) {
         await fetchCharities('')
-        allOrganizations.value = charities.value.map((c) => ({
-            label: c.name,
-            value: c.id,
-            id: c.id,
-        }))
+        if (charities.value.length === 0) {
+            notifyError('Failed to load organizations. Please try again.')
+        } else {
+            allOrganizations.value = charities.value.map((c) => ({
+                label: c.name,
+                value: c.id,
+                id: c.id,
+            }))
+        }
     }
 }
 
