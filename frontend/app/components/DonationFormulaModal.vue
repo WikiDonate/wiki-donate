@@ -30,8 +30,8 @@
                             </label>
                             <SearchableSelect
                                 v-model="row.organization"
-                                :options="organizations"
-                                placeholder="Search or type organization..."
+                                :options="allOrganizations"
+                                placeholder="Search organization..."
                             />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
@@ -143,10 +143,12 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { useOrganizations } from '~/composables/useOrganizations'
+import { computed, ref, watch, onMounted } from 'vue'
+import { usePayPalCharities } from '~/composables/usePayPalCharities'
 
-const { organizations } = useOrganizations()
+const { charities, fetchCharities } = usePayPalCharities()
+
+const allOrganizations = ref([])
 
 const props = defineProps({
     modelValue: {
@@ -218,11 +220,29 @@ const isValid = computed(() => {
     if (rows.value.length === 0) return false
 
     return rows.value.every((row) => {
-        const orgValid = row.organization && row.organization.trim() !== ''
+        const orgValue = row.organization
+        const orgValid =
+            typeof orgValue === 'object' && orgValue !== null
+                ? orgValue.name && orgValue.name.trim() !== ''
+                : orgValue && orgValue.toString().trim() !== ''
         const percValid = row.percentage && parseFloat(row.percentage) > 0
         return orgValid && percValid
     })
 })
+
+// Load charities once on mount
+const loadAllCharities = async () => {
+    if (allOrganizations.value.length === 0) {
+        await fetchCharities('')
+        allOrganizations.value = charities.value.map((c) => ({
+            label: c.name,
+            value: c.id,
+            id: c.id,
+        }))
+    }
+}
+
+onMounted(loadAllCharities)
 
 /**
  * Adds a new empty row to the charity list
@@ -248,10 +268,26 @@ const handleSave = async () => {
     localIsSaving.value = true
     try {
         // Sanitize data: trim strings and ensure percentages are numeric
-        const sanitizedRows = rows.value.map((row) => ({
-            organization: row.organization.trim(),
-            percentage: parseFloat(row.percentage),
-        }))
+        const sanitizedRows = rows.value.map((row) => {
+            let orgName = ''
+            let orgId = null
+
+            if (
+                typeof row.organization === 'object' &&
+                row.organization !== null
+            ) {
+                orgName = row.organization.name || ''
+                orgId = row.organization.id || null
+            } else {
+                orgName = String(row.organization).trim()
+            }
+
+            return {
+                organization: orgName,
+                organization_id: orgId,
+                percentage: parseFloat(row.percentage),
+            }
+        })
 
         // Emit the save event with data
         emit('save', {
