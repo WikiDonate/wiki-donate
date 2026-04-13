@@ -9,7 +9,7 @@ class PayPalCharityScraper
 {
     private const BASE_URL = 'https://www.paypal.com/fundraiser/hub';
 
-    private const CACHE_TTL_MINUTES = 60;
+    private const CACHE_TTL_MINUTES = 1440;
 
     private const MAX_CHARITIES = 1000;
 

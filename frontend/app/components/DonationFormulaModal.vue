@@ -31,6 +31,7 @@
                             <SearchableSelect
                                 v-model="row.organization"
                                 :options="allOrganizations"
+                                :allow-custom="false"
                                 placeholder="Search organization..."
                             />
                         </div>
@@ -111,7 +112,7 @@
                     </div>
                 </div>
                 <p class="text-xs text-gray-600 mt-2 italic">
-                    * Select from list or type custom. Total must be 100%.
+                    * Select from list. Total must be 100%.
                 </p>
             </div>
         </div>
