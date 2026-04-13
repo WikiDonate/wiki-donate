@@ -4,12 +4,11 @@
         <div class="relative">
             <input
                 ref="inputRef"
-                :value="displayValue"
+                v-model="searchQuery"
                 type="text"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 class="border border-gray-300 rounded py-2 px-3 w-full focus:outline-none bg-white"
-                @input="handleInput"
                 @focus="handleFocus"
                 @blur="handleBlur"
                 @keydown="handleKeydown"
@@ -84,7 +83,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: [String, Object],
         default: '',
     },
     options: {
@@ -146,37 +145,27 @@ watch(isOpen, async (open) => {
     }
 })
 
-const displayValue = computed(() => {
-    if (!searchQuery.value && props.modelValue) {
-        const found = props.options.find((o) => o.value === props.modelValue)
-        return found ? found.label : props.modelValue
-    }
-    return searchQuery.value
-})
-
 const filteredOptions = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    const filtered = props.options.filter((option) =>
+
+    if (!query) {
+        return props.options
+    }
+
+    const matched = props.options.filter((option) =>
         option.label.toLowerCase().includes(query)
     )
 
-    if (
-        props.allowCustom &&
-        query &&
-        !props.options.some((o) => o.label.toLowerCase() === query)
-    ) {
-        return [...filtered, { label: query, value: query, isCustom: true }]
+    const hasExactMatch = props.options.some(
+        (o) => o.label.toLowerCase() === query
+    )
+
+    if (props.allowCustom && !hasExactMatch) {
+        return [...matched, { label: query, value: query, isCustom: true }]
     }
 
-    return filtered
+    return matched
 })
-
-const handleInput = (event) => {
-    searchQuery.value = event.target.value
-    highlightedIndex.value = -1
-    isOpen.value = true
-    emit('update:modelValue', event.target.value)
-}
 
 const handleFocus = () => {
     if (!props.disabled) {
@@ -241,7 +230,13 @@ const handleKeydown = (event) => {
 
 const selectOption = (option) => {
     searchQuery.value = option.label
-    emit('update:modelValue', option.value)
+
+    if (option.id) {
+        emit('update:modelValue', { id: option.id, name: option.label })
+    } else {
+        emit('update:modelValue', option.value)
+    }
+
     isOpen.value = false
     highlightedIndex.value = -1
 }
@@ -267,11 +262,21 @@ const scrollToHighlighted = () => {
 watch(
     () => props.modelValue,
     (newVal) => {
-        if (newVal !== searchQuery.value) {
-            const found = props.options.find((o) => o.value === newVal)
-            searchQuery.value = found ? found.label : newVal || ''
+        if (!newVal) {
+            searchQuery.value = ''
+            return
         }
-    }
+
+        const searchStr = typeof newVal === 'object' ? newVal.name : newVal
+
+        if (searchStr) {
+            const found = props.options.find(
+                (o) => o.value === newVal || o.id === newVal?.id
+            )
+            searchQuery.value = found ? found.label : searchStr
+        }
+    },
+    { immediate: true }
 )
 
 const handleClickOutside = (event) => {

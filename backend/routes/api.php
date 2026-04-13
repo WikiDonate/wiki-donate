@@ -7,6 +7,7 @@ use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonateController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\NotificationController;
+use App\Http\Controllers\v1\PayPalCharityController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
@@ -117,4 +118,7 @@ Route::prefix('v1')->group(function () {
         Route::get('search', [CauseController::class, 'searchCause']);
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
     });
+
+    // PayPal Charity Scraper
+    Route::get('paypal/charities', [PayPalCharityController::class, 'index']);
 });

@@ -291,7 +291,7 @@ class ArticleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'type' => 'nullable|string',
             'accessType' => 'nullable|in:public,private',
         ]);
@@ -299,29 +299,36 @@ class ArticleController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error',
+                'message' => 'Validation failed',
                 'errors' => $validator->errors()->all(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-            // Parse HTML sections
-            $sections = parseHtmlSection($request->content);
-            if (empty($sections)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => ['No sections found'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            // Parse HTML sections only if content is provided
+            $sections = [];
+            if (! empty($request->content)) {
+                $sections = parseHtmlSection($request->content);
+                if (empty($sections)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No content sections found',
+                        'errors' => ['No content sections found in the article'],
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
             }
 
-            // Check duplicate slug from articles table
-            $duplicateSlug = Article::where('slug', Str::slug($request->title))->first();
+            // Check duplicate slug + type combination from articles table
+            $articleType = $request->input('type', 'article');
+            $duplicateSlug = Article::where('slug', Str::slug($request->title))
+                ->where('type', $articleType)
+                ->first();
+
             if ($duplicateSlug) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Duplicate slug found',
-                    'errors' => ['Duplicate slug found'],
+                    'message' => 'Duplicate article',
+                    'errors' => ['An article with this title already exists. Please use a different title.'],
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 

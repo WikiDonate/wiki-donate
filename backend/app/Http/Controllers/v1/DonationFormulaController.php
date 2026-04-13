@@ -89,6 +89,7 @@ class DonationFormulaController extends Controller
             'article_slug' => 'required|string',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
+            'formula.*.organization_id' => 'nullable|integer',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
         ]);
 
@@ -154,6 +155,7 @@ class DonationFormulaController extends Controller
         $validator = Validator::make($request->all(), [
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
+            'formula.*.organization_id' => 'nullable|integer',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
         ]);
 
