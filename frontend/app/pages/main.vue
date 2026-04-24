@@ -20,7 +20,7 @@
                 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-6 text-gray-900"
             >
                 <NuxtLink
-                    to="/article?title=wikidonatehow-to-use-wikidonate"
+                    to="/how-it-works"
                     class="text-blue-500 hover:text-blue-700"
                 >
                     Read how to use WikiDonate
@@ -30,7 +30,7 @@
                 WikiDonate is to be collectively run by the users and runs
                 according to this document
                 <NuxtLink
-                    to="https://efy.koc.mybluehost.me/elementor-3694/"
+                    to="/how-it-works"
                     class="text-blue-500 hover:text-blue-700"
                 >
                     Learn more </NuxtLink
@@ -42,7 +42,7 @@
                 class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
             >
                 <NuxtLink
-                    href="/article?title=wikidonatehow-to-use-wikidonate"
+                    to="/how-it-works"
                     class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition"
                 >
                     <font-awesome-icon
