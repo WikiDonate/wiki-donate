@@ -2,6 +2,8 @@
     <div
         class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex flex-col"
     >
+        <Header />
+
         <!-- Main content -->
         <div class="container mx-auto flex-1 text-gray-800">
             <div class="flex space-x-4">
