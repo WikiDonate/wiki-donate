@@ -160,6 +160,20 @@
                                     <span>Total</span>
                                     <span class="text-indigo-700">100%</span>
                                 </div>
+                                <!-- Details -->
+                                <div
+                                    v-if="formula.details"
+                                    class="mt-3 pt-2 border-t border-gray-100"
+                                >
+                                    <p
+                                        class="text-xs text-gray-500 font-medium mb-1"
+                                    >
+                                        Details:
+                                    </p>
+                                    <p class="text-sm text-gray-700 italic">
+                                        {{ formula.details }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -301,12 +315,13 @@ const handleSaveDonationFormula = async (data) => {
         if (selectedFormula.value.uuid) {
             response = await articleService.updateDonationFormula(
                 selectedFormula.value.uuid,
-                { formula: data.formula }
+                { formula: data.formula, details: data.details }
             )
         } else {
             response = await articleService.saveDonationFormula({
                 article_slug: articleStore.article.slug,
                 formula: data.formula,
+                details: data.details,
             })
         }
 
