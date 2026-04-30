@@ -75,10 +75,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-    layout: 'full-layout',
-})
-
 useHead({
     title: 'Main Page',
 })

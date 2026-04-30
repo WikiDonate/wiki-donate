@@ -1,5 +1,5 @@
 <template>
-    <main class="w-full bg-white py-8">
+    <main class="w-full h-full bg-white py-8">
         <div class="container mx-auto px-2 sm:px-4 max-w-lg">
             <!-- Card Container -->
             <div

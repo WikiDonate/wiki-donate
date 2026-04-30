@@ -96,10 +96,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-    layout: 'full-layout',
-})
-
 useHead({
     title: 'How to Use WikiDonate',
 })

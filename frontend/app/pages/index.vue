@@ -66,10 +66,6 @@ useHead({
     title: 'WikiDonate - Discover Charities',
 })
 
-definePageMeta({
-    layout: 'full-layout',
-})
-
 const router = useRouter()
 const searchBox = ref(null)
 
