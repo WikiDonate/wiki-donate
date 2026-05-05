@@ -16,30 +16,9 @@
 
         <!-- Welcome Speech -->
         <div class="p-6 sm:p-10 text-gray-800 leading-relaxed">
-            <h1
-                class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-6 text-gray-900"
-            >
-                <NuxtLink
-                    to="/how-it-works"
-                    class="text-blue-500 hover:text-blue-700"
-                >
-                    Read how to use WikiDonate
-                </NuxtLink>
-            </h1>
-            <p class="text-base sm:text-lg text-gray-700 mb-6 text-center">
-                WikiDonate is to be collectively run by the users and runs
-                according to this document
-                <NuxtLink
-                    to="/how-it-works"
-                    class="text-blue-500 hover:text-blue-700"
-                >
-                    Learn more </NuxtLink
-                >.
-            </p>
-
             <!-- Links -->
             <div
-                class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+                class="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
                 <NuxtLink
                     to="/how-it-works"
@@ -52,6 +31,17 @@
                     How to Use WikiDonate
                 </NuxtLink>
                 <a
+                    href="https://efy.koc.mybluehost.me/elementor-3694/"
+                    target="_blank"
+                    class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-green-800 hover:bg-green-900 transition"
+                >
+                    <font-awesome-icon
+                        :icon="['fas', 'file']"
+                        class="w-5 h-5"
+                    />
+                    Founding Document
+                </a>
+                <a
                     href="https://github.com/WikiDonate/wiki-donate"
                     target="_blank"
                     class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-gray-800 hover:bg-gray-900 transition"
@@ -62,13 +52,6 @@
                     />
                     GitHub Repository
                 </a>
-            </div>
-
-            <!-- Footer note -->
-            <div class="mt-8 text-center text-gray-500 text-sm">
-                <p>
-                    This website is open-source on GitHub. Join us & contribute!
-                </p>
             </div>
         </div>
     </main>
