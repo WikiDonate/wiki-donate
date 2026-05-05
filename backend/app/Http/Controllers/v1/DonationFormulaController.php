@@ -91,6 +91,7 @@ class DonationFormulaController extends Controller
             'formula.*.organization' => 'required|string',
             'formula.*.organization_id' => 'nullable|integer',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
+            'details' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -130,6 +131,7 @@ class DonationFormulaController extends Controller
                 'article_id' => $article->id,
                 'user_id' => Auth::id(),
                 'formula' => $request->formula,
+                'details' => $request->details ?? null,
             ]);
 
             return response()->json([
@@ -157,6 +159,7 @@ class DonationFormulaController extends Controller
             'formula.*.organization' => 'required|string',
             'formula.*.organization_id' => 'nullable|integer',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
+            'details' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -202,6 +205,7 @@ class DonationFormulaController extends Controller
 
             $formula->update([
                 'formula' => $request->formula,
+                'details' => $request->details ?? null,
             ]);
 
             return response()->json([

@@ -12,6 +12,7 @@ class DonationFormula extends Model
         'article_id',
         'user_id',
         'formula',
+        'details',
     ];
 
     protected $casts = [

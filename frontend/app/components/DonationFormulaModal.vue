@@ -31,7 +31,7 @@
                             <SearchableSelect
                                 v-model="row.organization"
                                 :options="allOrganizations"
-                                :allow-custom="false"
+                                :allow-custom="true"
                                 placeholder="Search organization..."
                             />
                         </div>
@@ -115,6 +115,17 @@
                     * Select from list. Total must be 100%.
                 </p>
             </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Details
+                </label>
+                <FormTextarea
+                    v-model="details"
+                    rows="3"
+                    placeholder="Add any additional details..."
+                />
+            </div>
         </div>
 
         <template #footer>
@@ -147,6 +158,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { usePayPalCharities } from '~/composables/usePayPalCharities'
 import { useToastify } from '~/composables/useToastify'
+import FormTextarea from '~/components/FormTextarea.vue'
 
 const { charities, fetchCharities } = usePayPalCharities()
 const { notifyError } = useToastify()
@@ -174,6 +186,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'save'])
 const rows = ref([])
+const details = ref('')
 const localIsSaving = ref(false)
 
 const modalTitle = computed(() => {
@@ -185,20 +198,18 @@ watch(
     () => props.modelValue,
     (val) => {
         if (val) {
-            // Always reset when opening
             if (
                 props.initialData &&
                 props.initialData.formula &&
                 props.initialData.formula.length > 0
             ) {
-                // Clone initial data to avoid direct mutation
                 rows.value = JSON.parse(
                     JSON.stringify(props.initialData.formula)
                 )
             } else {
-                // Reset to default empty state
                 rows.value = [{ organization: '', percentage: 0 }]
             }
+            details.value = props.initialData?.details || ''
         }
     },
     { immediate: true }
@@ -299,6 +310,7 @@ const handleSave = async () => {
         // Emit the save event with data
         emit('save', {
             formula: sanitizedRows,
+            details: details.value || null,
         })
     } finally {
         localIsSaving.value = false

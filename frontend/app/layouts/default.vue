@@ -3,7 +3,7 @@
         <Header />
 
         <div class="container mx-auto flex flex-1 w-full">
-            <Sidebar />
+            <!-- <Sidebar /> -->
 
             <div class="flex-1 flex flex-col">
                 <div class="flex-1 p-4">
