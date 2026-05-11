@@ -2,7 +2,7 @@
     <div class="min-h-screen flex flex-col bg-white text-gray-800">
         <Header />
 
-        <div class="container mx-auto flex flex-1 w-full">
+        <div class="container mx-auto flex flex-1 w-full lg:px-10">
             <!-- <Sidebar /> -->
 
             <div class="flex-1 flex flex-col">

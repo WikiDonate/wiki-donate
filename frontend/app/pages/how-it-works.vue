@@ -44,7 +44,7 @@
                     class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center"
                 >
                     <h1
-                        class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4"
+                        class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4"
                     >
                         How WikiDonate Works
                     </h1>
@@ -79,7 +79,7 @@
                             <!-- Content -->
                             <div class="flex-1 text-center md:text-left">
                                 <h2
-                                    class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"
+                                    class="text-xl sm:text-xl font-bold text-gray-900 mb-2"
                                 >
                                     {{ step.title }}
                                 </h2>
