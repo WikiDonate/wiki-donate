@@ -28,11 +28,9 @@
                             >
                                 Organization
                             </label>
-                            <SearchableSelect
+                            <FormInput
                                 v-model="row.organization"
-                                :options="allOrganizations"
-                                :allow-custom="true"
-                                placeholder="Search organization..."
+                                placeholder="Organization name"
                             />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
@@ -112,7 +110,7 @@
                     </div>
                 </div>
                 <p class="text-xs text-gray-600 mt-2 italic">
-                    * Select from list. Total must be 100%.
+                    * Enter organization names. Total must be 100%.
                 </p>
             </div>
 
@@ -152,18 +150,28 @@
             />
         </template>
     </Modal>
+
+    <ConfirmModal
+        v-model="showSaveConfirm"
+        :title="
+            props.isEdit ? 'Update Donation Formula' : 'Save Donation Formula'
+        "
+        message-title="Confirm Your Action"
+        :message="
+            props.isEdit
+                ? 'Are you sure you want to update this donation formula?'
+                : 'Are you sure you want to save this donation formula?'
+        "
+        :confirm-text="props.isEdit ? 'Update' : 'Save'"
+        :is-loading="localIsSaving || props.isSaving"
+        @confirm="confirmSave"
+    />
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { usePayPalCharities } from '~/composables/usePayPalCharities'
-import { useToastify } from '~/composables/useToastify'
+import { computed, ref, watch } from 'vue'
 import FormTextarea from '~/components/FormTextarea.vue'
-
-const { charities, fetchCharities } = usePayPalCharities()
-const { notifyError } = useToastify()
-
-const allOrganizations = ref([])
+import ConfirmModal from '~/components/ConfirmModal.vue'
 
 const props = defineProps({
     modelValue: {
@@ -188,6 +196,8 @@ const emit = defineEmits(['update:modelValue', 'save'])
 const rows = ref([])
 const details = ref('')
 const localIsSaving = ref(false)
+const showSaveConfirm = ref(false)
+const pendingSaveData = ref(null)
 
 const modalTitle = computed(() => {
     return props.isEdit ? 'Edit Donation Formula' : 'Create Donation Formula'
@@ -198,6 +208,11 @@ watch(
     () => props.modelValue,
     (val) => {
         if (val) {
+            // Reset saving states when modal opens
+            localIsSaving.value = false
+            showSaveConfirm.value = false
+            pendingSaveData.value = null
+
             if (
                 props.initialData &&
                 props.initialData.formula &&
@@ -215,6 +230,18 @@ watch(
     { immediate: true }
 )
 
+// Reset local saving state when parent isSaving becomes false
+watch(
+    () => props.isSaving,
+    (val) => {
+        if (val === false) {
+            localIsSaving.value = false
+            showSaveConfirm.value = false
+            pendingSaveData.value = null
+        }
+    }
+)
+
 // Computed property to calculate the current sum of percentages
 const totalPercentage = computed(() => {
     return rows.value.reduce((sum, row) => {
@@ -223,44 +250,17 @@ const totalPercentage = computed(() => {
     }, 0)
 })
 
-/**
- * Checks if the entire form is valid:
- * 1. Total percentage is exactly 100
- * 2. Every row has a non-empty organization name
- * 3. Every row has a percentage greater than 0
- */
 const isValid = computed(() => {
     if (totalPercentage.value !== 100) return false
     if (rows.value.length === 0) return false
 
     return rows.value.every((row) => {
         const orgValue = row.organization
-        const orgValid =
-            typeof orgValue === 'object' && orgValue !== null
-                ? orgValue.name && orgValue.name.trim() !== ''
-                : orgValue && orgValue.toString().trim() !== ''
+        const orgValid = orgValue && orgValue.toString().trim() !== ''
         const percValid = row.percentage && parseFloat(row.percentage) > 0
         return orgValid && percValid
     })
 })
-
-// Load charities once on mount
-const loadAllCharities = async () => {
-    if (allOrganizations.value.length === 0) {
-        await fetchCharities('')
-        if (charities.value.length === 0) {
-            notifyError('Failed to load organizations. Please try again.')
-        } else {
-            allOrganizations.value = charities.value.map((c) => ({
-                label: c.name,
-                value: c.id,
-                id: c.id,
-            }))
-        }
-    }
-}
-
-onMounted(loadAllCharities)
 
 /**
  * Adds a new empty row to the charity list
@@ -276,44 +276,26 @@ const deleteRow = (index) => {
     rows.value.splice(index, 1)
 }
 
-/**
- * Validates and emits the saved donation formula data
- */
-const handleSave = async () => {
-    // Double check validity before proceeding
+const handleSave = () => {
     if (!isValid.value || props.isSaving || localIsSaving.value) return
 
-    localIsSaving.value = true
-    try {
-        // Sanitize data: trim strings and ensure percentages are numeric
-        const sanitizedRows = rows.value.map((row) => {
-            let orgName = ''
-            let orgId = null
+    const sanitizedRows = rows.value.map((row) => ({
+        organization: String(row.organization).trim(),
+        percentage: parseFloat(row.percentage),
+    }))
 
-            if (
-                typeof row.organization === 'object' &&
-                row.organization !== null
-            ) {
-                orgName = row.organization.name || ''
-                orgId = row.organization.id || null
-            } else {
-                orgName = String(row.organization).trim()
-            }
-
-            return {
-                organization: orgName,
-                organization_id: orgId,
-                percentage: parseFloat(row.percentage),
-            }
-        })
-
-        // Emit the save event with data
-        emit('save', {
-            formula: sanitizedRows,
-            details: details.value || null,
-        })
-    } finally {
-        localIsSaving.value = false
+    pendingSaveData.value = {
+        formula: sanitizedRows,
+        details: details.value || null,
     }
+    showSaveConfirm.value = true
+}
+
+const confirmSave = () => {
+    if (!pendingSaveData.value) return
+    localIsSaving.value = true
+    emit('save', pendingSaveData.value)
+    showSaveConfirm.value = false
+    pendingSaveData.value = null
 }
 </script>
