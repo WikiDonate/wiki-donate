@@ -99,17 +99,30 @@ const fetchSuggestions = async () => {
     }
 }
 
-const handleSearch = () => {
+const handleSearch = async () => {
     const query = searchQuery.value.replace(/\s+/g, '')
     if (query) {
         let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
-        const foundSuggestion = selectedSuggestions.value.find(
+        const foundSuggestion = selectedSuggestions.value?.find(
             (suggestion) =>
                 suggestion.title.toLowerCase() === query.toLowerCase()
         )
 
         if (foundSuggestion) {
             searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
+        } else {
+            try {
+                const response = await articleService.searchArticles(query)
+                const results = response.data
+                const exactMatch = results.find(
+                    (r) => r.title.toLowerCase() === query.toLowerCase()
+                )
+                if (exactMatch) {
+                    searchUrl = `/article?title=${encodeURIComponent(exactMatch.slug)}`
+                }
+            } catch {
+                // fall through to new article page
+            }
         }
 
         searchQuery.value = ''
