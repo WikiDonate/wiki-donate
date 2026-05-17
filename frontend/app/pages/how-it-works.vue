@@ -84,7 +84,30 @@
                                     {{ step.title }}
                                 </h2>
                                 <p class="text-gray-600 text-base sm:text-lg">
-                                    {{ step.description }}
+                                    <template
+                                        v-for="(
+                                            seg, segIdx
+                                        ) in step.description"
+                                        :key="segIdx"
+                                    >
+                                        <span v-if="seg.type === 'text'">{{
+                                            seg.value
+                                        }}</span>
+                                        <button
+                                            v-else
+                                            class="text-indigo-600 font-medium hover:underline focus:outline-none"
+                                            @click="
+                                                router.push(
+                                                    '/article?title=' +
+                                                        encodeURIComponent(
+                                                            seg.value
+                                                        )
+                                                )
+                                            "
+                                        >
+                                            {{ seg.value }}
+                                        </button>
+                                    </template>
                                 </p>
                             </div>
                         </div>
@@ -100,6 +123,7 @@ useHead({
     title: 'How to Use WikiDonate',
 })
 
+const router = useRouter()
 const activeSection = ref('step-0')
 
 const scrollToSection = (sectionId) => {
@@ -110,36 +134,65 @@ const scrollToSection = (sectionId) => {
     }
 }
 
-const steps = [
+function parseDescription(text) {
+    const segments = []
+    const regex = /\[\[([^\]]+)\]\]/g
+    let lastIndex = 0
+    let match
+
+    while ((match = regex.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+            segments.push({
+                type: 'text',
+                value: text.slice(lastIndex, match.index),
+            })
+        }
+        segments.push({ type: 'link', value: match[1] })
+        lastIndex = regex.lastIndex
+    }
+
+    if (lastIndex < text.length) {
+        segments.push({ type: 'text', value: text.slice(lastIndex) })
+    }
+
+    return segments
+}
+
+const steps = computed(() => [
     {
         title: 'Search for a cause or idea',
         icon: ['fas', 'search'],
-        description:
-            'On the search bar, you can search for a cause that you want to donate to like diabetes.',
+        description: parseDescription(
+            'On the search bar, you can search for a cause that you want to donate to like [[diabetes]]'
+        ),
     },
     {
         title: 'Choose a donation formula',
         icon: ['fas', 'calculator'],
-        description:
-            'A donation formula defines what collection of recipients and in what proportions would be best to distribute the donation in order to help your selected cause or idea. The page may have a list of donation formulas from different editors, such as international diabetes associations. Click Donate on the donation formula that you like best.',
+        description: parseDescription(
+            "A donation formula defines what collection of recipients and in what proportions would be best to distribute the donation in order to help your selected cause or idea. The page may have a list of donation formulas from different editors, such as international diabetes associations. Click 'Donate' on the donation formula that you like best."
+        ),
     },
     {
         title: 'Donate!',
         icon: ['fas', 'donate'],
-        description:
-            'On the payment page, confirm your donation. Currently, only PayPal is supported.',
+        description: parseDescription(
+            'Currently, only PayPal and Stripe is supported. On the payment page, confirm your donation.'
+        ),
     },
     {
-        title: 'Start your own cause',
+        title: 'Go further! Start your own cause',
         icon: ['fas', 'lightbulb'],
-        description:
-            'You can start a page for a cause or an idea, such as a new strategy to reduce deaths from air pollution. First search for it on the search bar. If it is not available, then confirm to create the new page.',
+        description: parseDescription(
+            "You can start a page for a cause or an idea, such as a new strategy to reduce deaths from air pollution. First search for it on the search bar. If it is not available, then click 'Save' to create the new page."
+        ),
     },
     {
-        title: 'Write your own donation formula',
+        title: 'Go further! Write your own donation formula',
         icon: ['fas', 'pen'],
-        description:
-            'Click the button Create donation formula at the bottom of the page of the cause or idea that you are interested in. Fill in your specifications. Click Save. Now other donors could use your formula too!',
+        description: parseDescription(
+            "Click the button 'Create donation formula' at the bottom of the page of the cause or idea that you are interested in. Fill in your specifications with the correct spelling. Any donation to a recipient who is unavailable will be refunded back to the donor. Click 'Save'. Now other donors could use your formula too! "
+        ),
     },
-]
+])
 </script>
