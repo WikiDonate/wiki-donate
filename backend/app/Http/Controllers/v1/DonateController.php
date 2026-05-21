@@ -195,7 +195,7 @@ class DonateController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
-            'cause_id' => 'required|exists:causes,id',
+            'cause_id' => 'nullable|exists:causes,id',
         ]);
 
         if ($validator->fails()) {
@@ -239,7 +239,9 @@ class DonateController extends Controller
             ]);
 
             // Create payment logs for NGOS
-            $paymentLogs = PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
+            if ($request->cause_id) {
+                PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
+            }
 
             return response()->json([
                 'success' => true,

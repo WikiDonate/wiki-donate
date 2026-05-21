@@ -3,7 +3,7 @@
     <button
         :class="buttonClasses"
         :disabled="disabled"
-        @click="!disabled && $emit('click')"
+        @click.stop="!disabled && $emit('click')"
     >
         <slot>{{ text }}</slot>
     </button>

@@ -56,7 +56,7 @@
                                 <Button
                                     width="auto"
                                     class="!py-1 !px-2 !text-xs !rounded-lg !bg-green-600 hover:!bg-green-700 border-none shadow-sm flex items-center gap-1"
-                                    @click.stop=""
+                                    @click="openDonateModal(formula)"
                                 >
                                     <font-awesome-icon
                                         :icon="['fas', 'heart']"
@@ -240,6 +240,14 @@
             :is-loading="submittingDelete"
             @confirm="handleConfirmDelete"
         />
+
+        <DonationPaymentModal
+            v-model="showPaymentModal"
+            :formula="selectedPaymentFormula?.formula || []"
+            :details="selectedPaymentFormula?.details || ''"
+            @payment-success="handlePaymentSuccess"
+            @payment-error="notifyError"
+        />
     </main>
 </template>
 
@@ -267,6 +275,8 @@ const showConfirmDelete = ref(false)
 const formulaToDelete = ref(null)
 const selectedFormula = ref({ formula: [] })
 const copiedUuid = ref(null)
+const showPaymentModal = ref(false)
+const selectedPaymentFormula = ref(null)
 
 const copyFormulaUrl = (uuid) => {
     const url = new URL(window.location.href)
@@ -276,6 +286,17 @@ const copyFormulaUrl = (uuid) => {
     setTimeout(() => {
         if (copiedUuid.value === uuid) copiedUuid.value = null
     }, 2000)
+}
+
+const openDonateModal = (formula) => {
+    selectedPaymentFormula.value = formula
+    showPaymentModal.value = true
+}
+
+const handlePaymentSuccess = ({ method, amount }) => {
+    showPaymentModal.value = false
+    selectedPaymentFormula.value = null
+    notifySuccess(`$${amount} donation via ${method} completed successfully!`)
 }
 
 const getUserFormulaIndex = (currentFormula) => {

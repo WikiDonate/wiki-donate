@@ -11,7 +11,7 @@ use App\Http\Controllers\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Editor & Admin shared routes (same paths as original, now role-gated)
-Route::middleware(['auth:sanctum', 'role:Editor,Admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('changePassword', [UserController::class, 'changePassword']);
 
