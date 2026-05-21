@@ -12,6 +12,8 @@
 <script setup>
 import { computed } from 'vue'
 
+defineEmits(['click'])
+
 // Define the props for the component
 const props = defineProps({
     text: {
