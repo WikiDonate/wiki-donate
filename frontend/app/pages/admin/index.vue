@@ -8,7 +8,7 @@
                 subtitle="Overview of your WikiDonate platform"
             />
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <StatCard
                     :icon="['fas', 'users']"
                     icon-bg="indigo"
@@ -126,7 +126,7 @@
                         Monthly Trends (Last 6 Months)
                     </h3>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6">
                     <div>
                         <h4
                             class="text-sm font-semibold text-gray-600 mb-3 flex items-center gap-2"

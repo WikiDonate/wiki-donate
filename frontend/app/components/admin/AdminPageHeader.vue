@@ -3,10 +3,12 @@
         class="bg-gradient-to-r from-indigo-600 to-purple-600"
         :class="containerClasses"
     >
-        <div class="flex items-center justify-between">
-            <div>
+        <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+            <div class="min-w-0">
                 <h2
-                    class="font-bold text-xl sm:text-2xl tracking-wide text-white"
+                    class="font-bold text-xl sm:text-2xl tracking-wide text-white truncate"
                 >
                     {{ title }}
                 </h2>
@@ -14,7 +16,7 @@
                     {{ subtitle }}
                 </p>
             </div>
-            <div v-if="$slots.actions" class="flex-shrink-0 ml-4">
+            <div v-if="$slots.actions" class="flex-shrink-0">
                 <slot name="actions" />
             </div>
         </div>
@@ -40,6 +42,6 @@ const props = defineProps({
 })
 
 const containerClasses = computed(() =>
-    props.card ? 'px-6 py-4' : 'rounded-xl px-6 py-5 mb-6'
+    props.card ? 'px-4 sm:px-6 py-4' : 'rounded-xl px-4 sm:px-6 py-5 mb-6'
 )
 </script>

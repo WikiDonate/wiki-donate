@@ -25,7 +25,7 @@
             <LoadingSpinner v-if="loading" text="Loading page content..." />
 
             <template v-else>
-                <div class="p-6 space-y-6">
+                <div class="p-4 sm:p-6 space-y-6">
                     <div
                         v-for="(step, index) in steps"
                         :key="index"
@@ -123,7 +123,7 @@
                 </div>
 
                 <div
-                    class="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3"
+                    class="px-4 sm:px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3"
                 >
                     <Button
                         variant="secondary"

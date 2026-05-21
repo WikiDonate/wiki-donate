@@ -11,7 +11,7 @@
 
             <div class="px-4 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1 max-w-md">
+                    <div class="relative flex-1">
                         <font-awesome-icon
                             :icon="['fas', 'search']"
                             class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -23,22 +23,24 @@
                             class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                         />
                     </div>
-                    <select
-                        v-model="filterType"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
-                    >
-                        <option value="">All Types</option>
-                        <option value="article">Article</option>
-                        <option value="user page">User Page</option>
-                    </select>
-                    <select
-                        v-model="filterAccess"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
-                    >
-                        <option value="">All Access</option>
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
-                    </select>
+                    <div class="flex gap-3 sm:w-auto w-full">
+                        <select
+                            v-model="filterType"
+                            class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                        >
+                            <option value="">All Types</option>
+                            <option value="article">Article</option>
+                            <option value="user page">User Page</option>
+                        </select>
+                        <select
+                            v-model="filterAccess"
+                            class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                        >
+                            <option value="">All Access</option>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -113,9 +115,9 @@
 
                 <div
                     v-if="meta.lastPage > 1"
-                    class="px-4 py-3 border-t border-gray-100 flex items-center justify-between"
+                    class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
-                    <span class="text-sm text-gray-500">
+                    <span class="text-sm text-gray-500 order-2 sm:order-1">
                         Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{
                             meta.total
                         }}
