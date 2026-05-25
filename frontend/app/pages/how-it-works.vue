@@ -44,7 +44,7 @@
                     class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center"
                 >
                     <h1
-                        class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4"
+                        class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4"
                     >
                         How WikiDonate Works
                     </h1>
@@ -79,12 +79,35 @@
                             <!-- Content -->
                             <div class="flex-1 text-center md:text-left">
                                 <h2
-                                    class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"
+                                    class="text-xl sm:text-xl font-bold text-gray-900 mb-2"
                                 >
                                     {{ step.title }}
                                 </h2>
                                 <p class="text-gray-600 text-base sm:text-lg">
-                                    {{ step.description }}
+                                    <template
+                                        v-for="(
+                                            seg, segIdx
+                                        ) in step.description"
+                                        :key="segIdx"
+                                    >
+                                        <span v-if="seg.type === 'text'">{{
+                                            seg.value
+                                        }}</span>
+                                        <button
+                                            v-else
+                                            class="text-indigo-600 font-medium hover:underline focus:outline-none"
+                                            @click="
+                                                router.push(
+                                                    '/article?title=' +
+                                                        encodeURIComponent(
+                                                            seg.value
+                                                        )
+                                                )
+                                            "
+                                        >
+                                            {{ seg.value }}
+                                        </button>
+                                    </template>
                                 </p>
                             </div>
                         </div>
@@ -96,11 +119,16 @@
 </template>
 
 <script setup>
+import api from '~/config/apiConfig'
+
 useHead({
     title: 'How to Use WikiDonate',
 })
 
+const router = useRouter()
 const activeSection = ref('step-0')
+const steps = ref([])
+const loading = ref(true)
 
 const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
@@ -110,36 +138,16 @@ const scrollToSection = (sectionId) => {
     }
 }
 
-const steps = [
-    {
-        title: 'Search for a cause or idea',
-        icon: ['fas', 'search'],
-        description:
-            'On the search bar, you can search for a cause that you want to donate to like diabetes.',
-    },
-    {
-        title: 'Choose a donation formula',
-        icon: ['fas', 'calculator'],
-        description:
-            'A donation formula defines what collection of recipients and in what proportions would be best to distribute the donation in order to help your selected cause or idea. The page may have a list of donation formulas from different editors, such as international diabetes associations. Click Donate on the donation formula that you like best.',
-    },
-    {
-        title: 'Donate!',
-        icon: ['fas', 'donate'],
-        description:
-            'On the payment page, confirm your donation. Currently, only PayPal is supported.',
-    },
-    {
-        title: 'Start your own cause',
-        icon: ['fas', 'lightbulb'],
-        description:
-            'You can start a page for a cause or an idea, such as a new strategy to reduce deaths from air pollution. First search for it on the search bar. If it is not available, then confirm to create the new page.',
-    },
-    {
-        title: 'Write your own donation formula',
-        icon: ['fas', 'pen'],
-        description:
-            'Click the button Create donation formula at the bottom of the page of the cause or idea that you are interested in. Fill in your specifications. Click Save. Now other donors could use your formula too!',
-    },
-]
+onMounted(async () => {
+    try {
+        const res = await api.get('/page-contents/how-it-works')
+        if (res.success) {
+            steps.value = res.data.content
+        }
+    } catch {
+        steps.value = []
+    } finally {
+        loading.value = false
+    }
+})
 </script>

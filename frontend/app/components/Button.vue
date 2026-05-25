@@ -3,7 +3,7 @@
     <button
         :class="buttonClasses"
         :disabled="disabled"
-        @click="!disabled && $emit('click')"
+        @click.stop="!disabled && $emit('click')"
     >
         <slot>{{ text }}</slot>
     </button>
@@ -11,6 +11,8 @@
 
 <script setup>
 import { computed } from 'vue'
+
+defineEmits(['click'])
 
 // Define the props for the component
 const props = defineProps({

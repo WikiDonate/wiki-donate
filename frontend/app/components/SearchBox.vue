@@ -162,25 +162,37 @@ const clearSearch = () => {
     timeoutId.value = null
 }
 
-const handleSearch = () => {
+const handleSearch = async () => {
     const query = searchQuery.value.replace(/\s+/g, '')
 
     if (isOnDonatePage.value || !query) {
         return
-    } else {
-        let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
-        const foundSuggestion = suggestions.value.find(
-            (suggestion) =>
-                suggestion.title.toLowerCase() === query.toLowerCase()
-        )
-
-        if (foundSuggestion) {
-            searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
-        }
-
-        clearSearch()
-        router.push(searchUrl)
     }
+
+    let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
+    const foundSuggestion = suggestions.value.find(
+        (suggestion) => suggestion.title.toLowerCase() === query.toLowerCase()
+    )
+
+    if (foundSuggestion) {
+        searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
+    } else {
+        try {
+            const response = await articleService.searchArticles(query)
+            const results = response.data
+            const exactMatch = results.find(
+                (r) => r.title.toLowerCase() === query.toLowerCase()
+            )
+            if (exactMatch) {
+                searchUrl = `/article?title=${encodeURIComponent(exactMatch.slug)}`
+            }
+        } catch {
+            // fall through to new article page
+        }
+    }
+
+    clearSearch()
+    router.push(searchUrl)
 }
 
 const selectSuggestion = (suggestion) => {

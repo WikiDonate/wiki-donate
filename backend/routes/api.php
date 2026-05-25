@@ -4,11 +4,9 @@ use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\CauseController;
 use App\Http\Controllers\v1\ContactController;
-use App\Http\Controllers\v1\DonateController;
 use App\Http\Controllers\v1\DonationFormulaController;
-use App\Http\Controllers\v1\NotificationController;
+use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalCharityController;
-use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Middleware\OptionalAuth;
@@ -19,101 +17,36 @@ Route::prefix('v1')->group(function () {
         'throttle:5,10',
     );
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout'])->middleware(
-        'auth:sanctum',
-    );
-    Route::post('changePassword', [
-        UserController::class,
-        'changePassword',
-    ])->middleware('auth:sanctum');
     Route::post('forgotPassword', [AuthController::class, 'forgotPassword']);
     Route::get('search', [ArticleController::class, 'search']);
     Route::post('contact', [ContactController::class, 'store']);
 
-    // Authenticated routes
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('donate', [DonateController::class, 'store']);
-        Route::post('donate-now', [DonateController::class, 'donateNow']);
-        Route::post('record-payment', [
-            DonateController::class,
-            'recordPaymentApi',
-        ]);
-    });
+    // Donation Formula routes (public)
+    Route::get('donation-formulas/article/{slug}', [
+        DonationFormulaController::class,
+        'index',
+    ]);
 
-    // Donation Formula routes
-    Route::prefix('donation-formulas')->group(function () {
-        // Publicly accessible route
-        Route::get('/article/{slug}', [
-            DonationFormulaController::class,
-            'index',
-        ]);
-
-        // Protected routes
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('/', [DonationFormulaController::class, 'store']);
-            Route::get('{uuid}', [DonationFormulaController::class, 'show']);
-            Route::put('{uuid}', [DonationFormulaController::class, 'update']);
-            Route::delete('{uuid}', [
-                DonationFormulaController::class,
-                'destroy',
-            ]);
-        });
-    });
-
-    // User authenticated routes
-    Route::prefix('user')
-        ->middleware('auth:sanctum')
-        ->group(function () {
-            Route::post('notifications', [
-                NotificationController::class,
-                'update',
-            ]);
-            Route::get('notifications', [
-                NotificationController::class,
-                'show',
-            ]);
-            Route::get('get', [UserController::class, 'getUserDetails']);
-            Route::put('update', [UserController::class, 'updateUser']);
-        });
-
-    // Articles routes
+    // Articles routes (public / optional auth)
     Route::prefix('articles')->group(function () {
         Route::middleware(OptionalAuth::class)->group(function () {
             Route::get('/', [ArticleController::class, 'index']);
-            // Move specific routes BEFORE dynamic slug routes
         });
 
-        Route::middleware('auth:sanctum')->group(function () {
-            // Put /my route FIRST before any slug routes
-            Route::get('my', [ArticleController::class, 'myArticles']);
-            Route::post('/', [ArticleController::class, 'save']);
-            Route::put('update/{slug}', [ArticleController::class, 'update']);
-        });
-
-        // Put dynamic slug routes LAST
         Route::middleware(OptionalAuth::class)->group(function () {
             Route::get('{slug}', [ArticleController::class, 'show']);
             Route::get('{slug}/history', [ArticleController::class, 'history']);
         });
     });
 
-    // Talk routes
+    // Talk routes (public)
     Route::prefix('talks')->group(function () {
         Route::get('{slug}', [TalkController::class, 'show']);
         Route::get('{slug}/history', [TalkController::class, 'history']);
-
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('/', [TalkController::class, 'save']);
-            Route::put('update/{slug}', [TalkController::class, 'update']);
-        });
-    });
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('stripe/card', [StripeController::class, 'addCard']);
-        Route::get('stripe/card', [StripeController::class, 'getCard']);
     });
 
+    // Cause routes (public)
     Route::prefix('causes')->group(function () {
-        // Public endpoints
         Route::get('/', [CauseController::class, 'getCauses']);
         Route::get('search', [CauseController::class, 'searchCause']);
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
@@ -121,4 +54,11 @@ Route::prefix('v1')->group(function () {
 
     // PayPal Charity Scraper
     Route::get('paypal/charities', [PayPalCharityController::class, 'index']);
+
+    // Public page content
+    Route::get('page-contents/{page}', [PageController::class, 'show']);
+
+    // Role-specific route files (loaded inside v1 prefix)
+    require __DIR__.'/api/editor.php';
+    require __DIR__.'/api/admin.php';
 });

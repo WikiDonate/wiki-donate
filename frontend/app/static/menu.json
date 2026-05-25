@@ -7,6 +7,14 @@
         "icon": ["fas", "home"]
     },
     {
+        "name": "Admin Panel",
+        "link": "/admin",
+        "type": "MainMenu",
+        "onLogin": "show",
+        "role": "Admin",
+        "icon": ["fas", "shield-alt"]
+    },
+    {
         "name": "Donate",
         "link": "/donate",
         "type": "MainMenu",
@@ -34,6 +42,14 @@
         "type": "TopMenu",
         "onLogin": "hide",
         "icon": ["fas", "sign-in-alt"]
+    },
+    {
+        "name": "Admin Panel",
+        "link": "/admin",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "role": "Admin",
+        "icon": ["fas", "shield-alt"]
     },
     {
         "name": "Profile Settings",

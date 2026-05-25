@@ -271,14 +271,19 @@ const topMenu = computed(() =>
 
 const mainMenu = computed(() =>
     menuData.filter(
-        (item) => item.type === 'MainMenu' && item.onLogin !== 'hide'
+        (item) =>
+            item.type === 'MainMenu' &&
+            item.onLogin !== 'hide' &&
+            (!item.role || authStore.roles?.includes(item.role))
     )
 )
 
 const logoutMenu = computed(() =>
     menuData.filter((item) =>
         authStore.isAuthenticated
-            ? item.type === 'LogoutMenu' && item.onLogin !== 'hide'
+            ? item.type === 'LogoutMenu' &&
+              item.onLogin !== 'hide' &&
+              (!item.role || authStore.roles?.includes(item.role))
             : item.type === 'LogoutMenu' && item.onLogin !== 'show'
     )
 )
