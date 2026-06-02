@@ -95,7 +95,7 @@
                                         }}</span>
                                         <button
                                             v-else
-                                            class="text-indigo-600 font-medium hover:underline focus:outline-none"
+                                            class="text-indigo-600 font-medium focus:outline-none"
                                             @click="
                                                 router.push(
                                                     '/article?title=' +
@@ -105,7 +105,9 @@
                                                 )
                                             "
                                         >
+                                            &nbsp;
                                             {{ seg.value }}
+                                            &nbsp;
                                         </button>
                                     </template>
                                 </p>
