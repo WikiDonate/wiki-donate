@@ -20,7 +20,8 @@
 
             <!-- Copyright -->
             <p class="text-gray-500 text-sm">
-                &copy; 2024 Wikidonate.org. All rights reserved.
+                &copy; {{ new Date().getFullYear() }} Wikidonate.org. All rights
+                reserved.
             </p>
         </div>
     </footer>
