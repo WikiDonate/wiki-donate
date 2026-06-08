@@ -30,7 +30,7 @@
                         User Profile
                     </button>
 
-                    <button
+                    <!-- <button
                         class="px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                         :class="
                             activeTab === 'notifications'
@@ -40,7 +40,7 @@
                         @click="activeTab = 'notifications'"
                     >
                         Notifications
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -75,12 +75,12 @@
                                 {{ authStore.user.roles[0] }}
                             </dd>
                         </div>
-                        <div>
+                        <!-- <div>
                             <dt class="text-sm text-gray-500">
                                 Number of Edits
                             </dt>
                             <dd class="font-medium text-gray-800">0</dd>
-                        </div>
+                        </div> -->
                         <div>
                             <dt class="text-sm text-gray-500">
                                 Registration Time

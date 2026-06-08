@@ -73,13 +73,6 @@
         "icon": ["fas", "cog"]
     },
     {
-        "name": "User Page",
-        "link": "/user/page",
-        "type": "LogoutMenu",
-        "onLogin": "show",
-        "icon": ["fas", "user"]
-    },
-    {
         "name": "Logout",
         "link": "/logout",
         "type": "LogoutMenu",
