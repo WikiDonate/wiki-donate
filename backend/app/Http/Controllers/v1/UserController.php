@@ -8,7 +8,6 @@ use App\Mail\CongratulationMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,7 +131,7 @@ class UserController extends Controller
             $user = User::create([
                 'username' => $request->username,
                 'email' => $request->email ?? null,
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
 
             $user->assignRole('Editor');
@@ -242,7 +241,7 @@ class UserController extends Controller
             }
 
             // Update to new password
-            $user->password = Hash::make($request->newPassword);
+            $user->password = $request->newPassword;
             $user->save();
 
             return response()->json([

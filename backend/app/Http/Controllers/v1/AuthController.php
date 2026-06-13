@@ -9,7 +9,6 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -82,11 +81,14 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => $validator->errors()->all(),
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error',
+                        'errors' => $validator->errors()->all(),
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                );
             }
 
             $credentials = [
@@ -95,25 +97,33 @@ class AuthController extends Controller
             ];
 
             if (! Auth::attempt($credentials)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => ['Incorrect username/password.'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error',
+                        'errors' => ['Incorrect username/password.'],
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                );
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User logged successfully',
-                'data' => new UserResource(Auth::user()),
-            ], Response::HTTP_OK);
-
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User logged successfully',
+                    'data' => new UserResource(Auth::user()),
+                ],
+                Response::HTTP_OK,
+            );
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
-            ], Response::HTTP_EXPECTATION_FAILED);
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Exceptions error',
+                    'errors' => [$e->getMessage()],
+                ],
+                Response::HTTP_EXPECTATION_FAILED,
+            );
         }
     }
 
@@ -155,17 +165,22 @@ class AuthController extends Controller
         try {
             $request->user()->currentAccessToken()->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User logged out successfully',
-            ], Response::HTTP_OK);
-
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User logged out successfully',
+                ],
+                Response::HTTP_OK,
+            );
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Error',
-                'message' => $e->getMessage(),
-            ], Response::HTTP_EXPECTATION_FAILED);
+            return response()->json(
+                [
+                    'success' => false,
+                    'error' => 'Error',
+                    'message' => $e->getMessage(),
+                ],
+                Response::HTTP_EXPECTATION_FAILED,
+            );
         }
     }
 
@@ -177,39 +192,52 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error',
-                    'errors' => $validator->errors()->all(),
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error',
+                        'errors' => $validator->errors()->all(),
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                );
             }
 
             $user = User::where('email', $request->email)->first();
             if (! $user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error!',
-                    'errors' => ['User not found.'],
-                ], Response::HTTP_NOT_FOUND);
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error!',
+                        'errors' => ['User not found.'],
+                    ],
+                    Response::HTTP_NOT_FOUND,
+                );
             }
 
-            $temporaryPassword = Str::random(8); // For testing i can use hardcode
-            $user->password = Hash::make($temporaryPassword);
+            $temporaryPassword = Str::random(8);
+            $user->password = $temporaryPassword;
             $user->save();
 
-            Mail::to($user->email)->queue(new TemporaryPasswordMail($temporaryPassword));
+            Mail::to($user->email)->queue(
+                new TemporaryPasswordMail($temporaryPassword),
+            );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'A temporary password has been sent to your email.',
-            ], Response::HTTP_OK);
-
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'A temporary password has been sent to your email.',
+                ],
+                Response::HTTP_OK,
+            );
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
-            ], Response::HTTP_EXPECTATION_FAILED);
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Exceptions error',
+                    'errors' => [$e->getMessage()],
+                ],
+                Response::HTTP_EXPECTATION_FAILED,
+            );
         }
     }
 }
