@@ -15,6 +15,7 @@ class VerificationEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
+
     public $verificationUrl;
 
     /**

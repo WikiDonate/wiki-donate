@@ -316,11 +316,11 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             if (! hash_equals(sha1($user->email), $hash)) {
-                return redirect()->to('/verify-email?status=error&message=' . urlencode('Invalid verification link.'));
+                return redirect()->to('/verify-email?status=error&message='.urlencode('Invalid verification link.'));
             }
 
             if ($user->hasVerifiedEmail()) {
-                return redirect()->to('/verify-email?status=success&message=' . urlencode('Email already verified.'));
+                return redirect()->to('/verify-email?status=success&message='.urlencode('Email already verified.'));
             }
 
             $user->markEmailAsVerified();
@@ -331,7 +331,7 @@ class UserController extends Controller
             return redirect()->to('/verify-email?status=success');
 
         } catch (Exception $e) {
-            return redirect()->to('/verify-email?status=error&message=' . urlencode('Verification failed: ' . $e->getMessage()));
+            return redirect()->to('/verify-email?status=error&message='.urlencode('Verification failed: '.$e->getMessage()));
         }
     }
 

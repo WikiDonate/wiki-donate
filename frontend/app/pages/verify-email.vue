@@ -12,9 +12,7 @@
                     <h1 class="text-2xl md:text-3xl font-bold">
                         Email Verification
                     </h1>
-                    <p class="mt-2 text-sm">
-                        Verifying your email address
-                    </p>
+                    <p class="mt-2 text-sm">Verifying your email address</p>
                 </div>
 
                 <div class="p-6 sm:p-8 text-center">
@@ -98,7 +96,10 @@
                             Verification Failed
                         </h2>
                         <p class="text-gray-600 text-sm">
-                            {{ errorMessage || 'The verification link is invalid or has expired. Please request a new one.' }}
+                            {{
+                                errorMessage ||
+                                'The verification link is invalid or has expired. Please request a new one.'
+                            }}
                         </p>
                         <div class="pt-4 space-y-2">
                             <NuxtLink
@@ -160,7 +161,8 @@ onMounted(async () => {
             errorMessage.value = response.message || 'Verification failed.'
         }
     } catch (error) {
-        errorMessage.value = error.message || 'An error occurred during verification.'
+        errorMessage.value =
+            error.message || 'An error occurred during verification.'
     } finally {
         isLoading.value = false
     }

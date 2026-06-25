@@ -111,6 +111,7 @@ class AuthController extends Controller
 
             if (! $user->hasVerifiedEmail()) {
                 Auth::logout();
+
                 return response()->json(
                     [
                         'success' => false,
