@@ -18,9 +18,66 @@
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
+                    <!-- Success Message after registration -->
+                    <div v-if="registrationSuccess" class="space-y-4">
+                        <div class="flex justify-center">
+                            <div
+                                class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center"
+                            >
+                                <svg
+                                    class="w-8 h-8 text-green-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                    ></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h2
+                            class="text-xl font-semibold text-gray-800 text-center"
+                        >
+                            Check Your Email
+                        </h2>
+                        <p class="text-gray-600 text-sm text-center">
+                            We've sent a verification link to
+                            <strong>{{ registeredEmail }}</strong
+                            >. Please check your inbox and click the link to
+                            verify your account.
+                        </p>
+                        <p class="text-gray-500 text-xs text-center">
+                            Didn't receive the email?
+                            <button
+                                type="button"
+                                class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
+                                :disabled="resendCooldown > 0"
+                                @click="resendVerification"
+                            >
+                                {{
+                                    resendCooldown > 0
+                                        ? `Resend in ${resendCooldown}s`
+                                        : 'Resend verification email'
+                                }}
+                            </button>
+                        </p>
+                        <div class="pt-4 text-center">
+                            <NuxtLink
+                                to="/login"
+                                class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                            >
+                                Go to Login
+                            </NuxtLink>
+                        </div>
+                    </div>
+
                     <!-- Message -->
                     <AlertMessage
-                        v-if="showAlert"
+                        v-else-if="showAlert"
                         :variant="alertVariant"
                         :message="alertMessage"
                         class="mb-6"
@@ -28,7 +85,11 @@
                     />
 
                     <!-- Form -->
-                    <form class="space-y-4" @submit.prevent="onSubmit">
+                    <form
+                        v-if="!registrationSuccess"
+                        class="space-y-4"
+                        @submit.prevent="onSubmit"
+                    >
                         <label
                             for="username"
                             class="block text-sm font-medium text-gray-700 mb-1"
@@ -132,7 +193,10 @@ useHead({
 const showAlert = ref(false)
 const alertVariant = ref('')
 const alertMessage = ref('')
-// const reCaptchaToken = ref('')
+const registrationSuccess = ref(false)
+const registeredEmail = ref('')
+const resendCooldown = ref(0)
+let resendTimer = null
 
 const validationSchema = yup.object({
     username: yup
@@ -166,24 +230,53 @@ const [email, emailProps] = defineField('email')
 
 const isLoading = ref(false)
 
+const startResendCooldown = () => {
+    resendCooldown.value = 60
+    resendTimer = setInterval(() => {
+        resendCooldown.value--
+        if (resendCooldown.value <= 0) {
+            clearInterval(resendTimer)
+        }
+    }, 1000)
+}
+
+const resendVerification = async () => {
+    if (resendCooldown.value > 0) return
+
+    try {
+        const response = await userService.resendVerificationEmail({
+            email: registeredEmail.value,
+        })
+        if (response.success) {
+            alertVariant.value = 'success'
+            alertMessage.value =
+                'Verification email sent. Please check your inbox.'
+            showAlert.value = true
+            startResendCooldown()
+        } else {
+            alertVariant.value = 'error'
+            alertMessage.value =
+                response.errors?.[0] ||
+                response.message ||
+                'Failed to resend email.'
+            showAlert.value = true
+        }
+    } catch (error) {
+        alertVariant.value = 'error'
+        alertMessage.value =
+            error.errors?.[0] || error.message || 'Failed to resend email.'
+        showAlert.value = true
+    }
+}
+
 const onSubmit = handleSubmit(async (values) => {
     // Reset alert visibility
     showAlert.value = false
     isLoading.value = true
 
     try {
-        // if (!reCaptchaToken.value) {
-        //     setTimeout(() => {
-        //         alertVariant.value = 'error'
-        //         alertMessage.value = 'Please verify you are not a robot'
-        //         showAlert.value = true
-        //     }, 0)
-        //     return
-        // }
-
         const response = await userService.register({
             ...values,
-            // token: reCaptchaToken.value,
         })
         if (!response.success) {
             setTimeout(() => {
@@ -195,19 +288,23 @@ const onSubmit = handleSubmit(async (values) => {
             return
         }
 
+        registeredEmail.value = values.email
         resetForm()
-        alertVariant.value = 'success'
-        alertMessage.value = response.message
-        showAlert.value = true
+        registrationSuccess.value = true
+        startResendCooldown()
     } catch (error) {
         setTimeout(() => {
             console.log(error)
             alertVariant.value = 'error'
-            alertMessage.value = error.errors[0]
+            alertMessage.value = error.errors?.[0] || 'Registration failed'
             showAlert.value = true
         }, 0)
     } finally {
         isLoading.value = false
     }
+})
+
+onUnmounted(() => {
+    if (resendTimer) clearInterval(resendTimer)
 })
 </script>

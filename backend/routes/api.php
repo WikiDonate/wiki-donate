@@ -21,11 +21,14 @@ Route::prefix('v1')->group(function () {
 
     // Email verification routes
     Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
-        ->middleware(['signed', 'throttle:6,1'])
+        ->middleware(['throttle:6,1'])
         ->name('verification.verify');
     Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])
         ->middleware(['auth:sanctum', 'throttle:6,1'])
         ->name('verification.resend');
+    Route::post('/email/resend-by-email', [UserController::class, 'resendVerificationByEmail'])
+        ->middleware(['throttle:6,1'])
+        ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
     Route::post('contact', [ContactController::class, 'store']);
 

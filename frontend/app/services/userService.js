@@ -35,6 +35,10 @@ const verifyEmail = (id, hash) => {
     return api.get(`/email/verify/${id}/${hash}`)
 }
 
+const resendVerificationEmail = (params) => {
+    return api.post('/email/resend-by-email', params)
+}
+
 export const userService = {
     register,
     forgotPassword,
@@ -45,4 +49,5 @@ export const userService = {
     getUserDetails,
     updateUserDetails,
     verifyEmail,
+    resendVerificationEmail,
 }

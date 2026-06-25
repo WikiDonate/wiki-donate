@@ -8,7 +8,6 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\URL;
 
 class VerificationEmail extends Mailable
 {
@@ -24,11 +23,10 @@ class VerificationEmail extends Mailable
     public function __construct($data)
     {
         $this->data = $data;
-        $this->verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $data->id, 'hash' => sha1($data->email)]
-        );
+        $this->verificationUrl = config('app.frontend_url').'/verify-email?'.http_build_query([
+            'id' => $data->id,
+            'hash' => sha1($data->email),
+        ]);
     }
 
     /**

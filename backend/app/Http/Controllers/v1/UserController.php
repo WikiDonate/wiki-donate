@@ -131,8 +131,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'User registered successfully',
-                'data' => new UserResource($user),
+                'message' => 'User registered successfully. Please check your email to verify your account.',
             ], Response::HTTP_CREATED);
 
         } catch (Exception $e) {
@@ -316,11 +315,17 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             if (! hash_equals(sha1($user->email), $hash)) {
-                return redirect()->to('/verify-email?status=error&message='.urlencode('Invalid verification link.'));
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid verification link.',
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             if ($user->hasVerifiedEmail()) {
-                return redirect()->to('/verify-email?status=success&message='.urlencode('Email already verified.'));
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Email already verified.',
+                ], Response::HTTP_OK);
             }
 
             $user->markEmailAsVerified();
@@ -328,10 +333,16 @@ class UserController extends Controller
             // Send congratulations email via queue after verification
             Mail::to($user->email)->queue(new CongratulationMail($user));
 
-            return redirect()->to('/verify-email?status=success');
+            return response()->json([
+                'success' => true,
+                'message' => 'Email verified successfully.',
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
-            return redirect()->to('/verify-email?status=error&message='.urlencode('Verification failed: '.$e->getMessage()));
+            return response()->json([
+                'success' => false,
+                'message' => 'Verification failed: '.$e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -355,6 +366,49 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Verification email sent.',
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Exceptions error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+    }
+
+    /**
+     * Resend verification email by email address (for unverified users who cannot login).
+     */
+    public function resendVerificationByEmail(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error',
+                    'errors' => $validator->errors()->all(),
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if ($user->hasVerifiedEmail()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email already verified. Please login.',
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $user->sendEmailVerificationNotification();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification email sent. Please check your inbox.',
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
