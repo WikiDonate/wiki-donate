@@ -107,6 +107,20 @@ class AuthController extends Controller
                 );
             }
 
+            $user = Auth::user();
+
+            if (! $user->hasVerifiedEmail()) {
+                Auth::logout();
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error',
+                        'errors' => ['Please verify your email before logging in.'],
+                    ],
+                    Response::HTTP_FORBIDDEN,
+                );
+            }
+
             return response()->json(
                 [
                     'success' => true,

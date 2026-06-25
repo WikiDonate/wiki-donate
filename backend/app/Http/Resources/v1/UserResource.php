@@ -24,11 +24,6 @@ class UserResource extends JsonResource
             'customer_id' => $this->customer_id,
             'card_id' => $this->card_id,
             'phone' => $this->phone,
-            'address' => $this->address,
-            'city' => $this->city,
-            'state' => $this->state,
-            'country' => $this->country,
-            'zip_code' => $this->zip_code,
             'roles' => $this->roles->pluck('name'),
             'createdAt' => $this->created_at->format('d F, Y'),
         ];

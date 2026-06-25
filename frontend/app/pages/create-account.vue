@@ -73,12 +73,12 @@
                             for="email"
                             class="block text-sm font-medium text-gray-700 mb-1"
                         >
-                            Email
+                            Email <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="email"
                             type="email"
-                            placeholder="Enter your email (Recommended)"
+                            placeholder="Enter your email"
                             v-bind="emailProps"
                             :error-message="errors['email']"
                         />
@@ -147,7 +147,10 @@ const validationSchema = yup.object({
         .string()
         .required('Confirm Password is required')
         .oneOf([yup.ref('password'), null], 'Passwords must match'),
-    email: yup.string().nullable().email('Email must be a valid email'),
+    email: yup
+        .string()
+        .required('Email is required')
+        .email('Email must be a valid email'),
 })
 
 // Setup VeeValidate

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\UserResource;
 use App\Mail\CongratulationMail;
+use App\Mail\VerificationEmail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -96,7 +97,7 @@ class UserController extends Controller
                 'username' => 'required|unique:users',
                 'password' => 'required',
                 'confirmPassword' => 'required|same:password',
-                'email' => 'nullable|email|unique:users',
+                'email' => 'required|email|unique:users',
                 // 'token' => 'required',
             ]);
 
@@ -116,30 +117,17 @@ class UserController extends Controller
             //     ], Response::HTTP_FORBIDDEN);
             // }
 
-            if (! empty($user->email)) {
-                $disposable = Http::get("https://open.kickbox.com/v1/disposable/$email");
-                if ($disposable->json()['disposable'] ?? false) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Disposable email address',
-                        'errors' => 'Disposable email addresses are not allowed.',
-                    ], Response::HTTP_FORBIDDEN);
-                }
-            }
-
             // Create user
             $user = User::create([
                 'username' => $request->username,
-                'email' => $request->email ?? null,
+                'email' => $request->email,
                 'password' => $request->password,
             ]);
 
             $user->assignRole('Editor');
 
-            // Send email
-            if (! empty($user->email)) {
-                Mail::to($user->email)->queue(new CongratulationMail($user));
-            }
+            // Send verification email via queue
+            Mail::to($user->email)->queue(new VerificationEmail($user));
 
             return response()->json([
                 'success' => true,
@@ -314,6 +302,65 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+    }
+
+    /**
+     * Verify the user's email address.
+     */
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            if (! hash_equals(sha1($user->email), $hash)) {
+                return redirect()->to('/verify-email?status=error&message=' . urlencode('Invalid verification link.'));
+            }
+
+            if ($user->hasVerifiedEmail()) {
+                return redirect()->to('/verify-email?status=success&message=' . urlencode('Email already verified.'));
+            }
+
+            $user->markEmailAsVerified();
+
+            // Send congratulations email via queue after verification
+            Mail::to($user->email)->queue(new CongratulationMail($user));
+
+            return redirect()->to('/verify-email?status=success');
+
+        } catch (Exception $e) {
+            return redirect()->to('/verify-email?status=error&message=' . urlencode('Verification failed: ' . $e->getMessage()));
+        }
+    }
+
+    /**
+     * Resend the email verification notification.
+     */
+    public function resendVerificationEmail(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            if ($user->hasVerifiedEmail()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email already verified.',
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $user->sendEmailVerificationNotification();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification email sent.',
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Exceptions error',
                 'errors' => [$e->getMessage()],
             ], Response::HTTP_EXPECTATION_FAILED);
         }

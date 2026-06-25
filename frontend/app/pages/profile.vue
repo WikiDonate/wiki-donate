@@ -80,91 +80,6 @@
                 </div>
             </div>
 
-            <!-- Billing Info -->
-            <div
-                class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-            >
-                <!-- Card Header -->
-                <div
-                    class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                >
-                    <h2 class="text-lg sm:text-xl font-semibold">
-                        Billing Information
-                    </h2>
-                </div>
-                <!-- Card Body -->
-                <div class="p-6 space-y-5">
-                    <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Address <span class="text-red-500">*</span></label
-                        >
-                        <FormInput
-                            v-model="address"
-                            type="text"
-                            placeholder="Enter address"
-                            v-bind="addressProps"
-                            :error-message="errors.address"
-                        />
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >City <span class="text-red-500">*</span></label
-                            >
-                            <FormInput
-                                v-model="city"
-                                type="text"
-                                placeholder="Enter city"
-                                v-bind="cityProps"
-                                :error-message="errors.city"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >State
-                                <span class="text-red-500">*</span></label
-                            >
-                            <FormInput
-                                v-model="state"
-                                type="text"
-                                placeholder="Enter state"
-                                v-bind="stateProps"
-                                :error-message="errors.state"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >ZIP Code <span class="text-red-500">*</span></label
-                        >
-                        <FormInput
-                            v-model="zipCode"
-                            type="text"
-                            placeholder="Enter ZIP code"
-                            v-bind="zipCodeProps"
-                            :error-message="errors.zipCode"
-                        />
-                    </div>
-                    <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Country <span class="text-red-500">*</span></label
-                        >
-                        <FormInput
-                            v-model="country"
-                            type="text"
-                            placeholder="Enter country"
-                            v-bind="countryProps"
-                            :error-message="errors.country"
-                        />
-                    </div>
-                </div>
-            </div>
-
             <!-- Submit Button -->
             <div class="flex justify-center">
                 <FormSubmitButton
@@ -205,11 +120,6 @@ const validationSchema = yup.object({
     phone: yup
         .string()
         .matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
-    address: yup.string().required('Address is required'),
-    city: yup.string().required('City is required'),
-    state: yup.string().required('State is required'),
-    zipCode: yup.string().required('ZIP Code is required'),
-    country: yup.string().required('Country is required'),
 })
 
 // Setup vee-validate form
@@ -219,11 +129,6 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
         name: '',
         email: '',
         phone: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: '',
     },
 })
 
@@ -231,11 +136,6 @@ const { handleSubmit, defineField, errors, resetForm } = useForm({
 const [name, nameProps] = defineField('name')
 const [email, emailProps] = defineField('email')
 const [phone, phoneProps] = defineField('phone')
-const [address, addressProps] = defineField('address')
-const [city, cityProps] = defineField('city')
-const [state, stateProps] = defineField('state')
-const [zipCode, zipCodeProps] = defineField('zipCode')
-const [country, countryProps] = defineField('country')
 
 // Fetch user on mounted
 onMounted(async () => {
@@ -252,11 +152,6 @@ watch(
                     name: user.name ?? '',
                     email: user.email ?? '',
                     phone: user.phone ?? '',
-                    address: user.address ?? '',
-                    city: user.city ?? '',
-                    state: user.state ?? '',
-                    zipCode: user.zip_code ?? '',
-                    country: user.country ?? '',
                 },
             })
         }
@@ -270,11 +165,6 @@ const onSubmit = handleSubmit(async (values) => {
         name: values.name,
         email: values.email,
         phone: values.phone,
-        address: values.address,
-        city: values.city,
-        state: values.state,
-        zip_code: values.zipCode,
-        country: values.country,
     })
 })
 </script>

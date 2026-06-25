@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory,HasRoles,Notifiable;
@@ -30,11 +32,6 @@ class User extends Authenticatable
         'customer_id',
         'card_id',
         'phone',
-        'address',
-        'city',
-        'state',
-        'country',
-        'zip_code',
     ];
 
     protected $hidden = [
@@ -65,5 +62,15 @@ class User extends Authenticatable
                 $model->uuid = Str::uuid()->toString();
             }
         });
+    }
+
+    /**
+     * Send the email verification notification using our custom mailable.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        \Illuminate\Support\Facades\Mail::to($this->email)->queue(
+            new \App\Mail\VerificationEmail($this)
+        );
     }
 }
