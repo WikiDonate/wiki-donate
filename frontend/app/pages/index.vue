@@ -96,4 +96,39 @@ const changeLanguage = (langCode) => {
     }
     attempt()
 }
+
+onMounted(() => {
+    // Create the script element
+    const script = document.createElement('script')
+    script.src = 'https://aichatbot.devshahaj.com/widget.js'
+    script.async = true
+
+    // Set all the custom attributes
+    script.setAttribute(
+        'data-chatbot-id',
+        '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0'
+    )
+    script.setAttribute('data-api-key', 'sk_32j86polvubgcdbltft1s')
+    script.setAttribute('data-position', 'bottom-right')
+    script.setAttribute('data-primary-color', '#3b82f6')
+    script.setAttribute('data-secondary-color', '#ffffff')
+    script.setAttribute('data-name', 'Wikidonate Support')
+    script.setAttribute('data-avatar-url', '')
+
+    // Give it an ID so we can clean it up later
+    script.id = 'ai-chatbot-script'
+
+    // Append to the body
+    document.body.appendChild(script)
+})
+
+onBeforeUnmount(() => {
+    // Clean up the script when leaving the page (optional but recommended)
+    const script = document.getElementById('ai-chatbot-script')
+    if (script) {
+        script.remove()
+    }
+    // If the widget creates a global window object or DOM element,
+    // you might need to manually remove its container div here too.
+})
 </script>
