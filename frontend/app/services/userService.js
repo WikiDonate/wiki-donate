@@ -30,6 +30,15 @@ const getUserDetails = () => {
 const updateUserDetails = (params) => {
     return api.put('/user/update', params)
 }
+
+const verifyEmail = (id, hash) => {
+    return api.get(`/email/verify/${id}/${hash}`)
+}
+
+const resendVerificationEmail = (params) => {
+    return api.post('/email/resend-by-email', params)
+}
+
 export const userService = {
     register,
     forgotPassword,
@@ -39,4 +48,6 @@ export const userService = {
     getUserPage,
     getUserDetails,
     updateUserDetails,
+    verifyEmail,
+    resendVerificationEmail,
 }
