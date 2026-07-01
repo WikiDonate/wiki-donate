@@ -28,7 +28,7 @@ That's it. Laravel's scheduler handles everything else based on `routes/console.
 
 | Task | Frequency | Description |
 |------|-----------|-------------|
-| `queue:work --stop-when-empty --max-time=1800` | Every minute | Processes queued jobs (donations, emails, notifications) then exits. Safety cap of 30 min per run. |
+| `queue:work --stop-when-empty --max-time=1800` | Every minute | Processes queued jobs (donations, emails, notifications) then exits. Safety cap of 30 min per run. Mutex expires after 90 min to prevent stuck locks. |
 | `queue:prune-failed --hours=48` | Daily | Removes failed job records older than 48 hours |
 | `sanctum:prune-expired` | Daily | Cleans up expired API tokens |
 | `paypal:scrape-charities` | Daily at 3 AM | *(commented out — uncomment when ready)* Pre-warms PayPal charity cache |
@@ -74,4 +74,6 @@ tail -f /home/yourusername/wikidonate/backend/storage/logs/laravel.log
 - Run manually to test: `php artisan schedule:run`
 
 ### "withoutOverlapping is preventing my task from running"
-Tasks using `withoutOverlapping()` check if a previous instance is still running (via a cache key). If the previous one is still going, the new one is skipped. This is intentional — it prevents duplicate processing. If a task gets stuck, the mutex eventually expires (typically 1440 minutes).
+Tasks using `withoutOverlapping()` check if a previous instance is still running (via a mutex cache key). If the previous one is still going, the new one is skipped — this prevents duplicate processing.
+
+The queue worker now uses `withoutOverlapping(90)` so the lock expires after 90 minutes instead of the default 1440. This means if a worker crashes without releasing its lock, the next run will succeed within 90 minutes instead of waiting 24 hours.

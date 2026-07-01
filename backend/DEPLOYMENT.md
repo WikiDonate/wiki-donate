@@ -24,7 +24,7 @@ Defined in `routes/console.php`:
 
 | When | What | Why |
 |---|---|---|
-| Every minute | `queue:work --stop-when-empty --max-time=1800` | Processes queued jobs (donation confirmations, email notifications, etc.) |
+| Every minute | `queue:work --stop-when-empty --max-time=1800` | Processes queued jobs (donation confirmations, email notifications, etc.). Mutex expires after 90 min to prevent stuck locks. |
 | Daily | `queue:prune-failed --hours=48` | Cleans up failed job records older than 48 hours |
 | Daily | `sanctum:prune-expired` | Removes expired API tokens from the database |
 | Daily at 03:00 (commented) | `paypal:scrape-charities` | Pre-warms PayPal charity cache — uncomment when needed |
