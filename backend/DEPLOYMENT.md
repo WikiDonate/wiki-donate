@@ -24,10 +24,9 @@ Defined in `routes/console.php`:
 
 | When | What | Why |
 |---|---|---|
-| Every minute | `queue:work --stop-when-empty` | Processes queued jobs (donation confirmations, email notifications, etc.) |
-| Daily at midnight | `queue:prune-failed --hours=48` | Cleans up failed job records older than 48 hours |
-| Daily at midnight | `sanctum:prune-expired` | Removes expired API tokens from the database |
-| Daily at midnight | `session:prune --hours=72` | Removes session records older than 72 hours |
+| Every minute | `queue:work --stop-when-empty --max-time=1800` | Processes queued jobs (donation confirmations, email notifications, etc.) |
+| Daily | `queue:prune-failed --hours=48` | Cleans up failed job records older than 48 hours |
+| Daily | `sanctum:prune-expired` | Removes expired API tokens from the database |
 | Daily at 03:00 (commented) | `paypal:scrape-charities` | Pre-warms PayPal charity cache — uncomment when needed |
 
 ## How Queue Workers Work on cPanel
@@ -36,7 +35,7 @@ Since cPanel doesn't support long-running daemon processes, the scheduler runs `
 
 1. It picks up any pending jobs from the `jobs` table
 2. Processes them (up to 3 retries, 120 second timeout each)
-3. Exits cleanly when the queue is empty
+3. Exits cleanly when the queue is empty (or after 30 min max)
 4. Next minute, the scheduler runs it again
 
 This means:
@@ -53,9 +52,6 @@ ls -la storage/framework/cache/*.lock
 # Check queue worker logs
 tail -f storage/logs/queue-worker.log
 
-# Manually test the scheduler (dry run)
+# Manually test the scheduler
 php artisan schedule:run --no-interaction -v
-
-# Check for any stuck locks
-php artisan schedule:list
 ```
