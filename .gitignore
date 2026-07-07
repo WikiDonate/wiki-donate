@@ -60,3 +60,9 @@ htmlcov/
 *.cache
 
 AGENTS.md
+HEARTBEAT.md
+IDENTITY.md
+openclaw-workspace-state.json
+SOUL.md
+TOOLS.md
+USER.md
