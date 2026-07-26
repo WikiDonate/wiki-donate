@@ -37,95 +37,122 @@
                 </p>
             </div>
 
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                    Donation Amount ($)
-                    <span class="text-red-500">*</span>
-                </label>
-                <input
-                    v-model="amount"
-                    type="number"
-                    min="1"
-                    step="0.01"
-                    placeholder="Enter amount"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                    :disabled="isDonating || processingPaypal"
-                />
-                <div class="flex flex-wrap gap-2 mt-3">
-                    <button
-                        v-for="quickAmount in quickAmounts"
-                        :key="quickAmount"
-                        type="button"
-                        class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-                        :class="{
-                            'bg-indigo-100 text-indigo-700 font-medium':
-                                Number(amount) === quickAmount,
-                        }"
-                        @click="amount = quickAmount"
-                    >
-                        ${{ quickAmount }}
-                    </button>
-                </div>
-            </div>
-
+            <!-- Login prompt for non-authenticated users -->
             <div
-                v-if="alertMessage"
-                class="flex items-start p-3 rounded-lg border text-sm"
-                :class="alertClass"
+                v-if="!authStore.isAuthenticated"
+                class="bg-amber-50 rounded-lg p-5 border border-amber-200 text-center"
             >
-                <span class="flex-1">{{ alertMessage }}</span>
-                <button
-                    class="ml-2 text-gray-400 hover:text-gray-600"
-                    @click="alertMessage = ''"
+                <font-awesome-icon
+                    :icon="['fas', 'lock']"
+                    class="w-8 h-8 text-amber-500 mb-3"
+                />
+                <p class="text-gray-700 text-sm font-medium mb-3">
+                    Please log in to make a donation.
+                </p>
+                <NuxtLink
+                    to="/login"
+                    class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
                 >
                     <font-awesome-icon
-                        :icon="['fas', 'times']"
-                        class="w-3 h-3"
+                        :icon="['fas', 'sign-in-alt']"
+                        class="w-4 h-4"
                     />
+                    Log In
+                </NuxtLink>
+            </div>
+
+            <!-- Donation form for authenticated users -->
+            <template v-else>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Donation Amount ($)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        v-model="amount"
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        :disabled="isDonating || processingPaypal"
+                    />
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        <button
+                            v-for="quickAmount in quickAmounts"
+                            :key="quickAmount"
+                            type="button"
+                            class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                            :class="{
+                                'bg-indigo-100 text-indigo-700 font-medium':
+                                    Number(amount) === quickAmount,
+                            }"
+                            @click="amount = quickAmount"
+                        >
+                            ${{ quickAmount }}
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    v-if="alertMessage"
+                    class="flex items-start p-3 rounded-lg border text-sm"
+                    :class="alertClass"
+                >
+                    <span class="flex-1">{{ alertMessage }}</span>
+                    <button
+                        class="ml-2 text-gray-400 hover:text-gray-600"
+                        @click="alertMessage = ''"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'times']"
+                            class="w-3 h-3"
+                        />
+                    </button>
+                </div>
+
+                <button
+                    class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                    :disabled="
+                        isDonating ||
+                        processingPaypal ||
+                        !amount ||
+                        Number(amount) <= 0
+                    "
+                    @click="handleStripe"
+                >
+                    <font-awesome-icon
+                        :icon="['fab', 'cc-stripe']"
+                        class="w-5 h-5"
+                    />
+                    <span>{{ isDonating ? 'Processing...' : 'Stripe' }}</span>
                 </button>
-            </div>
 
-            <button
-                class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                :disabled="
-                    isDonating ||
-                    processingPaypal ||
-                    !amount ||
-                    Number(amount) <= 0
-                "
-                @click="handleStripe"
-            >
-                <font-awesome-icon
-                    :icon="['fab', 'cc-stripe']"
-                    class="w-5 h-5"
-                />
-                <span>{{ isDonating ? 'Processing...' : 'Stripe' }}</span>
-            </button>
+                <div class="flex items-center">
+                    <div class="flex-grow border-t border-gray-300" />
+                    <span class="mx-3 text-gray-500 text-sm">OR</span>
+                    <div class="flex-grow border-t border-gray-300" />
+                </div>
 
-            <div class="flex items-center">
-                <div class="flex-grow border-t border-gray-300" />
-                <span class="mx-3 text-gray-500 text-sm">OR</span>
-                <div class="flex-grow border-t border-gray-300" />
-            </div>
+                <button
+                    class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                    :disabled="
+                        isDonating ||
+                        processingPaypal ||
+                        !amount ||
+                        Number(amount) <= 0
+                    "
+                    @click="handlePayPal"
+                >
+                    <font-awesome-icon
+                        :icon="['fab', 'cc-paypal']"
+                        class="w-5 h-5"
+                    />
+                    <span>{{ processingPaypal ? 'Processing...' : 'PayPal' }}</span>
+                </button>
 
-            <button
-                class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                :disabled="
-                    isDonating ||
-                    processingPaypal ||
-                    !amount ||
-                    Number(amount) <= 0
-                "
-                @click="handlePayPal"
-            >
-                <font-awesome-icon
-                    :icon="['fab', 'cc-paypal']"
-                    class="w-5 h-5"
-                />
-                <span>{{ processingPaypal ? 'Processing...' : 'PayPal' }}</span>
-            </button>
-
-            <div ref="paypalAnchor" class="hidden" />
+                <div ref="paypalAnchor" class="hidden" />
+            </template>
         </div>
 
         <template #footer>
@@ -143,6 +170,8 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { donateService } from '~/services/donateService'
+
+const authStore = useAuthStore()
 
 const props = defineProps({
     modelValue: {
