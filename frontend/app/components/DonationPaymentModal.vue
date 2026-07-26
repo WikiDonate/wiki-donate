@@ -148,7 +148,9 @@
                         :icon="['fab', 'cc-paypal']"
                         class="w-5 h-5"
                     />
-                    <span>{{ processingPaypal ? 'Processing...' : 'PayPal' }}</span>
+                    <span>{{
+                        processingPaypal ? 'Processing...' : 'PayPal'
+                    }}</span>
                 </button>
 
                 <div ref="paypalAnchor" class="hidden" />
