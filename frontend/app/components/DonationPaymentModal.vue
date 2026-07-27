@@ -223,30 +223,30 @@ async function handleStripe() {
     isDonating.value = true
     alertMessage.value = ''
     try {
-        const params = { amount: Number(amount.value) }
+        const params = {
+            amount: Number(amount.value),
+            donor_name: authStore.user?.username || '',
+        }
         if (props.causeId) {
             params.cause_id = props.causeId
         }
-        const response = await donateService.donateNow(params)
-        if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = `Thank you for your donation of $${amount.value}!`
-            emit('paymentSuccess', {
-                method: 'stripe',
-                amount: Number(amount.value),
-            })
+
+        const response = await donateService.createCheckoutSession(params)
+        if (response.success && response.data?.checkout_url) {
+            // Redirect user to Stripe Checkout
+            window.location.href = response.data.checkout_url
         } else {
             alertVariant.value = 'error'
             alertMessage.value =
                 response.errors?.[0] ||
                 response.message ||
-                'Failed to process donation'
+                'Failed to create checkout session'
+            isDonating.value = false
         }
     } catch (error) {
         alertVariant.value = 'error'
         alertMessage.value =
             error?.errors?.[0] || error?.message || 'Failed to process donation'
-    } finally {
         isDonating.value = false
     }
 }
