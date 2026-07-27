@@ -7,6 +7,8 @@ use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalCharityController;
+use App\Http\Controllers\v1\StripeController;
+use App\Http\Controllers\v1\StripeWebhookController;
 use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Middleware\OptionalAuth;
@@ -65,6 +67,9 @@ Route::prefix('v1')->group(function () {
 
     // Stripe Checkout (public)
     Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession']);
+
+    // Stripe Webhook (public, no auth)
+    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
     // PayPal Charity Scraper
     Route::get('paypal/charities', [PayPalCharityController::class, 'index']);
