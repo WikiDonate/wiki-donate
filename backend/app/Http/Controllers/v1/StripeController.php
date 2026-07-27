@@ -79,6 +79,85 @@ class StripeController extends Controller
         }
     }
 
+    /**
+     * Create a Stripe Checkout Session for one-time donations.
+     */
+    public function createCheckoutSession(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.50',
+            'currency' => 'nullable|string|size:3',
+            'cause_id' => 'nullable|integer|exists:causes,id',
+            'success_url' => 'nullable|url',
+            'cancel_url' => 'nullable|url',
+            'donor_name' => 'nullable|string|max:255',
+            'donor_email' => 'nullable|email|max:255',
+        ]);
+
+        try {
+            $amount = $request->input('amount');
+            $currency = $request->input('currency', 'usd');
+            $causeId = $request->input('cause_id');
+            $userId = auth()->check() ? auth()->id() : null;
+
+            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $successUrl = $request->input('success_url', $frontendUrl.'/donate/success?session_id={CHECKOUT_SESSION_ID}');
+            $cancelUrl = $request->input('cancel_url', $frontendUrl.'/donate/cancel');
+
+            $lineItems = [[
+                'price_data' => [
+                    'currency' => $currency,
+                    'product_data' => [
+                        'name' => 'Donation to WikiDonate',
+                    ],
+                    'unit_amount' => (int) round($amount * 100),
+                ],
+                'quantity' => 1,
+            ]];
+
+            $sessionConfig = [
+                'payment_method_types' => ['card'],
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'success_url' => $successUrl,
+                'cancel_url' => $cancelUrl,
+                'metadata' => [
+                    'source' => 'wikidonate',
+                    'user_id' => $userId,
+                    'cause_id' => $causeId,
+                ],
+            ];
+
+            // Optionally pre-fill customer email
+            if ($request->filled('donor_email')) {
+                $sessionConfig['customer_email'] = $request->input('donor_email');
+            } elseif ($userId) {
+                $user = $request->user();
+                if ($user->email) {
+                    $sessionConfig['customer_email'] = $user->email;
+                }
+            }
+
+            $session = Session::create($sessionConfig);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Checkout session created',
+                'data' => [
+                    'checkout_url' => $session->url,
+                    'session_id' => $session->id,
+                ],
+            ]);
+
+        } catch (ApiErrorException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stripe API error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+    }
+
     public function getCard()
     {
         $user = auth()->user();
