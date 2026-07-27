@@ -63,6 +63,9 @@ Route::prefix('v1')->group(function () {
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
     });
 
+    // Stripe Checkout (public)
+    Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession']);
+
     // PayPal Charity Scraper
     Route::get('paypal/charities', [PayPalCharityController::class, 'index']);
 
