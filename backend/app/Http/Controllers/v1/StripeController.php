@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Stripe\Checkout\Session;
 use Stripe\Customer;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentMethod;
@@ -105,6 +106,63 @@ class StripeController extends Controller
                 'message' => 'Stripe API errors',
                 'errors' => [$e->getMessage()],
             ], Response::HTTP_EXPECTATION_FAILED);
+        }
+    }
+
+    /**
+     * Retrieve a Stripe Checkout Session by ID for the success page.
+     */
+    public function getCheckoutSession(string $sessionId)
+    {
+        try {
+            $session = Session::retrieve($sessionId);
+
+            // Session not found or invalid ID
+            if (! $session || ! isset($session->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Session not found',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Extract donor info
+            $donorName = null;
+            $donorEmail = null;
+
+            if (! empty($session->customer_details)) {
+                $donorName = $session->customer_details->name ?? null;
+                $donorEmail = $session->customer_details->email ?? null;
+            }
+
+            if (! $donorEmail && ! empty($session->customer_email)) {
+                $donorEmail = $session->customer_email;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'session_id' => $session->id,
+                    'amount' => ($session->amount_total ?? 0) / 100,
+                    'currency' => strtoupper($session->currency ?? 'usd'),
+                    'payment_status' => $session->payment_status ?? 'unknown',
+                    'status' => $session->status ?? 'unknown',
+                    'donor_name' => $donorName,
+                    'donor_email' => $donorEmail,
+                    'cause_id' => $session->metadata->cause_id ?? null,
+                    'mode' => $session->mode ?? 'payment',
+                ],
+            ]);
+
+        } catch (ApiErrorException $e) {
+            $statusCode = $e->getHttpStatus() === 404
+                ? Response::HTTP_NOT_FOUND
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Session not found',
+                'errors' => [$e->getMessage()],
+            ], $statusCode);
         }
     }
 

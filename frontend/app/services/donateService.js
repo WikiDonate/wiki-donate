@@ -9,9 +9,13 @@ const donateNow = (params) => {
 const recordPaymentAndDistribute = (params) => {
     return api.post('/record-payment', params)
 }
+const getCheckoutSession = (sessionId) => {
+    return api.get(`/stripe/checkout/${sessionId}`)
+}
 
 export const donateService = {
     saveDonate,
     donateNow,
     recordPaymentAndDistribute,
+    getCheckoutSession,
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalCharityController;
+use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Middleware\OptionalAuth;
@@ -62,6 +63,9 @@ Route::prefix('v1')->group(function () {
         Route::get('search', [CauseController::class, 'searchCause']);
         Route::get('{id}', [CauseController::class, 'getCauseDetails']);
     });
+
+    // Stripe Checkout Session lookup (public)
+    Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
 
     // PayPal Charity Scraper
     Route::get('paypal/charities', [PayPalCharityController::class, 'index']);
