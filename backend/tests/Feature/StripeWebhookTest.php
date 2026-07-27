@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Donation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class StripeWebhookTest extends TestCase
@@ -92,7 +93,7 @@ class StripeWebhookTest extends TestCase
         // Create a pending donation first
         $sessionId = 'cs_test_expired_'.uniqid();
         Donation::create([
-            'uuid' => \Illuminate\Support\Str::uuid()->toString(),
+            'uuid' => Str::uuid()->toString(),
             'stripe_session_id' => $sessionId,
             'amount' => 50.00,
             'currency' => 'usd',
@@ -112,7 +113,7 @@ class StripeWebhookTest extends TestCase
      */
     public function test_donation_model_has_fillable_fields(): void
     {
-        $donation = new Donation();
+        $donation = new Donation;
 
         $this->assertContains('stripe_session_id', $donation->getFillable());
         $this->assertContains('amount', $donation->getFillable());

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Donation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
