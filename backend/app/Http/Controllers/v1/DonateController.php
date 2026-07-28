@@ -4,7 +4,6 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
-use App\Models\PaymentLog;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +22,6 @@ class DonateController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
-            'cause_id' => 'nullable|exists:causes,id',
         ]);
 
         if ($validator->fails()) {
@@ -45,7 +43,6 @@ class DonateController extends Controller
         }
 
         try {
-            // Create payment intent
             $paymentIntent = PaymentIntent::create([
                 'amount' => $request->amount * 100,
                 'currency' => 'usd',
@@ -53,7 +50,6 @@ class DonateController extends Controller
                 'payment_method' => $user->card_id,
                 'off_session' => true,
                 'confirm' => true,
-
             ]);
 
             $payment = Payment::recordPayment([
@@ -63,13 +59,7 @@ class DonateController extends Controller
                 'amount' => $request->amount,
                 'currency' => $paymentIntent->currency,
                 'status' => $paymentIntent->status,
-                'cause_id' => $request->cause_id,
             ]);
-
-            // Create payment logs for NGOS
-            if ($request->cause_id) {
-                PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
-            }
 
             return response()->json([
                 'success' => true,
@@ -95,7 +85,6 @@ class DonateController extends Controller
             'amount' => 'required|numeric|min:0',
             'currency' => 'required|string|size:3',
             'status' => 'required|string',
-            'cause_id' => 'nullable|exists:causes,id',
             'source' => 'nullable|string',
         ]);
 
@@ -108,7 +97,6 @@ class DonateController extends Controller
         }
 
         try {
-
             $user = auth()->user();
 
             $paymentData = [
@@ -118,15 +106,10 @@ class DonateController extends Controller
                 'amount' => $request->amount,
                 'currency' => $request->currency,
                 'status' => $request->status,
-                'cause_id' => $request->cause_id,
                 'source' => $request->source ?? 'stripe',
             ];
 
-            // 3. Record the payment
             $payment = Payment::recordPayment($paymentData);
-
-            // 4. Create payment logs
-            $paymentLogs = PaymentLog::distributeAndCreatePaymentLogs($payment, $request->cause_id, $user->id);
 
             return response()->json([
                 'success' => true,

@@ -13,7 +13,6 @@ class Donation extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'cause_id',
         'stripe_session_id',
         'stripe_payment_intent_id',
         'donor_name',
@@ -43,11 +42,6 @@ class Donation extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function cause()
-    {
-        return $this->belongsTo(Cause::class);
     }
 
     public function isCompleted(): bool

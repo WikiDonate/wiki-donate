@@ -4,8 +4,6 @@ namespace App\Http\Controllers\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\Cause;
-use App\Models\Ngo;
 use App\Models\Payment;
 use App\Models\User;
 use Exception;
@@ -22,8 +20,6 @@ class DashboardController extends Controller
                 return [
                     'totalUsers' => User::count(),
                     'totalArticles' => Article::count(),
-                    'totalCauses' => Cause::count(),
-                    'totalNgos' => Ngo::count(),
 
                     'recentDonations' => Payment::with('user:id,uuid,username')
                         ->latest()

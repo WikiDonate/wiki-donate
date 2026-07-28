@@ -18,7 +18,6 @@ class Payment extends Model
         'status',
         'payment_method',
         'source',
-        'cause_id',
     ];
 
     protected $casts = [
@@ -30,11 +29,6 @@ class Payment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function cause()
-    {
-        return $this->belongsTo(Cause::class);
-    }
-
     public static function recordPayment(array $data): Payment
     {
         return Payment::create([
@@ -44,7 +38,6 @@ class Payment extends Model
             'amount' => $data['amount'],
             'currency' => $data['currency'],
             'status' => $data['status'],
-            'cause_id' => $data['cause_id'] ?? null,
             'source' => $data['source'] ?? 'stripe',
         ]);
     }

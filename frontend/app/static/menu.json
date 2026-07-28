@@ -15,13 +15,6 @@
         "icon": ["fas", "shield-alt"]
     },
     {
-        "name": "Donate",
-        "link": "/donate",
-        "type": "MainMenu",
-        "onLogin": "show",
-        "icon": ["fas", "hand-holding-heart"]
-    },
-    {
         "name": "Payment Method",
         "link": "/billing",
         "type": "MainMenu",

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\Payment;
-use App\Models\PaymentLog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -101,11 +100,9 @@ class StripeWebhookController extends Controller
         $session = $event->data->object;
 
         $userId = $session->metadata->user_id ?? null;
-        $causeId = $session->metadata->cause_id ?? null;
 
         // Normalize null values that may come through as empty strings or "null" strings
         $userId = $userId && $userId !== '' && $userId !== 'null' ? $userId : null;
-        $causeId = $causeId && $causeId !== '' && $causeId !== 'null' ? $causeId : null;
         $amount = ($session->amount_total ?? 0) / 100;
         $currency = $session->currency ?? 'usd';
         $paymentIntentId = $session->payment_intent ?? null;
@@ -120,7 +117,6 @@ class StripeWebhookController extends Controller
                 'stripe_session_id' => $session->id,
                 'stripe_payment_intent_id' => $paymentIntentId,
                 'user_id' => $userId,
-                'cause_id' => $causeId,
                 'donor_name' => $session->customer_details->name ?? null,
                 'donor_email' => $session->customer_details->email ?? $session->customer_email ?? null,
                 'amount' => $amount,
@@ -143,8 +139,8 @@ class StripeWebhookController extends Controller
             ]);
         }
 
-        // Record payment and distribute to NGOs (mirrors DonateController flow)
-        $this->recordPaymentAndDistribute($donation, $paymentIntentId, $customerId, $causeId, $userId);
+        // Record payment
+        $this->recordPayment($donation, $paymentIntentId, $customerId, $userId);
 
         Log::info('Donation recorded from checkout session', [
             'donation_id' => $donation->id,
@@ -154,38 +150,24 @@ class StripeWebhookController extends Controller
     }
 
     /**
-     * Record a Payment record and distribute funds to NGOs via PaymentLog.
-     * Mirrors the flow in DonateController@donateNow / recordPaymentApi.
+     * Record a Payment record from the checkout session.
      */
-    protected function recordPaymentAndDistribute(Donation $donation, ?string $paymentIntentId, ?string $customerId, $causeId, $userId): void
+    protected function recordPayment(Donation $donation, ?string $paymentIntentId, ?string $customerId, $userId): void
     {
-        // Don't create duplicate Payment records
         $existingPayment = Payment::where('payment_id', $paymentIntentId)->first();
         if ($existingPayment) {
             return;
         }
 
-        $payment = Payment::recordPayment([
+        Payment::recordPayment([
             'user_id' => $userId,
             'payment_id' => $paymentIntentId ?? $donation->stripe_session_id,
             'customer_id' => $customerId ?? 'checkout_session',
             'amount' => $donation->amount,
             'currency' => $donation->currency,
             'status' => 'succeeded',
-            'cause_id' => $causeId,
             'source' => 'stripe_checkout',
         ]);
-
-        // Distribute to NGOs if a cause is specified
-        if ($causeId) {
-            PaymentLog::distributeAndCreatePaymentLogs($payment, $causeId, $userId);
-
-            Log::info('Payment distributed to NGOs', [
-                'payment_id' => $payment->id,
-                'cause_id' => $causeId,
-                'amount' => $donation->amount,
-            ]);
-        }
     }
 
     /**

@@ -87,7 +87,6 @@ class StripeController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:0.50',
             'currency' => 'nullable|string|size:3',
-            'cause_id' => 'nullable|integer|exists:causes,id',
             'success_url' => 'nullable|url',
             'cancel_url' => 'nullable|url',
             'donor_name' => 'nullable|string|max:255',
@@ -97,12 +96,11 @@ class StripeController extends Controller
         try {
             $amount = $request->input('amount');
             $currency = $request->input('currency', 'usd');
-            $causeId = $request->input('cause_id');
             $userId = auth()->check() ? auth()->id() : null;
 
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
-            $successUrl = $request->input('success_url', $frontendUrl.'/donate/success?session_id={CHECKOUT_SESSION_ID}');
-            $cancelUrl = $request->input('cancel_url', $frontendUrl.'/donate/cancel');
+            $successUrl = $request->input('success_url', $frontendUrl.'/payment/success?session_id={CHECKOUT_SESSION_ID}');
+            $cancelUrl = $request->input('cancel_url', $frontendUrl.'/payment/cancel');
 
             $lineItems = [[
                 'price_data' => [
@@ -124,7 +122,6 @@ class StripeController extends Controller
                 'metadata' => [
                     'source' => 'wikidonate',
                     'user_id' => $userId,
-                    'cause_id' => $causeId,
                 ],
             ];
 
@@ -227,7 +224,6 @@ class StripeController extends Controller
                     'status' => $session->status ?? 'unknown',
                     'donor_name' => $donorName,
                     'donor_email' => $donorEmail,
-                    'cause_id' => $session->metadata->cause_id ?? null,
                     'mode' => $session->mode ?? 'payment',
                 ],
             ]);

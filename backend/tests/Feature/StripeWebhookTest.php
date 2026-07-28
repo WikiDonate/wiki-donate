@@ -68,7 +68,6 @@ class StripeWebhookTest extends TestCase
                     ],
                     'metadata' => [
                         'user_id' => null,
-                        'cause_id' => null,
                         'source' => 'wikidonate',
                     ],
                 ],

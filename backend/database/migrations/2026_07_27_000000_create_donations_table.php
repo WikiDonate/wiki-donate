@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('cause_id')->nullable()->constrained('causes')->nullOnDelete();
             $table->string('stripe_session_id')->nullable()->unique();
             $table->string('stripe_payment_intent_id')->nullable();
             $table->string('donor_name')->nullable();

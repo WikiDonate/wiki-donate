@@ -15,9 +15,6 @@ return new class extends Migration
             if (! Schema::hasColumn('payments', 'source')) {
                 $table->string('source')->nullable();
             }
-            if (! Schema::hasColumn('payments', 'cause_id')) {
-                $table->foreignId('cause_id')->nullable()->constrained('causes')->onDelete('set null');
-            }
         });
     }
 
@@ -25,8 +22,6 @@ return new class extends Migration
     {
         Schema::table('payments', function (Blueprint $table) {
             $table->dropColumn('source');
-            $table->dropForeign(['cause_id']);
-            $table->dropColumn('cause_id');
         });
     }
 };

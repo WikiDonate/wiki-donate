@@ -11,8 +11,6 @@ return new class extends Migration
         if (! Schema::hasTable('payment_logs')) {
             Schema::create('payment_logs', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('cause_id')->constrained()->onDelete('cascade');
-                $table->foreignId('ngo_id')->constrained()->onDelete('cascade');
                 $table->foreignId('payment_id')->constrained()->onDelete('cascade');
                 $table->decimal('amount', 10, 2);
                 $table->timestamps();

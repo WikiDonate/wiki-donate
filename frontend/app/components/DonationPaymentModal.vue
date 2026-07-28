@@ -188,10 +188,6 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    causeId: {
-        type: [String, Number],
-        default: null,
-    },
 })
 
 const emit = defineEmits([
@@ -227,10 +223,6 @@ async function handleStripe() {
             amount: Number(amount.value),
             donor_name: authStore.user?.username || '',
         }
-        if (props.causeId) {
-            params.cause_id = props.causeId
-        }
-
         const response = await donateService.createCheckoutSession(params)
         if (response.success && response.data?.checkout_url) {
             // Redirect user to Stripe Checkout
@@ -335,9 +327,6 @@ async function handlePayPalSuccess(details) {
             currency: details.purchase_units[0].amount.currency_code,
             status: details.status,
             source: 'paypal',
-        }
-        if (props.causeId) {
-            paymentData.cause_id = props.causeId
         }
         const response =
             await donateService.recordPaymentAndDistribute(paymentData)

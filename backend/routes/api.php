@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\CauseController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
@@ -58,15 +57,9 @@ Route::prefix('v1')->group(function () {
         Route::get('{slug}/history', [TalkController::class, 'history']);
     });
 
-    // Cause routes (public)
-    Route::prefix('causes')->group(function () {
-        Route::get('/', [CauseController::class, 'getCauses']);
-        Route::get('search', [CauseController::class, 'searchCause']);
-        Route::get('{id}', [CauseController::class, 'getCauseDetails']);
-    });
-
     // Stripe Checkout (public)
     Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession']);
+    Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
 
     // Stripe Webhook (public, no auth)
     Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

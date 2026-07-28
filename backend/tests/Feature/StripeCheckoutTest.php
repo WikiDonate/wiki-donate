@@ -46,20 +46,6 @@ class StripeCheckoutTest extends TestCase
     }
 
     /**
-     * Test that cause_id must exist if provided.
-     */
-    public function test_checkout_session_validates_cause_id(): void
-    {
-        $response = $this->postJson('/api/v1/stripe/checkout', [
-            'amount' => 5.00,
-            'cause_id' => 99999,
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['cause_id']);
-    }
-
-    /**
      * Test successful checkout session creation (mocked).
      */
     public function test_checkout_session_creates_successfully(): void

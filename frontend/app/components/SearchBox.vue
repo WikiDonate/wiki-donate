@@ -8,7 +8,7 @@
             <input
                 v-model="searchQuery"
                 type="text"
-                :placeholder="placeholderText"
+                placeholder="Search wikidonate..."
                 class="flex-grow border-0 p-2 pl-5 text-gray-700 focus:outline-none w-full rounded-l-md"
                 @input="onInput"
             />
@@ -23,46 +23,16 @@
             </button>
         </form>
 
-        <!-- Suggestions Dropdown -->
         <div
             v-if="showSuggestions"
             id="suggestions-dropdown"
             class="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden animate-fadeIn"
         >
             <ul>
-                <!-- Loading State -->
                 <template v-if="isSearching">
                     <li class="px-5 py-2 text-gray-500 italic">
-                        Searching
-                        {{ isOnDonatePage ? 'causes' : 'wikidonate' }}...
+                        Searching wikidonate...
                     </li>
-                </template>
-
-                <!-- Donate Page - Causes Results -->
-                <template v-else-if="isOnDonatePage">
-                    <template v-if="searchResults.length > 0">
-                        <li
-                            v-for="result in searchResults"
-                            :key="result.id"
-                            class="cursor-pointer px-5 py-2 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
-                            @click="selectCause(result)"
-                        >
-                            <div class="flex items-center">
-                                <font-awesome-icon
-                                    :icon="['fas', 'magnifying-glass']"
-                                    class="h-4 w-4 text-indigo-500 mr-3"
-                                />
-                                <span class="text-gray-700">{{
-                                    result.title
-                                }}</span>
-                            </div>
-                        </li>
-                    </template>
-                    <template v-else-if="searchQuery.length > 0">
-                        <li class="px-5 py-2 text-gray-500 italic">
-                            No causes found
-                        </li>
-                    </template>
                 </template>
 
                 <template v-else>
@@ -96,78 +66,52 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { articleService } from '~/services/articleService'
-import { useCauseStore } from '~/stores/causeStore'
 
 const router = useRouter()
-const route = useRoute()
-const causeStore = useCauseStore()
 
-// Reactive state
 const searchQuery = ref('')
 const suggestions = ref([])
 const searchContainer = ref(null)
-const isLoadingArticles = ref(false)
+const isSearching = ref(false)
 const timeoutId = ref(null)
 
-// Computed properties
-const isOnDonatePage = computed(() => route.path.startsWith('/donate'))
-const isSearching = computed(() =>
-    isOnDonatePage.value
-        ? causeStore.isSearchingCauses
-        : isLoadingArticles.value
-)
-const placeholderText = computed(() =>
-    isOnDonatePage.value ? 'Search causes...' : 'Search wikidonate...'
-)
-const searchResults = computed(() => causeStore.searchResults)
-const showSuggestions = computed(() => searchQuery.value.length > 0)
+const showSuggestions = ref(false)
 
-// Methods
 const onInput = () => {
+    showSuggestions.value = searchQuery.value.length > 0
     clearTimeout(timeoutId.value)
     timeoutId.value = setTimeout(fetchSuggestions, 300)
 }
 
 const fetchSuggestions = async () => {
-    const query = searchQuery.value.replace(/\s+/g, '')
-    if (isOnDonatePage.value) {
-        if (query.length > 1) {
-            await causeStore.searchCauses({ title: query })
-        } else {
-            causeStore.clearSearchResults()
+    const query = searchQuery.value.trim()
+    if (query.length > 1) {
+        isSearching.value = true
+        try {
+            const response = await articleService.searchArticles(query)
+            suggestions.value = response.data
+        } finally {
+            isSearching.value = false
         }
     } else {
-        if (query.length > 1) {
-            isLoadingArticles.value = true
-            try {
-                const response = await articleService.searchArticles(query)
-                suggestions.value = response.data
-            } finally {
-                isLoadingArticles.value = false
-            }
-        } else {
-            suggestions.value = []
-        }
+        suggestions.value = []
     }
 }
 
 const clearSearch = () => {
     searchQuery.value = ''
     suggestions.value = []
-    causeStore.clearSearchResults()
+    showSuggestions.value = false
     clearTimeout(timeoutId.value)
     timeoutId.value = null
 }
 
 const handleSearch = async () => {
-    const query = searchQuery.value.replace(/\s+/g, '')
-
-    if (isOnDonatePage.value || !query) {
-        return
-    }
+    const query = searchQuery.value.trim()
+    if (!query) return
 
     let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
     const foundSuggestion = suggestions.value.find(
@@ -202,11 +146,6 @@ const selectSuggestion = (suggestion) => {
     router.push(searchUrl)
 }
 
-const selectCause = (cause) => {
-    router.push(`/donate/${cause.id}`)
-    clearSearch()
-}
-
 const handleClickOutside = (event) => {
     if (
         searchContainer.value &&
@@ -216,7 +155,6 @@ const handleClickOutside = (event) => {
     }
 }
 
-// Lifecycle hooks
 onMounted(() => {
     document.addEventListener('click', handleClickOutside)
 })
