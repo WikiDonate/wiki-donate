@@ -75,7 +75,7 @@
                         step="0.01"
                         placeholder="Enter amount"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                        :disabled="isDonating || processingPaypal"
+                        :disabled="isDonating"
                     />
                     <div class="flex flex-wrap gap-2 mt-3">
                         <button
@@ -115,7 +115,6 @@
                     class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                     :disabled="
                         isDonating ||
-                        processingPaypal ||
                         !amount ||
                         Number(amount) <= 0
                     "
@@ -128,32 +127,6 @@
                     <span>{{ isDonating ? 'Processing...' : 'Stripe' }}</span>
                 </button>
 
-                <div class="flex items-center">
-                    <div class="flex-grow border-t border-gray-300" />
-                    <span class="mx-3 text-gray-500 text-sm">OR</span>
-                    <div class="flex-grow border-t border-gray-300" />
-                </div>
-
-                <button
-                    class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                    :disabled="
-                        isDonating ||
-                        processingPaypal ||
-                        !amount ||
-                        Number(amount) <= 0
-                    "
-                    @click="handlePayPal"
-                >
-                    <font-awesome-icon
-                        :icon="['fab', 'cc-paypal']"
-                        class="w-5 h-5"
-                    />
-                    <span>{{
-                        processingPaypal ? 'Processing...' : 'PayPal'
-                    }}</span>
-                </button>
-
-                <div ref="paypalAnchor" class="hidden" />
             </template>
         </div>
 
@@ -200,10 +173,8 @@ const quickAmounts = [10, 25, 50, 100, 250, 500]
 
 const amount = ref('')
 const isDonating = ref(false)
-const processingPaypal = ref(false)
 const alertMessage = ref('')
 const alertVariant = ref('error')
-const paypalAnchor = ref(null)
 
 const alertClass = computed(() => {
     const map = {
@@ -243,121 +214,6 @@ async function handleStripe() {
     }
 }
 
-async function handlePayPal() {
-    if (!amount.value || Number(amount.value) <= 0) return
-
-    const { $paypal } = useNuxtApp()
-    if (!$paypal) {
-        alertVariant.value = 'error'
-        alertMessage.value = 'PayPal is not available'
-        return
-    }
-
-    processingPaypal.value = true
-    alertMessage.value = ''
-
-    const container = paypalAnchor.value
-    if (!container) return
-
-    container.innerHTML = ''
-    container.classList.remove('hidden')
-
-    const buttons = $paypal.Buttons({
-        createOrder(data, actions) {
-            return actions.order.create({
-                purchase_units: [
-                    {
-                        amount: {
-                            value: String(Number(amount.value)),
-                            currency_code: 'USD',
-                        },
-                    },
-                ],
-            })
-        },
-        onApprove: async (data, actions) => {
-            try {
-                const details = await actions.order.capture()
-                cleanup()
-                await handlePayPalSuccess(details)
-            } catch (err) {
-                cleanup()
-                handlePayPalError(err)
-            }
-        },
-        onCancel: () => {
-            cleanup()
-            alertVariant.value = 'error'
-            alertMessage.value = 'PayPal payment was cancelled'
-            processingPaypal.value = false
-        },
-        onError: (err) => {
-            cleanup()
-            handlePayPalError(err)
-            processingPaypal.value = false
-        },
-    })
-
-    function cleanup() {
-        container.innerHTML = ''
-        container.classList.add('hidden')
-    }
-
-    buttons.render(container).then(() => {
-        const btn = container.querySelector(
-            '.paypal-button, .paypal-buttons [data-paypal-button], .paypal-buttons button'
-        )
-        if (btn) {
-            btn.click()
-        } else {
-            cleanup()
-            alertVariant.value = 'error'
-            alertMessage.value = 'Could not initiate PayPal'
-            processingPaypal.value = false
-        }
-    })
-}
-
-async function handlePayPalSuccess(details) {
-    try {
-        const paymentData = {
-            payment_id: details.purchase_units[0].payments.captures[0].id,
-            customer_id: details.payer.payer_id,
-            amount: details.purchase_units[0].amount.value,
-            currency: details.purchase_units[0].amount.currency_code,
-            status: details.status,
-            source: 'paypal',
-        }
-        const response =
-            await donateService.recordPaymentAndDistribute(paymentData)
-        if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = `Thank you for your PayPal donation of $${details.purchase_units[0].amount.value}!`
-            emit('paymentSuccess', {
-                method: 'paypal',
-                amount: Number(details.purchase_units[0].amount.value),
-            })
-        } else {
-            alertVariant.value = 'error'
-            alertMessage.value =
-                response.errors?.[0] ||
-                response.message ||
-                'Failed to process donation'
-        }
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value =
-            error?.errors?.[0] || error?.message || 'Failed to process donation'
-    } finally {
-        processingPaypal.value = false
-    }
-}
-
-function handlePayPalError(err) {
-    alertVariant.value = 'error'
-    alertMessage.value = err?.message || err || 'PayPal payment failed'
-}
-
 watch(
     () => props.modelValue,
     (val) => {
@@ -365,7 +221,6 @@ watch(
             amount.value = ''
             alertMessage.value = ''
             isDonating.value = false
-            processingPaypal.value = false
         }
     }
 )

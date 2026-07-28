@@ -32,7 +32,7 @@ class PageContentSeeder extends Seeder
                         'title' => 'Donate!',
                         'icon' => ['fas', 'donate'],
                         'description' => [
-                            ['type' => 'text', 'value' => 'Currently, only PayPal and Stripe is supported. On the payment page, confirm your donation.'],
+                            ['type' => 'text', 'value' => 'Currently, only Stripe is supported. On the payment page, confirm your donation.'],
                         ],
                     ],
                     [

@@ -19,8 +19,3 @@ Schedule::command('queue:work --tries=3 --timeout=120 --sleep=3 --max-time=3550'
 Schedule::command('queue:prune-failed --hours=48')->daily();
 // Remove expired Sanctum API tokens
 Schedule::command('sanctum:prune-expired')->daily();
-
-// ── Application Tasks ───────────────────────────────────────────────────────
-// Pre-warm PayPal charities cache once daily at low-traffic time
-// Uncomment when needed:
-// Schedule::command('paypal:scrape-charities')->dailyAt('03:00');

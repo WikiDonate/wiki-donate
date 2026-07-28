@@ -47,5 +47,4 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
 // All authenticated users can donate
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('donate-now', [DonateController::class, 'donateNow']);
-    Route::post('record-payment', [DonateController::class, 'recordPaymentApi']);
 });
