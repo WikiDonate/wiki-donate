@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
@@ -141,6 +142,8 @@ class StripeWebhookController extends Controller
 
         // Record payment
         $this->recordPayment($donation, $paymentIntentId, $customerId, $userId);
+
+        Cache::store('file')->forget('dashboard');
 
         Log::info('Donation recorded from checkout session', [
             'donation_id' => $donation->id,

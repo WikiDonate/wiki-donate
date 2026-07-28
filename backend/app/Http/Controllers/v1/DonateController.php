@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -60,6 +61,8 @@ class DonateController extends Controller
                 'currency' => $paymentIntent->currency,
                 'status' => $paymentIntent->status,
             ]);
+
+            Cache::store('file')->forget('dashboard');
 
             return response()->json([
                 'success' => true,

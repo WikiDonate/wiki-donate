@@ -112,7 +112,7 @@ class ArticleController extends Controller
             Revision::where('article_id', $article->id)->delete();
             $article->delete();
 
-            Cache::store('file')->forget('admin_dashboard_data');
+            Cache::store('file')->forget('dashboard');
 
             return response()->json([
                 'success' => true,

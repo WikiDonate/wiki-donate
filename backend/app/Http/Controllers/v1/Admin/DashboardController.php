@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $stats = Cache::store('file')->remember('admin_dashboard_data', 3600, function () {
+            $stats = Cache::store('file')->remember('dashboard', 3600, function () {
                 return [
                     'totalUsers' => User::count(),
                     'totalArticles' => Article::count(),

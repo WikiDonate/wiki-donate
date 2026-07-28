@@ -9,6 +9,7 @@ use App\Mail\VerificationEmail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -128,6 +129,8 @@ class UserController extends Controller
 
             // Send verification email via queue
             Mail::to($user->email)->queue(new VerificationEmail($user));
+
+            Cache::store('file')->forget('dashboard');
 
             return response()->json([
                 'success' => true,
@@ -259,10 +262,14 @@ class UserController extends Controller
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
+            $cached = Cache::store('file')->remember("user-{$user->uuid}", 3600, function () use ($user) {
+                return new UserResource($user);
+            });
+
             return response()->json([
                 'success' => true,
                 'message' => 'User details retrieved successfully',
-                'data' => new UserResource($user),
+                'data' => $cached,
             ]);
 
         } catch (Exception $e) {
@@ -290,6 +297,8 @@ class UserController extends Controller
             $input = $request->all();
 
             $user->update($input);
+
+            Cache::store('file')->forget("user-{$user->uuid}");
 
             return response()->json([
                 'success' => true,

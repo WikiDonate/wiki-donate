@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
@@ -358,6 +359,8 @@ class ArticleController extends Controller
             }
 
             $article = Article::create($articleParams);
+
+            Cache::store('file')->forget('dashboard');
 
             return response()->json([
                 'success' => true,

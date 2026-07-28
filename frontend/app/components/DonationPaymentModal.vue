@@ -111,8 +111,9 @@
                     </button>
                 </div>
 
+                <div class="flex justify-center">
                 <button
-                    class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                    class="flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-xl text-white font-semibold text-sm tracking-wide uppercase bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     :disabled="
                         isDonating ||
                         !amount ||
@@ -120,12 +121,20 @@
                     "
                     @click="handleStripe"
                 >
-                    <font-awesome-icon
-                        :icon="['fab', 'cc-stripe']"
-                        class="w-5 h-5"
-                    />
-                    <span>{{ isDonating ? 'Processing...' : 'Stripe' }}</span>
+                    <svg
+                        v-if="!isDonating"
+                        class="w-5 h-5 flex-shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                    >
+                        <path d="M13.976 10.816c-.038-1.242 1.035-1.932 1.827-2.344.612-.318 1.418-.546 2.182-.558.813-.013 1.599.192 2.23.583.453.282.845.652 1.14 1.088l-1.915 1.024c-.25-.363-.61-.637-1.015-.784-.495-.18-1.033-.22-1.542-.108-.558.123-1.068.431-1.36.885-.362.563-.41 1.28-.13 1.885.217.47.605.84 1.085 1.032.485.195 1.022.203 1.51.032.396-.138.74-.412.98-.776l1.916 1.024c-.43.695-1.017 1.26-1.716 1.644-.836.458-1.812.618-2.774.456-.99-.167-1.887-.698-2.466-1.519-.609-.86-.727-2.01-.322-2.968.353-.836 1.016-1.508 1.843-1.872.873-.383 1.878-.387 2.754-.02.415.175.784.448 1.07.804l-1.914 1.024c-.016-.004-.034-.006-.05-.01-.424-.105-.895-.096-1.31.033z" fill="currentColor" opacity=".9"/>
+                        <path d="M10.617 16.661L8.15 7.63l9.376-2.186.61 2.725c-1.18.266-2.607.586-4.278.962-1.67.376-2.496.562-3.733.843l2.79 6.687h-2.298z" fill="currentColor" opacity=".4"/>
+                        <path d="M6.597 9.944L4.2 6.128l9.372-2.186.597 2.684a317.771 317.771 0 00-2.9.652c-.073.057-.12.098-.134.115l.462 1.552z" fill="currentColor" opacity=".2"/>
+                    </svg>
+                    <LoadingSpinner v-if="isDonating" class="w-4 h-4" />
+                    <span>{{ isDonating ? 'Processing...' : 'Pay with Card' }}</span>
                 </button>
+                </div>
 
             </template>
         </div>

@@ -64,7 +64,7 @@ class PageContentController extends Controller
                 ['content' => $request->content]
             );
 
-            Cache::store('file')->forget('admin_dashboard_data');
+            Cache::store('file')->forget('dashboard');
 
             return response()->json([
                 'success' => true,
