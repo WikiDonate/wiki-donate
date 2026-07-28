@@ -92,7 +92,7 @@ const fetchSuggestions = async () => {
             suggestions.value = response.data
             selectedSuggestions.value = response.data
         } catch (error) {
-            console.error(error)
+            if (import.meta.dev) console.error(error)
         }
     } else {
         suggestions.value = []

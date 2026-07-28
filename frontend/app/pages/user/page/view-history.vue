@@ -120,7 +120,7 @@ const loadHistory = async (slug) => {
     } catch (error) {
         revisionHistory.value = []
         articleStore.clearHistory()
-        console.error(error)
+        if (import.meta.dev) console.error(error)
     } finally {
         loading.value = false
     }

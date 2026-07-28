@@ -323,7 +323,7 @@ const handleLogout = async (event) => {
         await authService.logout()
         router.push('/login')
     } catch (error) {
-        console.error(error.message)
+        if (import.meta.dev) console.error(error.message)
         router.push('/login')
     }
 }

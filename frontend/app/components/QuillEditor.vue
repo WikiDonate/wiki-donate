@@ -178,7 +178,7 @@ function setupTitleListener() {
     const quill = quillEditor.value?.getQuill()
 
     if (!quill) {
-        console.error('Quill instance not found')
+        if (import.meta.dev) console.error('Quill instance not found')
         return
     }
 
@@ -227,7 +227,7 @@ onMounted(async () => {
         setupTitleListener()
         setupContentListeners()
     } else {
-        console.error('QuillEditor is not ready')
+        if (import.meta.dev) console.error('QuillEditor is not ready')
     }
     await nextTick()
     enableImageManipulation()

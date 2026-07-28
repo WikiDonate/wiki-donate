@@ -120,7 +120,7 @@ const loadHistory = async (slug) => {
     } catch (error) {
         revisionHistory.value = []
         talkStore.clearHistory()
-        console.error(error)
+        if (import.meta.dev) console.error(error)
     } finally {
         loading.value = false
     }

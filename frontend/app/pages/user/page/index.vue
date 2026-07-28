@@ -168,7 +168,7 @@ const handleSubmit = async () => {
 
         await loadArticle(response.data.slug)
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'
@@ -201,7 +201,7 @@ const loadArticle = async (slug) => {
         editable.value = false
         accessType.value = 'public'
         articleStore.clearArticle()
-        console.error(error)
+        if (import.meta.dev) console.error(error)
     } finally {
         loading.value = false
     }

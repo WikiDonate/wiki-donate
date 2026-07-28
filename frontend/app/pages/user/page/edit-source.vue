@@ -159,7 +159,7 @@ const loadArticle = async (slug) => {
             articleStore.clearArticle()
         }
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         article.value = []
         articleStore.clearArticle()
     } finally {
@@ -193,7 +193,7 @@ const handleSubmit = async () => {
             `/user/page?username=${encodeURIComponent(articleStore.article.slug)}`
         )
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'

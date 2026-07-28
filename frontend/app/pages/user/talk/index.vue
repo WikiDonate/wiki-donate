@@ -216,7 +216,7 @@ const handleSubmit = async () => {
 
         await loadTalk(response.data.slug)
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'
@@ -243,7 +243,7 @@ const loadTalk = async (title) => {
     } catch (error) {
         sections.value = []
         talkStore.clearTalk()
-        console.error(error)
+        if (import.meta.dev) console.error(error)
     } finally {
         loading.value = false
     }

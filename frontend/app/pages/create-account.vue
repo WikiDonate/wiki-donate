@@ -294,7 +294,7 @@ const onSubmit = handleSubmit(async (values) => {
         startResendCooldown()
     } catch (error) {
         setTimeout(() => {
-            console.log(error)
+            if (import.meta.dev) console.log(error)
             alertVariant.value = 'error'
             alertMessage.value = error.errors?.[0] || 'Registration failed'
             showAlert.value = true

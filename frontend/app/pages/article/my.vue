@@ -178,7 +178,7 @@ const loadMyArticles = async (page = 1) => {
             showAlertMessage(response.message || 'Failed to load articles')
         }
     } catch (error) {
-        console.error('Error loading articles:', error)
+        if (import.meta.dev) console.error('Error loading articles:', error)
         articleStore.clearArticles()
         showAlertMessage(
             error.message || 'An error occurred while loading articles'

@@ -215,7 +215,7 @@ const loadArticle = async (slug) => {
         sections.value = []
         editable.value = false
         articleStore.clearArticle()
-        console.error(err)
+        if (import.meta.dev) console.error(err)
     } finally {
         loading.value = false
     }

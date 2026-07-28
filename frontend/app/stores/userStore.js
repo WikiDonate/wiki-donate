@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
                     ? error.errors.join(', ')
                     : error?.message || 'Failed to fetch user'
             notifyError(message)
-            console.error('Failed to fetch user:', message)
+            if (import.meta.dev) console.error('Failed to fetch user:', message)
             throw error
         } finally {
             isLoadingUser.value = false

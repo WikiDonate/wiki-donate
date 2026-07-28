@@ -314,7 +314,7 @@ const saveNotifications = async () => {
         showAlert.value = true
         await loadNotifications()
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'
@@ -338,7 +338,7 @@ const loadNotifications = async () => {
             successfulMention.value = response.data.successfulMention === 1
         }
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'
@@ -390,7 +390,7 @@ const submitChangePassword = handleSubmit(async (values) => {
         showAlert.value = true
         closeModal()
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors?.[0] || error.message || 'Unexpected error'

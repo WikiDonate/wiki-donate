@@ -179,7 +179,7 @@ const handleSubmit = async () => {
 
         router.push(`/talk?title=${encodeURIComponent(talkStore.talk.slug)}`)
     } catch (error) {
-        console.error(error)
+        if (import.meta.dev) console.error(error)
         alertVariant.value = 'error'
         alertMessage.value =
             error.errors[0] || error.message || 'Unexpected error'
