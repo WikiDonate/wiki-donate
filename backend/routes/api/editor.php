@@ -15,10 +15,6 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('changePassword', [UserController::class, 'changePassword']);
 
-    Route::post('donate', [DonateController::class, 'store']);
-    Route::post('donate-now', [DonateController::class, 'donateNow']);
-    Route::post('record-payment', [DonateController::class, 'recordPaymentApi']);
-
     Route::prefix('donation-formulas')->group(function () {
         Route::post('/', [DonationFormulaController::class, 'store']);
         Route::get('{uuid}', [DonationFormulaController::class, 'show']);
@@ -46,4 +42,10 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
 
     Route::post('stripe/card', [StripeController::class, 'addCard']);
     Route::get('stripe/card', [StripeController::class, 'getCard']);
+});
+
+// All authenticated users can donate
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('donate-now', [DonateController::class, 'donateNow']);
+    Route::post('record-payment', [DonateController::class, 'recordPaymentApi']);
 });
