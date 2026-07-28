@@ -108,7 +108,7 @@ onMounted(() => {
         'data-chatbot-id',
         '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0'
     )
-    script.setAttribute('data-api-key', 'sk_32j86polvubgcdbltft1s')
+    script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
     script.setAttribute('data-position', 'bottom-right')
     script.setAttribute('data-primary-color', '#3b82f6')
     script.setAttribute('data-secondary-color', '#ffffff')

@@ -74,6 +74,19 @@ if (! function_exists('parseHtmlSection')) {
     }
 }
 
+if (! function_exists('sanitizeHtml')) {
+    function sanitizeHtml(string $html): string
+    {
+        $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+        $html = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $html);
+        $html = preg_replace('/\s+on\w+\s*=\s*["\'][^"\']*["\']/', '', $html);
+        $html = preg_replace('/\s+on\w+\s*=\s*[^\s>]+/', '', $html);
+        $html = preg_replace('/href\s*=\s*["\']javascript:[^"\']*["\']/', 'href="#"', $html);
+
+        return $html;
+    }
+}
+
 if (! function_exists('verifyRecaptcha')) {
     function verifyRecaptcha($token)
     {

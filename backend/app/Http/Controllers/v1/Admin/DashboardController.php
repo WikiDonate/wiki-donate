@@ -65,6 +65,7 @@ class DashboardController extends Controller
 
             return response()->json([
                 'success' => true,
+                'message' => 'Dashboard data retrieved successfully',
                 'data' => $stats,
             ], Response::HTTP_OK);
 

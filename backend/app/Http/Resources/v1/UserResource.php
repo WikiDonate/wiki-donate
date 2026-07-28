@@ -14,18 +14,22 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-
-            'token' => $this->createToken('authToken')->plainTextToken,
+        $data = [
             'uuid' => $this->uuid,
             'username' => $this->username,
             'name' => $this->name,
             'email' => $this->email,
-            'customer_id' => $this->customer_id,
-            'card_id' => $this->card_id,
             'phone' => $this->phone,
             'roles' => $this->roles->pluck('name'),
             'createdAt' => $this->created_at->format('d F, Y'),
         ];
+
+        if ($token = $this->whenLoaded('tokens', function () {
+            return $this->createToken('authToken')->plainTextToken;
+        })) {
+            $data['token'] = $token;
+        }
+
+        return $data;
     }
 }

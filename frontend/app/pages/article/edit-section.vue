@@ -143,6 +143,7 @@ const loadSection = async (uuid) => {
     )
 
     if (!section.value) {
+        loading.value = false
         alertVariant.value = 'error'
         alertMessage.value = 'Section not found'
         setTimeout(() => {

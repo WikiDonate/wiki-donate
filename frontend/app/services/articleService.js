@@ -1,7 +1,7 @@
 import api from '../config/apiConfig'
 
 const searchArticles = (query) => {
-    return api.get('/search?query=' + query)
+    return api.get('/search', { params: { query } })
 }
 
 const saveArticle = (params) => {

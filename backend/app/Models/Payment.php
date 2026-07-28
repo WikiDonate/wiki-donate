@@ -16,12 +16,7 @@ class Payment extends Model
         'amount',
         'currency',
         'status',
-        'payment_method',
         'source',
-    ];
-
-    protected $casts = [
-        'metadata' => 'array',
     ];
 
     public function user()

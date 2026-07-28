@@ -171,47 +171,7 @@ const opinionEditor = ref(null)
 // Track expansion (by opinion id)
 const expandedOpinions = reactive({})
 
-// Dummy opinions
-const dummyOpinions = ref([
-    {
-        id: 1,
-        name: 'Sarah Johnson',
-        content:
-            'This is a fantastic initiative! I really believe this approach could revolutionize how we think about community engagement and collaborative decision-making. The potential for positive impact is enormous when we combine resources and expertise in this way.',
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: 2,
-        name: 'Mike Chen',
-        content:
-            'Interesting concept. I wonder how this would work in practice. There are several logistical challenges that need to be addressed, particularly around implementation timelines and resource allocation across different stakeholder groups.',
-        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: 3,
-        name: 'Emily Rodriguez',
-        content:
-            'The idea of democratizing philanthropy is compelling. It allows for more diverse perspectives to be included in the decision-making process, which ultimately leads to more equitable outcomes for all community members involved.',
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: 4,
-        name: 'David Thompson',
-        content:
-            'Could create healthy competition in the NGO sector. Organizations would need to demonstrate their effectiveness more transparently to attract funding, which would ultimately benefit the communities they serve through improved services.',
-        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: 5,
-        name: 'Lisa Park',
-        content:
-            "Transparency is what appeals to me most here. When donors can see exactly how their contributions are being used and what impact they're having, it builds trust and encourages continued participation in philanthropic efforts.",
-        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    },
-])
-
-// Combine user + dummy opinions
-const allOpinions = computed(() => [...opinions.value, ...dummyOpinions.value])
+const allOpinions = computed(() => opinions.value)
 
 const avatarColors = [
     '#8B5CF6',

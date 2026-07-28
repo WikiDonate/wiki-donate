@@ -263,7 +263,7 @@ class TalkController extends Controller
             }
 
             // Parse HTML sections
-            $sections = parseHtmlSection($content);
+            $sections = parseHtmlSection(sanitizeHtml($content));
             if (empty($sections)) {
                 return response()->json([
                     'success' => false,
@@ -297,7 +297,7 @@ class TalkController extends Controller
 
             $talkParams = [
                 'user_id' => $request->user()->id,
-                'article_id' => Article::where('uuid', $request->articleUuid)->first()->id,
+                'article_id' => Article::where('uuid', $request->articleUuid)->firstOrFail()->id,
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'sections' => json_encode($sections),
@@ -450,7 +450,7 @@ class TalkController extends Controller
             }
 
             // Parse fresh sections from HTML after signature handling
-            $parsedSections = parseHtmlSection($content);
+            $parsedSections = parseHtmlSection(sanitizeHtml($content));
             if (empty($parsedSections)) {
                 return response()->json([
                     'success' => false,
@@ -647,7 +647,7 @@ class TalkController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $versions = TalkRevision::where('talk_id', $talk->id)->orderBy('version', 'desc')->get();
+            $versions = TalkRevision::with('user')->where('talk_id', $talk->id)->orderBy('version', 'desc')->get();
             if ($versions->isEmpty()) {
                 return response()->json([
                     'success' => false,

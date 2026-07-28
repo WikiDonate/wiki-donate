@@ -117,7 +117,7 @@ class NotificationController extends Controller
                 'success' => false,
                 'message' => 'Exception Error',
                 'errors' => [$e->getMessage()],
-            ], Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -176,7 +176,7 @@ definePageMeta({
     middleware: 'auth',
 })
 
-const stripe = await useClientStripe()
+const stripe = ref(null)
 
 // State
 const showAlert = ref(false)
@@ -194,7 +194,7 @@ const currentCard = ref(null)
 // Computed
 const cardBrand = computed(() => {
     if (!currentCard.value) return ''
-    return currentCard.value.brand.toUpperCase()
+    return currentCard.value?.brand?.toUpperCase() || ''
 })
 
 // Methods
@@ -349,6 +349,7 @@ const fetchPaymentMethod = async () => {
 }
 
 onMounted(async () => {
+    stripe.value = await useClientStripe()
     await fetchPaymentMethod()
 
     // If no card exists, mount the form immediately

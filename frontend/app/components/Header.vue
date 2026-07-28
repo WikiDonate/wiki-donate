@@ -316,14 +316,12 @@ const onClickOutside = (event) => {
 
 const handleLogout = async (event) => {
     event.preventDefault()
+    authStore.logout()
+    localStorage.removeItem('token')
+    activeDropdown.value = null
     try {
-        const response = await authService.logout()
-        if (response.success) {
-            authStore.logout()
-            localStorage.removeItem('token')
-            activeDropdown.value = null
-            router.push('/login')
-        }
+        await authService.logout()
+        router.push('/login')
     } catch (error) {
         console.error(error.message)
         router.push('/login')

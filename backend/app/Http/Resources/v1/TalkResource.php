@@ -15,18 +15,22 @@ class TalkResource extends JsonResource
      */
     public function toArray($request): array
     {
-        $sections = collect(json_decode($this->sections, true))->map(function ($section) {
-            $user = $section['edited_by']
-                ? User::find($section['edited_by'])
+        $decoded = json_decode($this->sections, true);
+        $userIds = collect($decoded)->pluck('edited_by')->filter()->unique()->toArray();
+        $users = User::whereIn('id', $userIds)->pluck('username', 'id');
+
+        $sections = collect($decoded)->map(function ($section) use ($users) {
+            $username = $section['edited_by']
+                ? $users->get($section['edited_by'])
                 : null;
 
             return [
                 'uuid' => $section['uuid'],
                 'title' => $section['title'],
                 'content' => $section['content'],
-                'edited_by' => $user ? [
-                    'id' => $user->id,
-                    'username' => $user->username,
+                'edited_by' => $username ? [
+                    'id' => $section['edited_by'],
+                    'username' => $username,
                 ] : null,
                 'edited_at' => $section['edited_at']
                     ? Carbon::parse($section['edited_at'])->format('d F, Y H:i')

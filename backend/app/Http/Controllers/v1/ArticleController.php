@@ -75,13 +75,13 @@ class ArticleController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $articles = Article::get();
+            $articles = Article::with('user')->get();
             if ($articles->isEmpty()) {
                 return response()->json([
-                    'success' => false,
+                    'success' => true,
                     'message' => 'No articles found',
-                    'errors' => ['No articles found'],
-                ], Response::HTTP_NOT_FOUND);
+                    'data' => [],
+                ], Response::HTTP_OK);
             }
 
             return response()->json([
@@ -309,7 +309,7 @@ class ArticleController extends Controller
             // Parse HTML sections only if content is provided
             $sections = [];
             if (! empty($request->content)) {
-                $sections = parseHtmlSection($request->content);
+                $sections = parseHtmlSection(sanitizeHtml($request->content));
                 if (empty($sections)) {
                     return response()->json([
                         'success' => false,
@@ -516,14 +516,14 @@ class ArticleController extends Controller
                         'success' => false,
                         'message' => 'Permission denied',
                         'errors' => ['You have no permission to edit this article. It can admin only'],
-                    ], Response::HTTP_NOT_FOUND);
+                    ], Response::HTTP_FORBIDDEN);
                 }
             }
 
             $oldSections = json_decode($existsArticle->sections, true);
 
             // Parse HTML sections
-            $sections = parseHtmlSection($request->content);
+            $sections = parseHtmlSection(sanitizeHtml($request->content));
             if (empty($sections)) {
                 return response()->json([
                     'success' => false,
@@ -670,33 +670,41 @@ class ArticleController extends Controller
      */
     public function search(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'query' => 'required|string|max:255',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'query' => 'required|string|max:255',
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error',
+                    'errors' => $validator->errors()->all(),
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Get the query parameter
+            $query = $request->input('query');
+
+            // Search for articles by title
+            $articles = Article::where('title', 'LIKE', '%'.$query.'%')
+                ->where('type', 'article')
+                ->orderBy('title')
+                ->limit(20)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Articles found successfully',
+                'data' => ArticleResource::collection($articles),
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error',
-                'errors' => $validator->errors()->all(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                'message' => 'Exceptions error',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
         }
-
-        // Get the query parameter
-        $query = $request->input('query');
-
-        // Search for articles by title
-        $articles = Article::where('title', 'LIKE', '%'.$query.'%')
-            ->where('type', 'article')
-            ->orderBy('title')
-            ->limit(20)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Articles found successfully',
-            'data' => ArticleResource::collection($articles),
-        ], Response::HTTP_OK);
     }
 
     /**
@@ -792,7 +800,7 @@ class ArticleController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $versions = Revision::where('article_id', $article->id)->orderBy('version', 'desc')->get();
+            $versions = Revision::with('user')->where('article_id', $article->id)->orderBy('version', 'desc')->get();
             if ($versions->isEmpty()) {
                 return response()->json([
                     'success' => false,

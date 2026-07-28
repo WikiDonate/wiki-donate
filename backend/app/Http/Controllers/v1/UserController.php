@@ -294,7 +294,7 @@ class UserController extends Controller
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
-            $input = $request->all();
+            $input = $request->only(['name', 'phone']);
 
             $user->update($input);
 
@@ -393,7 +393,7 @@ class UserController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email|exists:users,email',
+                'email' => 'required|email',
             ]);
 
             if ($validator->fails()) {
@@ -406,18 +406,13 @@ class UserController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            if ($user->hasVerifiedEmail()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Email already verified. Please login.',
-                ], Response::HTTP_BAD_REQUEST);
+            if ($user && ! $user->hasVerifiedEmail()) {
+                $user->sendEmailVerificationNotification();
             }
-
-            $user->sendEmailVerificationNotification();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Verification email sent. Please check your inbox.',
+                'message' => 'If an account with that email exists and is not verified, a verification email has been sent.',
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {

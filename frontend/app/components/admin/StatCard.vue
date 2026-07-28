@@ -43,7 +43,8 @@ const props = defineProps({
     },
 })
 
-const iconBgClass = computed(() => `bg-${props.iconBg}-100`)
-
-const iconColorClass = computed(() => `text-${props.iconBg}-600`)
+const bgMap = { indigo: 'bg-indigo-100', purple: 'bg-purple-100', green: 'bg-green-100', amber: 'bg-amber-100', red: 'bg-red-100', blue: 'bg-blue-100' }
+const colorMap = { indigo: 'text-indigo-600', purple: 'text-purple-600', green: 'text-green-600', amber: 'text-amber-600', red: 'text-red-600', blue: 'text-blue-600' }
+const iconBgClass = computed(() => bgMap[props.iconBg] || 'bg-indigo-100')
+const iconColorClass = computed(() => colorMap[props.iconBg] || 'text-indigo-600')
 </script>

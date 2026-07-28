@@ -84,7 +84,7 @@ const selectedSuggestions = ref(null)
 const translateSelect = ref(null)
 
 const fetchSuggestions = async () => {
-    const query = searchQuery.value.replace(/\s+/g, '')
+    const query = searchQuery.value.trim()
     if (query.length > 1) {
         try {
             selectedSuggestions.value = []
@@ -100,7 +100,7 @@ const fetchSuggestions = async () => {
 }
 
 const handleSearch = async () => {
-    const query = searchQuery.value.replace(/\s+/g, '')
+    const query = searchQuery.value.trim()
     if (query) {
         let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
         const foundSuggestion = selectedSuggestions.value?.find(

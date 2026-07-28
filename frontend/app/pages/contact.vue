@@ -10,7 +10,7 @@
             <!-- Message -->
             <AlertMessage
                 v-if="showAlert"
-                :variant="success"
+                :variant="alertVariant"
                 :message="alertMessage"
                 @close="showAlert = false"
             />
@@ -116,6 +116,7 @@
 <script setup>
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
+import api from '~/config/apiConfig'
 
 useHead({
     title: 'Contact Us',
@@ -137,7 +138,7 @@ const validationSchema = yup.object({
 })
 
 // Setup VeeValidate
-const { handleSubmit, defineField, errors } = useForm({
+const { handleSubmit, defineField, errors, resetForm } = useForm({
     validationSchema,
 })
 
@@ -149,10 +150,21 @@ const [message, messageProps] = defineField('message')
 const [email, emailProps] = defineField('email')
 
 const onSubmit = handleSubmit(async (values) => {
-    console.log(values)
-    showAlert.value = true
-    alertVariant.value = 'success'
-    alertMessage.value = 'Your message has been sent successfully!'
-    showAlert.value = true
+    try {
+        const response = await api.post('/contact', values)
+        if (response.success) {
+            alertVariant.value = 'success'
+            alertMessage.value = 'Your message has been sent successfully!'
+            resetForm()
+        } else {
+            alertVariant.value = 'error'
+            alertMessage.value = response.errors?.[0] || 'Failed to send message'
+        }
+    } catch (error) {
+        alertVariant.value = 'error'
+        alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
+    } finally {
+        showAlert.value = true
+    }
 })
 </script>

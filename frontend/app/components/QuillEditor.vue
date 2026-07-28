@@ -220,21 +220,16 @@ function setupContentListeners() {
     quill.on('editor-change', emitContent) // ensures formats are captured
 }
 
-// Wait for QuillEditor to render
 onMounted(async () => {
     await nextTick()
     content.value = props.initialContent
-    // Check if editor is ready
     if (quillEditor.value) {
         setupTitleListener()
         setupContentListeners()
     } else {
         console.error('QuillEditor is not ready')
     }
-})
-
-// Initialize functionalities after mounting
-onMounted(() => {
+    await nextTick()
     enableImageManipulation()
     setupAlignmentButtons()
 })

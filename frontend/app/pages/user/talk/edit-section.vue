@@ -124,6 +124,7 @@ const loadSection = async (uuid) => {
     section.value = talkStore.talk.sections.find((item, idx) => idx == uuid)
 
     if (!section.value) {
+        loading.value = false
         alertVariant.value = 'error'
         alertMessage.value = 'Section not found'
         setTimeout(() => {

@@ -9,6 +9,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -122,20 +123,28 @@ class AuthController extends Controller
                 );
             }
 
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
+
             return response()->json(
                 [
                     'success' => true,
                     'message' => 'User logged successfully',
-                    'data' => new UserResource(Auth::user()),
+                    'data' => array_merge(
+                        (new UserResource($user))->resolve(),
+                        ['token' => $token]
+                    ),
                 ],
                 Response::HTTP_OK,
             );
         } catch (Exception $e) {
+            Log::error('Login error: '.$e->getMessage());
+
             return response()->json(
                 [
                     'success' => false,
                     'message' => 'Exceptions error',
-                    'errors' => [$e->getMessage()],
+                    'errors' => ['An unexpected error occurred. Please try again.'],
                 ],
                 Response::HTTP_EXPECTATION_FAILED,
             );
@@ -191,8 +200,7 @@ class AuthController extends Controller
             return response()->json(
                 [
                     'success' => false,
-                    'error' => 'Error',
-                    'message' => $e->getMessage(),
+                    'errors' => [$e->getMessage()],
                 ],
                 Response::HTTP_EXPECTATION_FAILED,
             );
@@ -203,7 +211,7 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email|exists:users,email',
+                'email' => 'required|email',
             ]);
 
             if ($validator->fails()) {
@@ -218,24 +226,17 @@ class AuthController extends Controller
             }
 
             $user = User::where('email', $request->email)->first();
-            if (! $user) {
-                return response()->json(
-                    [
-                        'success' => false,
-                        'message' => 'Error!',
-                        'errors' => ['User not found.'],
-                    ],
-                    Response::HTTP_NOT_FOUND,
+
+            if ($user) {
+                $temporaryPassword = Str::random(8);
+                $user->password = $temporaryPassword;
+                $user->save();
+                $user->tokens()->delete();
+
+                Mail::to($user->email)->queue(
+                    new TemporaryPasswordMail($temporaryPassword),
                 );
             }
-
-            $temporaryPassword = Str::random(8);
-            $user->password = $temporaryPassword;
-            $user->save();
-
-            Mail::to($user->email)->queue(
-                new TemporaryPasswordMail($temporaryPassword),
-            );
 
             return response()->json(
                 [

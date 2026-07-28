@@ -17,8 +17,7 @@ class ArticleResource extends JsonResource
     {
         $editable = true;
         if (Auth::check()) {
-            // Only admin can edit the admin's article
-            if ($this->user->hasRole(['Admin'])) {
+            if ($this->user && $this->user->hasRole(['Admin'])) {
                 if (! Auth::user()->hasRole(['Admin'])) {
                     $editable = false;
                 }
@@ -33,10 +32,10 @@ class ArticleResource extends JsonResource
             'createdAt' => $this->created_at->format('d F, Y H:i'),
             'updatedAt' => $this->updated_at->format('d F, Y H:i'),
             'accessType' => $this->access_type ?? 'public',
-            'user' => [
+            'user' => $this->user ? [
                 'uuid' => $this->user->uuid,
                 'username' => $this->user->username,
-            ],
+            ] : null,
             'editable' => $editable,
         ];
     }

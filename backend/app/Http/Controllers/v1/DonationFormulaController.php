@@ -32,7 +32,7 @@ class DonationFormulaController extends Controller
             // Return all formulas for this article
             $formulas = DonationFormula::with('user:id,username')
                 ->where('article_id', $article->id)
-                ->get();
+                ->paginate(20);
 
             return response()->json([
                 'success' => true,

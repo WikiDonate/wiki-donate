@@ -57,7 +57,7 @@ export default defineNuxtConfig({
     },
     stripe: {
         client: {
-            key: process.env.NUXT_STRIPE_PUBLIC_KEYS,
+            key: process.env.NUXT_STRIPE_PUBLIC_KEY,
         },
     },
 })

@@ -9,13 +9,11 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        text: {
-            type: String,
-            default: '',
-        },
+<script setup>
+defineProps({
+    text: {
+        type: String,
+        default: '',
     },
-}
+})
 </script>

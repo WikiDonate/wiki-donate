@@ -16,8 +16,8 @@ Route::prefix('v1')->group(function () {
     Route::post('user', [UserController::class, 'register'])->middleware(
         'throttle:5,10',
     );
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('forgotPassword', [AuthController::class, 'forgotPassword']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('forgotPassword', [AuthController::class, 'forgotPassword'])->middleware('throttle:3,10');
 
     // Email verification routes
     Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
-    Route::post('contact', [ContactController::class, 'store']);
+    Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
 
     // Donation Formula routes (public)
     Route::get('donation-formulas/article/{slug}', [

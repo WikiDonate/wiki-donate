@@ -35,6 +35,14 @@ class DonateController extends Controller
 
         $user = auth()->user();
 
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'errors' => ['You must be logged in to donate.'],
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
         if (! $user->card_id || ! $user->customer_id) {
             return response()->json([
                 'success' => false,

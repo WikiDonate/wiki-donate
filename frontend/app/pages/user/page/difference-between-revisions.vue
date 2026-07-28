@@ -82,27 +82,31 @@ const generateDiffHtml = (diffs) => {
 
 const fetchAndCompare = async (uuid) => {
     const version = articleStore.history.find((item) => item.uuid == uuid)
-    // Old content prepare
-    let oldContent = ''
-    JSON.parse(version.oldContent).forEach((item) => {
-        if (typeof item === 'string') {
-            oldContent += item
-        } else {
-            if (item.title) oldContent += item.title
-            if (item.content) oldContent += item.content
-        }
-    })
+    if (!version) return
 
-    // New content prepare
+    let oldContent = ''
     let newContent = ''
-    JSON.parse(version.newContent).forEach((item) => {
-        if (typeof item === 'string') {
-            newContent += item
-        } else {
-            if (item.title) newContent += item.title
-            if (item.content) newContent += item.content
-        }
-    })
+    try {
+        JSON.parse(version.oldContent).forEach((item) => {
+            if (typeof item === 'string') {
+                oldContent += item
+            } else {
+                if (item.title) oldContent += item.title
+                if (item.content) oldContent += item.content
+            }
+        })
+
+        JSON.parse(version.newContent).forEach((item) => {
+            if (typeof item === 'string') {
+                newContent += item
+            } else {
+                if (item.title) newContent += item.title
+                if (item.content) newContent += item.content
+            }
+        })
+    } catch {
+        return
+    }
 
     const dmp = new DiffMatchPatch()
     const diffs = dmp.diff_main(oldContent, newContent)

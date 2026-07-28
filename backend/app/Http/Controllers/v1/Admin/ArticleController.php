@@ -51,6 +51,7 @@ class ArticleController extends Controller
 
             return response()->json([
                 'success' => true,
+                'message' => 'Articles retrieved successfully',
                 'data' => ArticleResource::collection($articles->items()),
                 'meta' => [
                     'currentPage' => $articles->currentPage(),
@@ -84,6 +85,7 @@ class ArticleController extends Controller
 
             return response()->json([
                 'success' => true,
+                'message' => 'Articles retrieved successfully',
                 'data' => new ArticleResource($article),
             ], Response::HTTP_OK);
 
