@@ -8,7 +8,7 @@
                 subtitle="Overview of your WikiDonate platform"
             />
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-2 gap-4 mb-6">
                 <StatCard
                     :icon="['fas', 'users']"
                     icon-bg="indigo"
@@ -20,18 +20,6 @@
                     icon-bg="purple"
                     label="Total Articles"
                     :value="stats.totalArticles"
-                />
-                <StatCard
-                    :icon="['fas', 'leaf']"
-                    icon-bg="green"
-                    label="Total Causes"
-                    :value="stats.totalCauses"
-                />
-                <StatCard
-                    :icon="['fas', 'building']"
-                    icon-bg="amber"
-                    label="Total NGOs"
-                    :value="stats.totalNgos"
                 />
             </div>
 
@@ -239,8 +227,6 @@ const loading = ref(true)
 const stats = ref({
     totalUsers: 0,
     totalArticles: 0,
-    totalCauses: 0,
-    totalNgos: 0,
     recentDonations: [],
     recentUsers: [],
     monthlyStats: { donations: [], registrations: [] },
