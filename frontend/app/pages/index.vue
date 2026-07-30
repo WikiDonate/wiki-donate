@@ -19,7 +19,10 @@
                     WikiDonate
                 </h1>
             </div>
-            <p class="text-sm sm:text-base text-gray-600 text-center max-w-md">
+            <p
+                v-if="showTagline"
+                class="text-sm sm:text-base text-gray-600 text-center max-w-md"
+            >
                 Discover charities and make a difference through knowledge
             </p>
         </div>
@@ -34,6 +37,7 @@
         <!-- Language selection -->
         <div class="w-full max-w-4xl mx-auto px-2 sm:px-4">
             <h2
+                v-if="showLanguageHeading"
                 class="text-center text-gray-700 font-medium mb-5 text-base sm:text-lg"
             >
                 Choose your language
@@ -57,6 +61,15 @@
                     </span>
                 </button>
             </div>
+            <!-- Remove link to toggle tagline and language heading -->
+            <div class="text-center mt-6">
+                <button
+                    class="text-sm text-gray-400 hover:text-gray-600 underline transition-colors"
+                    @click="toggleVisibility"
+                >
+                    {{ showTagline ? 'Remove' : 'Show' }}
+                </button>
+            </div>
         </div>
     </main>
 </template>
@@ -68,6 +81,13 @@ useHead({
 
 const router = useRouter()
 const searchBox = ref(null)
+const showTagline = ref(true)
+const showLanguageHeading = ref(true)
+
+const toggleVisibility = () => {
+    showTagline.value = !showTagline.value
+    showLanguageHeading.value = !showLanguageHeading.value
+}
 
 // Configure your supported languages
 const languages = [
