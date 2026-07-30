@@ -76,9 +76,10 @@ const languages = [
     { code: 'fr', name: 'French' },
     { code: 'de', name: 'German' },
     { code: 'ar', name: 'Arabic' },
+    { code: 'hi', name: 'Hindi' },
     { code: 'zh-CN', name: 'Chinese' },
     { code: 'ja', name: 'Japanese' },
-    { code: 'pt-BR', name: 'Portuguese' },
+    { code: 'pt', name: 'Portuguese' },
     { code: 'ru', name: 'Russian' },
 ]
 
