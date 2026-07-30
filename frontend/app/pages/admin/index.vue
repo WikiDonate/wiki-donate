@@ -45,24 +45,32 @@
                         :rows="stats.recentDonations"
                         empty-text="No donations yet"
                     >
+                        <template #cell-source="{ row }">
+                            <AdminBadge
+                                :variant="row.source === 'stripe_checkout' ? 'info' : 'purple'"
+                                :text="row.source === 'stripe_checkout' ? 'Stripe Checkout' : 'Stripe Card'"
+                            />
+                        </template>
                         <template #cell-amount="{ row }">
                             {{ row.currency }}
                             {{ Number(row.amount).toFixed(2) }}
                         </template>
                         <template #cell-status="{ row }">
                             <AdminBadge
-                                :variant="
-                                    row.status === 'succeeded'
-                                        ? 'success'
-                                        : row.status === 'pending'
-                                          ? 'warning'
-                                          : 'danger'
-                                "
+                                :variant="statusVariant(row.status)"
                                 :text="row.status"
                             />
                         </template>
                         <template #cell-date="{ row }">
                             <span class="text-gray-500">{{ row.date }}</span>
+                        </template>
+                        <template #cell-action="{ row }">
+                            <button
+                                class="text-indigo-600 hover:text-indigo-800 font-medium text-sm"
+                                @click="openDonationDetail(row)"
+                            >
+                                View
+                            </button>
                         </template>
                     </AdminTable>
                 </div>
@@ -210,6 +218,72 @@
                 </div>
             </div>
         </template>
+
+        <!-- Donation Detail Modal placeholder – will be replaced with DonationDetailModal component in a later subtask -->
+        <Modal
+            v-if="showDonationDetail"
+            v-model="showDonationDetail"
+            title="Donation Details"
+        >
+            <div v-if="selectedDonation" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Donor</label>
+                        <p class="text-gray-800 font-medium">{{ selectedDonation.user || '—' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Email</label>
+                        <p class="text-gray-800">{{ selectedDonation.email || '—' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Source</label>
+                        <p class="text-gray-800">{{ selectedDonation.source === 'stripe_checkout' ? 'Stripe Checkout' : 'Stripe Card' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Session ID</label>
+                        <p class="text-gray-800 text-xs font-mono break-all">{{ selectedDonation.stripe_session_id || '—' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Amount</label>
+                        <p class="text-gray-800 font-semibold text-lg">{{ selectedDonation.currency }} {{ Number(selectedDonation.amount).toFixed(2) }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Status</label>
+                        <AdminBadge :variant="statusVariant(selectedDonation.status)" :text="selectedDonation.status" />
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Date</label>
+                        <p class="text-gray-800">{{ selectedDonation.date }}</p>
+                    </div>
+                </div>
+
+                <!-- Formula Breakdown -->
+                <div v-if="selectedDonation.formula && selectedDonation.formula.length" class="border-t pt-4">
+                    <h4 class="font-semibold text-gray-800 mb-3">Distribution Formula</h4>
+                    <div class="space-y-2">
+                        <div
+                            v-for="(item, i) in selectedDonation.formula"
+                            :key="i"
+                            class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
+                        >
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">{{ item.organization || item.name || 'Organization' }}</p>
+                                <p class="text-xs text-gray-500">{{ Number(item.percentage).toFixed(1) }}%</p>
+                            </div>
+                            <p class="text-sm font-semibold text-indigo-600">
+                                {{ selectedDonation.currency }} {{ (Number(selectedDonation.amount) * Number(item.percentage) / 100).toFixed(2) }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details -->
+                <div v-if="selectedDonation.details" class="border-t pt-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Details</h4>
+                    <p class="text-gray-600 text-sm">{{ selectedDonation.details }}</p>
+                </div>
+            </div>
+        </Modal>
     </main>
 </template>
 
@@ -219,6 +293,20 @@ import { adminService } from '~/services/adminService'
 import { useToastify } from '~/composables/useToastify'
 
 const { notifyError } = useToastify()
+
+const selectedDonation = ref(null)
+const showDonationDetail = ref(false)
+
+function statusVariant(status) {
+    if (status === 'completed' || status === 'succeeded') return 'success'
+    if (status === 'pending') return 'warning'
+    return 'danger'
+}
+
+function openDonationDetail(row) {
+    selectedDonation.value = row
+    showDonationDetail.value = true
+}
 
 useHead({ title: 'Admin Dashboard' })
 definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -233,10 +321,12 @@ const stats = ref({
 })
 
 const donationColumns = [
-    { key: 'user', label: 'User' },
+    { key: 'date', label: 'Date' },
+    { key: 'user', label: 'Donor' },
+    { key: 'source', label: 'Source' },
     { key: 'amount', label: 'Amount' },
     { key: 'status', label: 'Status' },
-    { key: 'date', label: 'Date' },
+    { key: 'action', label: 'Action' },
 ]
 
 const userColumns = [
