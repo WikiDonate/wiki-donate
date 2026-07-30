@@ -113,6 +113,24 @@ class StripeWebhookController extends Controller
         $donation = Donation::where('stripe_session_id', $session->id)->first();
 
         if (! $donation) {
+            // Build metadata from session metadata
+            $sessionMetadata = $session->metadata ?? [];
+            $metaFormula = null;
+            $metaDetails = null;
+
+            // Extract formula from session metadata (stored as JSON string by Stripe)
+            if (isset($sessionMetadata->formula)) {
+                $metaFormula = json_decode($sessionMetadata->formula, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $metaFormula = $sessionMetadata->formula; // store as-is if not valid JSON
+                }
+            }
+
+            // Extract details from session metadata
+            if (isset($sessionMetadata->details)) {
+                $metaDetails = $sessionMetadata->details;
+            }
+
             // Create new donation record
             $donation = Donation::create([
                 'stripe_session_id' => $session->id,
@@ -126,7 +144,9 @@ class StripeWebhookController extends Controller
                 'metadata' => [
                     'session_id' => $session->id,
                     'payment_status' => $session->payment_status ?? null,
-                    'source' => $session->metadata->source ?? 'wikidonate',
+                    'source' => $sessionMetadata->source ?? 'wikidonate',
+                    'formula' => $metaFormula,
+                    'details' => $metaDetails,
                 ],
             ]);
         } else {
