@@ -219,71 +219,10 @@
             </div>
         </template>
 
-        <!-- Donation Detail Modal placeholder – will be replaced with DonationDetailModal component in a later subtask -->
-        <Modal
-            v-if="showDonationDetail"
+        <DonationDetailModal
             v-model="showDonationDetail"
-            title="Donation Details"
-        >
-            <div v-if="selectedDonation" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Donor</label>
-                        <p class="text-gray-800 font-medium">{{ selectedDonation.user || '—' }}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Email</label>
-                        <p class="text-gray-800">{{ selectedDonation.email || '—' }}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Source</label>
-                        <p class="text-gray-800">{{ selectedDonation.source === 'stripe_checkout' ? 'Stripe Checkout' : 'Stripe Card' }}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Session ID</label>
-                        <p class="text-gray-800 text-xs font-mono break-all">{{ selectedDonation.stripe_session_id || '—' }}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Amount</label>
-                        <p class="text-gray-800 font-semibold text-lg">{{ selectedDonation.currency }} {{ Number(selectedDonation.amount).toFixed(2) }}</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Status</label>
-                        <AdminBadge :variant="statusVariant(selectedDonation.status)" :text="selectedDonation.status" />
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Date</label>
-                        <p class="text-gray-800">{{ selectedDonation.date }}</p>
-                    </div>
-                </div>
-
-                <!-- Formula Breakdown -->
-                <div v-if="selectedDonation.formula && selectedDonation.formula.length" class="border-t pt-4">
-                    <h4 class="font-semibold text-gray-800 mb-3">Distribution Formula</h4>
-                    <div class="space-y-2">
-                        <div
-                            v-for="(item, i) in selectedDonation.formula"
-                            :key="i"
-                            class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
-                        >
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">{{ item.organization || item.name || 'Organization' }}</p>
-                                <p class="text-xs text-gray-500">{{ Number(item.percentage).toFixed(1) }}%</p>
-                            </div>
-                            <p class="text-sm font-semibold text-indigo-600">
-                                {{ selectedDonation.currency }} {{ (Number(selectedDonation.amount) * Number(item.percentage) / 100).toFixed(2) }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Details -->
-                <div v-if="selectedDonation.details" class="border-t pt-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Details</h4>
-                    <p class="text-gray-600 text-sm">{{ selectedDonation.details }}</p>
-                </div>
-            </div>
-        </Modal>
+            :donation="selectedDonation"
+        />
     </main>
 </template>
 
