@@ -113,16 +113,27 @@ class StripeController extends Controller
                 'quantity' => 1,
             ]];
 
+            // Build metadata — Stripe only accepts string values, so encode arrays as JSON
+            $metadata = [
+                'source' => 'wikidonate',
+                'user_id' => $userId,
+            ];
+
+            if ($request->has('formula') && is_array($request->input('formula'))) {
+                $metadata['formula'] = json_encode($request->input('formula'));
+            }
+
+            if ($request->filled('details')) {
+                $metadata['details'] = $request->input('details');
+            }
+
             $sessionConfig = [
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
                 'success_url' => $successUrl,
                 'cancel_url' => $cancelUrl,
-                'metadata' => [
-                    'source' => 'wikidonate',
-                    'user_id' => $userId,
-                ],
+                'metadata' => $metadata,
             ];
 
             // Optionally pre-fill customer email
