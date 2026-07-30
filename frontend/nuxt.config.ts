@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         '~/assets/css/main.css',
         'vue-toast-notification/dist/theme-default.css',
     ],
-    plugins: ['~/plugins/fontawesome.js'],
+    plugins: ['~/plugins/fontawesome.js', '~/plugins/google-translate.client.js'],
     modules: [
         '@nuxt/eslint',
         '@pinia/nuxt',

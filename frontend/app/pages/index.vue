@@ -83,18 +83,41 @@ const languages = [
 ]
 
 const changeLanguage = (langCode) => {
-    const attempt = () => {
-        const googleTranslateSelect = document.querySelector('.goog-te-combo')
-        if (googleTranslateSelect) {
-            googleTranslateSelect.value = langCode
-            googleTranslateSelect.dispatchEvent(new Event('change'))
-            searchBox.value.setValueOnLanguageChange(langCode)
+    // Use Google Translate API to change language and redirect to main page
+    const applyTranslation = () => {
+        // Try Google Translate Element API first
+        const googleFrame = document.querySelector('.goog-te-menu-frame')
+        const googleSelect = document.querySelector('.goog-te-combo')
+        if (googleSelect) {
+            googleSelect.value = langCode
+            googleSelect.dispatchEvent(new Event('change'))
+            if (searchBox.value) {
+                searchBox.value.setValueOnLanguageChange(langCode)
+            }
             router.push('/main')
+        } else if (window.google?.translate?.TranslateElement) {
+            // Wait for Google Translate to be fully initialized
+            const checkAndApply = () => {
+                const select = document.querySelector('.goog-te-combo')
+                if (select) {
+                    select.value = langCode
+                    select.dispatchEvent(new Event('change'))
+                    if (searchBox.value) {
+                        searchBox.value.setValueOnLanguageChange(langCode)
+                    }
+                    router.push('/main')
+                } else {
+                    setTimeout(checkAndApply, 100)
+                }
+            }
+            checkAndApply()
         } else {
-            setTimeout(attempt, 50)
+            // Fallback: use Google Translate cookie approach
+            document.cookie = `googtrans=/en/${langCode};path=/;domain=.${window.location.hostname}`
+            router.push('/main')
         }
     }
-    attempt()
+    applyTranslation()
 }
 
 onMounted(() => {
