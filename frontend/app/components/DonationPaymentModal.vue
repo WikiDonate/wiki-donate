@@ -6,35 +6,49 @@
     >
         <div class="space-y-5">
             <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
-                <h4 class="font-semibold text-indigo-700 text-sm mb-3">
-                    Formula Breakdown
-                </h4>
-                <div class="space-y-2">
-                    <div
-                        v-for="(item, i) in formula"
-                        :key="i"
-                        class="flex justify-between items-center text-sm"
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-semibold text-indigo-700 text-sm">
+                        Formula Breakdown
+                    </h4>
+                    <button
+                        class="text-indigo-500 hover:text-indigo-700 transition-colors text-lg leading-none"
+                        :title="showFormula ? 'Hide formula details' : 'Show formula details'"
+                        @click="showFormula = !showFormula"
                     >
-                        <span class="text-gray-700">{{
-                            item.organization
-                        }}</span>
-                        <span class="font-semibold text-indigo-600"
-                            >{{ item.percentage }}%</span
-                        >
-                    </div>
-                    <div
-                        class="flex justify-between items-center pt-2 border-t border-indigo-200 font-bold text-gray-800"
-                    >
-                        <span>Total</span>
-                        <span class="text-indigo-700">100%</span>
-                    </div>
+                        {{ showFormula ? '👁' : '👁‍🗨' }}
+                    </button>
                 </div>
-                <p
-                    v-if="details"
-                    class="mt-2 pt-2 border-t border-indigo-200 text-xs text-gray-500 italic"
+                <div
+                    class="overflow-hidden transition-all duration-300 ease-in-out"
+                    :class="showFormula ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'"
                 >
-                    {{ details }}
-                </p>
+                    <div class="space-y-2">
+                        <div
+                            v-for="(item, i) in formula"
+                            :key="i"
+                            class="flex justify-between items-center text-sm"
+                        >
+                            <span class="text-gray-700">{{
+                                item.organization
+                            }}</span>
+                            <span class="font-semibold text-indigo-600"
+                                >{{ item.percentage }}%</span
+                            >
+                        </div>
+                        <div
+                            class="flex justify-between items-center pt-2 border-t border-indigo-200 font-bold text-gray-800"
+                        >
+                            <span>Total</span>
+                            <span class="text-indigo-700">100%</span>
+                        </div>
+                    </div>
+                    <p
+                        v-if="details"
+                        class="mt-2 pt-2 border-t border-indigo-200 text-xs text-gray-500 italic"
+                    >
+                        {{ details }}
+                    </p>
+                </div>
             </div>
 
             <!-- Login prompt for non-authenticated users -->
@@ -184,6 +198,7 @@ const amount = ref('')
 const isDonating = ref(false)
 const alertMessage = ref('')
 const alertVariant = ref('error')
+const showFormula = ref(true)
 
 const alertClass = computed(() => {
     const map = {
@@ -230,6 +245,7 @@ watch(
             amount.value = ''
             alertMessage.value = ''
             isDonating.value = false
+            showFormula.value = true
         }
     }
 )
