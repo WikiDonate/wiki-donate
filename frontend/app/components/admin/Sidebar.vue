@@ -139,6 +139,12 @@ const navItems = [
     },
     {
         type: 'link',
+        name: 'Donations',
+        link: '/admin/donations',
+        icon: ['fas', 'hand-holding-heart'],
+    },
+    {
+        type: 'link',
         name: 'Articles',
         link: '/admin/articles',
         icon: ['fas', 'newspaper'],

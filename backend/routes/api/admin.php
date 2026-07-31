@@ -9,6 +9,7 @@ Route::prefix('admin')
     ->middleware(['auth:sanctum', 'role:Admin'])
     ->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::get('donations', [DashboardController::class, 'donations']);
 
         Route::get('articles', [ArticleController::class, 'index']);
         Route::get('articles/{slug}', [ArticleController::class, 'show']);

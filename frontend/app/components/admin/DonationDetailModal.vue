@@ -4,74 +4,80 @@
         title="Donation Details"
         @update:model-value="$emit('update:modelValue', $event)"
     >
-        <div v-if="donation" class="space-y-4">
+        <div v-if="donation" class="space-y-6">
+            <!-- Amount Summary -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-center">
+                <p class="text-indigo-100 text-sm font-medium mb-1">Total Amount</p>
+                <p class="text-white text-3xl font-bold">
+                    {{ donation.currency || 'USD' }} {{ Number(donation.amount).toFixed(2) }}
+                </p>
+                <div class="flex items-center justify-center gap-2 mt-3">
+                    <AdminBadge variant="info" text="Stripe Checkout" />
+                    <AdminBadge :variant="statusVariant(donation.status)" :text="donation.status" />
+                </div>
+            </div>
+
+            <!-- Info Grid -->
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Donor</label>
-                    <p class="text-gray-800 font-medium">{{ donation.user || '—' }}</p>
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Donor</span>
+                    <p class="text-gray-800 font-medium text-sm mt-0.5">{{ donation.user || '—' }}</p>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Email</label>
-                    <p class="text-gray-800">{{ donation.email || '—' }}</p>
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Email</span>
+                    <p class="text-gray-800 text-sm mt-0.5 truncate">{{ donation.email || '—' }}</p>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Source</label>
-                    <AdminBadge
-                        :variant="donation.source === 'stripe_checkout' ? 'info' : 'purple'"
-                        :text="donation.source === 'stripe_checkout' ? 'Stripe Checkout' : 'Stripe Card'"
-                    />
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Date</span>
+                    <p class="text-gray-800 text-sm mt-0.5">{{ donation.date }}</p>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Session ID</label>
-                    <p class="text-gray-800 text-xs font-mono break-all">{{ donation.stripe_session_id || '—' }}</p>
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Amount</label>
-                    <p class="text-gray-800 font-semibold text-lg">{{ donation.currency }} {{ Number(donation.amount).toFixed(2) }}</p>
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Status</label>
-                    <AdminBadge
-                        :variant="statusVariant(donation.status)"
-                        :text="donation.status"
-                    />
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Date</label>
-                    <p class="text-gray-800">{{ donation.date }}</p>
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Payment ID</span>
+                    <p class="text-gray-800 text-xs font-mono mt-0.5 truncate">{{ donation.payment_id || donation.stripe_session_id || '—' }}</p>
                 </div>
             </div>
 
             <!-- Formula Breakdown -->
-            <div v-if="donation.formula && donation.formula.length" class="border-t pt-4">
-                <h4 class="font-semibold text-gray-800 mb-3">Distribution Formula</h4>
-                <div class="space-y-2">
+            <div v-if="donation.formula && donation.formula.length" class="border border-gray-100 rounded-xl overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <h4 class="text-sm font-semibold text-gray-700">Distribution Formula</h4>
+                </div>
+                <div class="divide-y divide-gray-50">
                     <div
                         v-for="(item, i) in donation.formula"
                         :key="i"
-                        class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
+                        class="px-4 py-3 flex items-center gap-4"
                     >
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">{{ item.organization || item.name || 'Organization' }}</p>
-                            <p class="text-xs text-gray-500">{{ Number(item.percentage).toFixed(1) }}%</p>
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                            <span class="text-xs font-bold text-indigo-600">{{ Number(item.percentage).toFixed(0) }}%</span>
                         </div>
-                        <p class="text-sm font-semibold text-indigo-600">
-                            {{ donation.currency }} {{ (Number(donation.amount) * Number(item.percentage) / 100).toFixed(2) }}
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-800 truncate">{{ item.organization || item.name || 'Organization' }}</p>
+                            <div class="mt-1 w-full bg-gray-100 rounded-full h-1.5">
+                                <div class="bg-indigo-500 h-1.5 rounded-full" :style="{ width: `${item.percentage}%` }" />
+                            </div>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700 flex-shrink-0">
+                            {{ donation.currency || 'USD' }} {{ (Number(donation.amount) * Number(item.percentage) / 100).toFixed(2) }}
                         </p>
                     </div>
                 </div>
             </div>
 
             <!-- Details -->
-            <div v-if="donation.details" class="border-t pt-4">
-                <h4 class="font-semibold text-gray-800 mb-2">Details</h4>
-                <p class="text-gray-600 text-sm">{{ donation.details }}</p>
+            <div v-if="donation.details" class="border border-gray-100 rounded-xl overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <h4 class="text-sm font-semibold text-gray-700">Additional Details</h4>
+                </div>
+                <div class="px-4 py-3">
+                    <p class="text-gray-600 text-sm">{{ donation.details }}</p>
+                </div>
             </div>
         </div>
 
         <template #footer>
             <button
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                class="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
                 @click="$emit('update:modelValue', false)"
             >
                 Close
@@ -95,8 +101,8 @@ defineProps({
 defineEmits(['update:modelValue'])
 
 function statusVariant(status) {
-    if (status === 'completed' || status === 'succeeded') return 'success'
-    if (status === 'pending') return 'warning'
+    if (status === 'completed') return 'success'
+    if (status === 'expired') return 'amber'
     return 'danger'
 }
 </script>
