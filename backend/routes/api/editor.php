@@ -5,7 +5,6 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\StripeController;
-use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,11 +31,6 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
         Route::get('my', [ArticleController::class, 'myArticles']);
         Route::post('/', [ArticleController::class, 'save']);
         Route::put('update/{slug}', [ArticleController::class, 'update']);
-    });
-
-    Route::prefix('talks')->group(function () {
-        Route::post('/', [TalkController::class, 'save']);
-        Route::put('update/{slug}', [TalkController::class, 'update']);
     });
 
     Route::post('stripe/card', [StripeController::class, 'addCard']);

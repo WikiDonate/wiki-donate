@@ -53,11 +53,7 @@
                                 </h3>
                                 <p class="text-sm text-gray-500">
                                     By
-                                    <NuxtLink
-                                        :to="`/user/page?username=${article.user?.username}`"
-                                        class="font-semibold text-indigo-600 hover:text-purple-600"
-                                        >{{ article.user?.username }}</NuxtLink
-                                    >
+                                    <span class="font-semibold text-gray-700">{{ article.user?.username }}</span>
                                     ·
                                     {{ formatDateUTC(article.updatedAt) }}
                                 </p>

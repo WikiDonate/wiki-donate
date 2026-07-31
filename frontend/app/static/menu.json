@@ -45,14 +45,6 @@
         "icon": ["fas", "shield-alt"]
     },
     {
-        "name": "Donations",
-        "link": "/admin/donations",
-        "type": "LogoutMenu",
-        "onLogin": "show",
-        "role": "Admin",
-        "icon": ["fas", "hand-holding-heart"]
-    },
-    {
         "name": "Profile Settings",
         "link": "/profile",
         "type": "LogoutMenu",

@@ -290,8 +290,6 @@ const logoutMenu = computed(() =>
 
 const resolveLink = (item) => {
     if (item.name === 'Logout') return '#'
-    if (item.name === 'User Page')
-        return `/user/page?username=${authStore.user.username}`
     return item.link
 }
 

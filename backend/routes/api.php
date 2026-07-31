@@ -7,7 +7,6 @@ use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\StripeWebhookController;
-use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +22,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.verify');
-    Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])
-        ->middleware(['auth:sanctum', 'throttle:6,1'])
-        ->name('verification.resend');
     Route::post('/email/resend-by-email', [UserController::class, 'resendVerificationByEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
@@ -48,12 +44,6 @@ Route::prefix('v1')->group(function () {
             Route::get('{slug}', [ArticleController::class, 'show']);
             Route::get('{slug}/history', [ArticleController::class, 'history']);
         });
-    });
-
-    // Talk routes (public)
-    Route::prefix('talks')->group(function () {
-        Route::get('{slug}', [TalkController::class, 'show']);
-        Route::get('{slug}/history', [TalkController::class, 'history']);
     });
 
     // Stripe Checkout (public)
