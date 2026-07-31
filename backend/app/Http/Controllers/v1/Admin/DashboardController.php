@@ -5,7 +5,6 @@ namespace App\Http\Controllers\v1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Donation;
-use App\Models\Payment;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -64,7 +63,7 @@ class DashboardController extends Controller
                         }),
 
                     'monthlyStats' => [
-                        'donations' => Payment::where('created_at', '>=', now()->subMonths(6))
+                        'donations' => Donation::where('created_at', '>=', now()->subMonths(6))
                             ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count, SUM(amount) as total")
                             ->groupBy('month')
                             ->orderBy('month')
