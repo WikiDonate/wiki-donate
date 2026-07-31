@@ -57,7 +57,8 @@ Route::prefix('v1')->group(function () {
     });
 
     // Stripe Checkout (public)
-    Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession']);
+    Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession'])
+        ->middleware('auth:sanctum');
     Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
 
     // Stripe Webhook (public, no auth)

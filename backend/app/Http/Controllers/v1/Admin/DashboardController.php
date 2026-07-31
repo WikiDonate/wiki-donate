@@ -10,8 +10,8 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -52,6 +52,7 @@ class DashboardController extends Controller
             ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
+
                 return [
                     'id' => $donation->id,
                     'source' => 'stripe_checkout',
@@ -75,6 +76,7 @@ class DashboardController extends Controller
             ->values()
             ->map(function ($item) {
                 unset($item['created_at']); // internal sort only, not exposed
+
                 return $item;
             });
     }
