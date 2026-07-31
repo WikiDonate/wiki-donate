@@ -1,6 +1,6 @@
 <template>
     <aside
-        class="w-60 bg-white border-r border-indigo-200 shadow-sm flex flex-col h-full"
+        class="w-60 bg-white border-r border-indigo shadow-sm flex flex-col h-full"
     >
         <!-- Admin Header -->
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-4">
@@ -136,6 +136,12 @@ const navItems = [
         name: 'Dashboard',
         link: '/admin',
         icon: ['fas', 'chart-pie'],
+    },
+    {
+        type: 'link',
+        name: 'Donations',
+        link: '/admin/donations',
+        icon: ['fas', 'hand-holding-heart'],
     },
     {
         type: 'link',

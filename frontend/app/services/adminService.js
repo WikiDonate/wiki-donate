@@ -13,8 +13,11 @@ const getPageContent = (page) => api.get(`/admin/page-contents/${page}`)
 const updatePageContent = (page, content) =>
     api.put(`/admin/page-contents/${page}`, { content })
 
+const getDonations = (params) => api.get('/admin/donations', { params })
+
 export const adminService = {
     getDashboard,
+    getDonations,
     getArticles,
     getArticle,
     deleteArticle,

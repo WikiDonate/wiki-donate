@@ -202,6 +202,8 @@ async function handleStripe() {
         const params = {
             amount: Number(amount.value),
             donor_name: authStore.user?.username || '',
+            formula: props.formula,
+            details: props.details,
         }
         const response = await donateService.createCheckoutSession(params)
         if (response.success && response.data?.checkout_url) {

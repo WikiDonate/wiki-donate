@@ -2,11 +2,9 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\DonateController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\StripeController;
-use App\Http\Controllers\v1\TalkController;
 use App\Http\Controllers\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,16 +33,6 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
         Route::put('update/{slug}', [ArticleController::class, 'update']);
     });
 
-    Route::prefix('talks')->group(function () {
-        Route::post('/', [TalkController::class, 'save']);
-        Route::put('update/{slug}', [TalkController::class, 'update']);
-    });
-
     Route::post('stripe/card', [StripeController::class, 'addCard']);
     Route::get('stripe/card', [StripeController::class, 'getCard']);
-});
-
-// All authenticated users can donate
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('donate-now', [DonateController::class, 'donateNow']);
 });
