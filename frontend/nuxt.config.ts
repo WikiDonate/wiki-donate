@@ -8,13 +8,18 @@ export default defineNuxtConfig({
         '~/assets/css/main.css',
         'vue-toast-notification/dist/theme-default.css',
     ],
-    plugins: ['~/plugins/fontawesome.js', '~/plugins/google-translate.client.js'],
+    plugins: ['~/plugins/fontawesome.js'],
     modules: [
         '@nuxt/eslint',
         '@pinia/nuxt',
         'pinia-plugin-persistedstate/nuxt',
         '@unlok-co/nuxt-stripe',
+        'nuxt-google-translate',
     ],
+    googleTranslate: {
+        defaultLanguage: 'en',
+        supportedLanguages: ['en', 'bn', 'ur', 'hi', 'ar', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh-CN', 'zh-TW', 'ja', 'ko', 'tr', 'nl', 'pl', 'sv', 'th', 'vi', 'id', 'ms', 'tl', 'uk', 'ro', 'el', 'cs', 'hu', 'fi', 'da', 'no', 'he', 'fa', 'ta', 'te', 'mr', 'gu', 'sw', 'am', 'my', 'km'],
+    },
     vite: {
         optimizeDeps: {
             include: [
@@ -25,12 +30,11 @@ export default defineNuxtConfig({
                 '@fortawesome/free-brands-svg-icons',
                 '@fortawesome/free-regular-svg-icons',
                 '@fortawesome/free-solid-svg-icons',
-                'vue3-recaptcha-v2',
                 '@vueup/vue-quill',
                 'interactjs',
                 'axios',
-                '@google-translate-select/vue3',
                 'vue-toast-notification',
+                'yup',
             ],
         },
     },
