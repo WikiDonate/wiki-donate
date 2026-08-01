@@ -30,11 +30,6 @@
 
         <!-- Language selection -->
         <div class="w-full max-w-4xl mx-auto px-2 sm:px-4">
-            <h2
-                class="text-center text-gray-700 font-medium mb-5 text-base sm:text-lg"
-            >
-                Choose your language
-            </h2>
             <div
                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             >
@@ -93,8 +88,14 @@ onMounted(() => {
     script.src = 'https://aichatbot.devshahaj.com/widget.js'
     script.async = true
     script.id = 'ai-chatbot-script'
-    script.setAttribute('data-chatbot-id', '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0')
-    script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
+    script.setAttribute(
+        'data-chatbot-id',
+        '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0'
+    )
+    script.setAttribute(
+        'data-api-key',
+        import.meta.env.VITE_AI_CHATBOT_API_KEY || ''
+    )
     script.setAttribute('data-position', 'bottom-right')
     script.setAttribute('data-primary-color', '#3b82f6')
     script.setAttribute('data-secondary-color', '#ffffff')
