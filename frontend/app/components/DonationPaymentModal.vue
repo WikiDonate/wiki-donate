@@ -11,11 +11,14 @@
                         Formula Breakdown
                     </h4>
                     <button
-                        class="text-indigo-500 hover:text-indigo-700 transition-colors text-lg leading-none"
+                        class="text-indigo-400 hover:text-indigo-600 transition-colors"
                         :title="showFormula ? 'Hide formula details' : 'Show formula details'"
                         @click="showFormula = !showFormula"
                     >
-                        {{ showFormula ? '👁' : '👁‍🗨' }}
+                        <font-awesome-icon
+                            :icon="['fas', showFormula ? 'eye' : 'eye-slash']"
+                            class="w-4 h-4"
+                        />
                     </button>
                 </div>
                 <div
@@ -198,7 +201,7 @@ const amount = ref('')
 const isDonating = ref(false)
 const alertMessage = ref('')
 const alertVariant = ref('error')
-const showFormula = ref(true)
+const showFormula = ref(false)
 
 const alertClass = computed(() => {
     const map = {
@@ -247,7 +250,7 @@ watch(
             amount.value = ''
             alertMessage.value = ''
             isDonating.value = false
-            showFormula.value = true
+            showFormula.value = false
         }
     }
 )
