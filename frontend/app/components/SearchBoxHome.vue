@@ -15,18 +15,8 @@
             />
 
             <!-- Language Dropdown -->
-            <div
-                class="flex items-center justify-center border-l border-gray-200"
-            >
-                <GoogleTranslateSelect
-                    ref="translateSelect"
-                    class="px-0 sm:px-2 uppercase text-sm font-semibold text-gray-700 focus:outline-none"
-                    default-language-code="en"
-                    default-page-language-code="en"
-                    :fetch-browser-language="true"
-                    :languages="languagesList"
-                    trigger="click"
-                />
+            <div class="flex items-center border-l border-gray-200 px-1">
+                <LanguageSelect />
             </div>
 
             <!-- Submit Button -->
@@ -70,18 +60,15 @@
 </template>
 
 <script setup>
-import GoogleTranslateSelect from '@google-translate-select/vue3'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { articleService } from '~/services/articleService'
-import languagesList from '~/static/languages.json'
 
 const router = useRouter()
 const searchQuery = ref('')
 const suggestions = ref([])
 const searchContainer = ref(null)
 const selectedSuggestions = ref(null)
-const translateSelect = ref(null)
 
 const fetchSuggestions = async () => {
     const query = searchQuery.value.trim()
@@ -148,19 +135,11 @@ const handleClickOutside = (event) => {
     }
 }
 
-const setValueOnLanguageChange = (value) => {
-    translateSelect.value.selectedLanguageCode = value
-}
-
 onMounted(() => {
     document.addEventListener('click', handleClickOutside)
 })
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside)
-})
-
-defineExpose({
-    setValueOnLanguageChange,
 })
 </script>
