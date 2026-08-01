@@ -1,27 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-
-if (! function_exists('getDetailsByUUID')) {
-    /**
-     * Get details of a record by UUID and table name.
-     */
-    function getDetailsByUUID(string $uuid, string $table): ?array
-    {
-        // Ensure table exists
-        if (! Schema::hasTable($table)) {
-            return null;
-        }
-
-        // Fetch the record
-        $record = DB::table($table)->where('uuid', $uuid)->first();
-
-        // Return as array or null if not found
-        return $record ? (array) $record : null;
-    }
-}
-
 if (! function_exists('parseHtmlSection')) {
     function parseHtmlSection($htmlText)
     {
@@ -84,17 +62,5 @@ if (! function_exists('sanitizeHtml')) {
         $html = preg_replace('/href\s*=\s*["\']javascript:[^"\']*["\']/', 'href="#"', $html);
 
         return $html;
-    }
-}
-
-if (! function_exists('verifyRecaptcha')) {
-    function verifyRecaptcha($token)
-    {
-        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => env('RECAPTCHA_SECRET'),
-            'response' => $token,
-        ]);
-
-        return $response->json()['success'] ?? false;
     }
 }

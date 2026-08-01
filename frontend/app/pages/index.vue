@@ -19,16 +19,13 @@
                     WikiDonate
                 </h1>
             </div>
-            <p class="text-sm sm:text-base text-gray-600 text-center max-w-md">
-                Discover charities and make a difference through knowledge
-            </p>
         </div>
 
         <!-- Search -->
         <div
             class="w-full max-w-2xl mx-auto mb-10 px-2 sm:px-4 transform transition-all duration-300 hover:scale-[1.02]"
         >
-            <SearchBoxHome ref="searchBox" />
+            <SearchBoxHome />
         </div>
 
         <!-- Language selection -->
@@ -42,11 +39,12 @@
                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             >
                 <button
-                    v-for="lang in languages"
+                    v-for="lang in topLanguages"
                     :key="lang.code"
                     class="bg-white p-3 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center group hover:-translate-y-1 border border-gray-100 hover:border-indigo-200"
-                    @click="changeLanguage(lang.code)"
+                    @click="selectLanguage(lang.code)"
                 >
+                    <span class="text-2xl mb-1">{{ lang.flag }}</span>
                     <span
                         class="text-base sm:text-lg font-medium text-gray-800 group-hover:text-indigo-600 transition-colors"
                     >
@@ -62,73 +60,50 @@
 </template>
 
 <script setup>
-useHead({
-    title: 'WikiDonate - Discover Charities',
-})
+useHead({ title: 'WikiDonate - Discover Charities' })
 
 const router = useRouter()
-const searchBox = ref(null)
+const { setLanguage } = useGoogleTranslate()
 
-// Configure your supported languages
-const languages = [
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Spanish' },
-    { code: 'fr', name: 'French' },
-    { code: 'de', name: 'German' },
-    { code: 'ar', name: 'Arabic' },
-    { code: 'zh-CN', name: 'Chinese' },
-    { code: 'ja', name: 'Japanese' },
-    { code: 'pt-BR', name: 'Portuguese' },
-    { code: 'ru', name: 'Russian' },
+const topLanguages = [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
+    { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'pt', name: 'Português', flag: '🇧🇷' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+    { code: 'ur', name: 'اردو', flag: '🇵🇰' },
+    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
 ]
 
-const changeLanguage = (langCode) => {
-    const attempt = () => {
-        const googleTranslateSelect = document.querySelector('.goog-te-combo')
-        if (googleTranslateSelect) {
-            googleTranslateSelect.value = langCode
-            googleTranslateSelect.dispatchEvent(new Event('change'))
-            searchBox.value.setValueOnLanguageChange(langCode)
-            router.push('/main')
-        } else {
-            setTimeout(attempt, 50)
-        }
-    }
-    attempt()
+const selectLanguage = (langCode) => {
+    setLanguage(langCode)
+    router.push('/main')
 }
 
 onMounted(() => {
-    // Create the script element
     const script = document.createElement('script')
     script.src = 'https://aichatbot.devshahaj.com/widget.js'
     script.async = true
-
-    // Set all the custom attributes
-    script.setAttribute(
-        'data-chatbot-id',
-        '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0'
-    )
+    script.id = 'ai-chatbot-script'
+    script.setAttribute('data-chatbot-id', '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0')
     script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
     script.setAttribute('data-position', 'bottom-right')
     script.setAttribute('data-primary-color', '#3b82f6')
     script.setAttribute('data-secondary-color', '#ffffff')
     script.setAttribute('data-name', 'Wikidonate Support')
     script.setAttribute('data-avatar-url', '')
-
-    // Give it an ID so we can clean it up later
-    script.id = 'ai-chatbot-script'
-
-    // Append to the body
     document.body.appendChild(script)
 })
 
 onBeforeUnmount(() => {
-    // Clean up the script when leaving the page (optional but recommended)
-    const script = document.getElementById('ai-chatbot-script')
-    if (script) {
-        script.remove()
-    }
-    // If the widget creates a global window object or DOM element,
-    // you might need to manually remove its container div here too.
+    document.getElementById('ai-chatbot-script')?.remove()
 })
 </script>

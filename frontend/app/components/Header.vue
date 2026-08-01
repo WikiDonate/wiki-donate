@@ -33,20 +33,7 @@
             <!-- Right: Language, Auth, Menus -->
             <div class="flex items-center space-x-1 sm:space-x-2">
                 <!-- Language -->
-                <div
-                    class="block border border-gray-200 rounded-md ml-1 sm:ml-2"
-                >
-                    <GoogleTranslateSelect
-                        ref="translateSelect"
-                        default-language-code="en"
-                        default-page-language-code="en"
-                        :fetch-browser-language="false"
-                        trigger="click"
-                        display-mode="flag"
-                        :languages="languagesList"
-                        class="px-0 sm:px-1 uppercase text-sm font-semibold text-gray-700"
-                    />
-                </div>
+                <LanguageSelect />
 
                 <!-- Logged-in User -->
                 <div v-if="authStore.isAuthenticated" class="block">
@@ -247,12 +234,10 @@
 </template>
 
 <script setup>
-import GoogleTranslateSelect from '@google-translate-select/vue3'
-import { onMounted, onUnmounted, ref, watch, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { authService } from '~/services/authService'
 import menuData from '~/static/menu.json'
-import languagesList from '~/static/languages.json'
 
 const route = useRoute()
 const router = useRouter()
@@ -290,8 +275,6 @@ const logoutMenu = computed(() =>
 
 const resolveLink = (item) => {
     if (item.name === 'Logout') return '#'
-    if (item.name === 'User Page')
-        return `/user/page?username=${authStore.user.username}`
     return item.link
 }
 
@@ -341,8 +324,3 @@ watch(route, () => {
 })
 </script>
 
-<style>
-.google-translate-select-dropdown__activator {
-    padding: 1px 5px !important;
-}
-</style>

@@ -4,15 +4,42 @@ namespace App\Http\Controllers\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\Payment;
+use App\Models\Donation;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
+    private function getRecentDonations(): Collection
+    {
+        return Donation::with('user:id,uuid,username')
+            ->latest()
+            ->take(10)
+            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'metadata'])
+            ->map(function ($donation) {
+                $metadata = $donation->metadata ?? [];
+
+                return [
+                    'id' => $donation->id,
+                    'source' => 'stripe_checkout',
+                    'amount' => $donation->amount,
+                    'currency' => $donation->currency,
+                    'status' => $donation->status,
+                    'date' => $donation->created_at->format('d M, Y'),
+                    'user' => $donation->user?->username ?? 'Guest',
+                    'email' => $donation->donor_email ?? $donation->user?->email,
+                    'stripe_session_id' => $donation->stripe_session_id,
+                    'formula' => $metadata['formula'] ?? null,
+                    'details' => $metadata['details'] ?? null,
+                ];
+            });
+    }
+
     public function index(): JsonResponse
     {
         try {
@@ -21,19 +48,7 @@ class DashboardController extends Controller
                     'totalUsers' => User::count(),
                     'totalArticles' => Article::count(),
 
-                    'recentDonations' => Payment::with('user:id,uuid,username')
-                        ->latest()
-                        ->take(10)
-                        ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id'])
-                        ->map(function ($donation) {
-                            return [
-                                'amount' => $donation->amount,
-                                'currency' => $donation->currency,
-                                'status' => $donation->status,
-                                'date' => $donation->created_at->format('d M, Y'),
-                                'user' => $donation->user?->username ?? 'Guest',
-                            ];
-                        }),
+                    'recentDonations' => $this->getRecentDonations(),
 
                     'recentUsers' => User::latest()
                         ->take(10)
@@ -48,7 +63,7 @@ class DashboardController extends Controller
                         }),
 
                     'monthlyStats' => [
-                        'donations' => Payment::where('created_at', '>=', now()->subMonths(6))
+                        'donations' => Donation::where('created_at', '>=', now()->subMonths(6))
                             ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count, SUM(amount) as total")
                             ->groupBy('month')
                             ->orderBy('month')
@@ -73,6 +88,61 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load dashboard data.',
+                'errors' => [$e->getMessage()],
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+    }
+
+    public function donations(Request $request): JsonResponse
+    {
+        try {
+            $perPage = (int) $request->input('per_page', 15);
+            $perPage = min(max($perPage, 1), 100);
+
+            $paginator = Donation::with('user:id,uuid,username')
+                ->when($request->filled('search'), function ($q) use ($request) {
+                    $search = $request->input('search');
+                    $q->where(function ($sq) use ($search) {
+                        $sq->whereHas('user', fn ($uq) => $uq->where('username', 'like', "%{$search}%"))
+                            ->orWhere('donor_email', 'like', "%{$search}%")
+                            ->orWhere('stripe_session_id', 'like', "%{$search}%");
+                    });
+                })
+                ->when($request->filled('status'), function ($q) use ($request) {
+                    $q->where('status', $request->input('status'));
+                })
+                ->latest()
+                ->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Donations retrieved successfully',
+                'data' => $paginator->map(fn ($donation) => [
+                    'id' => $donation->id,
+                    'source' => 'stripe_checkout',
+                    'payment_id' => $donation->stripe_payment_intent_id,
+                    'amount' => $donation->amount,
+                    'currency' => $donation->currency,
+                    'status' => $donation->status,
+                    'date' => $donation->created_at->format('d M, Y'),
+                    'user' => $donation->user?->username ?? 'Guest',
+                    'email' => $donation->donor_email ?? $donation->user?->email,
+                    'stripe_session_id' => $donation->stripe_session_id,
+                    'formula' => $donation->metadata['formula'] ?? null,
+                    'details' => $donation->metadata['details'] ?? null,
+                ]),
+                'meta' => [
+                    'currentPage' => $paginator->currentPage(),
+                    'perPage' => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                    'lastPage' => $paginator->lastPage(),
+                ],
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load donations.',
                 'errors' => [$e->getMessage()],
             ], Response::HTTP_EXPECTATION_FAILED);
         }

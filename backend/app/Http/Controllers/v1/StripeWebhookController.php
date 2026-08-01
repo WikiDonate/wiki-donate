@@ -4,7 +4,6 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -113,6 +112,24 @@ class StripeWebhookController extends Controller
         $donation = Donation::where('stripe_session_id', $session->id)->first();
 
         if (! $donation) {
+            // Build metadata from session metadata
+            $sessionMetadata = $session->metadata ?? [];
+            $metaFormula = null;
+            $metaDetails = null;
+
+            // Extract formula from session metadata (stored as JSON string by Stripe)
+            if (isset($sessionMetadata->formula)) {
+                $metaFormula = json_decode($sessionMetadata->formula, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $metaFormula = $sessionMetadata->formula; // store as-is if not valid JSON
+                }
+            }
+
+            // Extract details from session metadata
+            if (isset($sessionMetadata->details)) {
+                $metaDetails = $sessionMetadata->details;
+            }
+
             // Create new donation record
             $donation = Donation::create([
                 'stripe_session_id' => $session->id,
@@ -126,7 +143,9 @@ class StripeWebhookController extends Controller
                 'metadata' => [
                     'session_id' => $session->id,
                     'payment_status' => $session->payment_status ?? null,
-                    'source' => $session->metadata->source ?? 'wikidonate',
+                    'source' => $sessionMetadata->source ?? 'wikidonate',
+                    'formula' => $metaFormula,
+                    'details' => $metaDetails,
                 ],
             ]);
         } else {
@@ -140,36 +159,12 @@ class StripeWebhookController extends Controller
             ]);
         }
 
-        // Record payment
-        $this->recordPayment($donation, $paymentIntentId, $customerId, $userId);
-
         Cache::store('file')->forget('dashboard');
 
         Log::info('Donation recorded from checkout session', [
             'donation_id' => $donation->id,
             'session_id' => $session->id,
             'amount' => $donation->amount,
-        ]);
-    }
-
-    /**
-     * Record a Payment record from the checkout session.
-     */
-    protected function recordPayment(Donation $donation, ?string $paymentIntentId, ?string $customerId, $userId): void
-    {
-        $existingPayment = Payment::where('payment_id', $paymentIntentId)->first();
-        if ($existingPayment) {
-            return;
-        }
-
-        Payment::recordPayment([
-            'user_id' => $userId,
-            'payment_id' => $paymentIntentId ?? $donation->stripe_session_id,
-            'customer_id' => $customerId ?? 'checkout_session',
-            'amount' => $donation->amount,
-            'currency' => $donation->currency,
-            'status' => 'succeeded',
-            'source' => 'stripe_checkout',
         ]);
     }
 
