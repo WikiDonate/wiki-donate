@@ -1,6 +1,8 @@
 <template>
     <main>
-        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+        <div
+            class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
+        >
             <AdminPageHeader
                 title="All Donations"
                 subtitle="View and search all donation records"
@@ -11,7 +13,10 @@
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
                     <div class="relative flex-1">
-                        <font-awesome-icon :icon="['fas', 'search']" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <font-awesome-icon
+                            :icon="['fas', 'search']"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                        />
                         <input
                             v-model="searchQuery"
                             type="text"
@@ -20,7 +25,10 @@
                         />
                     </div>
                     <div class="flex gap-3 sm:w-auto w-full">
-                        <select v-model="filterStatus" class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white">
+                        <select
+                            v-model="filterStatus"
+                            class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                        >
                             <option value="">All Status</option>
                             <option value="completed">Completed</option>
                             <option value="expired">Expired</option>
@@ -32,34 +40,72 @@
 
             <LoadingSpinner v-if="loading" text="Loading donations..." />
             <template v-else>
-                <AdminTable :columns="columns" :rows="donations" row-key="id" empty-text="No donations found">
+                <AdminTable
+                    :columns="columns"
+                    :rows="donations"
+                    row-key="id"
+                    empty-text="No donations found"
+                >
                     <template #cell-source>
                         <AdminBadge variant="info" text="Checkout" />
                     </template>
                     <template #cell-donor="{ row }">
                         <div>
-                            <span class="font-medium text-sm">{{ row.user }}</span>
-                            <span v-if="row.email" class="block text-xs text-gray-400">{{ row.email }}</span>
+                            <span class="font-medium text-sm">{{
+                                row.user
+                            }}</span>
+                            <span
+                                v-if="row.email"
+                                class="block text-xs text-gray-400"
+                                >{{ row.email }}</span
+                            >
                         </div>
                     </template>
-                    <template #cell-amount="{ row }">{{ row.currency || 'USD' }} {{ Number(row.amount).toFixed(2) }}</template>
+                    <template #cell-amount="{ row }"
+                        >{{ row.currency || 'USD' }}
+                        {{ Number(row.amount).toFixed(2) }}</template
+                    >
                     <template #cell-status="{ row }">
-                        <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
+                        <AdminBadge
+                            :variant="statusVariant(row.status)"
+                            :text="row.status"
+                        />
                     </template>
-                    <template #cell-date="{ row }"><span class="text-gray-500 text-xs">{{ row.date }}</span></template>
+                    <template #cell-date="{ row }"
+                        ><span class="text-gray-500 text-xs">{{
+                            row.date
+                        }}</span></template
+                    >
                     <template #cell-paymentId="{ row }">
-                        <span class="text-xs text-gray-400 font-mono">{{ row.payment_id || row.stripe_session_id || '—' }}</span>
+                        <span class="text-xs text-gray-400 font-mono">{{
+                            row.payment_id || row.stripe_session_id || '—'
+                        }}</span>
                     </template>
                     <template #cell-action="{ row }">
-                        <button class="text-indigo-600 hover:text-indigo-800 font-medium text-xs" @click="openDetail(row)">View</button>
+                        <button
+                            class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
+                            @click="openDetail(row)"
+                        >
+                            View
+                        </button>
                     </template>
                 </AdminTable>
 
-                <div v-if="meta.lastPage > 1" class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div
+                    v-if="meta.lastPage > 1"
+                    class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
+                >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }} total)
+                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{
+                            meta.total
+                        }}
+                        total)
                     </span>
-                    <Pagination :current-page="meta.currentPage" :total-pages="meta.lastPage" @page-change="loadPage" />
+                    <Pagination
+                        :current-page="meta.currentPage"
+                        :total-pages="meta.lastPage"
+                        @page-change="loadPage"
+                    />
                 </div>
             </template>
         </div>

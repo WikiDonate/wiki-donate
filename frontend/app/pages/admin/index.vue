@@ -163,7 +163,9 @@
                     <div
                         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                     >
-                        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                        <div
+                            class="px-4 py-3 border-b border-gray-100 flex items-center justify-between"
+                        >
                             <h3
                                 class="text-sm font-semibold text-gray-600 uppercase tracking-wide flex items-center gap-2"
                             >
@@ -173,16 +175,20 @@
                                 />
                                 Recent Donations
                             </h3>
-                            <NuxtLink to="/admin/donations" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">View All</NuxtLink>
+                            <NuxtLink
+                                to="/admin/donations"
+                                class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                                >View All</NuxtLink
+                            >
                         </div>
                         <AdminTable
                             :columns="donationColumns"
                             :rows="stats.recentDonations"
                             empty-text="No donations yet"
                         >
-                        <template #cell-source>
-                            <AdminBadge variant="info" text="Checkout" />
-                        </template>
+                            <template #cell-source>
+                                <AdminBadge variant="info" text="Checkout" />
+                            </template>
                             <template #cell-amount="{ row }"
                                 >{{ row.currency }}
                                 {{ Number(row.amount).toFixed(2) }}</template

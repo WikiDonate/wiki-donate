@@ -53,7 +53,9 @@
                                 </h3>
                                 <p class="text-sm text-gray-500">
                                     By
-                                    <span class="font-semibold text-gray-700">{{ article.user?.username }}</span>
+                                    <span class="font-semibold text-gray-700">{{
+                                        article.user?.username
+                                    }}</span>
                                     ·
                                     {{ formatDateUTC(article.updatedAt) }}
                                 </p>

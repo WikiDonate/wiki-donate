@@ -158,11 +158,13 @@ const onSubmit = handleSubmit(async (values) => {
             resetForm()
         } else {
             alertVariant.value = 'error'
-            alertMessage.value = response.errors?.[0] || 'Failed to send message'
+            alertMessage.value =
+                response.errors?.[0] || 'Failed to send message'
         }
     } catch (error) {
         alertVariant.value = 'error'
-        alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
+        alertMessage.value =
+            error?.errors?.[0] || error?.message || 'Failed to send message'
     } finally {
         showAlert.value = true
     }
