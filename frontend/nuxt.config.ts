@@ -100,6 +100,8 @@ export default defineNuxtConfig({
                 'http://localhost:8000/api/v1',
 
             recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
+
+            paypalClientId: process.env.NUXT_PUBLIC_PAYPAL_CLIENT_ID || '',
         },
     },
     stripe: {
