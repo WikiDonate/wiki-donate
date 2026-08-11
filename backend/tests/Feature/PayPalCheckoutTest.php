@@ -658,13 +658,18 @@ class PayPalCheckoutTest extends TestCase
             'currency' => 'USD',
         ]);
 
-        // Mock captureOrder to throw an HttpException (simulating a PayPal API error)
+        // Mock captureOrder to throw a RequestException (simulating a PayPal API error)
         $mock = Mockery::mock(PayPalClient::class);
         $mock->shouldReceive('getAccessToken')->andReturn('token');
+
+        $psrResponse = new \GuzzleHttp\Psr7\Response(
+            400,
+            ['Content-Type' => 'application/json'],
+            json_encode(['message' => 'ORDER_INVALID: Order is invalid or expired'])
+        );
         $mock->shouldReceive('captureOrder')
-            ->andThrow(new \Symfony\Component\HttpKernel\Exception\HttpException(
-                400,
-                'ORDER_INVALID: Order is invalid or expired'
+            ->andThrow(new \Illuminate\Http\Client\RequestException(
+                new \Illuminate\Http\Client\Response($psrResponse)
             ));
 
         $this->app->instance(PayPalClient::class, $mock);
