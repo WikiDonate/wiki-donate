@@ -5,6 +5,8 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
+use App\Http\Controllers\v1\PayPalController;
+use App\Http\Controllers\v1\PayPalWebhookController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\StripeWebhookController;
 use App\Http\Controllers\v1\UserController;
@@ -53,6 +55,15 @@ Route::prefix('v1')->group(function () {
 
     // Stripe Webhook (public, no auth)
     Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
+    // PayPal Checkout (auth required)
+    Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
+        ->middleware('auth:sanctum');
+    Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
+        ->middleware('auth:sanctum');
+
+    // PayPal Webhook (public, no auth)
+    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook']);
 
     // Public page content
     Route::get('page-contents/{page}', [PageController::class, 'show']);

@@ -15,6 +15,7 @@ class Donation extends Model
         'user_id',
         'stripe_session_id',
         'stripe_payment_intent_id',
+        'paypal_order_id',
         'donor_name',
         'donor_email',
         'amount',
