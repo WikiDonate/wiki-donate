@@ -7,10 +7,12 @@ const createCheckoutSession = (params) => {
     return api.post('/stripe/checkout', params)
 }
 const createPaypalOrder = (params) => {
-    return api.post('/paypal/create-order', params)
+    return api.post('/paypal/order', params)
 }
 const capturePaypalOrder = (params) => {
-    return api.post('/paypal/capture-order', params)
+    // Backend route expects order ID as URL param: POST /paypal/order/{orderId}/capture
+    const orderId = params.order_id || params.orderID
+    return api.post(`/paypal/order/${orderId}/capture`, params)
 }
 
 export const donateService = {
