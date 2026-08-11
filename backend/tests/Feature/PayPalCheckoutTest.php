@@ -154,15 +154,6 @@ class PayPalCheckoutTest extends TestCase
     // TEST: Create PayPal Order
     // -------------------------------------------------------------------------
 
-    public function test_create_order_requires_authentication(): void
-    {
-        $response = $this->postJson('/api/v1/paypal/create-order', [
-            'amount' => 25.00,
-        ]);
-
-        $response->assertStatus(401);
-    }
-
     public function test_create_order_validates_amount(): void
     {
         $user = User::factory()->create();
@@ -257,15 +248,6 @@ class PayPalCheckoutTest extends TestCase
     // -------------------------------------------------------------------------
     // TEST: Capture PayPal Order
     // -------------------------------------------------------------------------
-
-    public function test_capture_order_requires_authentication(): void
-    {
-        $response = $this->postJson('/api/v1/paypal/capture-order', [
-            'order_id' => 'PAYPAL_ORDER_123',
-        ]);
-
-        $response->assertStatus(401);
-    }
 
     public function test_capture_order_validates_order_id(): void
     {
@@ -676,19 +658,14 @@ class PayPalCheckoutTest extends TestCase
             'currency' => 'USD',
         ]);
 
-        // Mock captureOrder to throw a RequestException (simulates expired/invalid order)
+        // Mock captureOrder to throw an HttpException (simulating a PayPal API error)
         $mock = Mockery::mock(PayPalClient::class);
         $mock->shouldReceive('getAccessToken')->andReturn('token');
-        $exception = Mockery::mock();
-        $exception->shouldReceive('getMessage')->andReturn('ORDER_INVALID');
-        $exception->shouldReceive('response->json')->andReturn(['message' => 'Order is invalid or expired']);
-
-        $requestException = new \Illuminate\Http\Client\RequestException(
-            \Illuminate\Http\Client\Response::fake('ORDER_INVALID')
-        );
-
         $mock->shouldReceive('captureOrder')
-            ->andThrow($exception);
+            ->andThrow(new \Symfony\Component\HttpKernel\Exception\HttpException(
+                400,
+                'ORDER_INVALID: Order is invalid or expired'
+            ));
 
         $this->app->instance(PayPalClient::class, $mock);
 

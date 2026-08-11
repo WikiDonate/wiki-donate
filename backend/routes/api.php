@@ -58,9 +58,9 @@ Route::prefix('v1')->group(function () {
 
     // PayPal Checkout (auth required)
     Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
-        ->middleware('OptionalAuth::class');
+        ->middleware(OptionalAuth::class);
     Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
-        ->middleware('OptionalAuth::class');
+        ->middleware(OptionalAuth::class);
 
     // PayPal Webhook (public, no auth)
     Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook']);
