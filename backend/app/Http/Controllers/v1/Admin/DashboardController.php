@@ -20,13 +20,14 @@ class DashboardController extends Controller
         return Donation::with('user:id,uuid,username')
             ->latest()
             ->take(10)
-            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'metadata'])
+            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'paypal_order_id', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
+                $source = $donation->paypal_order_id ? 'paypal' : 'stripe_checkout';
 
                 return [
                     'id' => $donation->id,
-                    'source' => 'stripe_checkout',
+                    'source' => $source,
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
@@ -34,6 +35,7 @@ class DashboardController extends Controller
                     'user' => $donation->user?->username ?? 'Guest',
                     'email' => $donation->donor_email ?? $donation->user?->email,
                     'stripe_session_id' => $donation->stripe_session_id,
+                    'paypal_order_id' => $donation->paypal_order_id,
                     'formula' => $metadata['formula'] ?? null,
                     'details' => $metadata['details'] ?? null,
                 ];
@@ -105,7 +107,8 @@ class DashboardController extends Controller
                     $q->where(function ($sq) use ($search) {
                         $sq->whereHas('user', fn ($uq) => $uq->where('username', 'like', "%{$search}%"))
                             ->orWhere('donor_email', 'like', "%{$search}%")
-                            ->orWhere('stripe_session_id', 'like', "%{$search}%");
+                            ->orWhere('stripe_session_id', 'like', "%{$search}%")
+                            ->orWhere('paypal_order_id', 'like', "%{$search}%");
                     });
                 })
                 ->when($request->filled('status'), function ($q) use ($request) {
@@ -119,8 +122,10 @@ class DashboardController extends Controller
                 'message' => 'Donations retrieved successfully',
                 'data' => $paginator->map(fn ($donation) => [
                     'id' => $donation->id,
-                    'source' => 'stripe_checkout',
-                    'payment_id' => $donation->stripe_payment_intent_id,
+                    'source' => $donation->paypal_order_id ? 'paypal' : 'stripe_checkout',
+                    'payment_id' => $donation->paypal_order_id
+                        ? ($donation->metadata['payment_id'] ?? null)
+                        : $donation->stripe_payment_intent_id,
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
@@ -128,6 +133,7 @@ class DashboardController extends Controller
                     'user' => $donation->user?->username ?? 'Guest',
                     'email' => $donation->donor_email ?? $donation->user?->email,
                     'stripe_session_id' => $donation->stripe_session_id,
+                    'paypal_order_id' => $donation->paypal_order_id,
                     'formula' => $donation->metadata['formula'] ?? null,
                     'details' => $donation->metadata['details'] ?? null,
                 ]),
