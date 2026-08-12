@@ -119,6 +119,51 @@
                     </div>
                 </div>
 
+                <!-- Payment method selector -->
+                <div>
+                    <span class="block text-gray-700 text-sm font-bold mb-2">
+                        Payment Method
+                    </span>
+                    <div
+                        class="grid grid-cols-2 gap-1 p-1 bg-gray-100 rounded-lg"
+                    >
+                        <button
+                            type="button"
+                            class="flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-semibold transition-colors"
+                            :class="
+                                paymentMethod === 'card'
+                                    ? 'bg-white text-indigo-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-800'
+                            "
+                            :disabled="isDonating"
+                            @click="paymentMethod = 'card'"
+                        >
+                            <font-awesome-icon
+                                :icon="['fas', 'credit-card']"
+                                class="w-4 h-4"
+                            />
+                            Card
+                        </button>
+                        <button
+                            type="button"
+                            class="flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-semibold transition-colors"
+                            :class="
+                                paymentMethod === 'paypal'
+                                    ? 'bg-white text-indigo-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-800'
+                            "
+                            :disabled="isDonating"
+                            @click="paymentMethod = 'paypal'"
+                        >
+                            <font-awesome-icon
+                                :icon="['fab', 'paypal']"
+                                class="w-4 h-4"
+                            />
+                            PayPal
+                        </button>
+                    </div>
+                </div>
+
                 <div
                     v-if="alertMessage"
                     class="flex items-start p-3 rounded-lg border text-sm"
@@ -136,7 +181,10 @@
                     </button>
                 </div>
 
-                <div class="flex justify-center">
+                <div
+                    v-if="paymentMethod === 'card'"
+                    class="flex justify-center"
+                >
                     <button
                         class="flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-xl text-white font-semibold text-sm tracking-wide uppercase bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         :disabled="isDonating || !amount || Number(amount) <= 0"
@@ -170,6 +218,19 @@
                         }}</span>
                     </button>
                 </div>
+
+                <div
+                    v-else
+                    id="paypal-button-container"
+                    class="paypal-buttons min-h-[45px]"
+                >
+                    <div
+                        v-if="!paypalSdkLoaded"
+                        class="flex justify-center items-center py-4"
+                    >
+                        <LoadingSpinner class="w-6 h-6" />
+                    </div>
+                </div>
             </template>
         </div>
 
@@ -186,10 +247,11 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue'
 import { donateService } from '~/services/donateService'
 
 const authStore = useAuthStore()
+const config = useRuntimeConfig()
 
 const props = defineProps({
     modelValue: {
@@ -215,6 +277,11 @@ const isDonating = ref(false)
 const alertMessage = ref('')
 const alertVariant = ref('error')
 const showFormula = ref(false)
+const paymentMethod = ref('card')
+
+const paypalSdkLoaded = ref(false)
+const paypalButtonsRendered = ref(false)
+let paypalButtonsInstance = null
 
 const alertClass = computed(() => {
     const map = {
@@ -223,6 +290,158 @@ const alertClass = computed(() => {
     }
     return map[alertVariant.value] || ''
 })
+
+const clientId = config.public.paypalClientId
+
+function loadPayPalSdk() {
+    return new Promise((resolve, reject) => {
+        if (window.paypal) {
+            resolve(window.paypal)
+            return
+        }
+
+        const existing = document.getElementById('paypal-js-sdk')
+        if (existing) {
+            existing.addEventListener('load', () => resolve(window.paypal))
+            existing.addEventListener('error', () =>
+                reject(new Error('Failed to load PayPal SDK'))
+            )
+            return
+        }
+
+        const script = document.createElement('script')
+        script.id = 'paypal-js-sdk'
+        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
+            clientId
+        )}&currency=USD`
+        script.async = true
+        script.onload = () => resolve(window.paypal)
+        script.onerror = () => reject(new Error('Failed to load PayPal SDK'))
+        document.head.appendChild(script)
+    })
+}
+
+async function renderPaypalButtons() {
+    // Clear any previously rendered buttons before re-rendering.
+    const container = document.getElementById('paypal-button-container')
+    if (!container) return
+
+    if (paypalButtonsRendered.value) {
+        return
+    }
+
+    if (!clientId) {
+        alertVariant.value = 'error'
+        alertMessage.value = 'PayPal is not configured.'
+        paypalSdkLoaded.value = true
+        return
+    }
+
+    try {
+        const paypal = await loadPayPalSdk()
+        paypalSdkLoaded.value = true
+
+        paypalButtonsInstance = paypal
+            .Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'paypal',
+                    height: 45,
+                },
+                createOrder: async () => {
+                    if (!amount.value || Number(amount.value) <= 0) {
+                        throw new Error('Please enter a valid donation amount.')
+                    }
+
+                    const params = {
+                        amount: Number(amount.value),
+                        donor_name: authStore.user?.username || '',
+                        formula: props.formula,
+                        details: props.details,
+                    }
+                    const response =
+                        await donateService.createPaypalOrder(params)
+
+                    if (response.success && response.data?.order_id) {
+                        return response.data.order_id
+                    }
+
+                    throw new Error(
+                        response.errors?.[0] ||
+                            response.message ||
+                            'Failed to create PayPal order'
+                    )
+                },
+                onApprove: async (data) => {
+                    isDonating.value = true
+                    alertMessage.value = ''
+                    try {
+                        const response = await donateService.capturePaypalOrder(
+                            {
+                                order_id: data.orderID,
+                            }
+                        )
+
+                        if (response.success) {
+                            // Redirect to the same success page the Stripe flow uses.
+                            window.location.href = '/payment/success'
+                        } else {
+                            alertVariant.value = 'error'
+                            alertMessage.value =
+                                response.errors?.[0] ||
+                                response.message ||
+                                'Failed to capture payment'
+                            isDonating.value = false
+                        }
+                    } catch (error) {
+                        alertVariant.value = 'error'
+                        alertMessage.value =
+                            error?.errors?.[0] ||
+                            error?.message ||
+                            'Failed to process donation'
+                        isDonating.value = false
+                    }
+                },
+                onCancel: () => {
+                    window.location.href = '/payment/cancel'
+                },
+                onError: (err) => {
+                    alertVariant.value = 'error'
+                    alertMessage.value =
+                        err?.message || 'Something went wrong with PayPal.'
+                },
+            })
+            .render('#paypal-button-container')
+
+        paypalButtonsRendered.value = true
+    } catch (error) {
+        alertVariant.value = 'error'
+        alertMessage.value =
+            error?.message || 'Failed to load PayPal. Please try again.'
+    }
+}
+
+onMounted(() => {
+    if (props.modelValue) {
+        loadPayPalSdkPreload()
+    }
+})
+
+// Preload the SDK in the background while the user is still choosing an amount,
+// so buttons render quickly once they select PayPal.
+function loadPayPalSdkPreload() {
+    if (
+        clientId &&
+        !window.paypal &&
+        !document.getElementById('paypal-js-sdk')
+    ) {
+        loadPayPalSdk().catch(() => {
+            // Swallow preload errors — the synchronous render path will surface them.
+        })
+    }
+}
 
 async function handleStripe() {
     if (!amount.value || Number(amount.value) <= 0) return
@@ -264,7 +483,28 @@ watch(
             alertMessage.value = ''
             isDonating.value = false
             showFormula.value = false
+            paymentMethod.value = 'card'
+            paypalButtonsRendered.value = false
+            loadPayPalSdkPreload()
         }
     }
 )
+
+watch(paymentMethod, (method) => {
+    if (method === 'paypal' && props.modelValue) {
+        // Give the DOM a tick to mount the container before rendering.
+        setTimeout(() => renderPaypalButtons(), 0)
+    }
+})
+
+onBeforeUnmount(() => {
+    if (paypalButtonsInstance && paypalButtonsInstance.close) {
+        try {
+            paypalButtonsInstance.close()
+        } catch {
+            // ignore teardown errors
+        }
+    }
+    paypalButtonsInstance = null
+})
 </script>
