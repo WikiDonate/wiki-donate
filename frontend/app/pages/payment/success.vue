@@ -46,6 +46,20 @@
                 </div>
 
                 <div
+                    v-else-if="paypalStatus === 'failed'"
+                    class="bg-amber-50 border border-amber-200 rounded-lg p-6"
+                >
+                    <p class="text-amber-700 font-medium mb-1">
+                        Your payment was successful with PayPal, but we could
+                        not verify it automatically.
+                    </p>
+                    <p class="text-gray-500 text-sm">
+                        Your donation will be finalized shortly. If you have
+                        concerns, please contact support.
+                    </p>
+                </div>
+
+                <div
                     v-else
                     class="bg-gray-50 border border-gray-200 rounded-lg p-6"
                 >
@@ -71,15 +85,17 @@
 
 <script setup>
 import api from '~/config/apiConfig'
+import { donateService } from '~/services/donateService'
 
 const route = useRoute()
 const sessionData = ref(null)
 const loading = ref(false)
+const paypalStatus = ref(null)
 
 useHead({ title: 'Payment Successful' })
 
 definePageMeta({
-    // No auth middleware — users returning from Stripe may not be authenticated
+    // No auth middleware — users returning from Stripe/PayPal may not be authenticated
 })
 
 const formatAmount = (amount) => {
@@ -91,7 +107,10 @@ const formatAmount = (amount) => {
 
 onMounted(async () => {
     const sessionId = route.query.session_id
+    const paypalOrderId = route.query.token // PayPal redirects with ?token=ORDER_ID
+
     if (sessionId) {
+        // Stripe Checkout redirect
         loading.value = true
         try {
             const response = await api.get(`/stripe/checkout/${sessionId}`)
@@ -100,6 +119,33 @@ onMounted(async () => {
             }
         } catch {
             // Silently fail — user still sees success message
+        } finally {
+            loading.value = false
+        }
+    } else if (paypalOrderId) {
+        // PayPal redirect after buyer approval
+        loading.value = true
+        paypalStatus.value = 'capturing'
+        try {
+            const response = await donateService.capturePaypalOrder({
+                order_id: paypalOrderId,
+            })
+            if (response.success) {
+                paypalStatus.value = 'completed'
+                // Show the donation_id from the response
+                if (response.data) {
+                    sessionData.value = {
+                        amount: response.data.amount,
+                        currency: response.data.currency || 'USD',
+                        payment_status: 'paid',
+                        status: 'complete',
+                    }
+                }
+            } else {
+                paypalStatus.value = 'failed'
+            }
+        } catch (error) {
+            paypalStatus.value = 'failed'
         } finally {
             loading.value = false
         }
