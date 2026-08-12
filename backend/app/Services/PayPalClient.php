@@ -2,15 +2,20 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PayPalClient
 {
     private string $clientId;
+
     private string $clientSecret;
+
     private string $baseUrl;
+
     private ?string $accessToken = null;
+
     private ?int $tokenExpiresAt = null;
 
     public function __construct()
@@ -25,7 +30,7 @@ class PayPalClient
     /**
      * Get an OAuth 2.0 access token, cached until near-expiry.
      *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      */
     public function getAccessToken(): string
     {
@@ -54,14 +59,11 @@ class PayPalClient
     /**
      * Create a PayPal order (CAPTURE intent).
      *
-     * @param  float  $amount
      * @param  string  $currency  ISO 4217 currency code
-     * @param  string  $returnUrl
-     * @param  string  $cancelUrl
      * @param  array  $metadata  invoice_id, custom_id, request_id
-     * @return array  PayPal order payload
+     * @return array PayPal order payload
      *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      */
     public function createOrder(
         float $amount,
@@ -126,10 +128,8 @@ class PayPalClient
     /**
      * Capture an approved PayPal order.
      *
-     * @param  string  $orderId
-     * @return array
      *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      */
     public function captureOrder(string $orderId): array
     {
@@ -151,10 +151,8 @@ class PayPalClient
     /**
      * Retrieve a PayPal order by ID.
      *
-     * @param  string  $orderId
-     * @return array
      *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      */
     public function showOrder(string $orderId): array
     {
@@ -221,8 +219,6 @@ class PayPalClient
 
     /**
      * Extract key fields from a captured PayPal order payload.
-     *
-     * @param  array  $capturedOrder
      */
     public static function extractCaptureData(array $capturedOrder): array
     {

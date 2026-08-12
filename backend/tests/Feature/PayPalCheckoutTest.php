@@ -6,9 +6,12 @@ use App\Models\Donation;
 use App\Models\PayPalPendingOrder;
 use App\Models\User;
 use App\Services\PayPalClient;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 /**
@@ -39,7 +42,7 @@ class PayPalCheckoutTest extends TestCase
     /**
      * Mock the PayPalClient so it doesn't make real API calls.
      */
-    protected function mockPayPalClient(array $overrides = []): \Mockery\MockInterface
+    protected function mockPayPalClient(array $overrides = []): MockInterface
     {
         $mock = Mockery::mock(PayPalClient::class);
 
@@ -662,13 +665,13 @@ class PayPalCheckoutTest extends TestCase
         $mock = Mockery::mock(PayPalClient::class);
         $mock->shouldReceive('getAccessToken')->andReturn('token');
 
-        $psrResponse = new \GuzzleHttp\Psr7\Response(
+        $psrResponse = new Response(
             400,
             ['Content-Type' => 'application/json'],
             json_encode(['message' => 'ORDER_INVALID: Order is invalid or expired'])
         );
         $mock->shouldReceive('captureOrder')
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
+            ->andThrow(new RequestException(
                 new \Illuminate\Http\Client\Response($psrResponse)
             ));
 

@@ -35,7 +35,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $token = $client->getAccessToken();
 
         $this->assertEquals('test-access-token', $token);
@@ -50,7 +50,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
 
         // First call
         $token1 = $client->getAccessToken();
@@ -70,7 +70,7 @@ class PayPalClientTest extends TestCase
             'api-m.sandbox.paypal.com/*' => Http::response(['access_token' => 'token'], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $client->getAccessToken();
 
         Http::assertSent(function ($request) {
@@ -86,7 +86,7 @@ class PayPalClientTest extends TestCase
             'api-m.paypal.com/*' => Http::response(['access_token' => 'token'], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $client->getAccessToken();
 
         Http::assertSent(function ($request) {
@@ -112,7 +112,7 @@ class PayPalClientTest extends TestCase
             ], 201),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $order = $client->createOrder(
             amount: 25.00,
             currency: 'USD',
@@ -143,7 +143,7 @@ class PayPalClientTest extends TestCase
             'api-m.sandbox.paypal.com/*' => Http::response(['id' => 'ORDER_123', 'status' => 'CREATED', 'links' => []], 201),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $client->createOrder(10.00, 'EUR', '', '');
 
         Http::assertSent(function ($request) {
@@ -165,7 +165,7 @@ class PayPalClientTest extends TestCase
             ], 201),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $result = $client->captureOrder('ORDER_123');
 
         $this->assertEquals('COMPLETED', $result['status']);
@@ -190,7 +190,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
         $order = $client->showOrder('ORDER_123');
 
         $this->assertEquals('ORDER_123', $order['id']);
@@ -209,7 +209,7 @@ class PayPalClientTest extends TestCase
     {
         config(['services.paypal.webhook_id' => null]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
 
         $result = $client->verifyWebhook([], '{}');
 
@@ -225,7 +225,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
 
         $headers = [
             'paypal-auth-algo' => ['SHA256withRSA'],
@@ -255,7 +255,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient();
+        $client = new PayPalClient;
 
         $result = $client->verifyWebhook(
             [

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\PayPalPendingOrder;
 use App\Services\PayPalClient;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +27,7 @@ class PayPalController extends Controller
      *
      * POST /paypal/create-order
      */
-    public function createOrder(Request $request): Response
+    public function createOrder(Request $request): JsonResponse
     {
         $request->validate([
             'amount' => 'required|numeric|min:0.50',
@@ -101,7 +103,7 @@ class PayPalController extends Controller
                 ],
             ]);
 
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        } catch (RequestException $e) {
             $body = $e->response->json() ?? [];
             Log::error('PayPal API error creating order', [
                 'message' => $e->getMessage(),
@@ -130,7 +132,7 @@ class PayPalController extends Controller
      *
      * POST /paypal/capture-order
      */
-    public function captureOrder(Request $request): Response
+    public function captureOrder(Request $request): JsonResponse
     {
         $request->validate([
             'order_id' => 'required|string',
@@ -221,7 +223,7 @@ class PayPalController extends Controller
                 'errors' => ["Order status is {$orderStatus}, not completed"],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        } catch (RequestException $e) {
             $body = $e->response->json() ?? [];
             Log::error('PayPal capture API error', [
                 'order_id' => $orderId,
