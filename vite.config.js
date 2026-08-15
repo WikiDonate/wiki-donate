@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import path from 'path'
@@ -18,30 +19,29 @@ export default defineConfig({
         rollupOptions: {
             input: path.join(root, 'resources/js/app.js'),
             output: {
-                manualChunks: {
-                    vue: ['vue', 'vue-router', 'pinia'],
-                    fontawesome: [
-                        '@fortawesome/fontawesome-svg-core',
-                        '@fortawesome/vue-fontawesome',
-                        '@fortawesome/free-solid-svg-icons',
-                        '@fortawesome/free-regular-svg-icons',
-                        '@fortawesome/free-brands-svg-icons',
-                    ],
-                    quill: [
-                        '@vueup/vue-quill',
-                        'quill',
-                        'diff-match-patch',
-                        'interactjs',
-                    ],
-                    stripe: ['@stripe/stripe-js'],
-                    vendor: [
-                        'axios',
-                        'vee-validate',
-                        'yup',
-                        'vue-toast-notification',
-                        '@vee-validate/rules',
-                        'vue3-recaptcha-v2',
-                    ],
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) return
+                    if (/[\\/](vue|vue-router|pinia)[\\/]/.test(id)) {
+                        return 'vue'
+                    }
+                    if (id.includes('@fortawesome')) return 'fontawesome'
+                    if (
+                        id.includes('quill') ||
+                        id.includes('diff-match-patch') ||
+                        id.includes('interactjs')
+                    ) {
+                        return 'quill'
+                    }
+                    if (id.includes('@stripe')) return 'stripe'
+                    if (
+                        id.includes('axios') ||
+                        id.includes('vee-validate') ||
+                        id.includes('yup') ||
+                        id.includes('vue-toast-notification') ||
+                        id.includes('vue3-recaptcha-v2')
+                    ) {
+                        return 'vendor'
+                    }
                 },
             },
         },
@@ -54,6 +54,7 @@ export default defineConfig({
     },
     plugins: [
         vue(),
+        tailwindcss(),
         AutoImport({
             imports: [
                 'vue',
