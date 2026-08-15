@@ -17,9 +17,10 @@ The entire application lives in a single Laravel project at the repository root:
 
 ### Backend
 
-- Laravel: for building RESTful APIs and handling server-side logic
+- Laravel 13: for building RESTful APIs and handling server-side logic
 - MySQL: as the database solution for managing structured data
 - Sanctum: token-based authentication for the SPA
+- PHP 8.3+
 
 ### Frontend
 
