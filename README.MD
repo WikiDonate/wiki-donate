@@ -2,30 +2,34 @@
 
 Wiki Donate is a platform designed to streamline and facilitate donations for a variety of causes. This project includes robust features such as user authentication, article contributions, community discussions, donation management, and more. Built with a modular architecture, it ensures scalability and maintainability.
 
-The API documentation can be accessed at [https://api.wikidonate.org/api/documentation](https://api.wikidonate.org/api/documentation).
+The API documentation can be accessed at `https://your-domain/api/documentation`.
 
 ## Project Structure
 
-The project is structured as follows:
+The entire application lives in a single Laravel project at the repository root:
 
-- `backend/`: contains the server-side code, built using Laravel 11
-- `frontend/`: contains the client-side code, built using Nuxt.js and styled with Tailwind CSS
+- `app/`: server-side code, built using Laravel
+- `resources/js/`: the client-side Vue.js SPA (Vue 3 + Vue Router + Pinia), built with Vite
+- `routes/`: API and web routes
+- `public/`: the web root (served directly; contains the built Vite assets in `public/build`)
 
 ## Tech Stack
 
 ### Backend
 
-- Laravel 11: for building RESTful APIs and handling server-side logic
+- Laravel: for building RESTful APIs and handling server-side logic
 - MySQL: as the database solution for managing structured data
+- Sanctum: token-based authentication for the SPA
 
 ### Frontend
 
-- Nuxt.js: for building the frontend as a Single Page Application (SPA)
+- Vue 3 (Vue Router + Pinia): Single Page Application
+- Vite: build tooling
 - Tailwind CSS: for designing a clean and modern UI
 
 ### Deployment and Hosting
 
-- BlueHost: hosting solution for deployment
+- Shared hosting / any PHP host: point the document root to `public/`
 
 ## Features
 
@@ -83,20 +87,21 @@ The project is structured as follows:
 
 ## Development
 
-### Backend Setup
+### Setup
 
-1. Navigate to the `backend/` folder
-2. Install dependencies: `composer install`
+1. Install PHP dependencies: `composer install`
+2. Install frontend dependencies: `npm install`
 3. Set up the `.env` file and configure the database connection
-4. Run migrations: `php artisan migrate`
-5. Start the development server: `php artisan serve`
-6. Generate encryption keys: `php artisan key:generate`
+4. Generate encryption keys: `php artisan key:generate`
+5. Run migrations: `php artisan migrate`
 
-### Frontend Setup
+### Running locally
 
-1. Navigate to the `frontend/` folder
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
+- Backend: `php artisan serve`
+- Frontend (Vite dev server with API proxy): `npm run dev` — open `http://localhost:5173`
+- Production build (emits to `public/build`): `npm run build`
+
+The Laravel web route serves the SPA for all non-API paths, so you can also visit the app directly through `php artisan serve`.
 
 ## Contribution
 

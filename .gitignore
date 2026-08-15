@@ -1,34 +1,38 @@
-# Backend (Laravel)
-backend/vendor/
-backend/node_modules/
-backend/.env
-backend/.env.backup
-backend/.env.production
-backend/.phpunit.result.cache
-backend/.php-cs-fixer.cache
-backend/storage/*.key
-backend/storage/debugbar/
-backend/storage/framework/cache/*
-backend/storage/framework/sessions/*
-backend/storage/framework/views/*
-backend/storage/logs/*
-backend/bootstrap/cache/*
-backend/.idea/
-backend/.vscode/
+# Laravel
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/storage/debugbar/
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+/vendor
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+phpunit.xml.bak
+phpunit.xml.bak.bak
 
-# Frontend (Nuxt.js)
-frontend/.nuxt/
-frontend/.output/
-frontend/node_modules/
-frontend/.env
-frontend/.env.*
-frontend/!.env.example
-frontend/dist/
-frontend/.DS_Store
-frontend/.eslintcache
-frontend/.cache/
+# IDE / editor
+/.fleet
+/.idea
+/.zed
+*.swp
+*.swo
+*~
 
-# General
+# Logs
 *.log
 *.log.*
 npm-debug.log*
@@ -41,24 +45,17 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
 # Composer
 composer.phar
 
 # Coverage reports
 coverage/
 htmlcov/
-.phpunit.result.cache
 
 # Build artifacts
 *.cache
 
+# Workspace / agent files
 AGENTS.md
 HEARTBEAT.md
 IDENTITY.md
@@ -67,4 +64,4 @@ SOUL.md
 TOOLS.md
 USER.md
 docs/*
-memory/2026-08-12.md
+memory/*
