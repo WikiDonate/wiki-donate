@@ -326,6 +326,21 @@ async function renderPaypalButtons() {
     const container = document.getElementById('paypal-button-container')
     if (!container) return
 
+    // If a previous button set is still alive (e.g. modal reopened), close it
+    // and clear the container so we don't stack duplicate button sets.
+    if (paypalButtonsRendered.value && paypalButtonsInstance) {
+        if (typeof paypalButtonsInstance.close === 'function') {
+            try {
+                paypalButtonsInstance.close()
+            } catch {
+                // ignore teardown errors
+            }
+        }
+        paypalButtonsInstance = null
+        container.innerHTML = ''
+        paypalButtonsRendered.value = false
+    }
+
     if (paypalButtonsRendered.value) {
         return
     }
@@ -358,6 +373,7 @@ async function renderPaypalButtons() {
                     const params = {
                         amount: Number(amount.value),
                         donor_name: authStore.user?.username || '',
+                        donor_email: authStore.user?.email || '',
                         formula: props.formula,
                         details: props.details,
                     }
@@ -385,8 +401,11 @@ async function renderPaypalButtons() {
                         )
 
                         if (response.success) {
-                            // Redirect to the same success page the Stripe flow uses.
-                            window.location.href = '/payment/success'
+                            const donationId = response.data?.donation_id || ''
+                            const amt =
+                                response.data?.amount ?? amount.value ?? ''
+                            const cur = response.data?.currency || 'USD'
+                            window.location.href = `/payment/success?paypal=1&donation_id=${donationId}&amount=${amt}&currency=${cur}`
                         } else {
                             alertVariant.value = 'error'
                             alertMessage.value =
@@ -452,6 +471,7 @@ async function handleStripe() {
         const params = {
             amount: Number(amount.value),
             donor_name: authStore.user?.username || '',
+            donor_email: authStore.user?.email || '',
             formula: props.formula,
             details: props.details,
         }

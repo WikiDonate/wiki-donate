@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\PayPalPendingOrder;
 use App\Services\PayPalClient;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -26,7 +27,7 @@ class PayPalWebhookController extends Controller
      * POST /webhooks/paypal
      * This route is NOT protected by auth middleware.
      */
-    public function handleWebhook(Request $request): Response
+    public function handleWebhook(Request $request): JsonResponse
     {
         $body = $request->getContent();
 
@@ -55,7 +56,8 @@ class PayPalWebhookController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $eventType = $event['event_type'] ?? '';
+        // PayPal sends event types in UPPERCASE, e.g. CHECKOUT.ORDER.APPROVED
+        $eventType = strtoupper($event['event_type'] ?? '');
         $eventId = $event['id'] ?? '';
 
         // Idempotency: skip already-processed events
@@ -72,8 +74,10 @@ class PayPalWebhookController extends Controller
 
         try {
             match ($eventType) {
-                'checkout.order.approved' => $this->handleOrderApproved($event),
-                'payment.capture.completed' => $this->handleCaptureCompleted($event),
+                'CHECKOUT.ORDER.APPROVED' => $this->handleOrderApproved($event),
+                'PAYMENT.CAPTURE.COMPLETED' => $this->handleCaptureCompleted($event),
+                'PAYMENT.CAPTURE.DENIED' => $this->handleCaptureDenied($event),
+                'CHECKOUT.ORDER.CANCELLED' => $this->handleOrderCancelled($event),
                 default => Log::info('Unhandled PayPal webhook event: '.$eventType),
             };
         } catch (\Throwable $e) {
@@ -120,13 +124,13 @@ class PayPalWebhookController extends Controller
      */
     protected function handleCaptureCompleted(array $event): void
     {
-        $resource = $event['resource'];
+        $resource = $event['resource'] ?? [];
 
-        // The order ID is in supplementary_data.related_ids
-        $orderId = $resource['supplementary_data']['related_ids']['order_id']
-            ?? $resource['custom_id']
-            ?? $resource['invoice_id']
-            ?? null;
+        // The order ID lives in supplementary_data.related_ids.order_id.
+        // We deliberately ignore custom_id/invoice_id here because those are
+        // our own internal values (e.g. invoice_id is "WD-<uniqid>") and would
+        // misattribute the donation to the wrong order.
+        $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? $resource['custom_id'] ?? null;
 
         if (! $orderId) {
             Log::warning('PayPal webhook: payment.capture.completed missing order ID');
@@ -151,14 +155,35 @@ class PayPalWebhookController extends Controller
         // Look up the pending order
         $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)->first();
 
-        // Extract capture data from the webhook resource
+        // The capture webhook resource contains the merchant (payee), not the
+        // buyer (payer). Pull payer details from the pending order if present,
+        // otherwise fetch the full order from PayPal to get updated totals.
+        $donorName = $pending?->donor_name;
+        $donorEmail = $pending?->donor_email;
+
         $captureData = $this->extractCaptureFromResource($resource);
 
-        Donation::create([
+        if (! $donorName || ! $donorEmail) {
+            try {
+                $order = $this->paypal->showOrder($orderId);
+                $orderData = PayPalClient::extractCaptureData($order);
+                $captureData['amount'] = $orderData['amount'] ?: $captureData['amount'];
+                $captureData['currency'] = $orderData['currency'] ?: $captureData['currency'];
+                $donorName = $donorName ?: $orderData['payer_name'] ?: null;
+                $donorEmail = $donorEmail ?: $orderData['payer_email'] ?: null;
+            } catch (\Throwable $e) {
+                Log::warning('PayPal webhook: could not fetch order for payer details', [
+                    'order_id' => $orderId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $donation = Donation::create([
             'paypal_order_id' => $orderId,
             'user_id' => $pending?->user_id,
-            'donor_name' => $pending?->donor_name ?: ($captureData['payer_name'] ?? null),
-            'donor_email' => $pending?->donor_email ?: ($captureData['payer_email'] ?? null),
+            'donor_name' => $donorName,
+            'donor_email' => $donorEmail,
             'amount' => $captureData['amount'] ?? 0,
             'currency' => $captureData['currency'] ?? 'USD',
             'status' => 'completed',
@@ -178,8 +203,38 @@ class PayPalWebhookController extends Controller
 
         Log::info('PayPal donation recorded via webhook', [
             'order_id' => $orderId,
+            'donation_id' => $donation->id,
             'amount' => $captureData['amount'] ?? 0,
         ]);
+    }
+
+    /**
+     * Handle payment.capture.denied — the capture was declined, nothing to charge.
+     * Clean up the pending order so it does not linger.
+     */
+    protected function handleCaptureDenied(array $event): void
+    {
+        $resource = $event['resource'] ?? [];
+        $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? $resource['custom_id'] ?? null;
+
+        if ($orderId) {
+            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
+            Log::info('PayPal capture denied, pending order removed', ['order_id' => $orderId]);
+        }
+    }
+
+    /**
+     * Handle checkout.order.cancelled — buyer abandoned/cancelled the order.
+     * Remove the pending order so abandoned checkouts are cleaned up.
+     */
+    protected function handleOrderCancelled(array $event): void
+    {
+        $orderId = $event['resource']['id'] ?? null;
+
+        if ($orderId) {
+            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
+            Log::info('PayPal order cancelled, pending order removed', ['order_id' => $orderId]);
+        }
     }
 
     /**

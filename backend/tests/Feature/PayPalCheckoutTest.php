@@ -733,4 +733,99 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
     }
+
+    public function test_webhook_capture_denied_removes_pending_order(): void
+    {
+        PayPalPendingOrder::create([
+            'paypal_order_id' => 'PAYPAL_ORDER_123',
+            'user_id' => null,
+            'amount' => 25.00,
+            'currency' => 'USD',
+        ]);
+
+        $this->mockPayPalClient();
+
+        $payload = [
+            'id' => 'WH_DENIED_'.uniqid(),
+            'event_type' => 'PAYMENT.CAPTURE.DENIED',
+            'resource' => [
+                'id' => 'CAPTURE_ABC',
+                'supplementary_data' => [
+                    'related_ids' => ['order_id' => 'PAYPAL_ORDER_123'],
+                ],
+            ],
+        ];
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/paypal',
+            [],
+            [],
+            [],
+            array_merge(['HTTP_ACCEPT' => 'application/json'], $this->paypalWebhookHeaders()),
+            json_encode($payload)
+        );
+
+        $response->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+    }
+
+    public function test_webhook_order_cancelled_removes_pending_order(): void
+    {
+        PayPalPendingOrder::create([
+            'paypal_order_id' => 'PAYPAL_ORDER_123',
+            'user_id' => null,
+            'amount' => 25.00,
+            'currency' => 'USD',
+        ]);
+
+        $this->mockPayPalClient();
+
+        $payload = [
+            'id' => 'WH_CANCELLED_'.uniqid(),
+            'event_type' => 'CHECKOUT.ORDER.CANCELLED',
+            'resource' => ['id' => 'PAYPAL_ORDER_123'],
+        ];
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/paypal',
+            [],
+            [],
+            [],
+            array_merge(['HTTP_ACCEPT' => 'application/json'], $this->paypalWebhookHeaders()),
+            json_encode($payload)
+        );
+
+        $response->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+    }
+
+    public function test_cleanup_command_deletes_old_pending_orders(): void
+    {
+        $old = PayPalPendingOrder::create([
+            'paypal_order_id' => 'OLD_ORDER',
+            'user_id' => null,
+            'amount' => 25.00,
+            'currency' => 'USD',
+        ]);
+        $old->forceFill(['created_at' => now()->subDays(5)])->saveQuietly();
+
+        PayPalPendingOrder::create([
+            'paypal_order_id' => 'FRESH_ORDER',
+            'user_id' => null,
+            'amount' => 25.00,
+            'currency' => 'USD',
+        ]);
+
+        $this->artisan('paypal:cleanup-pending-orders', ['--hours' => 48])
+            ->assertSuccessful();
+
+        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'OLD_ORDER')->first());
+        $this->assertNotNull(PayPalPendingOrder::where('paypal_order_id', 'FRESH_ORDER')->first());
+    }
 }

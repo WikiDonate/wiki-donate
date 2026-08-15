@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     plugins: ['~/plugins/fontawesome.js'],
     modules: [
         '@nuxt/eslint',
-        
+
         '@pinia/nuxt',
         'pinia-plugin-persistedstate/nuxt',
         '@unlok-co/nuxt-stripe',

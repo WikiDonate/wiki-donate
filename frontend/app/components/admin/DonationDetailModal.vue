@@ -17,7 +17,14 @@
                     {{ Number(donation.amount).toFixed(2) }}
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3">
-                    <AdminBadge variant="info" text="Stripe Checkout" />
+                    <AdminBadge
+                        :variant="donation.paypal_order_id ? 'warning' : 'info'"
+                        :text="
+                            donation.paypal_order_id
+                                ? 'PayPal'
+                                : 'Stripe Checkout'
+                        "
+                    />
                     <AdminBadge
                         :variant="statusVariant(donation.status)"
                         :text="donation.status"
@@ -165,7 +172,7 @@ defineProps({
 defineEmits(['update:modelValue'])
 
 function statusVariant(status) {
-    if (status === 'completed') return 'success'
+    if (status === 'completed' || status === 'succeeded') return 'success'
     if (status === 'expired') return 'amber'
     return 'danger'
 }

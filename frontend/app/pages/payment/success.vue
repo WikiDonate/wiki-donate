@@ -85,7 +85,6 @@
 
 <script setup>
 import api from '~/config/apiConfig'
-import { donateService } from '~/services/donateService'
 
 const route = useRoute()
 const sessionData = ref(null)
@@ -107,7 +106,19 @@ const formatAmount = (amount) => {
 
 onMounted(async () => {
     const sessionId = route.query.session_id
-    const paypalOrderId = route.query.token // PayPal redirects with ?token=ORDER_ID
+
+    if (route.query.paypal === '1') {
+        // PayPal Smart Buttons flow — capture already completed client-side
+        loading.value = false
+        paypalStatus.value = 'completed'
+        sessionData.value = {
+            amount: route.query.amount || null,
+            currency: route.query.currency || 'USD',
+            payment_status: 'paid',
+            status: 'complete',
+        }
+        return
+    }
 
     if (sessionId) {
         // Stripe Checkout redirect
@@ -119,33 +130,6 @@ onMounted(async () => {
             }
         } catch {
             // Silently fail — user still sees success message
-        } finally {
-            loading.value = false
-        }
-    } else if (paypalOrderId) {
-        // PayPal redirect after buyer approval
-        loading.value = true
-        paypalStatus.value = 'capturing'
-        try {
-            const response = await donateService.capturePaypalOrder({
-                order_id: paypalOrderId,
-            })
-            if (response.success) {
-                paypalStatus.value = 'completed'
-                // Show the donation_id from the response
-                if (response.data) {
-                    sessionData.value = {
-                        amount: response.data.amount,
-                        currency: response.data.currency || 'USD',
-                        payment_status: 'paid',
-                        status: 'complete',
-                    }
-                }
-            } else {
-                paypalStatus.value = 'failed'
-            }
-        } catch (error) {
-            paypalStatus.value = 'failed'
         } finally {
             loading.value = false
         }

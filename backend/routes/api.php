@@ -36,6 +36,11 @@ Route::prefix('v1')->group(function () {
         'index',
     ]);
 
+    // Editor & Admin shared routes — loaded BEFORE the public `articles/{slug}`
+    // route so static segments (e.g. `articles/my`) are not shadowed by the
+    // parameterised slug route.
+    require __DIR__.'/api/editor.php';
+
     // Articles routes (public / optional auth)
     Route::prefix('articles')->group(function () {
         Route::middleware(OptionalAuth::class)->group(function () {
@@ -56,11 +61,12 @@ Route::prefix('v1')->group(function () {
     // Stripe Webhook (public, no auth)
     Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
-    // PayPal Checkout (auth required)
+    // PayPal Checkout (create + capture are callable without an authenticated
+    // user so guest donations and the post-redirect success-page flow work)
     Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
-        ->middleware(OptionalAuth::class);
+        ->middleware(['throttle:10,1', OptionalAuth::class]);
     Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
-        ->middleware(OptionalAuth::class);
+        ->middleware(['throttle:20,1', OptionalAuth::class]);
 
     // PayPal Webhook (public, no auth)
     Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook']);
@@ -69,6 +75,5 @@ Route::prefix('v1')->group(function () {
     Route::get('page-contents/{page}', [PageController::class, 'show']);
 
     // Role-specific route files (loaded inside v1 prefix)
-    require __DIR__.'/api/editor.php';
     require __DIR__.'/api/admin.php';
 });

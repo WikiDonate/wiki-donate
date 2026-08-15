@@ -25,7 +25,7 @@ class VerificationEmail extends Mailable
         $this->data = $data;
         $this->verificationUrl = config('app.frontend_url').'/verify-email?'.http_build_query([
             'id' => $data->id,
-            'hash' => sha1($data->email),
+            'hash' => hash_hmac('sha256', $data->email, config('app.key')),
         ]);
     }
 

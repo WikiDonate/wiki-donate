@@ -140,7 +140,8 @@ class PayPalClientTest extends TestCase
     public function test_create_order_uses_correct_endpoint(): void
     {
         Http::fake([
-            'api-m.sandbox.paypal.com/*' => Http::response(['id' => 'ORDER_123', 'status' => 'CREATED', 'links' => []], 201),
+            'api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response(['access_token' => 'token', 'expires_in' => 3600], 200),
+            'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::response(['id' => 'ORDER_123', 'status' => 'CREATED', 'links' => []], 201),
         ]);
 
         $client = new PayPalClient;

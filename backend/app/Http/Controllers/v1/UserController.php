@@ -323,7 +323,11 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            if (! hash_equals(sha1($user->email), $hash)) {
+            // Hash is an HMAC of the email keyed on the app key, so it cannot
+            // be forged by an attacker who only knows the user's id + email.
+            $expected = hash_hmac('sha256', $user->email, config('app.key'));
+
+            if (! hash_equals($expected, $hash)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid verification link.',
