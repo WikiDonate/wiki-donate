@@ -30,6 +30,7 @@ The entire application lives in a single Laravel project at the repository root:
 ### Deployment and Hosting
 
 - Shared hosting / any PHP host: point the document root to `public/`
+- Run `npm run build` before deploying so the compiled assets exist in `public/build`
 
 ## Features
 
@@ -91,17 +92,48 @@ The entire application lives in a single Laravel project at the repository root:
 
 1. Install PHP dependencies: `composer install`
 2. Install frontend dependencies: `npm install`
-3. Set up the `.env` file and configure the database connection
+3. Copy `.env.example` to `.env` and configure the database connection
 4. Generate encryption keys: `php artisan key:generate`
 5. Run migrations: `php artisan migrate`
 
+### Environment Variables
+
+All configuration lives in `.env`. Frontend (Vite) build-time variables are
+consumed in the SPA via `import.meta.env` and must be prefixed with `VITE_`:
+
+| Variable | Description |
+| --- | --- |
+| `VITE_API_URL` | Base URL for the API (default `/api/v1`) |
+| `VITE_STRIPE_PUBLIC_KEY` | Stripe publishable key used for card payments |
+| `VITE_PAYPAL_CLIENT_ID` | PayPal client ID used for PayPal checkout |
+| `VITE_AI_CHATBOT_API_KEY` | API key for the AI chatbot widget |
+| `VITE_APP_NAME` | App name exposed to the frontend |
+
+The backend payment variables (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+`PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_WEBHOOK_ID`) must also be set for
+Stripe and PayPal flows to work. Note that changing `VITE_*` values requires a
+re-run of `npm run build` (or `npm run dev`) to take effect.
+
 ### Running locally
 
-- Backend: `php artisan serve`
-- Frontend (Vite dev server with API proxy): `npm run dev` — open `http://localhost:5173`
-- Production build (emits to `public/build`): `npm run build`
+**Option A — Laravel serves the built SPA:**
 
-The Laravel web route serves the SPA for all non-API paths, so you can also visit the app directly through `php artisan serve`.
+1. Build the frontend: `npm run build`
+2. Start the server: `php artisan serve`
+3. Open `http://localhost:8000`
+
+**Option B — Vite dev server with API proxy:**
+
+1. Start the Laravel server: `php artisan serve`
+2. Start Vite: `npm run dev`
+3. Open `http://localhost:5173` (`/api` requests are proxied to Laravel)
+
+The Laravel web route serves the SPA for all non-API, non-asset paths.
+
+### Testing
+
+- Backend (PHPUnit/Pest): `php artisan test`
+- Frontend production build check: `npm run build`
 
 ## Contribution
 
