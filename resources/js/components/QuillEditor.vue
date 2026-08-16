@@ -54,9 +54,7 @@ const defaultToolbar = [
 const editorOptions = computed(() => ({
     modules: {
         toolbar: {
-            container: props.toolbarOptions.length
-                ? props.toolbarOptions
-                : defaultToolbar,
+            container: props.toolbarOptions.length ? props.toolbarOptions : defaultToolbar,
             handlers: { image: imageHandler },
         },
     },

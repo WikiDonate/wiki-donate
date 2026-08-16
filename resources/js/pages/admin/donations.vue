@@ -1,8 +1,6 @@
 <template>
     <main>
-        <div
-            class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-        >
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
                 title="All Donations"
                 subtitle="View and search all donation records"
@@ -51,30 +49,20 @@
                     </template>
                     <template #cell-donor="{ row }">
                         <div>
-                            <span class="font-medium text-sm">{{
-                                row.user
+                            <span class="font-medium text-sm">{{ row.user }}</span>
+                            <span v-if="row.email" class="block text-xs text-gray-400">{{
+                                row.email
                             }}</span>
-                            <span
-                                v-if="row.email"
-                                class="block text-xs text-gray-400"
-                                >{{ row.email }}</span
-                            >
                         </div>
                     </template>
                     <template #cell-amount="{ row }"
-                        >{{ row.currency || 'USD' }}
-                        {{ Number(row.amount).toFixed(2) }}</template
+                        >{{ row.currency || 'USD' }} {{ Number(row.amount).toFixed(2) }}</template
                     >
                     <template #cell-status="{ row }">
-                        <AdminBadge
-                            :variant="statusVariant(row.status)"
-                            :text="row.status"
-                        />
+                        <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
                     </template>
                     <template #cell-date="{ row }"
-                        ><span class="text-gray-500 text-xs">{{
-                            row.date
-                        }}</span></template
+                        ><span class="text-gray-500 text-xs">{{ row.date }}</span></template
                     >
                     <template #cell-paymentId="{ row }">
                         <span class="text-xs text-gray-400 font-mono">{{
@@ -96,9 +84,7 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{
-                            meta.total
-                        }}
+                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
                         total)
                     </span>
                     <Pagination
@@ -110,10 +96,7 @@
             </template>
         </div>
 
-        <DonationDetailModal
-            v-model="showDetail"
-            :donation="selectedDonation"
-        />
+        <DonationDetailModal v-model="showDetail" :donation="selectedDonation" />
     </main>
 </template>
 

@@ -1,9 +1,7 @@
 <template>
     <main class="w-full mx-auto">
         <div class="container mx-auto p-4 md:p-6 w-full sm:w-2/3">
-            <h1
-                class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center"
-            >
+            <h1 class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center">
                 Contact Us
             </h1>
 
@@ -20,9 +18,7 @@
                 <!-- Flex container for First Name and Last Name -->
                 <div class="flex space-x-4">
                     <div class="flex-1">
-                        <label
-                            for="firstname"
-                            class="block text-sm font-medium text-gray-700"
+                        <label for="firstname" class="block text-sm font-medium text-gray-700"
                             >First Name
                         </label>
                         <FormInput
@@ -36,9 +32,7 @@
                     </div>
 
                     <div class="flex-1">
-                        <label
-                            for="lastname"
-                            class="block text-sm font-medium text-gray-700"
+                        <label for="lastname" class="block text-sm font-medium text-gray-700"
                             >Last Name
                         </label>
                         <FormInput
@@ -53,12 +47,7 @@
                 </div>
 
                 <!-- Email -->
-                <label
-                    for="email"
-                    class="block text-sm font-medium text-gray-700"
-                >
-                    Email
-                </label>
+                <label for="email" class="block text-sm font-medium text-gray-700"> Email </label>
                 <FormInput
                     v-model="email"
                     type="email"
@@ -69,10 +58,7 @@
                 />
 
                 <!-- Subject -->
-                <label
-                    for="subject"
-                    class="block text-sm font-medium text-gray-700"
-                >
+                <label for="subject" class="block text-sm font-medium text-gray-700">
                     Subject
                 </label>
                 <FormInput
@@ -85,10 +71,7 @@
                 />
 
                 <!-- Message Details (Textarea) -->
-                <label
-                    for="message"
-                    class="block text-sm font-medium text-gray-700"
-                >
+                <label for="message" class="block text-sm font-medium text-gray-700">
                     Message Details
                 </label>
                 <FormTextarea
@@ -131,10 +114,7 @@ const validationSchema = yup.object({
     lastname: yup.string().required('Last name is required'),
     subject: yup.string().required('Subject name is required'),
     message: yup.string().required('Message details is required'),
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Email must be a valid email'),
+    email: yup.string().required('Email is required').email('Email must be a valid email'),
 })
 
 // Setup VeeValidate
@@ -158,13 +138,11 @@ const onSubmit = handleSubmit(async (values) => {
             resetForm()
         } else {
             alertVariant.value = 'error'
-            alertMessage.value =
-                response.errors?.[0] || 'Failed to send message'
+            alertMessage.value = response.errors?.[0] || 'Failed to send message'
         }
     } catch (error) {
         alertVariant.value = 'error'
-        alertMessage.value =
-            error?.errors?.[0] || error?.message || 'Failed to send message'
+        alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
     } finally {
         showAlert.value = true
     }

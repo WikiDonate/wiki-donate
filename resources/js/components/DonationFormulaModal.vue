@@ -10,9 +10,7 @@
                     class="hidden sm:grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
                 >
                     <div class="col-span-7 text-sm">Organization</div>
-                    <div class="col-span-4 text-sm text-center">
-                        Percentage (%)
-                    </div>
+                    <div class="col-span-4 text-sm text-center">Percentage (%)</div>
                     <div class="col-span-1" />
                 </div>
 
@@ -23,20 +21,13 @@
                         class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-start sm:items-center"
                     >
                         <div class="col-span-12 sm:col-span-7">
-                            <label
-                                class="block sm:hidden text-xs font-medium text-gray-600 mb-1"
-                            >
+                            <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
                                 Organization
                             </label>
-                            <FormInput
-                                v-model="row.organization"
-                                placeholder="Organization name"
-                            />
+                            <FormInput v-model="row.organization" placeholder="Organization name" />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
-                            <label
-                                class="block sm:hidden text-xs font-medium text-gray-600 mb-1"
-                            >
+                            <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
                                 Percentage (%)
                             </label>
                             <FormInput
@@ -47,18 +38,14 @@
                                 max="100"
                             />
                         </div>
-                        <div
-                            class="col-span-2 sm:col-span-1 flex justify-center sm:block"
-                        >
+                        <div class="col-span-2 sm:col-span-1 flex justify-center sm:block">
                             <button
                                 type="button"
                                 class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
                                 title="Delete Row"
                                 @click="deleteRow(index)"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'trash-alt']"
-                                />
+                                <font-awesome-icon :icon="['fas', 'trash-alt']" />
                             </button>
                         </div>
                     </div>
@@ -83,9 +70,7 @@
                     <span
                         :class="[
                             'font-bold text-base sm:text-lg',
-                            totalPercentage === 100
-                                ? 'text-green-600'
-                                : 'text-red-600',
+                            totalPercentage === 100 ? 'text-green-600' : 'text-red-600',
                         ]"
                     >
                         Total Allocation: {{ totalPercentage }}%
@@ -101,10 +86,7 @@
                             :icon="['fas', 'exclamation-triangle']"
                             class="text-red-500"
                         />
-                        <span
-                            v-if="totalPercentage !== 100"
-                            class="text-xs text-red-500"
-                        >
+                        <span v-if="totalPercentage !== 100" class="text-xs text-red-500">
                             Must equal 100%
                         </span>
                     </div>
@@ -115,9 +97,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Details
-                </label>
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Details </label>
                 <FormTextarea
                     v-model="details"
                     rows="3"
@@ -137,11 +117,7 @@
             <Button
                 variant="primary"
                 :text="
-                    localIsSaving || props.isSaving
-                        ? 'Saving...'
-                        : props.isEdit
-                          ? 'Update'
-                          : 'Save'
+                    localIsSaving || props.isSaving ? 'Saving...' : props.isEdit ? 'Update' : 'Save'
                 "
                 width="auto"
                 class="px-6"
@@ -153,9 +129,7 @@
 
     <ConfirmModal
         v-model="showSaveConfirm"
-        :title="
-            props.isEdit ? 'Update Donation Formula' : 'Save Donation Formula'
-        "
+        :title="props.isEdit ? 'Update Donation Formula' : 'Save Donation Formula'"
         message-title="Confirm Your Action"
         :message="
             props.isEdit
@@ -218,9 +192,7 @@ watch(
                 props.initialData.formula &&
                 props.initialData.formula.length > 0
             ) {
-                rows.value = JSON.parse(
-                    JSON.stringify(props.initialData.formula)
-                )
+                rows.value = JSON.parse(JSON.stringify(props.initialData.formula))
             } else {
                 rows.value = [{ organization: '', percentage: 0 }]
             }

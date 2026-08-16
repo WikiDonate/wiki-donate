@@ -14,13 +14,6 @@
         "role": "Admin",
         "icon": ["fas", "shield-alt"]
     },
-    {
-        "name": "Payment Method",
-        "link": "/billing",
-        "type": "MainMenu",
-        "onLogin": "show",
-        "icon": ["fas", "credit-card"]
-    },
 
     {
         "name": "Create Account",

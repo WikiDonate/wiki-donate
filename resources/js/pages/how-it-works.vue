@@ -6,12 +6,8 @@
             <div
                 class="lg:w-64 flex-shrink-0 bg-white rounded-2xl shadow-md overflow-hidden lg:sticky lg:top-6 lg:h-fit"
             >
-                <div
-                    class="bg-gradient-to-r from-indigo-600 to-purple-600 py-3 px-4 text-center"
-                >
-                    <span class="font-bold text-white tracking-wide"
-                        >Steps</span
-                    >
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-3 px-4 text-center">
+                    <span class="font-bold text-white tracking-wide">Steps</span>
                 </div>
                 <nav class="py-2">
                     <button
@@ -40,19 +36,13 @@
             <!-- Content -->
             <div class="flex-1 bg-white rounded-2xl shadow-md overflow-hidden">
                 <!-- Hero Section -->
-                <div
-                    class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center"
-                >
-                    <h1
-                        class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4"
-                    >
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center">
+                    <h1 class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4">
                         How WikiDonate Works
                     </h1>
-                    <p
-                        class="text-lg sm:text-xl text-indigo-100 max-w-2xl mx-auto"
-                    >
-                        A collaborative donation platform. Get started in
-                        minutes and start receiving support for your work.
+                    <p class="text-lg sm:text-xl text-indigo-100 max-w-2xl mx-auto">
+                        A collaborative donation platform. Get started in minutes and start
+                        receiving support for your work.
                     </p>
                 </div>
 
@@ -78,30 +68,22 @@
 
                             <!-- Content -->
                             <div class="flex-1 text-center md:text-left">
-                                <h2
-                                    class="text-xl sm:text-xl font-bold text-gray-900 mb-2"
-                                >
+                                <h2 class="text-xl sm:text-xl font-bold text-gray-900 mb-2">
                                     {{ step.title }}
                                 </h2>
                                 <p class="text-gray-600 text-base sm:text-lg">
                                     <template
-                                        v-for="(
-                                            seg, segIdx
-                                        ) in step.description"
+                                        v-for="(seg, segIdx) in step.description"
                                         :key="segIdx"
                                     >
-                                        <span v-if="seg.type === 'text'">{{
-                                            seg.value
-                                        }}</span>
+                                        <span v-if="seg.type === 'text'">{{ seg.value }}</span>
                                         <button
                                             v-else
                                             class="text-indigo-600 font-medium focus:outline-none"
                                             @click="
                                                 router.push(
                                                     '/article?title=' +
-                                                        encodeURIComponent(
-                                                            seg.value
-                                                        )
+                                                        encodeURIComponent(seg.value)
                                                 )
                                             "
                                         >

@@ -2,16 +2,12 @@
     <main class="w-full bg-white py-8">
         <div class="container mx-auto px-2 sm:px-4 max-w-lg">
             <!-- Card Container -->
-            <div
-                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
-            >
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
                     class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">
-                        Email Verification
-                    </h1>
+                    <h1 class="text-2xl md:text-3xl font-bold">Email Verification</h1>
                     <p class="mt-2 text-sm">Verifying your email address</p>
                 </div>
 
@@ -54,12 +50,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">
-                            Email Verified!
-                        </h2>
+                        <h2 class="text-xl font-semibold text-gray-800">Email Verified!</h2>
                         <p class="text-gray-600 text-sm">
-                            Your email address has been successfully verified.
-                            You can now access all features of your account.
+                            Your email address has been successfully verified. You can now access
+                            all features of your account.
                         </p>
                         <div class="pt-4">
                             <NuxtLink
@@ -92,9 +86,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">
-                            Verification Failed
-                        </h2>
+                        <h2 class="text-xl font-semibold text-gray-800">Verification Failed</h2>
                         <p class="text-gray-600 text-sm">
                             {{
                                 errorMessage ||
@@ -161,8 +153,7 @@ onMounted(async () => {
             errorMessage.value = response.message || 'Verification failed.'
         }
     } catch (error) {
-        errorMessage.value =
-            error.message || 'An error occurred during verification.'
+        errorMessage.value = error.message || 'An error occurred during verification.'
     } finally {
         isLoading.value = false
     }

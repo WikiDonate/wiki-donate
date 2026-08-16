@@ -2,9 +2,7 @@
     <div class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
         <div class="flex flex-1">
             <!-- Desktop Sidebar -->
-            <div
-                class="hidden lg:block lg:w-60 fixed left-0 top-0 bottom-0 z-40"
-            >
+            <div class="hidden lg:block lg:w-60 fixed left-0 top-0 bottom-0 z-40">
                 <AdminSidebar />
             </div>
 
@@ -17,10 +15,7 @@
                 leave-from-class="translate-x-0"
                 leave-to-class="-translate-x-full"
             >
-                <div
-                    v-if="mobileSidebarOpen"
-                    class="fixed inset-0 z-50 lg:hidden"
-                >
+                <div v-if="mobileSidebarOpen" class="fixed inset-0 z-50 lg:hidden">
                     <div
                         class="absolute inset-0 bg-black/40"
                         @click="mobileSidebarOpen = false"
@@ -41,10 +36,7 @@
                         class="text-gray-600 p-1.5 rounded-md hover:bg-gray-100 transition-colors"
                         @click="mobileSidebarOpen = !mobileSidebarOpen"
                     >
-                        <font-awesome-icon
-                            :icon="['fas', 'bars']"
-                            class="w-5 h-5"
-                        />
+                        <font-awesome-icon :icon="['fas', 'bars']" class="w-5 h-5" />
                     </button>
                     <span
                         class="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"

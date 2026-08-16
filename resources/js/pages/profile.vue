@@ -23,22 +23,15 @@
 
         <form v-else class="space-y-8" @submit.prevent="onSubmit">
             <!-- User Info -->
-            <div
-                class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-            >
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <!-- Card Header -->
-                <div
-                    class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                >
-                    <h2 class="text-lg sm:text-xl font-semibold">
-                        Your Information
-                    </h2>
+                <div class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                    <h2 class="text-lg sm:text-xl font-semibold">Your Information</h2>
                 </div>
                 <!-- Card Body -->
                 <div class="p-6 space-y-5">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label class="block text-sm font-medium text-gray-700 mb-1"
                             >Full Name<span class="text-red-500">*</span></label
                         >
                         <FormInput
@@ -50,11 +43,8 @@
                         />
                     </div>
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Email Address<span class="text-red-500"
-                                >*</span
-                            ></label
+                        <label class="block text-sm font-medium text-gray-700 mb-1"
+                            >Email Address<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="email"
@@ -65,8 +55,7 @@
                         />
                     </div>
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label class="block text-sm font-medium text-gray-700 mb-1"
                             >Phone Number</label
                         >
                         <FormInput
@@ -117,9 +106,7 @@ const alertMessage = ref('')
 const validationSchema = yup.object({
     name: yup.string().required('Full name is required'),
     email: yup.string().required('Email is required').email('Invalid email'),
-    phone: yup
-        .string()
-        .matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
+    phone: yup.string().matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
 })
 
 // Setup vee-validate form

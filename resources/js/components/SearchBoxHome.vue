@@ -24,10 +24,7 @@
                 type="submit"
                 class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-full"
             >
-                <font-awesome-icon
-                    :icon="['fas', 'magnifying-glass']"
-                    class="h-4 w-4 text-white"
-                />
+                <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="h-4 w-4 text-white" />
             </button>
         </form>
 
@@ -49,9 +46,7 @@
                             :icon="['fas', 'magnifying-glass']"
                             class="h-4 w-4 text-indigo-500 mr-3"
                         />
-                        <span class="text-gray-700">{{
-                            suggestion.title
-                        }}</span>
+                        <span class="text-gray-700">{{ suggestion.title }}</span>
                     </div>
                 </li>
             </ul>
@@ -91,8 +86,7 @@ const handleSearch = async () => {
     if (query) {
         let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
         const foundSuggestion = selectedSuggestions.value?.find(
-            (suggestion) =>
-                suggestion.title.toLowerCase() === query.toLowerCase()
+            (suggestion) => suggestion.title.toLowerCase() === query.toLowerCase()
         )
 
         if (foundSuggestion) {
@@ -127,10 +121,7 @@ const selectSuggestion = (suggestion) => {
 }
 
 const handleClickOutside = (event) => {
-    if (
-        searchContainer.value &&
-        !searchContainer.value.contains(event.target)
-    ) {
+    if (searchContainer.value && !searchContainer.value.contains(event.target)) {
         suggestions.value = []
     }
 }

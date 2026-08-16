@@ -11,11 +11,7 @@
             <option disabled value="">
                 {{ placeholder || 'Select an option' }}
             </option>
-            <option
-                v-for="(option, index) in options"
-                :key="index"
-                :value="option.value"
-            >
+            <option v-for="(option, index) in options" :key="index" :value="option.value">
                 {{ option.label }}
             </option>
         </select>

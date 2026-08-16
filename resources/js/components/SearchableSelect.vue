@@ -13,9 +13,7 @@
                 @blur="handleBlur"
                 @keydown="handleKeydown"
             />
-            <div
-                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-            >
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <font-awesome-icon
                     :icon="['fas', 'chevron-down']"
                     class="w-4 h-4 text-gray-400 transition-transform duration-200"
@@ -63,10 +61,7 @@
                         >
                             <div class="flex items-center justify-between">
                                 <span>{{ option.label }}</span>
-                                <span
-                                    v-if="option.isCustom"
-                                    class="text-xs text-gray-400"
-                                >
+                                <span v-if="option.isCustom" class="text-xs text-gray-400">
                                     (Custom)
                                 </span>
                             </div>
@@ -152,13 +147,9 @@ const filteredOptions = computed(() => {
         return props.options
     }
 
-    const matched = props.options.filter((option) =>
-        option.label.toLowerCase().includes(query)
-    )
+    const matched = props.options.filter((option) => option.label.toLowerCase().includes(query))
 
-    const hasExactMatch = props.options.some(
-        (o) => o.label.toLowerCase() === query
-    )
+    const hasExactMatch = props.options.some((o) => o.label.toLowerCase() === query)
 
     if (props.allowCustom && !hasExactMatch) {
         return [...matched, { label: query, value: query, isCustom: true }]
@@ -205,10 +196,7 @@ const handleKeydown = (event) => {
             break
         case 'Enter':
             event.preventDefault()
-            if (
-                highlightedIndex.value >= 0 &&
-                filteredOptions.value[highlightedIndex.value]
-            ) {
+            if (highlightedIndex.value >= 0 && filteredOptions.value[highlightedIndex.value]) {
                 selectOption(filteredOptions.value[highlightedIndex.value])
             } else if (searchQuery.value && props.allowCustom) {
                 selectOption({
@@ -248,10 +236,7 @@ const setOptionRef = (el, index) => {
 }
 
 const scrollToHighlighted = () => {
-    if (
-        highlightedIndex.value >= 0 &&
-        optionRefs.value[highlightedIndex.value]
-    ) {
+    if (highlightedIndex.value >= 0 && optionRefs.value[highlightedIndex.value]) {
         optionRefs.value[highlightedIndex.value].scrollIntoView({
             block: 'nearest',
             behavior: 'smooth',
@@ -270,9 +255,7 @@ watch(
         const searchStr = typeof newVal === 'object' ? newVal.name : newVal
 
         if (searchStr) {
-            const found = props.options.find(
-                (o) => o.value === newVal || o.id === newVal?.id
-            )
+            const found = props.options.find((o) => o.value === newVal || o.id === newVal?.id)
             searchQuery.value = found ? found.label : searchStr
         }
     },

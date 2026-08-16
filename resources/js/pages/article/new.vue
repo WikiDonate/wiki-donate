@@ -19,10 +19,7 @@
             <div v-if="authStore.isAuthenticated" class="space-y-6">
                 <!-- Title input -->
                 <div>
-                    <label
-                        for="article-title"
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                    >
+                    <label for="article-title" class="block text-sm font-medium text-gray-700 mb-2">
                         Title
                     </label>
                     <FormInput
@@ -105,25 +102,20 @@ const handleSave = async () => {
 
         if (response.success) {
             alertVariant.value = 'success'
-            alertMessage.value =
-                response.message || 'Article saved successfully!'
+            alertMessage.value = response.message || 'Article saved successfully!'
             showAlert.value = true
 
             setTimeout(() => {
-                router.push(
-                    `/article?title=${encodeURIComponent(articleTitle.value)}`
-                )
+                router.push(`/article?title=${encodeURIComponent(articleTitle.value)}`)
             }, 1500)
         } else {
             alertVariant.value = 'error'
-            alertMessage.value =
-                response.errors?.[0] || 'Failed to save article'
+            alertMessage.value = response.errors?.[0] || 'Failed to save article'
             showAlert.value = true
         }
     } catch (error) {
         alertVariant.value = 'error'
-        alertMessage.value =
-            error.errors?.[0] || 'An error occurred while saving'
+        alertMessage.value = error.errors?.[0] || 'An error occurred while saving'
         showAlert.value = true
     } finally {
         isSaving.value = false

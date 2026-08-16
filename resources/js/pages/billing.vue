@@ -1,14 +1,8 @@
 <template>
-    <main
-        class="w-full mx-auto max-w-5xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden"
-    >
+    <main class="w-full mx-auto max-w-5xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
         <!-- Gradient Header -->
-        <div
-            class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 px-6 text-center"
-        >
-            <h1
-                class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wide"
-            >
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 px-6 text-center">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wide">
                 Payment Method
             </h1>
             <p class="text-base sm:text-lg text-indigo-100 mt-2">
@@ -27,21 +21,11 @@
                 @close="showAlert = false"
             />
 
-            <div
-                class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-            >
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
                 <!-- Section Header -->
-                <div
-                    class="p-3 sm:p-4 md:p-6 border-b border-gray-200 bg-indigo-50 rounded-t-xl"
-                >
-                    <h2
-                        class="text-xl sm:text-2xl font-semibold text-indigo-700"
-                    >
-                        {{
-                            currentCard
-                                ? 'Update Payment Method'
-                                : 'Add New Card'
-                        }}
+                <div class="p-3 sm:p-4 md:p-6 border-b border-gray-200 bg-indigo-50 rounded-t-xl">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-indigo-700">
+                        {{ currentCard ? 'Update Payment Method' : 'Add New Card' }}
                     </h2>
                 </div>
 
@@ -51,10 +35,7 @@
                 </div>
 
                 <!-- Saved Card -->
-                <div
-                    v-else-if="currentCard && !showCardForm"
-                    class="p-4 sm:p-6"
-                >
+                <div v-else-if="currentCard && !showCardForm" class="p-4 sm:p-6">
                     <div
                         class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between"
                     >
@@ -72,9 +53,7 @@
                                 </h3>
                                 <p class="text-xs sm:text-sm text-gray-500">
                                     Expires {{ currentCard.exp_month }}/{{
-                                        currentCard.exp_year
-                                            .toString()
-                                            .slice(-2)
+                                        currentCard.exp_year.toString().slice(-2)
                                     }}
                                 </p>
                             </div>
@@ -97,9 +76,7 @@
 
                     <div v-show="!isCardElementMounting" class="space-y-6">
                         <div>
-                            <label
-                                class="block text-gray-700 text-sm font-semibold mb-2"
-                            >
+                            <label class="block text-gray-700 text-sm font-semibold mb-2">
                                 Card Number <span class="text-red-500">*</span>
                             </label>
                             <div
@@ -110,9 +87,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <label
-                                    class="block text-gray-700 text-sm font-semibold mb-2"
-                                >
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
                                     Expiry Date
                                     <span class="text-red-500">*</span>
                                 </label>
@@ -122,9 +97,7 @@
                                 />
                             </div>
                             <div>
-                                <label
-                                    class="block text-gray-700 text-sm font-semibold mb-2"
-                                >
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
                                     CVC <span class="text-red-500">*</span>
                                 </label>
                                 <div
@@ -275,12 +248,10 @@ const handleSubmit = async (e) => {
     showAlert.value = false
 
     try {
-        const { paymentMethod, error } = await stripe.value.createPaymentMethod(
-            {
-                type: 'card',
-                card: cardNumberElement.value,
-            }
-        )
+        const { paymentMethod, error } = await stripe.value.createPaymentMethod({
+            type: 'card',
+            card: cardNumberElement.value,
+        })
 
         if (error) {
             showError(error.message)

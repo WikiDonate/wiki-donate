@@ -2,19 +2,13 @@
     <main class="w-full bg-white py-8">
         <div class="container mx-auto px-2 sm:px-4 max-w-lg">
             <!-- Card Container -->
-            <div
-                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
-            >
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
                     class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">
-                        Password Recovery
-                    </h1>
-                    <p class="mt-2 text-sm">
-                        Enter your email to reset your password
-                    </p>
+                    <h1 class="text-2xl md:text-3xl font-bold">Password Recovery</h1>
+                    <p class="mt-2 text-sm">Enter your email to reset your password</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -29,9 +23,7 @@
 
                     <!-- Form -->
                     <form class="space-y-4" @submit.prevent="onSubmit">
-                        <label
-                            for="email"
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1"
                             >Email <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -84,10 +76,7 @@ const alertMessage = ref('')
 const isLoading = ref(false)
 
 const validationSchema = yup.object({
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Email must be a valid email'),
+    email: yup.string().required('Email is required').email('Email must be a valid email'),
 })
 
 // Setup VeeValidate

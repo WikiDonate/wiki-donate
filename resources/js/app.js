@@ -131,6 +131,7 @@ library.add(
 
 const app = createApp(App)
 
+// eslint-disable-next-line vue/component-definition-name-casing
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 const pinia = createPinia()

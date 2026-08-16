@@ -2,19 +2,13 @@
     <main class="w-full h-full bg-white py-8">
         <div class="container mx-auto px-2 sm:px-4 max-w-lg">
             <!-- Card Container -->
-            <div
-                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
-            >
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
                     class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">
-                        Login to Your Account
-                    </h1>
-                    <p class="mt-2 text-sm">
-                        Welcome back! Please sign in to continue
-                    </p>
+                    <h1 class="text-2xl md:text-3xl font-bold">Login to Your Account</h1>
+                    <p class="mt-2 text-sm">Welcome back! Please sign in to continue</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -29,10 +23,7 @@
 
                     <!-- Form -->
                     <form class="space-y-4" @submit.prevent="onSubmit">
-                        <label
-                            for="username"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
                             Username <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -42,9 +33,7 @@
                             v-bind="usernameProps"
                             :error-message="errors['username']"
                         />
-                        <label
-                            for="password"
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1"
                             >Password <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -67,9 +56,7 @@
                         <!-- Submit Button -->
                         <div class="flex justify-center mt-4">
                             <FormSubmitButton
-                                :text="
-                                    isLoading ? 'Authenticating...' : 'Login'
-                                "
+                                :text="isLoading ? 'Authenticating...' : 'Login'"
                                 type="submit"
                                 variant="primary"
                                 :disabled="isLoading"

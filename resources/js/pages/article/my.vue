@@ -67,10 +67,7 @@
                                 class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
                                 :aria-label="`View ${article.title}`"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'eye']"
-                                    class="w-4 h-4"
-                                />
+                                <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
                                 View
                             </NuxtLink>
                         </div>
@@ -82,10 +79,7 @@
                                 class="flex items-center justify-center gap-2 w-full px-3 py-1 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
                                 :aria-label="`View ${article.title}`"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'eye']"
-                                    class="w-4 h-4"
-                                />
+                                <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
                                 View
                             </NuxtLink>
                         </div>
@@ -98,18 +92,12 @@
                         :icon="['fas', 'file-alt']"
                         class="w-12 h-12 text-gray-300 mb-4"
                     />
-                    <p class="text-base sm:text-lg">
-                        You have not created any articles yet.
-                    </p>
+                    <p class="text-base sm:text-lg">You have not created any articles yet.</p>
                 </div>
             </div>
             <!-- Pagination -->
             <div
-                v-if="
-                    !loading &&
-                    articles.length > 0 &&
-                    articlesMeta?.lastPage > 1
-                "
+                v-if="!loading && articles.length > 0 && articlesMeta?.lastPage > 1"
                 class="flex items-center justify-center mt-8"
             >
                 <Pagination
@@ -178,9 +166,7 @@ const loadMyArticles = async (page = 1) => {
     } catch (error) {
         if (import.meta.env.DEV) console.error('Error loading articles:', error)
         articleStore.clearArticles()
-        showAlertMessage(
-            error.message || 'An error occurred while loading articles'
-        )
+        showAlertMessage(error.message || 'An error occurred while loading articles')
     } finally {
         loading.value = false
     }

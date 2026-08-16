@@ -1,7 +1,5 @@
 <template>
-    <main
-        class="w-full flex flex-col items-center justify-center px-2 sm:px-4 py-8"
-    >
+    <main class="w-full flex flex-col items-center justify-center px-2 sm:px-4 py-8">
         <!-- Header with logo -->
         <div class="w-full max-w-4xl flex flex-col items-center mb-8">
             <div class="flex items-center justify-center mb-2">
@@ -30,9 +28,7 @@
 
         <!-- Language selection -->
         <div class="w-full max-w-4xl mx-auto px-2 sm:px-4">
-            <div
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-            >
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <button
                     v-for="lang in topLanguages"
                     :key="lang.code"
@@ -86,23 +82,15 @@ const selectLanguage = (langCode) => {
 
 onMounted(() => {
     if (route.query.title) {
-        router.replace(
-            `/article?title=${encodeURIComponent(route.query.title)}`
-        )
+        router.replace(`/article?title=${encodeURIComponent(route.query.title)}`)
         return
     }
     const script = document.createElement('script')
     script.src = 'https://aichatbot.devshahaj.com/widget.js'
     script.async = true
     script.id = 'ai-chatbot-script'
-    script.setAttribute(
-        'data-chatbot-id',
-        '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0'
-    )
-    script.setAttribute(
-        'data-api-key',
-        import.meta.env.VITE_AI_CHATBOT_API_KEY || ''
-    )
+    script.setAttribute('data-chatbot-id', '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0')
+    script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
     script.setAttribute('data-position', 'bottom-right')
     script.setAttribute('data-primary-color', '#3b82f6')
     script.setAttribute('data-secondary-color', '#ffffff')

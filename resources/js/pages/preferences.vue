@@ -14,9 +14,7 @@
         <!-- Tabs Section -->
         <section class="bg-white">
             <!-- Tabs -->
-            <div
-                class="flex border-b border-b-indigo-300 items-center mb-2 py-2"
-            >
+            <div class="flex border-b border-b-indigo-300 items-center mb-2 py-2">
                 <div class="flex space-x-2 sm:space-x-4 text-sm flex-shrink-0">
                     <button
                         class="px-3 py-1.5 rounded-full font-medium transition-all duration-200"
@@ -48,9 +46,7 @@
             <div class="p-4 sm:p-5">
                 <!-- User Profile Tab -->
                 <div v-if="activeTab === 'profile'">
-                    <h2
-                        class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2"
-                    >
+                    <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
                         Basic Information
                     </h2>
 
@@ -68,9 +64,7 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">
-                                Member of Group
-                            </dt>
+                            <dt class="text-sm text-gray-500">Member of Group</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.roles[0] }}
                             </dd>
@@ -82,9 +76,7 @@
                             <dd class="font-medium text-gray-800">0</dd>
                         </div> -->
                         <div>
-                            <dt class="text-sm text-gray-500">
-                                Registration Time
-                            </dt>
+                            <dt class="text-sm text-gray-500">Registration Time</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.createdAt }}
                             </dd>
@@ -104,68 +96,39 @@
 
                 <!-- Notifications Tab -->
                 <div v-if="activeTab === 'notifications'">
-                    <h2
-                        class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2"
-                    >
+                    <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
                         Notification Preferences
                     </h2>
                     <!-- loader -->
-                    <div
-                        v-if="loading"
-                        class="flex items-center justify-center py-12"
-                    >
+                    <div v-if="loading" class="flex items-center justify-center py-12">
                         <LoadingSpinner text="Loading Preferences" />
                     </div>
 
                     <div v-else class="space-y-4">
-                        <div
-                            class="flex items-center justify-between border-b pb-2"
-                        >
-                            <span class="text-gray-700 text-sm"
-                                >Edit to my talk page</span
-                            >
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-gray-700 text-sm">Edit to my talk page</span>
                             <Checkbox v-model="editTalkPage" />
                         </div>
-                        <div
-                            class="flex items-center justify-between border-b pb-2"
-                        >
-                            <span class="text-gray-700 text-sm"
-                                >Edit to my user page</span
-                            >
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-gray-700 text-sm">Edit to my user page</span>
                             <Checkbox v-model="editUserPage" />
                         </div>
-                        <div
-                            class="flex items-center justify-between border-b pb-2"
-                        >
-                            <span class="text-gray-700 text-sm"
-                                >Page review</span
-                            >
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-gray-700 text-sm">Page review</span>
                             <Checkbox v-model="pageReview" />
                         </div>
-                        <div
-                            class="flex items-center justify-between border-b pb-2"
-                        >
-                            <span class="text-gray-700 text-sm"
-                                >Email from other user</span
-                            >
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-gray-700 text-sm">Email from other user</span>
                             <Checkbox v-model="emailFromOther" />
                         </div>
-                        <div
-                            class="flex items-center justify-between border-b pb-2"
-                        >
-                            <span class="text-gray-700 text-sm"
-                                >Successful mention</span
-                            >
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-gray-700 text-sm">Successful mention</span>
                             <Checkbox v-model="successfulMention" />
                         </div>
 
                         <div class="pt-4">
                             <FormSubmitButton
-                                :text="
-                                    submittingNotifications
-                                        ? 'Saving...'
-                                        : 'Save Preferences'
-                                "
+                                :text="submittingNotifications ? 'Saving...' : 'Save Preferences'"
                                 :disabled="submittingNotifications"
                                 class="w-full sm:w-[160px]"
                                 @click="saveNotifications()"
@@ -181,9 +144,7 @@
             v-if="isModalOpen"
             class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4"
         >
-            <div
-                class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative"
-            >
+            <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
                 <h3
                     class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
                 >
@@ -200,8 +161,7 @@
                     />
 
                     <div class="mb-4">
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label class="block text-sm font-medium text-gray-700 mb-1"
                             >New Password</label
                         >
                         <FormInput
@@ -214,8 +174,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                        <label class="block text-sm font-medium text-gray-700 mb-1"
                             >Confirm Password</label
                         >
                         <FormInput
@@ -241,9 +200,7 @@
                             class="bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white hover:bg-indigo-700 hover:from-indigo-500 hover:to-purple-500 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="submittingPassword"
                         >
-                            {{
-                                submittingPassword ? 'Submitting...' : 'Submit'
-                            }}
+                            {{ submittingPassword ? 'Submitting...' : 'Submit' }}
                         </button>
                     </div>
                 </form>
@@ -304,9 +261,7 @@ const saveNotifications = async () => {
         })
 
         if (!response.success) {
-            throw new Error(
-                response.errors?.[0] || 'Failed to save preferences'
-            )
+            throw new Error(response.errors?.[0] || 'Failed to save preferences')
         }
 
         alertVariant.value = 'success'
@@ -316,8 +271,7 @@ const saveNotifications = async () => {
     } catch (error) {
         if (import.meta.env.DEV) console.error(error)
         alertVariant.value = 'error'
-        alertMessage.value =
-            error.errors[0] || error.message || 'Unexpected error'
+        alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
         showAlert.value = true
     } finally {
         submittingNotifications.value = false
@@ -340,8 +294,7 @@ const loadNotifications = async () => {
     } catch (error) {
         if (import.meta.env.DEV) console.error(error)
         alertVariant.value = 'error'
-        alertMessage.value =
-            error.errors[0] || error.message || 'Unexpected error'
+        alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
         showAlert.value = true
     } finally {
         loading.value = false
@@ -392,8 +345,7 @@ const submitChangePassword = handleSubmit(async (values) => {
     } catch (error) {
         if (import.meta.env.DEV) console.error(error)
         alertVariant.value = 'error'
-        alertMessage.value =
-            error.errors?.[0] || error.message || 'Unexpected error'
+        alertMessage.value = error.errors?.[0] || error.message || 'Unexpected error'
         showAlertError.value = true
     } finally {
         submittingPassword.value = false

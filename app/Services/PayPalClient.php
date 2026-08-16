@@ -136,7 +136,7 @@ class PayPalClient
         $token = $this->getAccessToken();
 
         $response = Http::withToken($token)
-            ->withHeaders(['Content-Type' => 'application/json'])
+            ->withBody('{}', 'application/json')
             ->post("{$this->baseUrl}/v2/checkout/orders/{$orderId}/capture");
 
         $response->throw();

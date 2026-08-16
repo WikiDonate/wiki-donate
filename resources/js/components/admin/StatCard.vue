@@ -7,17 +7,11 @@
                 class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 :class="iconBgClass"
             >
-                <font-awesome-icon
-                    :icon="icon"
-                    class="w-4 h-4"
-                    :class="iconColorClass"
-                />
+                <font-awesome-icon :icon="icon" class="w-4 h-4" :class="iconColorClass" />
             </div>
             <div class="w-2 h-2 rounded-full flex-shrink-0" :class="dotClass" />
         </div>
-        <p
-            class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1"
-        >
+        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">
             {{ label }}
         </p>
         <p class="text-2xl sm:text-3xl font-bold text-gray-800 leading-tight">
@@ -73,8 +67,6 @@ const dotMap = {
     blue: 'bg-blue-400',
 }
 const iconBgClass = computed(() => bgMap[props.iconBg] || 'bg-indigo-50')
-const iconColorClass = computed(
-    () => colorMap[props.iconBg] || 'text-indigo-600'
-)
+const iconColorClass = computed(() => colorMap[props.iconBg] || 'text-indigo-600')
 const dotClass = computed(() => dotMap[props.iconBg] || 'bg-indigo-400')
 </script>

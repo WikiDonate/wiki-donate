@@ -28,20 +28,13 @@
                             class="px-4 py-3"
                             :class="col.tdClass"
                         >
-                            <slot
-                                :name="`cell-${col.key}`"
-                                :row="row"
-                                :column="col"
-                            >
+                            <slot :name="`cell-${col.key}`" :row="row" :column="col">
                                 {{ getNestedValue(row, col.key) }}
                             </slot>
                         </td>
                     </tr>
                     <tr v-if="rows.length === 0">
-                        <td
-                            :colspan="columns.length"
-                            class="px-4 py-8 text-center text-gray-400"
-                        >
+                        <td :colspan="columns.length" class="px-4 py-8 text-center text-gray-400">
                             {{ emptyText }}
                         </td>
                     </tr>
@@ -51,10 +44,7 @@
 
         <!-- Mobile card layout (< md) -->
         <div class="md:hidden divide-y divide-gray-100">
-            <div
-                v-if="rows.length === 0"
-                class="px-4 py-8 text-center text-gray-400"
-            >
+            <div v-if="rows.length === 0" class="px-4 py-8 text-center text-gray-400">
                 {{ emptyText }}
             </div>
             <div
@@ -63,22 +53,14 @@
                 class="px-4 py-4 space-y-2"
                 :class="rowClass"
             >
-                <div
-                    v-for="col in columns"
-                    :key="col.key"
-                    class="flex items-start gap-2"
-                >
+                <div v-for="col in columns" :key="col.key" class="flex items-start gap-2">
                     <span
                         class="text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[80px] flex-shrink-0 pt-0.5"
                     >
                         {{ col.label }}
                     </span>
                     <div class="flex-1 min-w-0">
-                        <slot
-                            :name="`cell-${col.key}`"
-                            :row="row"
-                            :column="col"
-                        >
+                        <slot :name="`cell-${col.key}`" :row="row" :column="col">
                             <span class="text-sm text-gray-800">
                                 {{ getNestedValue(row, col.key) || '\u2014' }}
                             </span>

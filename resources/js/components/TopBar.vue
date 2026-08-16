@@ -1,10 +1,6 @@
 <template>
-    <section
-        class="container mx-auto bg-white border-b border-b-indigo-300 px-2 sm:px-4"
-    >
-        <div
-            class="flex justify-between items-center overflow-x-auto hide-scrollbar py-2"
-        >
+    <section class="container mx-auto bg-white border-b border-b-indigo-300 px-2 sm:px-4">
+        <div class="flex justify-between items-center overflow-x-auto hide-scrollbar py-2">
             <!-- Left items -->
             <div class="flex space-x-2 sm:space-x-4 text-sm flex-shrink-0">
                 <NuxtLink
@@ -24,9 +20,7 @@
             </div>
 
             <!-- Right items -->
-            <div
-                class="flex space-x-2 sm:space-x-4 text-sm flex-shrink-0 pr-2 sm:pr-4"
-            >
+            <div class="flex space-x-2 sm:space-x-4 text-sm flex-shrink-0 pr-2 sm:pr-4">
                 <NuxtLink
                     v-for="(item, index) in rightMenu"
                     :key="index"

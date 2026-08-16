@@ -2,19 +2,13 @@
     <main class="w-full bg-white py-8">
         <div class="container mx-auto px-2 sm:px-4 max-w-lg">
             <!-- Card Container -->
-            <div
-                class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
-            >
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
                     class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">
-                        Create an Account
-                    </h1>
-                    <p class="mt-2 text-sm">
-                        Join our community and start your journey
-                    </p>
+                    <h1 class="text-2xl md:text-3xl font-bold">Create an Account</h1>
+                    <p class="mt-2 text-sm">Join our community and start your journey</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -39,16 +33,13 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2
-                            class="text-xl font-semibold text-gray-800 text-center"
-                        >
+                        <h2 class="text-xl font-semibold text-gray-800 text-center">
                             Check Your Email
                         </h2>
                         <p class="text-gray-600 text-sm text-center">
                             We've sent a verification link to
                             <strong>{{ registeredEmail }}</strong
-                            >. Please check your inbox and click the link to
-                            verify your account.
+                            >. Please check your inbox and click the link to verify your account.
                         </p>
                         <p class="text-gray-500 text-xs text-center">
                             Didn't receive the email?
@@ -85,15 +76,8 @@
                     />
 
                     <!-- Form -->
-                    <form
-                        v-if="!registrationSuccess"
-                        class="space-y-4"
-                        @submit.prevent="onSubmit"
-                    >
-                        <label
-                            for="username"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                    <form v-if="!registrationSuccess" class="space-y-4" @submit.prevent="onSubmit">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
                             Username <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -103,10 +87,7 @@
                             v-bind="usernameProps"
                             :error-message="errors['username']"
                         />
-                        <label
-                            for="password"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
                             Password <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -130,10 +111,7 @@
                             v-bind="confirmPasswordProps"
                             :error-message="errors['confirmPassword']"
                         />
-                        <label
-                            for="email"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                             Email <span class="text-red-500">*</span>
                         </label>
                         <FormInput
@@ -155,9 +133,7 @@
                         <!-- Submit Button -->
                         <div class="flex justify-center mt-4">
                             <FormSubmitButton
-                                :text="
-                                    isLoading ? 'Creating...' : 'Create Account'
-                                "
+                                :text="isLoading ? 'Creating...' : 'Create Account'"
                                 type="submit"
                                 variant="primary"
                                 :disabled="isLoading"
@@ -211,10 +187,7 @@ const validationSchema = yup.object({
         .string()
         .required('Confirm Password is required')
         .oneOf([yup.ref('password'), null], 'Passwords must match'),
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Email must be a valid email'),
+    email: yup.string().required('Email is required').email('Email must be a valid email'),
 })
 
 // Setup VeeValidate
@@ -249,22 +222,18 @@ const resendVerification = async () => {
         })
         if (response.success) {
             alertVariant.value = 'success'
-            alertMessage.value =
-                'Verification email sent. Please check your inbox.'
+            alertMessage.value = 'Verification email sent. Please check your inbox.'
             showAlert.value = true
             startResendCooldown()
         } else {
             alertVariant.value = 'error'
             alertMessage.value =
-                response.errors?.[0] ||
-                response.message ||
-                'Failed to resend email.'
+                response.errors?.[0] || response.message || 'Failed to resend email.'
             showAlert.value = true
         }
     } catch (error) {
         alertVariant.value = 'error'
-        alertMessage.value =
-            error.errors?.[0] || error.message || 'Failed to resend email.'
+        alertMessage.value = error.errors?.[0] || error.message || 'Failed to resend email.'
         showAlert.value = true
     }
 }

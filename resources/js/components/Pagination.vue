@@ -1,10 +1,6 @@
 <!-- eslint-disable vue/html-self-closing -->
 <template>
-    <nav
-        v-if="totalPages > 1"
-        class="flex items-center space-x-1"
-        aria-label="Pagination"
-    >
+    <nav v-if="totalPages > 1" class="flex items-center space-x-1" aria-label="Pagination">
         <!-- Previous Button -->
         <button
             class="relative inline-flex items-center px-2 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -17,9 +13,7 @@
 
         <!-- Dynamic Pages -->
         <template v-for="page in displayPages" :key="page">
-            <span v-if="page === '...'" class="px-2 text-gray-500 select-none"
-                >...</span
-            >
+            <span v-if="page === '...'" class="px-2 text-gray-500 select-none">...</span>
             <button
                 v-else
                 :class="[

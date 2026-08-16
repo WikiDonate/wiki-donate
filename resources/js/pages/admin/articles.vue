@@ -1,8 +1,6 @@
 <template>
     <main>
-        <div
-            class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-        >
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
                 title="Articles"
                 subtitle="Manage all articles on the platform"
@@ -53,30 +51,20 @@
                     empty-text="No articles found"
                 >
                     <template #cell-title="{ row }">
-                        <span class="font-medium max-w-xs truncate block">{{
-                            row.title
-                        }}</span>
+                        <span class="font-medium max-w-xs truncate block">{{ row.title }}</span>
                     </template>
                     <template #cell-author="{ row }">
-                        <span class="text-gray-600">{{
-                            row.user?.username || '—'
-                        }}</span>
+                        <span class="text-gray-600">{{ row.user?.username || '—' }}</span>
                     </template>
                     <template #cell-type="{ row }">
                         <AdminBadge
-                            :variant="
-                                row.type === 'user page' ? 'purple' : 'info'
-                            "
+                            :variant="row.type === 'user page' ? 'purple' : 'info'"
                             :text="row.type || 'article'"
                         />
                     </template>
                     <template #cell-accessType="{ row }">
                         <AdminBadge
-                            :variant="
-                                row.accessType === 'public'
-                                    ? 'success'
-                                    : 'amber'
-                            "
+                            :variant="row.accessType === 'public' ? 'success' : 'amber'"
                             :text="row.accessType"
                         />
                     </template>
@@ -86,28 +74,19 @@
                     <template #cell-actions="{ row }">
                         <div class="flex items-center justify-end gap-1">
                             <NuxtLink
-                                :to="
-                                    '/article?title=' +
-                                    encodeURIComponent(row.slug)
-                                "
+                                :to="'/article?title=' + encodeURIComponent(row.slug)"
                                 target="_blank"
                                 class="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
                                 title="View article"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'eye']"
-                                    class="w-4 h-4"
-                                />
+                                <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
                             </NuxtLink>
                             <button
                                 class="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
                                 title="Delete article"
                                 @click="confirmDelete(row)"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'trash']"
-                                    class="w-4 h-4"
-                                />
+                                <font-awesome-icon :icon="['fas', 'trash']" class="w-4 h-4" />
                             </button>
                         </div>
                     </template>
@@ -118,9 +97,7 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{
-                            meta.total
-                        }}
+                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
                         total)
                     </span>
                     <Pagination

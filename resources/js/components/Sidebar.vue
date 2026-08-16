@@ -21,10 +21,7 @@
                             : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600'
                     "
                 >
-                    <font-awesome-icon
-                        :icon="item.icon"
-                        class="mr-2 w-4 h-4 text-gray-400"
-                    />
+                    <font-awesome-icon :icon="item.icon" class="mr-2 w-4 h-4 text-gray-400" />
                     {{ item.name }}
                 </NuxtLink>
             </li>
@@ -46,15 +43,9 @@ watch(route, () => handleMenu())
 const handleMenu = () => {
     mainMenu.value = menuData.filter((item) => {
         if (authStore.isAuthenticated) {
-            return (
-                (item.type === 'MainMenu' || item.type === '') &&
-                item.onLogin !== 'hide'
-            )
+            return (item.type === 'MainMenu' || item.type === '') && item.onLogin !== 'hide'
         } else {
-            return (
-                item.type === 'MainMenu' ||
-                (item.type === '' && item.onLogin !== 'show')
-            )
+            return item.type === 'MainMenu' || (item.type === '' && item.onLogin !== 'show')
         }
     })
 }

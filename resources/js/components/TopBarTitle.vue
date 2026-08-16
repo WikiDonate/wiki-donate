@@ -10,10 +10,7 @@
         </h1>
 
         <!-- Right items -->
-        <div
-            v-if="rightSide"
-            class="text-sm text-indigo-600 text-center sm:text-right"
-        >
+        <div v-if="rightSide" class="text-sm text-indigo-600 text-center sm:text-right">
             {{ rightSide }}
         </div>
     </section>

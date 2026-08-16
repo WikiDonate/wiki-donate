@@ -16,10 +16,7 @@
                 type="submit"
                 class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-md"
             >
-                <font-awesome-icon
-                    :icon="['fas', 'magnifying-glass']"
-                    class="h-4 w-4 text-white"
-                />
+                <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="h-4 w-4 text-white" />
             </button>
         </form>
 
@@ -30,9 +27,7 @@
         >
             <ul>
                 <template v-if="isSearching">
-                    <li class="px-5 py-2 text-gray-500 italic">
-                        Searching wikidonate...
-                    </li>
+                    <li class="px-5 py-2 text-gray-500 italic">Searching wikidonate...</li>
                 </template>
 
                 <template v-else>
@@ -48,16 +43,12 @@
                                     :icon="['fas', 'magnifying-glass']"
                                     class="h-4 w-4 text-indigo-500 mr-3"
                                 />
-                                <span class="text-gray-700">{{
-                                    suggestion.title
-                                }}</span>
+                                <span class="text-gray-700">{{ suggestion.title }}</span>
                             </div>
                         </li>
                     </template>
                     <template v-else-if="searchQuery.length > 0">
-                        <li class="px-5 py-2 text-gray-500 italic">
-                            No search results found
-                        </li>
+                        <li class="px-5 py-2 text-gray-500 italic">No search results found</li>
                     </template>
                 </template>
             </ul>
@@ -124,9 +115,7 @@ const handleSearch = async () => {
         try {
             const response = await articleService.searchArticles(query)
             const results = response.data
-            const exactMatch = results.find(
-                (r) => r.title.toLowerCase() === query.toLowerCase()
-            )
+            const exactMatch = results.find((r) => r.title.toLowerCase() === query.toLowerCase())
             if (exactMatch) {
                 searchUrl = `/article?title=${encodeURIComponent(exactMatch.slug)}`
             }
@@ -147,10 +136,7 @@ const selectSuggestion = (suggestion) => {
 }
 
 const handleClickOutside = (event) => {
-    if (
-        searchContainer.value &&
-        !searchContainer.value.contains(event.target)
-    ) {
+    if (searchContainer.value && !searchContainer.value.contains(event.target)) {
         clearSearch()
     }
 }

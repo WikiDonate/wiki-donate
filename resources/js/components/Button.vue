@@ -1,10 +1,6 @@
 <!-- eslint-disable vue/require-explicit-emits -->
 <template>
-    <button
-        :class="buttonClasses"
-        :disabled="disabled"
-        @click.stop="!disabled && $emit('click')"
-    >
+    <button :class="buttonClasses" :disabled="disabled" @click.stop="!disabled && $emit('click')">
         <slot>{{ text }}</slot>
     </button>
 </template>
@@ -28,8 +24,7 @@ const props = defineProps({
     width: {
         type: String, // Accept width as a prop
         default: '1/4', // Default to full width
-        validator: (value) =>
-            ['full', 'auto', '1/2', '1/3', '1/4', 'custom'].includes(value), // Validate against known widths
+        validator: (value) => ['full', 'auto', '1/2', '1/3', '1/4', 'custom'].includes(value), // Validate against known widths
     },
     disabled: {
         type: Boolean,
@@ -45,11 +40,7 @@ const props = defineProps({
 const buttonClasses = computed(() => {
     // Dynamic width classes
     const widthClass =
-        props.width === 'full'
-            ? 'w-full'
-            : props.width === 'auto'
-              ? 'w-auto'
-              : `w-${props.width}` // For w-1/2, w-1/3, w-1/4
+        props.width === 'full' ? 'w-full' : props.width === 'auto' ? 'w-auto' : `w-${props.width}` // For w-1/2, w-1/3, w-1/4
 
     // Variant-based classes
     let variantClass =

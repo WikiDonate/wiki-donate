@@ -1,8 +1,6 @@
 <template>
     <main>
-        <div
-            class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-        >
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
                 title="Admin Dashboard"
                 subtitle="Overview of your WikiDonate platform"
@@ -68,18 +66,14 @@
                             </h4>
                             <div class="space-y-2">
                                 <div
-                                    v-for="(row, i) in stats.monthlyStats
-                                        .donations"
+                                    v-for="(row, i) in stats.monthlyStats.donations"
                                     :key="i"
                                     class="flex items-center gap-3"
                                 >
-                                    <span
-                                        class="text-xs text-gray-500 w-14 text-right"
-                                        >{{ row.month }}</span
-                                    >
-                                    <div
-                                        class="flex-1 bg-gray-100 rounded-full h-2"
-                                    >
+                                    <span class="text-xs text-gray-500 w-14 text-right">{{
+                                        row.month
+                                    }}</span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-2">
                                         <div
                                             class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full"
                                             :style="{
@@ -94,10 +88,7 @@
                                     >
                                 </div>
                                 <p
-                                    v-if="
-                                        stats.monthlyStats.donations.length ===
-                                        0
-                                    "
+                                    v-if="stats.monthlyStats.donations.length === 0"
                                     class="text-xs text-gray-400 text-center py-3"
                                 >
                                     No donation data yet
@@ -116,24 +107,18 @@
                             </h4>
                             <div class="space-y-2">
                                 <div
-                                    v-for="(row, i) in stats.monthlyStats
-                                        .registrations"
+                                    v-for="(row, i) in stats.monthlyStats.registrations"
                                     :key="i"
                                     class="flex items-center gap-3"
                                 >
-                                    <span
-                                        class="text-xs text-gray-500 w-14 text-right"
-                                        >{{ row.month }}</span
-                                    >
-                                    <div
-                                        class="flex-1 bg-gray-100 rounded-full h-2"
-                                    >
+                                    <span class="text-xs text-gray-500 w-14 text-right">{{
+                                        row.month
+                                    }}</span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-2">
                                         <div
                                             class="bg-gradient-to-r from-teal-400 to-emerald-500 h-2 rounded-full"
                                             :style="{
-                                                width: registrationBarWidth(
-                                                    row
-                                                ),
+                                                width: registrationBarWidth(row),
                                             }"
                                         />
                                     </div>
@@ -143,10 +128,7 @@
                                     >
                                 </div>
                                 <p
-                                    v-if="
-                                        stats.monthlyStats.registrations
-                                            .length === 0
-                                    "
+                                    v-if="stats.monthlyStats.registrations.length === 0"
                                     class="text-xs text-gray-400 text-center py-3"
                                 >
                                     No registration data yet
@@ -157,9 +139,7 @@
                 </div>
 
                 <!-- Recent Activity -->
-                <div
-                    class="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-6 py-4"
-                >
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-6 py-4">
                     <div
                         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                     >
@@ -190,8 +170,7 @@
                                 <AdminBadge variant="info" text="Checkout" />
                             </template>
                             <template #cell-amount="{ row }"
-                                >{{ row.currency }}
-                                {{ Number(row.amount).toFixed(2) }}</template
+                                >{{ row.currency }} {{ Number(row.amount).toFixed(2) }}</template
                             >
                             <template #cell-status="{ row }">
                                 <AdminBadge
@@ -200,9 +179,7 @@
                                 />
                             </template>
                             <template #cell-date="{ row }"
-                                ><span class="text-gray-500 text-xs">{{
-                                    row.date
-                                }}</span></template
+                                ><span class="text-gray-500 text-xs">{{ row.date }}</span></template
                             >
                             <template #cell-action="{ row }">
                                 <button
@@ -233,9 +210,7 @@
                             :rows="stats.recentUsers"
                             empty-text="No users yet"
                         >
-                            <template #cell-email="{ row }">{{
-                                row.email || '—'
-                            }}</template>
+                            <template #cell-email="{ row }">{{ row.email || '—' }}</template>
                             <template #cell-joinedAt="{ row }"
                                 ><span class="text-gray-500 text-xs">{{
                                     row.joinedAt
@@ -247,10 +222,7 @@
             </template>
         </div>
 
-        <DonationDetailModal
-            v-model="showDonationDetail"
-            :donation="selectedDonation"
-        />
+        <DonationDetailModal v-model="showDonationDetail" :donation="selectedDonation" />
     </main>
 </template>
 

@@ -1,11 +1,7 @@
 <template>
-    <header
-        class="sticky bg-white top-0 z-50 border-b border-indigo-200 py-3 shadow-sm"
-    >
+    <header class="sticky bg-white top-0 z-50 border-b border-indigo-200 py-3 shadow-sm">
         <!-- Main Header -->
-        <div
-            class="container mx-auto flex items-center justify-between px-2 sm:px-4"
-        >
+        <div class="container mx-auto flex items-center justify-between px-2 sm:px-4">
             <!-- Left: Logo -->
             <NuxtLink to="/" class="flex items-center">
                 <div
@@ -51,15 +47,11 @@
                                     :icon="['fas', 'user']"
                                 />
                             </div>
-                            <span class="hidden lg:inline">{{
-                                authStore.user.username
-                            }}</span>
+                            <span class="hidden lg:inline">{{ authStore.user.username }}</span>
                             <font-awesome-icon
                                 :icon="[
                                     'fas',
-                                    activeDropdown === 'avatar'
-                                        ? 'chevron-up'
-                                        : 'chevron-down',
+                                    activeDropdown === 'avatar' ? 'chevron-up' : 'chevron-down',
                                 ]"
                                 class="w-2 h-2 sm:w-4 sm:h-4 transition-transform"
                             />
@@ -107,10 +99,7 @@
                 </div>
 
                 <!-- Guest User -->
-                <div
-                    v-if="!authStore.isAuthenticated"
-                    class="flex items-center lg:space-x-2"
-                >
+                <div v-if="!authStore.isAuthenticated" class="flex items-center lg:space-x-2">
                     <!-- Desktop menu -->
                     <div class="hidden lg:flex items-center space-x-2">
                         <NuxtLink
@@ -180,12 +169,7 @@
                         @click="toggleDropdownMenu('hamburger')"
                     >
                         <font-awesome-icon
-                            :icon="[
-                                'fas',
-                                activeDropdown === 'hamburger'
-                                    ? 'times'
-                                    : 'bars',
-                            ]"
+                            :icon="['fas', activeDropdown === 'hamburger' ? 'times' : 'bars']"
                             class="h-4 w-4 sm:h-5 sm:w-5"
                         />
                     </button>
@@ -288,11 +272,7 @@ const isActiveRoute = (path, route) => {
 
 const onClickOutside = (event) => {
     const buttons = ['logoutButton', 'menuButton', 'moreButton']
-    if (
-        !buttons.some((id) =>
-            document.getElementById(id)?.contains(event.target)
-        )
-    ) {
+    if (!buttons.some((id) => document.getElementById(id)?.contains(event.target))) {
         activeDropdown.value = null
     }
 }

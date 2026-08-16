@@ -1,15 +1,8 @@
 <template>
-    <div
-        class="bg-gradient-to-r from-indigo-600 to-purple-600"
-        :class="containerClasses"
-    >
-        <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        >
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600" :class="containerClasses">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="min-w-0">
-                <h2
-                    class="font-bold text-xl sm:text-2xl tracking-wide text-white truncate"
-                >
+                <h2 class="font-bold text-xl sm:text-2xl tracking-wide text-white truncate">
                     {{ title }}
                 </h2>
                 <p v-if="subtitle" class="text-indigo-100 text-sm mt-1">

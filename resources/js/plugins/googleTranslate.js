@@ -93,15 +93,13 @@ const setLanguage = (lang) => {
 
 const initializeGoogleTranslate = () => {
     if (!window.google?.translate?.TranslateElement) return
-    // eslint-disable-next-line no-new
     new window.google.translate.TranslateElement(
         {
             pageLanguage: defaultLanguage,
             includedLanguages: supportedLanguages.join(','),
             autoDisplay: false,
             multilanguagePage: false,
-            layout:
-                window.google.translate.TranslateElement.InlineLayout.VERTICAL,
+            layout: window.google.translate.TranslateElement.InlineLayout.VERTICAL,
         },
         'nuxt_translate_element'
     )
@@ -119,8 +117,7 @@ const loadGoogleTranslate = () => {
     }
     const script = document.createElement('script')
     script.id = 'google-translate-script'
-    script.src =
-        '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
     script.async = true
     script.defer = true
     script.onload = () => {

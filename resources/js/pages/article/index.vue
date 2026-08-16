@@ -19,9 +19,7 @@
                         :icon="['fas', 'hand-holding-heart']"
                         class="text-indigo-600"
                     />
-                    <span class="hidden sm:inline"
-                        >Community Donation Formulas</span
-                    >
+                    <span class="hidden sm:inline">Community Donation Formulas</span>
                     <span class="sm:hidden">Donation Formulas</span>
                 </h3>
                 <div class="space-y-3 md:space-y-4">
@@ -35,21 +33,15 @@
                             class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-indigo-50/30 cursor-pointer hover:bg-indigo-50"
                             @click="toggleFormula(formula.uuid)"
                         >
-                            <div
-                                class="flex flex-wrap items-center gap-2 md:gap-3"
-                            >
+                            <div class="flex flex-wrap items-center gap-2 md:gap-3">
                                 <font-awesome-icon
                                     :icon="[
                                         'fas',
-                                        isFormulaOpen(formula.uuid)
-                                            ? 'eye'
-                                            : 'eye-slash',
+                                        isFormulaOpen(formula.uuid) ? 'eye' : 'eye-slash',
                                     ]"
                                     class="text-indigo-400 text-sm"
                                 />
-                                <h4
-                                    class="font-bold text-indigo-700 text-sm md:text-base"
-                                >
+                                <h4 class="font-bold text-indigo-700 text-sm md:text-base">
                                     {{ formula.user?.username }}:
                                     {{ getUserFormulaIndex(formula) }}
                                 </h4>
@@ -58,17 +50,12 @@
                                     class="!py-1 !px-2 !text-xs !rounded-lg !bg-green-600 hover:!bg-green-700 border-none shadow-sm flex items-center gap-1"
                                     @click="openDonateModal(formula)"
                                 >
-                                    <font-awesome-icon
-                                        :icon="['fas', 'heart']"
-                                        class="w-3 h-3"
-                                    />
+                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
                                     <span>Donate</span>
                                 </Button>
                             </div>
 
-                            <div
-                                class="flex items-center gap-3 sm:gap-4 pb-1 sm:pb-0"
-                            >
+                            <div class="flex items-center gap-3 sm:gap-4 pb-1 sm:pb-0">
                                 <div class="flex gap-2" @click.stop>
                                     <div class="relative">
                                         <transition
@@ -80,9 +67,7 @@
                                             leave-to-class="opacity-0"
                                         >
                                             <div
-                                                v-if="
-                                                    copiedUuid === formula.uuid
-                                                "
+                                                v-if="copiedUuid === formula.uuid"
                                                 class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-xl whitespace-nowrap z-50"
                                             >
                                                 Copied!
@@ -91,44 +76,27 @@
                                         <button
                                             class="text-indigo-400 hover:text-indigo-600 p-1"
                                             title="Copy Formula URL"
-                                            @click="
-                                                copyFormulaUrl(formula.uuid)
-                                            "
+                                            @click="copyFormulaUrl(formula.uuid)"
                                         >
-                                            <font-awesome-icon
-                                                :icon="['fas', 'link']"
-                                            />
+                                            <font-awesome-icon :icon="['fas', 'link']" />
                                         </button>
                                     </div>
                                     <template
-                                        v-if="
-                                            authStore.user?.username ===
-                                            formula.user?.username
-                                        "
+                                        v-if="authStore.user?.username === formula.user?.username"
                                     >
                                         <button
                                             class="text-indigo-600 hover:text-indigo-800 p-1"
                                             title="Edit Formula"
-                                            @click="
-                                                openEditFormulaModal(formula)
-                                            "
+                                            @click="openEditFormulaModal(formula)"
                                         >
-                                            <font-awesome-icon
-                                                :icon="['fas', 'edit']"
-                                            />
+                                            <font-awesome-icon :icon="['fas', 'edit']" />
                                         </button>
                                         <button
                                             class="text-red-500 hover:text-red-700 p-1"
                                             title="Delete Formula"
-                                            @click="
-                                                handleDeleteFormula(
-                                                    formula.uuid
-                                                )
-                                            "
+                                            @click="handleDeleteFormula(formula.uuid)"
                                         >
-                                            <font-awesome-icon
-                                                :icon="['fas', 'trash-alt']"
-                                            />
+                                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
                                         </button>
                                     </template>
                                 </div>
@@ -146,9 +114,7 @@
                                     :key="i"
                                     class="flex justify-between items-center text-sm border-b border-gray-50 pb-2"
                                 >
-                                    <span class="text-gray-700">{{
-                                        item.organization
-                                    }}</span>
+                                    <span class="text-gray-700">{{ item.organization }}</span>
                                     <span class="font-semibold text-indigo-600"
                                         >{{ item.percentage }}%</span
                                     >
@@ -165,11 +131,7 @@
                                     v-if="formula.details"
                                     class="mt-3 pt-2 border-t border-gray-100"
                                 >
-                                    <p
-                                        class="text-xs text-gray-500 font-medium mb-1"
-                                    >
-                                        Details:
-                                    </p>
+                                    <p class="text-xs text-gray-500 font-medium mb-1">Details:</p>
                                     <p class="text-sm text-gray-700 italic">
                                         {{ formula.details }}
                                     </p>
@@ -195,9 +157,7 @@
                         >Be the first to create one!</template
                     >
                     <template v-else>
-                        <NuxtLink
-                            to="/login"
-                            class="text-indigo-600 font-semibold hover:underline"
+                        <NuxtLink to="/login" class="text-indigo-600 font-semibold hover:underline"
                             >Log in to create one!</NuxtLink
                         >
                     </template>
@@ -213,10 +173,7 @@
                     class="flex items-center gap-2 text-base lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md"
                     @click="openCreateFormulaModal"
                 >
-                    <font-awesome-icon
-                        :icon="['fas', 'plus-circle']"
-                        class="w-5 h-5"
-                    />
+                    <font-awesome-icon :icon="['fas', 'plus-circle']" class="w-5 h-5" />
                     <span>Create Donation Formula</span>
                 </button>
             </div>
@@ -334,10 +291,10 @@ const handleSaveDonationFormula = async (data) => {
     try {
         let response
         if (selectedFormula.value.uuid) {
-            response = await articleService.updateDonationFormula(
-                selectedFormula.value.uuid,
-                { formula: data.formula, details: data.details }
-            )
+            response = await articleService.updateDonationFormula(selectedFormula.value.uuid, {
+                formula: data.formula,
+                details: data.details,
+            })
         } else {
             response = await articleService.saveDonationFormula({
                 article_slug: articleStore.article.slug,
@@ -353,10 +310,7 @@ const handleSaveDonationFormula = async (data) => {
                     ? 'Donation formula updated!'
                     : 'Donation formula created!'
             )
-            await loadDonationFormulas(
-                articleStore.article.slug,
-                response.data.uuid
-            )
+            await loadDonationFormulas(articleStore.article.slug, response.data.uuid)
         } else {
             throw new Error(response.message || 'Failed to save')
         }
@@ -377,9 +331,7 @@ const handleConfirmDelete = async () => {
     submittingDelete.value = true
     clearToasts()
     try {
-        const response = await articleService.deleteDonationFormula(
-            formulaToDelete.value
-        )
+        const response = await articleService.deleteDonationFormula(formulaToDelete.value)
         if (response.success) {
             showConfirmDelete.value = false
             formulaToDelete.value = null
@@ -429,12 +381,10 @@ const loadDonationFormulas = async (slug, uuidToOpen = null) => {
                 if (response.data.some((f) => f.uuid === uuid)) {
                     openFormulas.value = [uuid]
                     setTimeout(() => {
-                        document
-                            .getElementById(`formula-${uuid}`)
-                            ?.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                            })
+                        document.getElementById(`formula-${uuid}`)?.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center',
+                        })
                     }, 500)
                 }
             }

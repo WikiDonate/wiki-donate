@@ -1,8 +1,6 @@
 <template>
     <main>
-        <div
-            class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-        >
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
                 title="How It Works"
                 subtitle="Edit the steps shown on the How It Works page"
@@ -13,10 +11,7 @@
                         class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-colors"
                         @click="addStep"
                     >
-                        <font-awesome-icon
-                            :icon="['fas', 'plus']"
-                            class="w-3.5 h-3.5 mr-1.5"
-                        />
+                        <font-awesome-icon :icon="['fas', 'plus']" class="w-3.5 h-3.5 mr-1.5" />
                         Add Step
                     </button>
                 </template>
@@ -42,18 +37,13 @@
                                 title="Remove step"
                                 @click="removeStep(index)"
                             >
-                                <font-awesome-icon
-                                    :icon="['fas', 'times']"
-                                    class="w-4 h-4"
-                                />
+                                <font-awesome-icon :icon="['fas', 'times']" class="w-4 h-4" />
                             </button>
                         </div>
 
                         <div class="space-y-3">
                             <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-1"
-                                >
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Icon
                                 </label>
                                 <div class="flex flex-wrap gap-2">
@@ -71,17 +61,12 @@
                                         :title="ico[1]"
                                         @click="step.icon = ico"
                                     >
-                                        <font-awesome-icon
-                                            :icon="ico"
-                                            class="w-4 h-4"
-                                        />
+                                        <font-awesome-icon :icon="ico" class="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
                             <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-1"
-                                >
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Title
                                 </label>
                                 <input
@@ -92,9 +77,7 @@
                                 />
                             </div>
                             <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 mb-1"
-                                >
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Description
                                 </label>
                                 <textarea
@@ -105,19 +88,14 @@
                                 ></textarea>
                                 <p class="text-xs text-gray-400 mt-1">
                                     Use
-                                    <code class="text-indigo-500"
-                                        >[[article-title]]</code
-                                    >
+                                    <code class="text-indigo-500">[[article-title]]</code>
                                     to create a link to an article.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        v-if="steps.length === 0"
-                        class="text-center py-8 text-gray-400"
-                    >
+                    <div v-if="steps.length === 0" class="text-center py-8 text-gray-400">
                         No steps yet. Click "Add Step" to create one.
                     </div>
                 </div>
@@ -181,9 +159,7 @@ const availableIcons = [
 ]
 
 function parseDescriptionToRaw(description) {
-    return description
-        .map((seg) => (seg.type === 'link' ? `[[${seg.value}]]` : seg.value))
-        .join('')
+    return description.map((seg) => (seg.type === 'link' ? `[[${seg.value}]]` : seg.value)).join('')
 }
 
 function parseRawToDescription(raw) {
@@ -235,10 +211,7 @@ const saveContent = async () => {
 
     saving.value = true
     try {
-        const res = await adminService.updatePageContent(
-            'how-it-works',
-            content
-        )
+        const res = await adminService.updatePageContent('how-it-works', content)
         if (res.success) {
             notifySuccess('How It Works page updated successfully')
             originalSteps.value = steps.value.map((s) => ({

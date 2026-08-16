@@ -46,14 +46,9 @@
                 />
             </svg>
         </span>
-        <span class="ml-3 break-all whitespace-pre-wrap w-full">{{
-            message
-        }}</span>
+        <span class="ml-3 break-all whitespace-pre-wrap w-full">{{ message }}</span>
 
-        <button
-            class="ml-auto text-gray-400 hover:text-gray-500"
-            @click="closeAlert"
-        >
+        <button class="ml-auto text-gray-400 hover:text-gray-500" @click="closeAlert">
             <span class="sr-only">Close</span>
             <svg
                 class="w-5 h-5"

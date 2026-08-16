@@ -10,8 +10,7 @@ const deleteArticle = (slug) => api.delete(`/admin/articles/${slug}`)
 
 const getPageContent = (page) => api.get(`/admin/page-contents/${page}`)
 
-const updatePageContent = (page, content) =>
-    api.put(`/admin/page-contents/${page}`, { content })
+const updatePageContent = (page, content) => api.put(`/admin/page-contents/${page}`, { content })
 
 const getDonations = (params) => api.get('/admin/donations', { params })
 

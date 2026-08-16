@@ -4,10 +4,7 @@
             v-if="!isLoaded"
             class="flex items-center gap-2 px-2.5 py-1.5 text-sm text-gray-400 border border-gray-200 rounded-lg"
         >
-            <font-awesome-icon
-                :icon="['fas', 'language']"
-                class="w-3.5 h-3.5"
-            />
+            <font-awesome-icon :icon="['fas', 'language']" class="w-3.5 h-3.5" />
             <span>Loading...</span>
         </div>
 
@@ -34,8 +31,7 @@
                     :key="lang"
                     class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 cursor-pointer transition-colors"
                     :class="{
-                        'bg-indigo-50 text-indigo-700 font-semibold':
-                            lang === activeLanguage,
+                        'bg-indigo-50 text-indigo-700 font-semibold': lang === activeLanguage,
                     }"
                     @click="selectLang(lang)"
                 >
@@ -50,8 +46,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const { activeLanguage, supportedLanguages, setLanguage, isLoaded } =
-    useGoogleTranslate()
+const { activeLanguage, supportedLanguages, setLanguage, isLoaded } = useGoogleTranslate()
 
 const isOpen = ref(false)
 
