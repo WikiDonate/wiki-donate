@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "open-southeners.laravel-pint",
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-next",
         "laravel.vscode-laravel",
