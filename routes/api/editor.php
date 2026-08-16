@@ -3,6 +3,7 @@
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\DonationFormulaController;
+use App\Http\Controllers\v1\DonationReportController;
 use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\UserController;
@@ -35,4 +36,6 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
 
     Route::post('stripe/card', [StripeController::class, 'addCard']);
     Route::get('stripe/card', [StripeController::class, 'getCard']);
+
+    Route::get('report/donations', [DonationReportController::class, 'index']);
 });

@@ -31,6 +31,10 @@ const updateUserDetails = (params) => {
     return api.put('/user/update', params)
 }
 
+const getDonationReport = (params) => {
+    return api.get('/report/donations', { params })
+}
+
 const verifyEmail = (id, hash) => {
     return api.get(`/email/verify/${id}/${hash}`)
 }
@@ -48,6 +52,7 @@ export const userService = {
     getUserPage,
     getUserDetails,
     updateUserDetails,
+    getDonationReport,
     verifyEmail,
     resendVerificationEmail,
 }
