@@ -36,6 +36,9 @@ Route::middleware(['auth:sanctum', 'role:Admin|Editor'])->group(function () {
 
     Route::post('stripe/card', [StripeController::class, 'addCard']);
     Route::get('stripe/card', [StripeController::class, 'getCard']);
+});
 
+// Authenticated-user donation report (any logged-in user sees their own)
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('report/donations', [DonationReportController::class, 'index']);
 });

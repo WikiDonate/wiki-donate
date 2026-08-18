@@ -17,13 +17,15 @@ class DashboardController extends Controller
 {
     private function getRecentDonations(): Collection
     {
-        return Donation::with('user:id,uuid,username')
+        return Donation::with('user:id,uuid,username', 'formula.article:id,slug,title')
             ->latest()
             ->take(10)
             ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'paypal_order_id', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
                 $source = $donation->paypal_order_id ? 'paypal' : 'stripe_checkout';
+                $formula = $donation->formula;
+                $article = $formula?->article;
 
                 return [
                     'id' => $donation->id,
@@ -36,8 +38,16 @@ class DashboardController extends Controller
                     'email' => $donation->donor_email ?? $donation->user?->email,
                     'stripe_session_id' => $donation->stripe_session_id,
                     'paypal_order_id' => $donation->paypal_order_id,
-                    'formula' => $metadata['formula'] ?? null,
-                    'details' => $metadata['details'] ?? null,
+                    'formula_id' => $formula?->id,
+                    'formula' => $formula?->formula ?? $metadata['formula'] ?? null,
+                    'details' => $formula?->details ?? $metadata['details'] ?? null,
+                    'article' => $article ? [
+                        'slug' => $article->slug,
+                        'title' => $article->title,
+                    ] : null,
+                    'formula_url' => $article && $formula
+                        ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                        : null,
                 ];
             });
     }
@@ -101,7 +111,7 @@ class DashboardController extends Controller
             $perPage = (int) $request->input('per_page', 15);
             $perPage = min(max($perPage, 1), 100);
 
-            $paginator = Donation::with('user:id,uuid,username')
+            $paginator = Donation::with('user:id,uuid,username', 'formula.article:id,slug,title')
                 ->when($request->filled('search'), function ($q) use ($request) {
                     $search = $request->input('search');
                     $q->where(function ($sq) use ($search) {
@@ -120,23 +130,36 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Donations retrieved successfully',
-                'data' => $paginator->map(fn ($donation) => [
-                    'id' => $donation->id,
-                    'source' => $donation->paypal_order_id ? 'paypal' : 'stripe_checkout',
-                    'payment_id' => $donation->paypal_order_id
-                        ? ($donation->metadata['payment_id'] ?? null)
-                        : $donation->stripe_payment_intent_id,
-                    'amount' => $donation->amount,
-                    'currency' => $donation->currency,
-                    'status' => $donation->status,
-                    'date' => $donation->created_at->format('d M, Y'),
-                    'user' => $donation->user?->username ?? 'Guest',
-                    'email' => $donation->donor_email ?? $donation->user?->email,
-                    'stripe_session_id' => $donation->stripe_session_id,
-                    'paypal_order_id' => $donation->paypal_order_id,
-                    'formula' => $donation->metadata['formula'] ?? null,
-                    'details' => $donation->metadata['details'] ?? null,
-                ]),
+                'data' => $paginator->map(function ($donation) {
+                    $formula = $donation->formula;
+                    $article = $formula?->article;
+
+                    return [
+                        'id' => $donation->id,
+                        'source' => $donation->paypal_order_id ? 'paypal' : 'stripe_checkout',
+                        'payment_id' => $donation->paypal_order_id
+                            ? ($donation->metadata['payment_id'] ?? null)
+                            : $donation->stripe_payment_intent_id,
+                        'amount' => $donation->amount,
+                        'currency' => $donation->currency,
+                        'status' => $donation->status,
+                        'date' => $donation->created_at->format('d M, Y'),
+                        'user' => $donation->user?->username ?? 'Guest',
+                        'email' => $donation->donor_email ?? $donation->user?->email,
+                        'stripe_session_id' => $donation->stripe_session_id,
+                        'paypal_order_id' => $donation->paypal_order_id,
+                        'formula_id' => $formula?->id,
+                        'formula' => $formula?->formula ?? $donation->metadata['formula'] ?? null,
+                        'details' => $formula?->details ?? $donation->metadata['details'] ?? null,
+                        'article' => $article ? [
+                            'slug' => $article->slug,
+                            'title' => $article->title,
+                        ] : null,
+                        'formula_url' => $article && $formula
+                            ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                            : null,
+                    ];
+                }),
                 'meta' => [
                     'currentPage' => $paginator->currentPage(),
                     'perPage' => $paginator->perPage(),

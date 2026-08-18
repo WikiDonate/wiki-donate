@@ -67,8 +67,8 @@ const routes = [
                 meta: { requiresAuth: true },
             },
             {
-                path: 'report/donations',
-                name: 'donation-report',
+                path: 'my-donates',
+                name: 'my-donations',
                 component: () => import('@/pages/report.vue'),
                 meta: { requiresAuth: true },
             },

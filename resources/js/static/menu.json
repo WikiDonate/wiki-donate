@@ -59,11 +59,11 @@
         "icon": ["fas", "cog"]
     },
     {
-        "name": "Donation Report",
-        "link": "/report/donations",
+        "name": "My Donations",
+        "link": "/my-donates",
         "type": "LogoutMenu",
         "onLogin": "show",
-        "icon": ["fas", "file-invoice-dollar"]
+        "icon": ["fas", "hand-holding-heart"]
     },
     {
         "name": "Logout",

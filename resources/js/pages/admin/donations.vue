@@ -69,6 +69,17 @@
                             row.payment_id || row.stripe_session_id || '—'
                         }}</span>
                     </template>
+                    <template #cell-article="{ row }">
+                        <template v-if="row.article">
+                            <NuxtLink
+                                :to="row.formula_url || `/article?title=${encodeURIComponent(row.article.slug)}`"
+                                class="text-indigo-600 hover:text-indigo-800 font-medium text-sm underline"
+                            >
+                                {{ row.article.title }}
+                            </NuxtLink>
+                        </template>
+                        <span v-else class="text-xs text-gray-400">—</span>
+                    </template>
                     <template #cell-action="{ row }">
                         <button
                             class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
@@ -96,7 +107,11 @@
             </template>
         </div>
 
-        <DonationDetailModal v-model="showDetail" :donation="selectedDonation" />
+        <DonationDetailModal
+            v-model="showDetail"
+            :donation="selectedDonation"
+            :formula-url="selectedFormulaUrl"
+        />
     </main>
 </template>
 
@@ -109,10 +124,12 @@ import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 const { notifyError } = useToastify()
 
 const selectedDonation = ref(null)
+const selectedFormulaUrl = ref('')
 const showDetail = ref(false)
 
 function openDetail(row) {
     selectedDonation.value = row
+    selectedFormulaUrl.value = row.formula_url || ''
     showDetail.value = true
 }
 
@@ -133,6 +150,7 @@ const columns = [
     { key: 'amount', label: 'Amount' },
     { key: 'status', label: 'Status' },
     { key: 'paymentId', label: 'Payment ID' },
+    { key: 'article', label: 'Article' },
     { key: 'action', label: 'Action' },
 ]
 

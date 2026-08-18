@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Donation;
+use App\Models\DonationFormula;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
@@ -17,6 +18,7 @@ class DonationSeeder extends Seeder
     public function run(): void
     {
         $userIds = User::orderBy('id')->pluck('id', 'username')->all();
+        $formulaIds = DonationFormula::orderBy('id')->pluck('id')->all();
 
         $demo = [
             // ---- PayPal donations (source = paypal) ----
@@ -29,10 +31,7 @@ class DonationSeeder extends Seeder
                 'status' => 'completed',
                 'paypal_order_id' => 'PAYD-8P2D3K1X',
                 'payment_id' => 'CAPTURE-AMN-8821',
-                'formula' => [
-                    ['percentage' => 60, 'organization' => 'Molham Volunteering Team e.V.'],
-                    ['percentage' => 40, 'organization' => 'Vishwa Hindu Parishad'],
-                ],
+                'formula_index' => 0,
                 'details' => 'Monthly support for the education fund.',
                 'days_ago' => 2,
             ],
@@ -45,9 +44,7 @@ class DonationSeeder extends Seeder
                 'status' => 'completed',
                 'paypal_order_id' => 'PAYD-5Q7H8J2W',
                 'payment_id' => 'CAPTURE-ABD-5533',
-                'formula' => [
-                    ['percentage' => 100, 'organization' => 'Hammer Forum Medical Aid for Children e. V.'],
-                ],
+                'formula_index' => 1,
                 'details' => null,
                 'days_ago' => 6,
             ],
@@ -60,10 +57,7 @@ class DonationSeeder extends Seeder
                 'status' => 'pending',
                 'paypal_order_id' => 'PAYD-1M3N6P8R',
                 'payment_id' => null,
-                'formula' => [
-                    ['percentage' => 50, 'organization' => 'Organization A'],
-                    ['percentage' => 50, 'organization' => 'Organization B'],
-                ],
+                'formula_index' => 2,
                 'details' => 'Processing PayPal approval.',
                 'days_ago' => 1,
             ],
@@ -76,9 +70,7 @@ class DonationSeeder extends Seeder
                 'status' => 'failed',
                 'paypal_order_id' => 'PAYD-6T2V4Y7Z',
                 'payment_id' => null,
-                'formula' => [
-                    ['percentage' => 100, 'organization' => 'Community Relief Fund'],
-                ],
+                'formula_index' => 3,
                 'details' => 'Payment declined by the buyer.',
                 'days_ago' => 4,
             ],
@@ -93,10 +85,7 @@ class DonationSeeder extends Seeder
                 'status' => 'completed',
                 'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
                 'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
-                'formula' => [
-                    ['percentage' => 50, 'organization' => 'Vishwa Muslim Parishad'],
-                    ['percentage' => 50, 'organization' => 'Shahaj'],
-                ],
+                'formula_index' => 0,
                 'details' => 'One-time donation after reading the article.',
                 'days_ago' => 3,
             ],
@@ -109,10 +98,7 @@ class DonationSeeder extends Seeder
                 'status' => 'completed',
                 'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
                 'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
-                'formula' => [
-                    ['percentage' => 30, 'organization' => 'Organization A'],
-                    ['percentage' => 70, 'organization' => 'Organization B'],
-                ],
+                'formula_index' => 1,
                 'details' => null,
                 'days_ago' => 9,
             ],
@@ -125,9 +111,7 @@ class DonationSeeder extends Seeder
                 'status' => 'expired',
                 'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
                 'stripe_payment_intent_id' => null,
-                'formula' => [
-                    ['percentage' => 100, 'organization' => 'Emergency Appeal'],
-                ],
+                'formula_index' => 2,
                 'details' => null,
                 'days_ago' => 12,
             ],
@@ -140,10 +124,7 @@ class DonationSeeder extends Seeder
                 'status' => 'completed',
                 'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
                 'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
-                'formula' => [
-                    ['percentage' => 40, 'organization' => 'Molham Volunteering Team e.V.'],
-                    ['percentage' => 60, 'organization' => 'Hammer Forum Medical Aid for Children e. V.'],
-                ],
+                'formula_index' => 3,
                 'details' => 'Special campaign pledge.',
                 'days_ago' => 15,
             ],
@@ -154,10 +135,10 @@ class DonationSeeder extends Seeder
             $paymentIntent = $row['stripe_payment_intent_id'] ?? null;
             $paypalOrder = $row['paypal_order_id'] ?? null;
             $paymentId = $row['payment_id'] ?? null;
+            $formulaId = $formulaIds[$row['formula_index']] ?? null;
 
             $metadata = [
                 'source' => $paypalOrder ? 'paypal' : 'stripe_checkout',
-                'formula' => $row['formula'],
                 'details' => $row['details'],
             ];
 
@@ -167,6 +148,7 @@ class DonationSeeder extends Seeder
 
             $donation = Donation::create([
                 'user_id' => $row['user_id'],
+                'donation_formula_id' => $formulaId,
                 'stripe_session_id' => $stripeSession,
                 'stripe_payment_intent_id' => $paymentIntent,
                 'paypal_order_id' => $paypalOrder,

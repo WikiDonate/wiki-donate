@@ -182,6 +182,7 @@ class PayPalWebhookController extends Controller
         $donation = Donation::create([
             'paypal_order_id' => $orderId,
             'user_id' => $pending?->user_id,
+            'donation_formula_id' => $pending?->donation_formula_id,
             'donor_name' => $donorName,
             'donor_email' => $donorEmail,
             'amount' => $captureData['amount'] ?? 0,
@@ -190,7 +191,6 @@ class PayPalWebhookController extends Controller
             'metadata' => [
                 'payment_id' => $captureData['payment_id'] ?? null,
                 'source' => 'paypal_webhook',
-                'formula' => $pending?->formula,
                 'details' => $pending?->details,
             ],
         ]);

@@ -12,11 +12,11 @@ return new class extends Migration
             $table->id();
             $table->string('paypal_order_id')->unique();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('donation_formula_id')->nullable()->constrained('donation_formulas')->restrictOnDelete();
             $table->string('donor_email')->nullable();
             $table->string('donor_name')->nullable();
             $table->decimal('amount', 10, 2);
             $table->string('currency', 3)->default('USD');
-            $table->json('formula')->nullable();
             $table->text('details')->nullable();
             $table->timestamps();
 

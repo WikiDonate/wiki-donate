@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Article;
 use App\Models\Donation;
+use App\Models\DonationFormula;
 use App\Models\PayPalPendingOrder;
 use App\Models\User;
 use App\Services\PayPalClient;
@@ -186,15 +188,25 @@ class PayPalCheckoutTest extends TestCase
             ->assertJsonValidationErrors(['currency']);
     }
 
-    public function test_create_order_stores_pending_order_with_formula_metadata(): void
+    public function test_create_order_stores_pending_order_with_formula_id(): void
     {
         $user = User::factory()->create();
         $token = $user->createToken('test')->plainTextToken;
 
-        $formula = [
-            ['organization' => 'Wiki1', 'percentage' => 50],
-            ['organization' => 'Wiki2', 'percentage' => 50],
-        ];
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
+
+        $formula = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $user->id,
+            'formula' => [
+                ['organization' => 'Wiki1', 'percentage' => 50],
+                ['organization' => 'Wiki2', 'percentage' => 50],
+            ],
+            'details' => 'Monthly donation',
+        ]);
 
         $this->mockPayPalClient();
 
@@ -204,7 +216,7 @@ class PayPalCheckoutTest extends TestCase
                 'currency' => 'USD',
                 'donor_name' => 'Test Donor',
                 'donor_email' => 'donor@example.com',
-                'formula' => $formula,
+                'formula_id' => $formula->id,
                 'details' => 'Monthly donation',
             ]);
 
@@ -216,7 +228,7 @@ class PayPalCheckoutTest extends TestCase
             ->assertJsonPath('data.order_id', 'PAYPAL_ORDER_123')
             ->assertJsonPath('data.approval_url', 'https://www.sandbox.paypal.com/checkoutnow?token=PAYPAL_ORDER_123');
 
-        // Verify pending order was stored with formula + donor metadata
+        // Verify pending order was stored with formula id + donor metadata
         $pending = PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
 
         $this->assertNotNull($pending);
@@ -225,8 +237,25 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals('Test Donor', $pending->donor_name);
         $this->assertEquals(25.00, $pending->amount);
         $this->assertEquals('USD', $pending->currency);
-        $this->assertEquals($formula, $pending->formula);
+        $this->assertEquals($formula->id, $pending->donation_formula_id);
         $this->assertEquals('Monthly donation', $pending->details);
+    }
+
+    public function test_create_order_rejects_invalid_formula_id(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('test')->plainTextToken;
+
+        $this->mockPayPalClient();
+
+        $response = $this->withHeader('Authorization', "Bearer {$token}")
+            ->postJson('/api/v1/paypal/create-order', [
+                'amount' => 25.00,
+                'formula_id' => 999999,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['formula_id']);
     }
 
     public function test_create_order_works_without_authentication(): void
@@ -332,18 +361,28 @@ class PayPalCheckoutTest extends TestCase
         $user = User::factory()->create();
         $token = $user->createToken('test')->plainTextToken;
 
-        $formula = [
-            ['organization' => 'Wiki1', 'percentage' => 100],
-        ];
+        $article = Article::create([
+            'slug' => 'capture-article-'.uniqid(),
+            'title' => 'Capture Article',
+        ]);
+
+        $formula = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $user->id,
+            'formula' => [
+                ['organization' => 'Wiki1', 'percentage' => 100],
+            ],
+            'details' => 'Monthly donation',
+        ]);
 
         $pending = PayPalPendingOrder::create([
             'paypal_order_id' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
+            'donation_formula_id' => $formula->id,
             'donor_name' => 'Test Donor',
             'donor_email' => 'donor@example.com',
             'amount' => 25.00,
             'currency' => 'USD',
-            'formula' => $formula,
             'details' => 'Monthly donation',
         ]);
 
@@ -370,10 +409,11 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals('donor@example.com', $donation->donor_email);
         $this->assertEquals('Test Donor', $donation->donor_name);
 
-        // Metadata contains formula
-        $this->assertEquals($formula, $donation->metadata['formula']);
+        // Formula id was carried over to the donation
+        $this->assertEquals($formula->id, $donation->donation_formula_id);
         $this->assertEquals('paypal', $donation->metadata['source']);
         $this->assertEquals('Monthly donation', $donation->metadata['details']);
+        $this->assertArrayNotHasKey('formula', $donation->metadata);
 
         // Pending order was deleted
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
@@ -519,15 +559,29 @@ class PayPalCheckoutTest extends TestCase
 
     public function test_webhook_capture_completed_creates_donation(): void
     {
+        $user = User::factory()->create();
+
+        $article = Article::create([
+            'slug' => 'webhook-article-'.uniqid(),
+            'title' => 'Webhook Article',
+        ]);
+
+        $formula = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $user->id,
+            'formula' => [['organization' => 'Wiki', 'percentage' => 100]],
+            'details' => 'Webhook donation',
+        ]);
+
         // Create a pending order so webhook has something to link
         PayPalPendingOrder::create([
             'paypal_order_id' => 'PAYPAL_ORDER_123',
             'user_id' => null,
+            'donation_formula_id' => $formula->id,
             'donor_name' => 'Webhook Donor',
             'donor_email' => 'webhook@example.com',
             'amount' => 25.00,
             'currency' => 'USD',
-            'formula' => [['organization' => 'Wiki', 'percentage' => 100]],
         ]);
 
         $this->mockPayPalClient();
@@ -553,6 +607,8 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals(25.00, $donation->amount);
         $this->assertEquals('USD', $donation->currency);
         $this->assertEquals('webhook@example.com', $donation->donor_email);
+        $this->assertEquals($formula->id, $donation->donation_formula_id);
+        $this->assertArrayNotHasKey('formula', $donation->metadata);
 
         // Pending order was cleaned up
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());

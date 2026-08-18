@@ -105,12 +105,23 @@
         </div>
 
         <template #footer>
-            <button
-                class="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
-                @click="$emit('update:modelValue', false)"
-            >
-                Close
-            </button>
+            <div class="flex items-center justify-between gap-3">
+                <NuxtLink
+                    v-if="formulaUrl"
+                    :to="formulaUrl"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"
+                    @click="$emit('update:modelValue', false)"
+                >
+                    <font-awesome-icon :icon="['fas', 'link']" class="w-3.5 h-3.5" />
+                    View Formula
+                </NuxtLink>
+                <button
+                    class="ml-auto px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
+                    @click="$emit('update:modelValue', false)"
+                >
+                    Close
+                </button>
+            </div>
         </template>
     </Modal>
 </template>
@@ -124,6 +135,10 @@ defineProps({
     donation: {
         type: Object,
         default: null,
+    },
+    formulaUrl: {
+        type: String,
+        default: '',
     },
 })
 

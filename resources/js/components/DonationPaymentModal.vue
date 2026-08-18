@@ -166,6 +166,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    formulaId: {
+        type: [Number, String],
+        default: null,
+    },
     details: {
         type: String,
         default: '',
@@ -284,7 +288,7 @@ async function renderPaypalButtons() {
                         amount: Number(amount.value),
                         donor_name: authStore.user?.username || '',
                         donor_email: authStore.user?.email || '',
-                        formula: props.formula,
+                        formula_id: props.formulaId || null,
                         details: props.details,
                     }
                     const response = await donateService.createPaypalOrder(params)

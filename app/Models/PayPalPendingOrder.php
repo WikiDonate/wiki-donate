@@ -11,16 +11,20 @@ class PayPalPendingOrder extends Model
     protected $fillable = [
         'paypal_order_id',
         'user_id',
+        'donation_formula_id',
         'donor_email',
         'donor_name',
         'amount',
         'currency',
-        'formula',
         'details',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
-        'formula' => 'array',
     ];
+
+    public function formula()
+    {
+        return $this->belongsTo(DonationFormula::class, 'donation_formula_id');
+    }
 }

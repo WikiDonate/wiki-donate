@@ -190,6 +190,15 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
 
+            // Immutability: formulas with linked donations cannot be edited
+            if ($formula->donations()->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot edit formula with existing donations',
+                    'errors' => ['This formula cannot be edited because donations already reference it.'],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             // Calculate total percentage
             $totalPercentage = array_reduce($request->formula, function ($sum, $item) {
                 return $sum + $item['percentage'];
@@ -246,6 +255,15 @@ class DonationFormulaController extends Controller
                     'message' => 'Unauthorized',
                     'errors' => ['You can only delete your own formulas.'],
                 ], Response::HTTP_FORBIDDEN);
+            }
+
+            // Immutability: formulas with linked donations cannot be deleted
+            if ($formula->donations()->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete formula with existing donations',
+                    'errors' => ['This formula cannot be deleted because donations already reference it.'],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $formula->delete();

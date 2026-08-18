@@ -181,6 +181,17 @@
                             <template #cell-date="{ row }"
                                 ><span class="text-gray-500 text-xs">{{ row.date }}</span></template
                             >
+                            <template #cell-article="{ row }">
+                                <template v-if="row.article">
+                                    <NuxtLink
+                                        :to="row.formula_url || `/article?title=${encodeURIComponent(row.article.slug)}`"
+                                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm underline"
+                                    >
+                                        {{ row.article.title }}
+                                    </NuxtLink>
+                                </template>
+                                <span v-else class="text-xs text-gray-400">—</span>
+                            </template>
                             <template #cell-action="{ row }">
                                 <button
                                     class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
@@ -222,7 +233,11 @@
             </template>
         </div>
 
-        <DonationDetailModal v-model="showDonationDetail" :donation="selectedDonation" />
+        <DonationDetailModal
+            v-model="showDonationDetail"
+            :donation="selectedDonation"
+            :formula-url="selectedFormulaUrl"
+        />
     </main>
 </template>
 
@@ -238,6 +253,7 @@ import AdminTable from '~/components/admin/AdminTable.vue'
 const { notifyError } = useToastify()
 
 const selectedDonation = ref(null)
+const selectedFormulaUrl = ref('')
 const showDonationDetail = ref(false)
 
 function statusVariant(status) {
@@ -248,6 +264,7 @@ function statusVariant(status) {
 
 function openDonationDetail(row) {
     selectedDonation.value = row
+    selectedFormulaUrl.value = row.formula_url || ''
     showDonationDetail.value = true
 }
 
@@ -269,6 +286,7 @@ const donationColumns = [
     { key: 'source', label: 'Source' },
     { key: 'amount', label: 'Amount' },
     { key: 'status', label: 'Status' },
+    { key: 'article', label: 'Article' },
     { key: 'action', label: 'Action' },
 ]
 

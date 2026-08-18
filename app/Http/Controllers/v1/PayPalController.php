@@ -35,9 +35,7 @@ class PayPalController extends Controller
             'currency' => 'nullable|string|size:3',
             'donor_name' => 'nullable|string|max:255',
             'donor_email' => 'nullable|email|max:255',
-            'formula' => 'nullable|array|max:100',
-            'formula.*.organization' => 'nullable|string|max:255',
-            'formula.*.percentage' => 'nullable|numeric|min:0|max:100',
+            'formula_id' => 'nullable|integer|exists:donation_formulas,id',
             'details' => 'nullable|string|max:2000',
         ]);
 
@@ -51,7 +49,7 @@ class PayPalController extends Controller
         }
 
         $currency = strtoupper($request->input('currency', 'USD'));
-        $userId = auth()->check() ? auth()->id() : null;
+        $userId = $request->user()?->id;
         $frontendUrl = config('app.url');
 
         $returnUrl = $frontendUrl.'/payment/success';
@@ -83,11 +81,11 @@ class PayPalController extends Controller
             PayPalPendingOrder::create([
                 'paypal_order_id' => $orderId,
                 'user_id' => $userId,
+                'donation_formula_id' => $request->input('formula_id'),
                 'donor_email' => $request->input('donor_email'),
                 'donor_name' => $request->input('donor_name'),
                 'amount' => $amount,
                 'currency' => $currency,
-                'formula' => $request->input('formula'),
                 'details' => $request->input('details'),
             ]);
 
@@ -215,6 +213,7 @@ class PayPalController extends Controller
                 $donation = Donation::create([
                     'paypal_order_id' => $orderId,
                     'user_id' => $pending->user_id,
+                    'donation_formula_id' => $pending->donation_formula_id,
                     'donor_name' => $pending->donor_name ?: $captureData['payer_name'],
                     'donor_email' => $pending->donor_email ?: $captureData['payer_email'],
                     'amount' => $captureData['amount'],
@@ -224,7 +223,6 @@ class PayPalController extends Controller
                         'payment_id' => $captureData['payment_id'],
                         'payer_id' => $captureData['payer_id'],
                         'source' => 'paypal',
-                        'formula' => $pending->formula,
                         'details' => $pending->details,
                     ],
                 ]);
@@ -294,6 +292,7 @@ class PayPalController extends Controller
                     $donation = Donation::create([
                         'paypal_order_id' => $orderId,
                         'user_id' => $pending?->user_id,
+                        'donation_formula_id' => $pending?->donation_formula_id,
                         'donor_name' => $pending?->donor_name ?: $captureData['payer_name'],
                         'donor_email' => $pending?->donor_email ?: $captureData['payer_email'],
                         'amount' => $captureData['amount'],
@@ -302,7 +301,6 @@ class PayPalController extends Controller
                         'metadata' => [
                             'payment_id' => $captureData['payment_id'],
                             'source' => 'paypal',
-                            'formula' => $pending?->formula,
                             'details' => $pending?->details,
                         ],
                     ]);

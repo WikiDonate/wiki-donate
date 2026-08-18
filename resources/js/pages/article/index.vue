@@ -201,6 +201,7 @@
         <DonationPaymentModal
             v-model="showPaymentModal"
             :formula="selectedPaymentFormula?.formula || []"
+            :formula-id="selectedPaymentFormula?.id || null"
             :details="selectedPaymentFormula?.details || ''"
             @payment-success="handlePaymentSuccess"
             @payment-error="notifyError"
