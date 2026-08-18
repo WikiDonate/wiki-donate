@@ -75,7 +75,7 @@
                                     }}</span>
                                     <div class="flex-1 bg-gray-100 rounded-full h-2">
                                         <div
-                                            class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full"
+                                            class="bg-linear-to-r from-indigo-500 to-purple-500 h-2 rounded-full"
                                             :style="{
                                                 width: donationBarWidth(row),
                                             }"
@@ -116,7 +116,7 @@
                                     }}</span>
                                     <div class="flex-1 bg-gray-100 rounded-full h-2">
                                         <div
-                                            class="bg-gradient-to-r from-teal-400 to-emerald-500 h-2 rounded-full"
+                                            class="bg-linear-to-r from-teal-400 to-emerald-500 h-2 rounded-full"
                                             :style="{
                                                 width: registrationBarWidth(row),
                                             }"

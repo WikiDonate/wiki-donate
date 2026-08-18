@@ -99,6 +99,9 @@
                             ${{ quickAmount }}
                         </button>
                     </div>
+                    <p class="text-xs text-gray-600 mt-3 italic">
+                        * A maximum of 0.1% is for operational costs.
+                    </p>
                 </div>
 
                 <div

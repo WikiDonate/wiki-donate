@@ -4,7 +4,7 @@
     >
         <!-- Title -->
         <h2
-            class="font-bold text-lg mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+            class="font-bold text-lg mb-4 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
         >
             Main Menu
         </h2>

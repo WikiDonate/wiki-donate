@@ -64,7 +64,7 @@
                             <!-- View Button (desktop only) -->
                             <NuxtLink
                                 :to="`/article?title=${article.slug}`"
-                                class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
+                                class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-white font-semibold bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
                                 :aria-label="`View ${article.title}`"
                             >
                                 <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
@@ -76,7 +76,7 @@
                         <div class="mt-4 md:hidden">
                             <NuxtLink
                                 :to="`/article?title=${article.slug}`"
-                                class="flex items-center justify-center gap-2 w-full px-3 py-1 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
+                                class="flex items-center justify-center gap-2 w-full px-3 py-1 rounded-full text-white font-semibold bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
                                 :aria-label="`View ${article.title}`"
                             >
                                 <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />

@@ -1,7 +1,7 @@
 <template>
     <aside class="w-60 bg-white border-r border-indigo shadow-sm flex flex-col h-full">
         <!-- Admin Header -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-4">
+        <div class="bg-linear-to-r from-indigo-600 to-purple-600 px-4 py-4">
             <NuxtLink to="/admin" class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
                     <font-awesome-icon :icon="['fas', 'shield-alt']" class="w-4 h-4 text-white" />

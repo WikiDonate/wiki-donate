@@ -4,7 +4,7 @@
 
         <!-- Filters -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-            <div class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+            <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
                 <h2 class="text-lg sm:text-xl font-semibold">Filters</h2>
             </div>
             <div class="p-6">
@@ -76,7 +76,7 @@
 
         <!-- Donations Table -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+            <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
                 <h2 class="text-lg sm:text-xl font-semibold">Donation History</h2>
             </div>
 

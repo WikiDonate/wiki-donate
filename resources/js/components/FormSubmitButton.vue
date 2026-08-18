@@ -33,7 +33,7 @@ const props = defineProps({
 // Compute button classes based on the variant
 const buttonClasses = computed(() => {
     return props.variant === 'primary'
-        ? 'w-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-bold py-2 px-4 rounded-md hover:from-indigo-500 hover:to-purple-500'
+        ? 'w-full bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white font-bold py-2 px-4 rounded-md hover:from-indigo-500 hover:to-purple-500'
         : 'w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300'
 })
 

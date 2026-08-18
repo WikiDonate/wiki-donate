@@ -2,7 +2,7 @@
 <template>
     <main class="w-full lg:mr-48 mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
         <!-- Gradient Header1 -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-4 px-6 text-center">
+        <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-4 px-6 text-center">
             <h2 class="font-bold text-lg sm:text-xl md:text-2xl text-white tracking-wide">
                 Welcome to WikiDonate
             </h2>

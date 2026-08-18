@@ -6,7 +6,7 @@
     >
         <div v-if="donation" class="space-y-6">
             <!-- Amount Summary -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-center">
+            <div class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-center">
                 <p class="text-indigo-100 text-sm font-medium mb-1">Total Amount</p>
                 <p class="text-white text-3xl font-bold">
                     {{ donation.currency || 'USD' }}
@@ -64,7 +64,7 @@
                         class="px-4 py-3 flex items-center gap-4"
                     >
                         <div
-                            class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0"
+                            class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0"
                         >
                             <span class="text-xs font-bold text-indigo-600"
                                 >{{ Number(item.percentage).toFixed(0) }}%</span
@@ -81,7 +81,7 @@
                                 />
                             </div>
                         </div>
-                        <p class="text-sm font-semibold text-gray-700 flex-shrink-0">
+                        <p class="text-sm font-semibold text-gray-700 shrink-0">
                             {{ donation.currency || 'USD' }}
                             {{
                                 ((Number(donation.amount) * Number(item.percentage)) / 100).toFixed(
@@ -116,7 +116,7 @@
                     View Formula
                 </NuxtLink>
                 <button
-                    class="ml-auto px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
+                    class="ml-auto px-6 py-2 text-sm font-medium text-white bg-linear-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
                     @click="$emit('update:modelValue', false)"
                 >
                     Close

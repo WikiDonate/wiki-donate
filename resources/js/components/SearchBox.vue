@@ -9,12 +9,12 @@
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search wikidonate..."
-                class="flex-grow border-0 p-2 pl-5 text-gray-700 focus:outline-none w-full rounded-l-md"
+                class="grow border-0 p-2 pl-5 text-gray-700 focus:outline-none w-full rounded-l-md"
                 @input="onInput"
             />
             <button
                 type="submit"
-                class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-md"
+                class="bg-linear-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-md"
             >
                 <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="h-4 w-4 text-white" />
             </button>

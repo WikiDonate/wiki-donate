@@ -10,7 +10,7 @@
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search Wikidonate..."
-                class="flex-grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
+                class="grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
                 @input="fetchSuggestions"
             />
 
@@ -22,7 +22,7 @@
             <!-- Submit Button -->
             <button
                 type="submit"
-                class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-full"
+                class="bg-linear-to-r from-indigo-600 to-purple-600 text-white px-5 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center rounded-r-full"
             >
                 <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="h-4 w-4 text-white" />
             </button>

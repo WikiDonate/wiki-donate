@@ -4,9 +4,9 @@
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Left Sidebar -->
             <div
-                class="lg:w-64 flex-shrink-0 bg-white rounded-2xl shadow-md overflow-hidden lg:sticky lg:top-6 lg:h-fit"
+                class="lg:w-64 shrink-0 bg-white rounded-2xl shadow-md overflow-hidden lg:sticky lg:top-6 lg:h-fit"
             >
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-3 px-4 text-center">
+                <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-3 px-4 text-center">
                     <span class="font-bold text-white tracking-wide">Steps</span>
                 </div>
                 <nav class="py-2">
@@ -22,7 +22,7 @@
                         @click="scrollToSection(`step-${index}`)"
                     >
                         <span
-                            class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold"
+                            class="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold"
                         >
                             {{ index + 1 }}
                         </span>
@@ -36,7 +36,7 @@
             <!-- Content -->
             <div class="flex-1 bg-white rounded-2xl shadow-md overflow-hidden">
                 <!-- Hero Section -->
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center">
+                <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-12 px-6 text-center">
                     <h1 class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4">
                         How WikiDonate Works
                     </h1>
@@ -58,7 +58,7 @@
                         >
                             <!-- Icon -->
                             <div
-                                class="flex-shrink-0 w-24 h-24 rounded-full bg-indigo-50 flex items-center justify-center"
+                                class="shrink-0 w-24 h-24 rounded-full bg-indigo-50 flex items-center justify-center"
                             >
                                 <font-awesome-icon
                                     :icon="step.icon"

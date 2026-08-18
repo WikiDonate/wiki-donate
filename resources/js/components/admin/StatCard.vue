@@ -4,12 +4,12 @@
     >
         <div class="flex items-start justify-between mb-3">
             <div
-                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                 :class="iconBgClass"
             >
                 <font-awesome-icon :icon="icon" class="w-4 h-4" :class="iconColorClass" />
             </div>
-            <div class="w-2 h-2 rounded-full flex-shrink-0" :class="dotClass" />
+            <div class="w-2 h-2 rounded-full shrink-0" :class="dotClass" />
         </div>
         <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">
             {{ label }}

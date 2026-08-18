@@ -5,7 +5,7 @@
             <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
-                    class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                    class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
                     <h1 class="text-2xl md:text-3xl font-bold">Password Recovery</h1>
                     <p class="mt-2 text-sm">Enter your email to reset your password</p>

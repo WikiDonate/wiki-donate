@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600" :class="containerClasses">
+    <div class="bg-linear-to-r from-indigo-600 to-purple-600" :class="containerClasses">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="min-w-0">
                 <h2 class="font-bold text-xl sm:text-2xl tracking-wide text-white truncate">
@@ -9,7 +9,7 @@
                     {{ subtitle }}
                 </p>
             </div>
-            <div v-if="$slots.actions" class="flex-shrink-0">
+            <div v-if="$slots.actions" class="shrink-0">
                 <slot name="actions" />
             </div>
         </div>

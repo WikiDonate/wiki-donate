@@ -12,7 +12,7 @@
                     />
                 </div>
                 <h1
-                    class="font-bold text-2xl sm:text-3xl lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+                    class="font-bold text-2xl sm:text-3xl lg:text-5xl bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
                 >
                     WikiDonate
                 </h1>

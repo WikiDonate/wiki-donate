@@ -5,7 +5,7 @@
         class="flex items-start p-4 rounded-lg mb-4"
         role="alert"
     >
-        <span class="flex-shrink-0">
+        <span class="shrink-0">
             <svg
                 v-if="variant === 'success'"
                 class="w-5 h-5 text-green-500"

@@ -4,7 +4,7 @@
     >
         <!-- Left Title -->
         <h1
-            class="font-bold text-lg sm:text-xl md:text-2xl text-center sm:text-left bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+            class="font-bold text-lg sm:text-xl md:text-2xl text-center sm:text-left bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
         >
             {{ pageTitle }}
         </h1>

@@ -28,7 +28,7 @@
                     >
                         <div class="flex items-start justify-between mb-3">
                             <span
-                                class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xs font-bold"
+                                class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 text-white text-xs font-bold"
                             >
                                 {{ index + 1 }}
                             </span>

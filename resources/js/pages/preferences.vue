@@ -15,12 +15,12 @@
         <section class="bg-white">
             <!-- Tabs -->
             <div class="flex border-b border-b-indigo-300 items-center mb-2 py-2">
-                <div class="flex space-x-2 sm:space-x-4 text-sm flex-shrink-0">
+                <div class="flex space-x-2 sm:space-x-4 text-sm shrink-0">
                     <button
                         class="px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                         :class="
                             activeTab === 'profile'
-                                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm'
+                                ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-sm'
                                 : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
                         "
                         @click="activeTab = 'profile'"
@@ -32,7 +32,7 @@
                         class="px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                         :class="
                             activeTab === 'notifications'
-                                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm'
+                                ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-sm'
                                 : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
                         "
                         @click="activeTab = 'notifications'"
@@ -142,11 +142,11 @@
         <!-- Modal for Changing Password -->
         <div
             v-if="isModalOpen"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-gray-900/50 p-4"
         >
             <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
                 <h3
-                    class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+                    class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
                 >
                     Change Password
                 </h3>
@@ -197,7 +197,7 @@
                         </button>
                         <button
                             type="submit"
-                            class="bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white hover:bg-indigo-700 hover:from-indigo-500 hover:to-purple-500 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white hover:bg-indigo-700 hover:from-indigo-500 hover:to-purple-500 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="submittingPassword"
                         >
                             {{ submittingPassword ? 'Submitting...' : 'Submit' }}

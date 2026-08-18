@@ -1,6 +1,6 @@
 <template>
     <main class="w-full mx-auto max-w-2xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
-        <div class="bg-gradient-to-r from-gray-500 to-gray-600 py-8 px-6 text-center">
+        <div class="bg-linear-to-r from-gray-500 to-gray-600 py-8 px-6 text-center">
             <div
                 class="w-16 h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center"
             >
@@ -32,7 +32,7 @@
 
                 <NuxtLink
                     :to="backUrl"
-                    class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-500 hover:to-purple-500 transition-colors shadow-md"
+                    class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-500 hover:to-purple-500 transition-colors shadow-md"
                 >
                     <font-awesome-icon :icon="['fas', 'home']" class="w-4 h-4" />
                     {{ backLabel }}

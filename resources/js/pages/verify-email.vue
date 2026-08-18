@@ -5,7 +5,7 @@
             <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
                 <!-- Header -->
                 <div
-                    class="p-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                    class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
                     <h1 class="text-2xl md:text-3xl font-bold">Email Verification</h1>
                     <p class="mt-2 text-sm">Verifying your email address</p>
@@ -58,7 +58,7 @@
                         <div class="pt-4">
                             <NuxtLink
                                 to="/login"
-                                class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                                class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
                             >
                                 Continue to Login
                             </NuxtLink>
@@ -96,7 +96,7 @@
                         <div class="pt-4 space-y-2">
                             <NuxtLink
                                 to="/login"
-                                class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                                class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
                             >
                                 Back to Login
                             </NuxtLink>

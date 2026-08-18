@@ -2,7 +2,7 @@
     <main class="w-full mx-auto max-w-4xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Page Title -->
         <h1
-            class="text-3xl sm:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-8"
+            class="text-3xl sm:text-4xl font-bold text-center bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 mb-8"
         >
             Profile Details
         </h1>
@@ -25,7 +25,7 @@
             <!-- User Info -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <!-- Card Header -->
-                <div class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
                     <h2 class="text-lg sm:text-xl font-semibold">Your Information</h2>
                 </div>
                 <!-- Card Body -->

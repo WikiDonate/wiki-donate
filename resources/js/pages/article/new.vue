@@ -48,7 +48,7 @@
                 </p>
                 <NuxtLink
                     to="/login"
-                    class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-2 px-6 rounded-md hover:from-indigo-500 hover:to-purple-500 transition-all"
+                    class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-bold py-2 px-6 rounded-md hover:from-indigo-500 hover:to-purple-500 transition-all"
                 >
                     Login
                 </NuxtLink>
