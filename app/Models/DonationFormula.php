@@ -11,6 +11,7 @@ class DonationFormula extends Model
         'uuid',
         'article_id',
         'user_id',
+        'name',
         'formula',
         'details',
     ];

@@ -87,6 +87,7 @@ class DonationFormulaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'article_slug' => 'required|string',
+            'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
             'formula.*.organization_id' => 'nullable|integer',
@@ -130,6 +131,7 @@ class DonationFormulaController extends Controller
             $formula = DonationFormula::create([
                 'article_id' => $article->id,
                 'user_id' => Auth::id(),
+                'name' => $request->name,
                 'formula' => $request->formula,
                 'details' => $request->details ?? null,
             ]);
@@ -155,6 +157,7 @@ class DonationFormulaController extends Controller
     public function update(Request $request, $uuid)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
             'formula.*.organization_id' => 'nullable|integer',
@@ -213,6 +216,7 @@ class DonationFormulaController extends Controller
             }
 
             $formula->update([
+                'name' => $request->name,
                 'formula' => $request->formula,
                 'details' => $request->details ?? null,
             ]);

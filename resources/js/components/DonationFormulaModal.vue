@@ -5,6 +5,16 @@
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Name </label>
+                <FormInput
+                    v-model="name"
+                    placeholder="Enter a name for this formula"
+                    :error-message="nameError"
+                    @blur="validateName"
+                />
+            </div>
+
             <div class="border-t border-gray-100 pt-4">
                 <div
                     class="hidden sm:grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
@@ -167,6 +177,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'save'])
+const name = ref('')
+const nameError = ref('')
 const rows = ref([])
 const details = ref('')
 const localIsSaving = ref(false)
@@ -197,6 +209,8 @@ watch(
                 rows.value = [{ organization: '', percentage: 0 }]
             }
             details.value = props.initialData?.details || ''
+            name.value = props.initialData?.name || ''
+            nameError.value = ''
         }
     },
     { immediate: true }
@@ -222,9 +236,28 @@ const totalPercentage = computed(() => {
     }, 0)
 })
 
+const validateName = () => {
+    const trimmed = name.value.trim()
+    if (!trimmed) {
+        nameError.value = 'Name is required.'
+        return false
+    }
+    if (trimmed.length > 255) {
+        nameError.value = 'Name must be 255 characters or fewer.'
+        return false
+    }
+    nameError.value = ''
+    return true
+}
+
+watch(name, () => {
+    if (nameError.value) validateName()
+})
+
 const isValid = computed(() => {
     if (totalPercentage.value !== 100) return false
     if (rows.value.length === 0) return false
+    if (!name.value || !name.value.trim()) return false
 
     return rows.value.every((row) => {
         const orgValue = row.organization
@@ -250,6 +283,7 @@ const deleteRow = (index) => {
 
 const handleSave = () => {
     if (!isValid.value || props.isSaving || localIsSaving.value) return
+    if (!validateName()) return
 
     const sanitizedRows = rows.value.map((row) => ({
         organization: String(row.organization).trim(),
@@ -257,6 +291,7 @@ const handleSave = () => {
     }))
 
     pendingSaveData.value = {
+        name: name.value.trim(),
         formula: sanitizedRows,
         details: details.value || null,
     }

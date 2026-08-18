@@ -42,12 +42,12 @@
                                     class="text-indigo-400 text-sm"
                                 />
                                 <h4 class="font-bold text-indigo-700 text-sm md:text-base">
-                                    {{ formula.user?.username }}:
+                                    {{ formula.name || formula.user?.username }}:
                                     {{ getUserFormulaIndex(formula) }}
                                 </h4>
                                 <Button
                                     width="auto"
-                                    class="!py-1 !px-2 !text-xs !rounded-lg !bg-green-600 hover:!bg-green-700 border-none shadow-sm flex items-center gap-1"
+                                    class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
                                     @click="openDonateModal(formula)"
                                 >
                                     <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
@@ -170,7 +170,7 @@
                 class="flex justify-center lg:justify-end items-center mt-5"
             >
                 <button
-                    class="flex items-center gap-2 text-base lg:text-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md"
+                    class="flex items-center gap-2 text-base lg:text-lg bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-indigo-500 hover:to-purple-500 shadow-md"
                     @click="openCreateFormulaModal"
                 >
                     <font-awesome-icon :icon="['fas', 'plus-circle']" class="w-5 h-5" />
@@ -293,12 +293,14 @@ const handleSaveDonationFormula = async (data) => {
         let response
         if (selectedFormula.value.uuid) {
             response = await articleService.updateDonationFormula(selectedFormula.value.uuid, {
+                name: data.name,
                 formula: data.formula,
                 details: data.details,
             })
         } else {
             response = await articleService.saveDonationFormula({
                 article_slug: articleStore.article.slug,
+                name: data.name,
                 formula: data.formula,
                 details: data.details,
             })
