@@ -55,7 +55,7 @@
             >
                 <div v-for="col in columns" :key="col.key" class="flex items-start gap-2">
                     <span
-                        class="text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[80px] flex-shrink-0 pt-0.5"
+                        class="text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-20 shrink-0 pt-0.5"
                     >
                         {{ col.label }}
                     </span>

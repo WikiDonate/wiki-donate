@@ -10,4 +10,12 @@
     [role='button']:not(:disabled):not([aria-disabled='true']) {
         cursor: pointer;
     }
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
 }

@@ -212,15 +212,18 @@
 <script setup>
 import { articleService } from '~/services/articleService'
 
-useHead({ title: 'Article' })
+const route = useRoute()
+const title = ref(decodeURIComponent(route.query.title))
+const articleTitle = ref('')
+
+useHead(() => ({
+    title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : 'Article',
+}))
 
 const articleStore = useArticleStore()
 const authStore = useAuthStore()
-const route = useRoute()
 const { clearToasts, notifySuccess, notifyError } = useToastify()
 
-const title = ref(decodeURIComponent(route.query.title))
-const articleTitle = ref('')
 const sections = ref([])
 const loading = ref(false)
 const submittingFormula = ref(false)
@@ -358,7 +361,6 @@ const loadArticle = async (slug) => {
             articleTitle.value = response.data.title
             sections.value = JSON.parse(response.data.sections)
             articleStore.addArticle(response.data)
-            useHead({ title: `${articleTitle.value} - WikiDonate` })
             await loadDonationFormulas(response.data.slug)
         } else {
             sections.value = []

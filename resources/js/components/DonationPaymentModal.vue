@@ -119,17 +119,17 @@
                 <div
                     v-if="hasValidAmount"
                     id="paypal-button-container"
-                    class="paypal-buttons min-h-[45px]"
+                    class="paypal-buttons min-h-11.25"
                 >
                     <div v-if="!paypalSdkLoaded" class="flex justify-center items-center py-4">
                         <LoadingSpinner class="w-6 h-6" />
                     </div>
                 </div>
-                <div v-else class="paypal-buttons min-h-[45px]">
+                <div v-else class="paypal-buttons min-h-11.25">
                     <button
                         type="button"
                         disabled
-                        class="w-full h-[45px] flex items-center justify-center gap-2 rounded-lg bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed"
+                        class="w-full h-11.25 flex items-center justify-center gap-2 rounded-lg bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed"
                     >
                         <font-awesome-icon :icon="['fab', 'paypal']" class="w-4 h-4" />
                         Enter amount to donate

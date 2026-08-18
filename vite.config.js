@@ -5,8 +5,21 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
+
+const hotFile = path.join(root, 'public/hot')
+
+const laravelHotFilePlugin = {
+    name: 'laravel-hot-file',
+    configureServer(server) {
+        fs.writeFileSync(hotFile, 'http://localhost:5173/build')
+        server.httpServer?.once('close', () => {
+            if (fs.existsSync(hotFile)) fs.unlinkSync(hotFile)
+        })
+    },
+}
 
 export default defineConfig({
     root,
@@ -53,6 +66,7 @@ export default defineConfig({
         },
     },
     plugins: [
+        laravelHotFilePlugin,
         vue(),
         tailwindcss(),
         AutoImport({

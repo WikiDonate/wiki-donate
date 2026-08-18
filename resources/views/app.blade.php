@@ -5,10 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WikiDonate</title>
         @php
+            $hotFile = public_path('hot');
             $manifestPath = public_path('build/.vite/manifest.json');
         @endphp
 
-        @if (file_exists($manifestPath))
+        @if ($hotFile && file_exists($hotFile))
+            @php
+                $devServer = trim(file_get_contents($hotFile));
+            @endphp
+            <script type="module" src="{{ $devServer }}/resources/js/app.js"></script>
+        @elseif (file_exists($manifestPath))
             @php
                 $manifest = json_decode(file_get_contents($manifestPath), true);
                 $entry = $manifest['resources/js/app.js'] ?? null;
