@@ -43,7 +43,7 @@
                                 />
                                 <h4 class="font-bold text-indigo-700 text-sm md:text-base">
                                     {{ formula.name || formula.user?.username }}:
-                                    {{ getUserFormulaIndex(formula) }}
+                                    {{ formula.user?.username }}
                                 </h4>
                                 <Button
                                     width="auto"
@@ -81,6 +81,7 @@
                                             <font-awesome-icon :icon="['fas', 'link']" />
                                         </button>
                                     </div>
+
                                     <template
                                         v-if="authStore.user?.username === formula.user?.username"
                                     >

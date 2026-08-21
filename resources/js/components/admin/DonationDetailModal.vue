@@ -15,7 +15,7 @@
                 <div class="flex items-center justify-center gap-2 mt-3">
                     <AdminBadge
                         :variant="donation.paypal_order_id ? 'warning' : 'info'"
-                        :text="donation.paypal_order_id ? 'PayPal' : 'Stripe Checkout'"
+                        :text="donation.source"
                     />
                     <AdminBadge :variant="statusVariant(donation.status)" :text="donation.status" />
                 </div>
