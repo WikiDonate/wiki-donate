@@ -2,30 +2,36 @@
 
 Wiki Donate is a platform designed to streamline and facilitate donations for a variety of causes. This project includes robust features such as user authentication, article contributions, community discussions, donation management, and more. Built with a modular architecture, it ensures scalability and maintainability.
 
-The API documentation can be accessed at [https://api.wikidonate.org/api/documentation](https://api.wikidonate.org/api/documentation).
+The API documentation can be accessed at `https://your-domain/api/documentation`.
 
 ## Project Structure
 
-The project is structured as follows:
+The entire application lives in a single Laravel project at the repository root:
 
-- `backend/`: contains the server-side code, built using Laravel 11
-- `frontend/`: contains the client-side code, built using Nuxt.js and styled with Tailwind CSS
+- `app/`: server-side code, built using Laravel
+- `resources/js/`: the client-side Vue.js SPA (Vue 3 + Vue Router + Pinia), built with Vite
+- `routes/`: API and web routes
+- `public/`: the web root (served directly; contains the built Vite assets in `public/build`)
 
 ## Tech Stack
 
 ### Backend
 
-- Laravel 11: for building RESTful APIs and handling server-side logic
+- Laravel 13: for building RESTful APIs and handling server-side logic
 - MySQL: as the database solution for managing structured data
+- Sanctum: token-based authentication for the SPA
+- PHP 8.3+
 
 ### Frontend
 
-- Nuxt.js: for building the frontend as a Single Page Application (SPA)
+- Vue 3 (Vue Router + Pinia): Single Page Application
+- Vite: build tooling
 - Tailwind CSS: for designing a clean and modern UI
 
 ### Deployment and Hosting
 
-- BlueHost: hosting solution for deployment
+- Shared hosting / any PHP host: point the document root to `public/`
+- Run `npm run build` before deploying so the compiled assets exist in `public/build`
 
 ## Features
 
@@ -83,20 +89,52 @@ The project is structured as follows:
 
 ## Development
 
-### Backend Setup
+### Setup
 
-1. Navigate to the `backend/` folder
-2. Install dependencies: `composer install`
-3. Set up the `.env` file and configure the database connection
-4. Run migrations: `php artisan migrate`
-5. Start the development server: `php artisan serve`
-6. Generate encryption keys: `php artisan key:generate`
+1. Install PHP dependencies: `composer install`
+2. Install frontend dependencies: `npm install`
+3. Copy `.env.example` to `.env` and configure the database connection
+4. Generate encryption keys: `php artisan key:generate`
+5. Run migrations: `php artisan migrate`
 
-### Frontend Setup
+### Environment Variables
 
-1. Navigate to the `frontend/` folder
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
+All configuration lives in `.env`. Frontend (Vite) build-time variables are
+consumed in the SPA via `import.meta.env` and must be prefixed with `VITE_`:
+
+| Variable | Description |
+| --- | --- |
+| `VITE_API_URL` | Base URL for the API (default `/api/v1`) |
+| `VITE_STRIPE_PUBLIC_KEY` | Stripe publishable key used for card payments |
+| `VITE_PAYPAL_CLIENT_ID` | PayPal client ID used for PayPal checkout |
+| `VITE_AI_CHATBOT_API_KEY` | API key for the AI chatbot widget |
+| `VITE_APP_NAME` | App name exposed to the frontend |
+
+The backend payment variables (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+`PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_WEBHOOK_ID`) must also be set for
+Stripe and PayPal flows to work. Note that changing `VITE_*` values requires a
+re-run of `npm run build` (or `npm run dev`) to take effect.
+
+### Running locally
+
+**Option A — Laravel serves the built SPA:**
+
+1. Build the frontend: `npm run build`
+2. Start the server: `php artisan serve`
+3. Open `http://localhost:8000`
+
+**Option B — Vite dev server with API proxy:**
+
+1. Start the Laravel server: `php artisan serve`
+2. Start Vite: `npm run dev`
+3. Open `http://localhost:5173` (`/api` requests are proxied to Laravel)
+
+The Laravel web route serves the SPA for all non-API, non-asset paths.
+
+### Testing
+
+- Backend (PHPUnit/Pest): `php artisan test`
+- Frontend production build check: `npm run build`
 
 ## Contribution
 
