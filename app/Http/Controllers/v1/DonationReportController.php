@@ -41,6 +41,7 @@ class DonationReportController extends Controller
                         $sq->where('paypal_order_id', 'like', "%{$search}%")
                             ->orWhere('stripe_session_id', 'like', "%{$search}%")
                             ->orWhere('stripe_payment_intent_id', 'like', "%{$search}%")
+                            ->orWhere('metadata->payment_id', 'like', "%{$search}%")
                             ->orWhere('donor_email', 'like', "%{$search}%");
                     });
                 });
