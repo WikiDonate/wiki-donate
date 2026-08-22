@@ -114,6 +114,20 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            // Reject duplicate name for the same user on the same article
+            $duplicate = DonationFormula::where('article_id', $article->id)
+                ->where('user_id', Auth::id())
+                ->whereRaw('LOWER(name) = ?', [strtolower(trim($request->name))])
+                ->exists();
+
+            if ($duplicate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A formula with this name already exists for this article.',
+                    'errors' => ['A formula with this name already exists for this article.'],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             // Calculate total percentage
             $totalPercentage = array_reduce($request->formula, function ($sum, $item) {
                 return $sum + $item['percentage'];
@@ -199,6 +213,21 @@ class DonationFormulaController extends Controller
                     'success' => false,
                     'message' => 'Cannot edit formula with existing donations',
                     'errors' => ['This formula cannot be edited because donations already reference it.'],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Reject duplicate name for the same user on the same article
+            $duplicate = DonationFormula::where('article_id', $formula->article_id)
+                ->where('user_id', Auth::id())
+                ->where('id', '!=', $formula->id)
+                ->whereRaw('LOWER(name) = ?', [strtolower(trim($request->name))])
+                ->exists();
+
+            if ($duplicate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A formula with this name already exists for this article.',
+                    'errors' => ['A formula with this name already exists for this article.'],
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 

@@ -186,6 +186,7 @@
             :initial-data="selectedFormula"
             :is-saving="submittingFormula"
             :is-edit="!!selectedFormula.uuid"
+            :error-message="formulaError"
             @save="handleSaveDonationFormula"
         />
 
@@ -236,6 +237,7 @@ const showDonationModal = ref(false)
 const showConfirmDelete = ref(false)
 const formulaToDelete = ref(null)
 const selectedFormula = ref({ formula: [] })
+const formulaError = ref('')
 const copiedUuid = ref(null)
 const showPaymentModal = ref(false)
 const selectedPaymentFormula = ref(null)
@@ -281,11 +283,13 @@ const isFormulaOpen = (uuid) => openFormulas.value.includes(uuid)
 
 const openCreateFormulaModal = () => {
     selectedFormula.value = { formula: [{ organization: '', percentage: 0 }] }
+    formulaError.value = ''
     showDonationModal.value = true
 }
 
 const openEditFormulaModal = (formula) => {
     selectedFormula.value = JSON.parse(JSON.stringify(formula))
+    formulaError.value = ''
     showDonationModal.value = true
 }
 
@@ -322,7 +326,11 @@ const handleSaveDonationFormula = async (data) => {
             throw new Error(response.message || 'Failed to save')
         }
     } catch (error) {
-        notifyError(error.message || 'Unexpected error')
+        const message = error.message || error.errors?.[0] || 'Unexpected error'
+        if (message.includes('already exists')) {
+            formulaError.value = message
+        }
+        notifyError(message)
     } finally {
         submittingFormula.value = false
     }
