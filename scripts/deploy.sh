@@ -47,13 +47,25 @@ php artisan view:cache
 php artisan queue:restart || true
 
 echo "==> Permissions (www-data on Ubuntu)"
-# Needs sudo if run as wikidonate
-if command -v sudo >/dev/null 2>&1; then
-  sudo chown -R www-data:www-data storage bootstrap/cache public/build 2>/dev/null || chown -R www-data:www-data storage bootstrap/cache public/build || true
+# ROOT CAUSE: chown www-data:www-data makes deploy user lose ownership → chmod fails.
+DEPLOY_USER=$(whoami)
+if sudo -n chown -R $DEPLOY_USER:www-data storage bootstrap/cache public/build 2>/dev/null; then
+  echo "chown $DEPLOY_USER:www-data via sudo OK"
+elif chown -R $DEPLOY_USER:www-data storage bootstrap/cache public/build 2>/dev/null; then
+  echo "chown $DEPLOY_USER:www-data without sudo OK"
+elif sudo -n chown -R www-data:www-data storage bootstrap/cache public/build 2>/dev/null; then
+  echo "chown www-data:www-data via sudo OK (fallback)"
 else
-  chown -R www-data:www-data storage bootstrap/cache public/build || true
+  echo "⚠️ chown failed — run once: sudo usermod -aG www-data $DEPLOY_USER && sudo chown -R $DEPLOY_USER:www-data storage bootstrap/cache public/build"
 fi
-chmod -R 775 storage bootstrap/cache
+if sudo -n chmod -R 775 storage bootstrap/cache 2>/dev/null; then
+  echo "chmod 775 via sudo OK"
+elif chmod -R 775 storage bootstrap/cache 2>/dev/null; then
+  echo "chmod 775 without sudo OK"
+else
+  echo "⚠️ chmod failed — run: sudo chown -R $DEPLOY_USER:www-data storage bootstrap/cache && sudo chmod -R 775 storage bootstrap/cache"
+fi
+sudo -n chmod -R g+s storage bootstrap/cache 2>/dev/null || sudo -n chmod -R g+ws storage bootstrap/cache 2>/dev/null || true
 
 echo "==> Maintenance OFF"
 php artisan up
