@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (PHP 8.4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, bcmath, curl, xml, zip, gd, intl, pdo_mysql, fileinfo, tokenizer, openssl
+          coverage: none
+          tools: composer
+
+      - name: Cache composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install PHP deps
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Check code style (Pint)
+        run: ./vendor/bin/pint --test
+
+      - name: Setup env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests (PHPUnit / Pest)
+        run: php artisan test --compact
+        # 50 tests per local run: phpunit.xml:25 uses sqlite :memory:
+
+  frontend:
+    name: Frontend (Node 22 + Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JS deps
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+        # eslint.config.js:1 ignores public/build, vendor, node_modules
+
+      - name: Prettier check
+        run: npm run format:check
+
+      - name: Build check (Vite)
+        run: npm run build
+        env:
+          VITE_API_URL: /api/v1
+          VITE_STRIPE_PUBLIC_KEY: pk_test_dummy
+          VITE_PAYPAL_CLIENT_ID: dummy
+          VITE_AI_CHATBOT_API_KEY: dummy
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vite-build
+          path: public/build
+          retention-days: 3
+
+  # Optional: fail fast if any job fails
+  ci-success:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check all jobs
+        run: |
+          if [[ "${{ needs.backend.result }}" != "success" || "${{ needs.frontend.result }}" != "success" ]]; then
+            echo "CI failed"; exit 1;
+          fi
+          echo "CI passed"

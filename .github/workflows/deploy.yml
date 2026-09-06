@@ -1,0 +1,91 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  # Reuse CI checks before deploy — frontend + backend must pass
+  gate:
+    name: CI Gate
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy to Ubuntu VPS
+    needs: gate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.VPS_PORT || 22 }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy via SSH (pull + build on server)
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || 22 }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+        run: |
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOSSH'
+          set -e
+          cd ${{ secrets.VPS_PATH }}
+          echo "==> Pull latest main"
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "==> Maintenance ON"
+          php artisan down --render="errors::503" --retry=60 || true
+
+          echo "==> PHP deps"
+          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+          echo "==> Node build"
+          # Node 22 must be installed on VPS per DEPLOY_UBUNTU_MANUAL.md Step 5d (actual: v22.23.2)
+          if command -v npm >/dev/null 2>&1; then
+            npm ci --prefer-offline
+            npm run build
+          else
+            echo "ERROR: npm not found on VPS — install Node 22"; exit 1
+          fi
+
+          echo "==> Laravel optimize"
+          php artisan migrate --force
+          php artisan storage:link || true
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan queue:restart || true
+
+          echo "==> Permissions (Ubuntu www-data)"
+          sudo chown -R www-data:www-data storage bootstrap/cache public/build || chown -R www-data:www-data storage bootstrap/cache public/build
+          chmod -R 775 storage bootstrap/cache
+
+          echo "==> Maintenance OFF"
+          php artisan up
+
+          echo "==> Health check"
+          curl -fsS http://127.0.0.1/up || curl -fsS https://wikidonate.org/up || echo "health check warning"
+          EOSSH
+
+      - name: Notify
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Deploy succeeded to ${{ secrets.VPS_HOST }}"
+          else
+            echo "❌ Deploy failed"
+            exit 1
+          fi
