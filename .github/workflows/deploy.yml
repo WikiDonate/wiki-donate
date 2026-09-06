@@ -70,8 +70,32 @@ jobs:
           php artisan queue:restart || true
 
           echo "==> Permissions (Ubuntu www-data)"
-          sudo chown -R www-data:www-data storage bootstrap/cache public/build || chown -R www-data:www-data storage bootstrap/cache public/build
-          chmod -R 775 storage bootstrap/cache
+          # ROOT CAUSE: Manual deploy Step 13 did 'chown www-data:www-data' — now wikidonate can't chmod (Operation not permitted).
+          # FIX 1 (best): Keep deploy user as owner, www-data as group, so both can write without sudo each time.
+          # One-time VPS fix (run once as root, see message below):
+          #   sudo usermod -aG www-data wikidonate
+          #   sudo chown -R $(whoami):www-data storage bootstrap/cache public/build
+          #   sudo chmod -R 775 storage bootstrap/cache
+          #   sudo chmod -R g+s storage bootstrap/cache
+          #   echo "wikidonate ALL=(ALL) NOPASSWD: /bin/chown, /bin/chmod, /usr/bin/supervisorctl, /bin/systemctl" | sudo tee /etc/sudoers.d/wikidonate-deploy
+          DEPLOY_USER=$(whoami)
+          if sudo -n chown -R $DEPLOY_USER:www-data storage bootstrap/cache public/build 2>/dev/null; then
+            echo "chown $DEPLOY_USER:www-data via sudo OK"
+          elif chown -R $DEPLOY_USER:www-data storage bootstrap/cache public/build 2>/dev/null; then
+            echo "chown $DEPLOY_USER:www-data without sudo OK"
+          elif sudo -n chown -R www-data:www-data storage bootstrap/cache public/build 2>/dev/null; then
+            echo "chown www-data:www-data via sudo OK (fallback)"
+          else
+            echo "⚠️ chown failed (no sudo?) — deploy will continue but run one-time fix on VPS (see above)"
+          fi
+          if sudo -n chmod -R 775 storage bootstrap/cache 2>/dev/null; then
+            echo "chmod 775 via sudo OK"
+          elif chmod -R 775 storage bootstrap/cache 2>/dev/null; then
+            echo "chmod 775 without sudo OK"
+          else
+            echo "⚠️ chmod failed — will continue. Fix on VPS: sudo chown -R $DEPLOY_USER:www-data storage bootstrap/cache && sudo chmod -R 775 storage bootstrap/cache"
+          fi
+          sudo -n chmod -R g+s storage/bootstrap/cache 2>/dev/null || sudo -n chmod -R g+ws storage bootstrap/cache 2>/dev/null || true
 
           echo "==> Maintenance OFF"
           php artisan up
