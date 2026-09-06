@@ -118,7 +118,9 @@ class DashboardController extends Controller
                         $sq->whereHas('user', fn ($uq) => $uq->where('username', 'like', "%{$search}%"))
                             ->orWhere('donor_email', 'like', "%{$search}%")
                             ->orWhere('stripe_session_id', 'like', "%{$search}%")
-                            ->orWhere('paypal_order_id', 'like', "%{$search}%");
+                            ->orWhere('stripe_payment_intent_id', 'like', "%{$search}%")
+                            ->orWhere('paypal_order_id', 'like', "%{$search}%")
+                            ->orWhere('metadata->payment_id', 'like', "%{$search}%");
                     });
                 })
                 ->when($request->filled('status'), function ($q) use ($request) {

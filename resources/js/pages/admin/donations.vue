@@ -72,7 +72,10 @@
                     <template #cell-article="{ row }">
                         <template v-if="row.article">
                             <NuxtLink
-                                :to="row.formula_url || `/article?title=${encodeURIComponent(row.article.slug)}`"
+                                :to="
+                                    row.formula_url ||
+                                    `/article?title=${encodeURIComponent(row.article.slug)}`
+                                "
                                 class="text-indigo-600 hover:text-indigo-800 font-medium text-sm underline"
                             >
                                 {{ row.article.title }}
