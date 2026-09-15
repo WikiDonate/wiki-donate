@@ -265,11 +265,14 @@ async function exportCsv() {
     delete params.per_page
     exporting.value = true
     try {
+        // apiConfig response interceptor unwraps axios responses to the body,
+        // so with responseType 'blob' the resolved value IS the Blob.
         const res = await api.get('/admin/transactions/export', {
             params,
             responseType: 'blob',
         })
-        const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }))
+        const blob = res instanceof Blob ? res : new Blob([res], { type: 'text/csv' })
+        const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
         a.download = `transactions-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '')}.csv`
@@ -278,7 +281,24 @@ async function exportCsv() {
         a.remove()
         URL.revokeObjectURL(url)
     } catch (e) {
-        notifyError(e.response?.data?.message || 'Export failed')
+        const payload = e?.response?.data ?? e?.message
+        let message = 'Export failed'
+        if (payload instanceof Blob) {
+            try {
+                message = JSON.parse(await payload.text()).message || message
+            } catch {
+                // keep generic message
+            }
+        } else if (typeof payload === 'string' && payload) {
+            try {
+                message = JSON.parse(payload).message || message
+            } catch {
+                message = payload
+            }
+        } else if (payload?.message) {
+            message = payload.message
+        }
+        notifyError(message)
     } finally {
         exporting.value = false
     }
