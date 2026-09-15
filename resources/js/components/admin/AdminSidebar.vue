@@ -119,7 +119,7 @@ const navItems = [
         type: 'link',
         name: 'Transactions',
         link: '/admin/transactions',
-        icon: ['fas', 'exchange-alt'],
+        icon: ['fas', 'file-invoice-dollar'],
     },
     {
         type: 'link',
