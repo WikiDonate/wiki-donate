@@ -23,7 +23,10 @@ class DonationFormulaEditDeleteTest extends TestCase
     public function test_owner_can_delete_formula_with_donations_and_public_list_hides_it()
     {
         $owner = User::factory()->create();
-        $article = Article::factory()->create(['user_id' => $owner->id]);
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
         $formula = DonationFormula::create([
             'article_id' => $article->id,
             'user_id' => $owner->id,
@@ -41,13 +44,13 @@ class DonationFormulaEditDeleteTest extends TestCase
             'status' => 'completed',
         ]);
 
-        $response = $this->actingEditor($owner)->deleteJson("/api/editor/donation-formulas/{$formula->uuid}");
+        $response = $this->actingEditor($owner)->deleteJson("/api/v1/donation-formulas/{$formula->uuid}");
         $response->assertOk();
 
         $this->assertSoftDeleted('donation_formulas', ['id' => $formula->id]);
 
         // Deleted formula no longer appears in the public list.
-        $list = $this->getJson("/api/donation-formulas/article/{$article->slug}");
+        $list = $this->getJson("/api/v1/donation-formulas/article/{$article->slug}");
         $list->assertOk();
         $this->assertNotContains($formula->uuid, collect($list->json('data'))->pluck('uuid')->all());
     }
@@ -55,7 +58,10 @@ class DonationFormulaEditDeleteTest extends TestCase
     public function test_update_after_completed_donation_sets_edited_flags()
     {
         $owner = User::factory()->create();
-        $article = Article::factory()->create(['user_id' => $owner->id]);
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
         $formula = DonationFormula::create([
             'article_id' => $article->id,
             'user_id' => $owner->id,
@@ -73,7 +79,7 @@ class DonationFormulaEditDeleteTest extends TestCase
             'status' => 'completed',
         ]);
 
-        $update = $this->actingEditor($owner)->putJson("/api/editor/donation-formulas/{$formula->uuid}", [
+        $update = $this->actingEditor($owner)->putJson("/api/v1/donation-formulas/{$formula->uuid}", [
             'name' => 'My Formula',
             'formula' => [['organization' => 'New Org', 'percentage' => 100]],
         ]);
@@ -88,7 +94,10 @@ class DonationFormulaEditDeleteTest extends TestCase
     public function test_update_without_completed_donation_does_not_set_edited_flags()
     {
         $owner = User::factory()->create();
-        $article = Article::factory()->create(['user_id' => $owner->id]);
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
         $formula = DonationFormula::create([
             'article_id' => $article->id,
             'user_id' => $owner->id,
@@ -96,7 +105,7 @@ class DonationFormulaEditDeleteTest extends TestCase
             'formula' => [['organization' => 'Org', 'percentage' => 100]],
         ]);
 
-        $update = $this->actingEditor($owner)->putJson("/api/editor/donation-formulas/{$formula->uuid}", [
+        $update = $this->actingEditor($owner)->putJson("/api/v1/donation-formulas/{$formula->uuid}", [
             'name' => 'My Formula',
             'formula' => [['organization' => 'New Org', 'percentage' => 100]],
         ]);
