@@ -84,6 +84,7 @@ class AdminTransactionLogTest extends TestCase
             'status' => 'completed',
             'paid_at' => now(),
             'actor' => $this->admin->id,
+            'method' => 'bank',
         ]);
 
         $res = $this->getJson('/api/v1/admin/transactions/summary');

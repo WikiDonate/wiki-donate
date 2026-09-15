@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\OrganizationPayout;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -81,10 +82,10 @@ class TransactionController extends Controller
                 ->where('status', 'completed')
                 ->sum('amount');
 
-            $totalPayouts = (float) \App\Models\OrganizationPayout::query()
+            $totalPayouts = (float) OrganizationPayout::query()
                 ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
                 ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
-                ->when($request->filled('method'), fn ($q) => $q->where('type', $request->input('method')))
+                ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
                 ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
                 ->sum('amount');
 
@@ -196,8 +197,9 @@ class TransactionController extends Controller
             ->values();
 
         // ---- Expense rows: organization payouts -------------------------------
-        $expense = \App\Models\OrganizationPayout::query()
-            ->when($request->filled('method'), fn ($q) => $q->where('type', $request->input('method')))
+        $expense = OrganizationPayout::query()
+            ->with('actorUser:id,username')
+            ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
             ->get()
             ->filter(function ($payout) use ($org) {
                 if ($org !== '' && strcasecmp($payout->organization_name, $org) !== 0) {
@@ -239,10 +241,10 @@ class TransactionController extends Controller
         ];
     }
 
-    private function expenseRow($payout): array
+    private function expenseRow(OrganizationPayout $payout): array
     {
         $paidAt = $payout->paid_at ? Carbon::parse($payout->paid_at) : $payout->created_at;
-        $actor = $payout->actor ? \App\Models\User::find($payout->actor)?->username : null;
+        $actor = $payout->actorUser?->username;
 
         return [
             'id' => 'payout-'.$payout->id,
@@ -254,9 +256,10 @@ class TransactionController extends Controller
             'organization_name' => $payout->organization_name,
             'amount' => (float) $payout->amount,
             'currency' => $payout->currency,
-            'method' => $payout->note ?? null,
+            'method' => $payout->method,
             'status' => $payout->status,
             'payout_type' => $payout->type,
+            'note' => $payout->note,
             'actor' => $actor,
             'formula_id' => $payout->donation_formula_id,
             'context' => 'Payout '.($payout->type === 'full' ? '(full)' : '(partial)').($actor ? ' by '.$actor : ''),
@@ -342,7 +345,7 @@ class TransactionController extends Controller
             }
         }
 
-        $paidBy = \App\Models\OrganizationPayout::query()
+        $paidBy = OrganizationPayout::query()
             ->get()
             ->groupBy(fn ($p) => $p->donation_formula_id.'|'.$p->organization_name);
 
