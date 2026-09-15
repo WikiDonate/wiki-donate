@@ -14,6 +14,15 @@ const updatePageContent = (page, content) => api.put(`/admin/page-contents/${pag
 
 const getDonations = (params) => api.get('/admin/donations', { params })
 
+const getPayoutAllocations = () => api.get('/admin/payouts/allocations')
+
+const getPayoutHistory = (formulaId, organization) =>
+    api.get('/admin/payouts/history', {
+        params: { donation_formula_id: formulaId, organization },
+    })
+
+const createPayout = (payload) => api.post('/admin/payouts', payload)
+
 export const adminService = {
     getDashboard,
     getDonations,
@@ -22,4 +31,7 @@ export const adminService = {
     deleteArticle,
     getPageContent,
     updatePageContent,
+    getPayoutAllocations,
+    getPayoutHistory,
+    createPayout,
 }
