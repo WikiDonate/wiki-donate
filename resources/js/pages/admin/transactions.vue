@@ -10,6 +10,7 @@
                     <button
                         class="inline-flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-colors"
                         @click="exportCsv"
+                        :disabled="exporting"
                     >
                         <font-awesome-icon :icon="['fas', 'file-invoice-dollar']" class="w-4 h-4" />
                         Export CSV
@@ -182,6 +183,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { adminService } from '~/services/adminService'
+import api from '~/config/apiConfig'
 import { useToastify } from '~/composables/useToastify'
 import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
 import AdminTable from '~/components/admin/AdminTable.vue'
@@ -200,6 +202,7 @@ const transactions = ref([])
 const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
 const summary = ref({ totalIncome: 0, totalPayouts: 0, remainingPayable: 0, netInHand: 0 })
 const loading = ref(true)
+const exporting = ref(false)
 
 const filterType = ref('')
 const filterMethod = ref('')
@@ -256,18 +259,29 @@ const loadPage = async (page = 1) => {
     }
 }
 
-function exportCsv() {
-    const qs = new URLSearchParams()
+async function exportCsv() {
     const params = buildParams(1)
-    for (const [key, value] of Object.entries(params)) {
-        if (key !== 'page' && key !== 'per_page' && value) qs.set(key, value)
+    delete params.page
+    delete params.per_page
+    exporting.value = true
+    try {
+        const res = await api.get('/admin/transactions/export', {
+            params,
+            responseType: 'blob',
+        })
+        const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }))
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `transactions-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '')}.csv`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        URL.revokeObjectURL(url)
+    } catch (e) {
+        notifyError(e.response?.data?.message || 'Export failed')
+    } finally {
+        exporting.value = false
     }
-    const base = import.meta.env.VITE_API_URL || '/api/v1'
-    const token = localStorage.getItem('token')
-    window.open(
-        `${base}/admin/transactions/export?${qs.toString()}${token ? `&token=${token}` : ''}`,
-        '_blank'
-    )
 }
 
 onMounted(loadPage)
