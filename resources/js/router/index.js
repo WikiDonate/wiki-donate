@@ -112,6 +112,11 @@ const routes = [
                 component: () => import('@/pages/admin/index.vue'),
             },
             {
+                path: 'transactions',
+                name: 'admin-transactions',
+                component: () => import('@/pages/admin/transactions.vue'),
+            },
+            {
                 path: 'donations',
                 name: 'admin-donations',
                 component: () => import('@/pages/admin/donations.vue'),

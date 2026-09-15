@@ -3,6 +3,7 @@
 use App\Http\Controllers\v1\Admin\ArticleController;
 use App\Http\Controllers\v1\Admin\DashboardController;
 use App\Http\Controllers\v1\Admin\PageContentController;
+use App\Http\Controllers\v1\Admin\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')
@@ -17,4 +18,8 @@ Route::prefix('admin')
 
         Route::get('page-contents/{page}', [PageContentController::class, 'show']);
         Route::put('page-contents/{page}', [PageContentController::class, 'update']);
+
+        Route::get('transactions', [TransactionController::class, 'index']);
+        Route::get('transactions/summary', [TransactionController::class, 'summary']);
+        Route::get('transactions/export', [TransactionController::class, 'export']);
     });
