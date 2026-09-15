@@ -92,7 +92,7 @@ class DonationReportController extends Controller
                         : ($donation->stripe_payment_intent_id ?? $donation->stripe_session_id),
                     'formula_id' => $formula?->id,
                     'formula' => $formula?->formula,
-                    'details' => $formula?->details ?? $donation->metadata['details'] ?? null,
+                    'details' => $donation->metadata['details'] ?? $formula?->details,
                     'article' => $article ? [
                         'slug' => $article->slug,
                         'title' => $article->title,

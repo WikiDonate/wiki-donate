@@ -45,6 +45,14 @@
                                     {{ formula.name || formula.user?.username }}:
                                     {{ formula.user?.username }}
                                 </h4>
+                                <span
+                                    v-if="formula.is_edited"
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-red-600"
+                                    title="This formula was edited after donations were made"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'circle-exclamation']" class="w-3 h-3" />
+                                    Edited by user
+                                </span>
                                 <Button
                                     width="auto"
                                     class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
