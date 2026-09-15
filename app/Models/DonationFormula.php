@@ -45,4 +45,9 @@ class DonationFormula extends Model
     {
         return $this->hasMany(Donation::class, 'donation_formula_id');
     }
+
+    public function hasCompletedDonation(): bool
+    {
+        return $this->donations()->where('status', 'completed')->exists();
+    }
 }
