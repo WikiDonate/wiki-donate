@@ -11,7 +11,7 @@
                         class="inline-flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-colors"
                         @click="exportCsv"
                     >
-                        <font-awesome-icon :icon="['fas', 'file-csv']" class="w-4 h-4" />
+                        <font-awesome-icon :icon="['fas', 'file-invoice-dollar']" class="w-4 h-4" />
                         Export CSV
                     </button>
                 </template>
@@ -22,25 +22,25 @@
                 class="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 sm:px-6 py-4 border-b border-gray-100"
             >
                 <StatCard
-                    icon="['fas', 'arrow-down']"
+                    icon="['fas', 'donate']"
                     icon-bg="green"
                     label="Total Income"
                     :value="formatAmount(summary.totalIncome)"
                 />
                 <StatCard
-                    icon="['fas', 'arrow-up']"
+                    icon="['fas', 'credit-card']"
                     icon-bg="red"
                     label="Total Payouts"
                     :value="formatAmount(summary.totalPayouts)"
                 />
                 <StatCard
-                    icon="['fas', 'balance-scale']"
+                    icon="['fas', 'chart-line']"
                     icon-bg="amber"
                     label="Remaining Payable"
                     :value="formatAmount(summary.remainingPayable)"
                 />
                 <StatCard
-                    icon="['fas', 'wallet']"
+                    icon="['fas', 'coins']"
                     icon-bg="indigo"
                     label="Net in Hand"
                     :value="formatAmount(summary.netInHand)"
@@ -148,13 +148,13 @@
                             <span class="text-xs text-gray-500">{{ row.status || '—' }}</span>
                         </template>
                         <template #cell-context="{ row }">
-                            <NuxtLink
+                            <RouterLink
                                 v-if="row.type === 'income' && row.article"
                                 :to="`/article?title=${encodeURIComponent(row.article.slug)}`"
                                 class="text-indigo-600 hover:text-indigo-800 text-xs underline"
                             >
                                 View
-                            </NuxtLink>
+                            </RouterLink>
                             <span v-else class="text-xs text-gray-400">—</span>
                         </template>
                     </AdminTable>

@@ -25,9 +25,17 @@ class AdminTransactionLogTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
+
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Editor']);
+
         $this->admin = User::factory()->create();
         $this->admin->assignRole('Admin');
+    }
+
+    private function authHeader(): array
+    {
+        return ['Authorization' => 'Bearer '.$this->admin->createToken('test')->plainTextToken];
     }
 
     private function articleWithFormula(float $percentage): DonationFormula
@@ -46,6 +54,26 @@ class AdminTransactionLogTest extends TestCase
                 ['organization' => 'Other Org', 'percentage' => 100 - $percentage],
             ],
         ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // AUTH — endpoints are admin-only
+    // -------------------------------------------------------------------------
+
+    public function test_transactions_require_authentication(): void
+    {
+        $this->getJson('/api/v1/admin/transactions')->assertStatus(401);
+        $this->getJson('/api/v1/admin/transactions/summary')->assertStatus(401);
+        $this->get('/api/v1/admin/transactions/export')->assertStatus(401);
+    }
+
+    public function test_transactions_forbid_non_admin_role(): void
+    {
+        $editor = User::factory()->create();
+        $editor->assignRole('Editor');
+        $header = ['Authorization' => 'Bearer '.$editor->createToken('test')->plainTextToken];
+
+        $this->getJson('/api/v1/admin/transactions', $header)->assertStatus(403);
     }
 
     // -------------------------------------------------------------------------
@@ -87,7 +115,7 @@ class AdminTransactionLogTest extends TestCase
             'method' => 'bank',
         ]);
 
-        $res = $this->getJson('/api/v1/admin/transactions/summary');
+        $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
 
         $res->assertOk()
             ->assertJsonPath('data.totalIncome', 100.0)
@@ -100,7 +128,7 @@ class AdminTransactionLogTest extends TestCase
 
     public function test_summary_is_zero_when_no_data(): void
     {
-        $res = $this->getJson('/api/v1/admin/transactions/summary');
+        $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
 
         $res->assertOk()->assertJson([
             'data' => [
@@ -151,7 +179,7 @@ class AdminTransactionLogTest extends TestCase
             'paid_at' => now(),
         ]);
 
-        $res = $this->getJson('/api/v1/admin/transactions');
+        $res = $this->getJson('/api/v1/admin/transactions', $this->authHeader());
 
         $res->assertOk();
         $rows = $res->json('data');
@@ -187,7 +215,7 @@ class AdminTransactionLogTest extends TestCase
             'actor' => $this->admin->id,
         ]);
 
-        $rows = $this->getJson('/api/v1/admin/transactions')->json('data');
+        $rows = $this->getJson('/api/v1/admin/transactions', $this->authHeader())->json('data');
         $income = collect($rows)->firstWhere('type', 'income');
         $expense = collect($rows)->firstWhere('type', 'expense');
 
@@ -229,8 +257,8 @@ class AdminTransactionLogTest extends TestCase
             'paid_at' => now(),
         ]);
 
-        $incomeOnly = $this->getJson('/api/v1/admin/transactions?type=income')->json('data');
-        $expenseOnly = $this->getJson('/api/v1/admin/transactions?type=expense')->json('data');
+        $incomeOnly = $this->getJson('/api/v1/admin/transactions?type=income', $this->authHeader())->json('data');
+        $expenseOnly = $this->getJson('/api/v1/admin/transactions?type=expense', $this->authHeader())->json('data');
 
         $this->assertCount(1, $incomeOnly);
         $this->assertEquals('income', $incomeOnly[0]['type']);
@@ -262,7 +290,7 @@ class AdminTransactionLogTest extends TestCase
             'stripe_session_id' => 'cs_test_123',
         ]);
 
-        $paypal = $this->getJson('/api/v1/admin/transactions?method=paypal')->json('data');
+        $paypal = $this->getJson('/api/v1/admin/transactions?method=paypal', $this->authHeader())->json('data');
         $this->assertCount(1, $paypal);
         $this->assertEquals('paypal', $paypal[0]['method']);
         $this->assertEquals(100.0, $paypal[0]['amount']);
@@ -301,13 +329,13 @@ class AdminTransactionLogTest extends TestCase
         ]);
 
         $today = now()->toDateString();
-        $rows = $this->getJson("/api/v1/admin/transactions?from={$today}")->json('data');
+        $rows = $this->getJson("/api/v1/admin/transactions?from={$today}", $this->authHeader())->json('data');
 
         $this->assertCount(1, $rows);
         $this->assertEquals('income', $rows[0]['type']);
         $this->assertEquals('New', $rows[0]['donor_name']);
 
-        $summary = $this->getJson("/api/v1/admin/transactions/summary?from={$today}")->json('data');
+        $summary = $this->getJson("/api/v1/admin/transactions/summary?from={$today}", $this->authHeader())->json('data');
         $this->assertEquals(40.0, $summary['totalIncome']);
         $this->assertEquals(0.0, $summary['totalPayouts']);
     }
@@ -334,7 +362,7 @@ class AdminTransactionLogTest extends TestCase
             'paid_at' => now(),
         ]);
 
-        $rows = $this->getJson('/api/v1/admin/transactions?type=expense&org=Wiki Org')->json('data');
+        $rows = $this->getJson('/api/v1/admin/transactions?type=expense&org=Wiki Org', $this->authHeader())->json('data');
         $this->assertCount(1, $rows);
         $this->assertEquals('Wiki Org', $rows[0]['organization_name']);
     }
@@ -365,7 +393,7 @@ class AdminTransactionLogTest extends TestCase
             'paid_at' => now(),
         ]);
 
-        $res = $this->get('/api/v1/admin/transactions/export');
+        $res = $this->get('/api/v1/admin/transactions/export', $this->authHeader());
 
         $res->assertOk();
         $csv = $this->extractStreamedContent($res);
