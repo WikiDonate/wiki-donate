@@ -39,8 +39,8 @@ class DashboardController extends Controller
                     'stripe_session_id' => $donation->stripe_session_id,
                     'paypal_order_id' => $donation->paypal_order_id,
                     'formula_id' => $formula?->id,
-                    'formula' => $formula?->formula ?? $metadata['formula'] ?? null,
-                    'details' => $formula?->details ?? $metadata['details'] ?? null,
+                    'formula' => $metadata['formula'] ?? $formula?->formula,
+                    'details' => $metadata['details'] ?? $formula?->details ?? null,
                     'article' => $article ? [
                         'slug' => $article->slug,
                         'title' => $article->title,
@@ -151,8 +151,8 @@ class DashboardController extends Controller
                         'stripe_session_id' => $donation->stripe_session_id,
                         'paypal_order_id' => $donation->paypal_order_id,
                         'formula_id' => $formula?->id,
-                        'formula' => $formula?->formula ?? $donation->metadata['formula'] ?? null,
-                        'details' => $formula?->details ?? $donation->metadata['details'] ?? null,
+                        'formula' => $donation->metadata['formula'] ?? $formula?->formula,
+                        'details' => $donation->metadata['details'] ?? $formula?->details ?? null,
                         'article' => $article ? [
                             'slug' => $article->slug,
                             'title' => $article->title,

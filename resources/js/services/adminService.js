@@ -26,6 +26,8 @@ const createPayout = (payload) => api.post('/admin/payouts', payload)
 export const adminService = {
     getDashboard,
     getDonations,
+    getTransactions,
+    getTransactionSummary,
     getArticles,
     getArticle,
     deleteArticle,

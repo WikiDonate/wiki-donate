@@ -117,6 +117,12 @@ const navItems = [
     },
     {
         type: 'link',
+        name: 'Transactions',
+        link: '/admin/transactions',
+        icon: ['fas', 'file-invoice-dollar'],
+    },
+    {
+        type: 'link',
         name: 'Donations',
         link: '/admin/donations',
         icon: ['fas', 'hand-holding-heart'],

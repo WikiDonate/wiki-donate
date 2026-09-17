@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class DonationFormula extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'uuid',
         'article_id',
@@ -18,6 +21,8 @@ class DonationFormula extends Model
 
     protected $casts = [
         'formula' => 'array',
+        'is_edited' => 'boolean',
+        'edited_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -44,5 +49,13 @@ class DonationFormula extends Model
     public function donations()
     {
         return $this->hasMany(Donation::class, 'donation_formula_id');
+    }
+
+    /**
+     * Whether this formula has at least one completed donation.
+     */
+    public function hasCompletedDonation(): bool
+    {
+        return $this->donations()->where('status', 'completed')->exists();
     }
 }
