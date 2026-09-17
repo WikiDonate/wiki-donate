@@ -213,7 +213,6 @@ const statusVariants = {
 const statusVariant = (status) => statusVariants[status] || 'danger'
 
 function openDetail(row) {
-    console.log('Opening detail for donation:', row)
     selectedDonation.value = {
         ...row,
         user: 'You',
