@@ -103,7 +103,7 @@ class AdminTransactionLogTest extends TestCase
             'status' => 'pending', // ignored in income math
         ]);
 
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 30,
@@ -111,12 +111,10 @@ class AdminTransactionLogTest extends TestCase
             'type' => 'partial',
             'status' => 'completed',
             'paid_at' => now(),
-            'actor' => $this->admin->id,
             'method' => 'bank',
         ]);
 
         $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
-
         $res->assertOk();
         $this->assertEquals(100.0, $res->json('data.totalIncome'));
         $this->assertEquals(30.0, $res->json('data.totalPayouts'));
@@ -139,6 +137,16 @@ class AdminTransactionLogTest extends TestCase
                 'netInHand' => 0.0,
             ],
         ]);
+    }
+
+    private function createPayout(array $attrs): OrganizationPayout
+    {
+        $attrs['organization_key'] = OrganizationPayout::makeKey($attrs['organization_name']);
+        if (! isset($attrs['actor_id']) && ! isset($attrs['actor'])) {
+            $attrs['actor_id'] = $this->admin->id;
+        }
+
+        return OrganizationPayout::create($attrs);
     }
 
     private function createDonationWithDate(array $attrs): Donation
@@ -186,7 +194,7 @@ class AdminTransactionLogTest extends TestCase
             'created_at' => now()->subDay(),
         ]);
 
-        $payout = OrganizationPayout::create([
+        $payout = $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 20,
@@ -221,7 +229,7 @@ class AdminTransactionLogTest extends TestCase
             'currency' => 'usd',
             'status' => 'completed',
         ]);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 20,
@@ -229,7 +237,6 @@ class AdminTransactionLogTest extends TestCase
             'type' => 'partial',
             'status' => 'completed',
             'paid_at' => now(),
-            'actor' => $this->admin->id,
         ]);
 
         $rows = $this->getJson('/api/v1/admin/transactions', $this->authHeader())->json('data');
@@ -264,7 +271,7 @@ class AdminTransactionLogTest extends TestCase
             'currency' => 'usd',
             'status' => 'completed',
         ]);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 20,
@@ -335,7 +342,7 @@ class AdminTransactionLogTest extends TestCase
             'currency' => 'usd',
             'status' => 'completed',
         ]);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 10,
@@ -360,7 +367,7 @@ class AdminTransactionLogTest extends TestCase
     public function test_org_filter_limits_expense_rows(): void
     {
         $formula = $this->articleWithFormula(50);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 10,
@@ -369,7 +376,7 @@ class AdminTransactionLogTest extends TestCase
             'status' => 'completed',
             'paid_at' => now(),
         ]);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Other Org',
             'amount' => 5,
@@ -403,7 +410,7 @@ class AdminTransactionLogTest extends TestCase
             'currency' => 'usd',
             'status' => 'completed',
         ]);
-        OrganizationPayout::create([
+        $this->createPayout([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
             'amount' => 20,

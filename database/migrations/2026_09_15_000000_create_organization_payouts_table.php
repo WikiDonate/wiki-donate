@@ -26,10 +26,11 @@ return new class extends Migration
             $table->string('organization_key');
             $table->decimal('amount', 12, 2);
             $table->string('currency', 3)->default('usd');
-            $table->enum('type', ['full', 'partial']);
-            $table->enum('status', ['paid'])->default('paid');
+            $table->string('type')->nullable()->comment('full|partial');
+            $table->string('status')->nullable()->default('paid');
             $table->timestamp('paid_at');
             $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
+            $table->string('method')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
 

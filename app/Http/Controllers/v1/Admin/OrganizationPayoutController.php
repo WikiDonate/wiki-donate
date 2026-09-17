@@ -20,6 +20,28 @@ class OrganizationPayoutController extends Controller
     }
 
     /**
+     * Payout ledger list (by formula, or all if no filter).
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $query = OrganizationPayout::with(['formula:id,uuid,name', 'actor:id,uuid,username']);
+
+        if ($request->filled('donation_formula_id')) {
+            $query->where('donation_formula_id', $request->donation_formula_id);
+        }
+
+        if ($request->filled('organization')) {
+            $query->where('organization_name', $request->organization);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payouts retrieved successfully',
+            'data' => $query->latest('paid_at')->get()->map(fn ($p) => $this->transform($p)),
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * List payable allocations (formula_id + org key, live owed/paid/balance).
      */
     public function allocations(): JsonResponse

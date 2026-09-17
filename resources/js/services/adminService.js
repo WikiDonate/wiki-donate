@@ -23,6 +23,10 @@ const getPayoutHistory = (formulaId, organization) =>
 
 const createPayout = (payload) => api.post('/admin/payouts', payload)
 
+const getTransactions = (params) => api.get('/admin/transactions', { params })
+
+const getTransactionSummary = (params) => api.get('/admin/transactions/summary', { params })
+
 export const adminService = {
     getDashboard,
     getDonations,

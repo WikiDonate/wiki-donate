@@ -107,7 +107,9 @@ const resolvedRowKey = computed(() => {
 function getKey(row, i) {
     return typeof resolvedRowKey.value === 'function'
         ? resolvedRowKey.value(row, i)
-        : resolvedRowKey.value ? row[resolvedRowKey.value] : i
+        : resolvedRowKey.value
+          ? row[resolvedRowKey.value]
+          : i
 }
 
 function getNestedValue(obj, path) {

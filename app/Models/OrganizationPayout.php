@@ -25,6 +25,7 @@ class OrganizationPayout extends Model
         'status',
         'paid_at',
         'actor_id',
+        'method',
         'note',
     ];
 
@@ -56,6 +57,11 @@ class OrganizationPayout extends Model
     }
 
     public function actor()
+    {
+        return $this->belongsTo(User::class, 'actor_id');
+    }
+
+    public function actorUser()
     {
         return $this->belongsTo(User::class, 'actor_id');
     }

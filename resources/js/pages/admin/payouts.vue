@@ -217,7 +217,7 @@ const fmt = (currency, value) =>
 const fetchAllocations = async () => {
     loading.value = true
     try {
-        allocations.value = (await adminService.getPayoutAllocations()).data?.data ?? []
+        allocations.value = (await adminService.getPayoutAllocations()).data ?? []
     } catch (err) {
         console.error('Failed to load payout allocations', err)
         allocations.value = []
@@ -260,7 +260,7 @@ const openHistory = async (row) => {
     historyLoading.value = true
     try {
         const res = await adminService.getPayoutHistory(row.formula_id, row.organization_name)
-        history.value = res.data?.data ?? []
+        history.value = res.data ?? []
     } catch (err) {
         historyError.value = err.response?.data?.message || 'Failed to load history.'
     } finally {
