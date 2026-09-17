@@ -129,6 +129,12 @@ const navItems = [
     },
     {
         type: 'link',
+        name: 'Payouts',
+        link: '/admin/payouts',
+        icon: ['fas', 'money-check-dollar'],
+    },
+    {
+        type: 'link',
         name: 'Articles',
         link: '/admin/articles',
         icon: ['fas', 'newspaper'],

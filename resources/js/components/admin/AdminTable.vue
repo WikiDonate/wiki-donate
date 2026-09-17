@@ -18,7 +18,7 @@
                 <tbody>
                     <tr
                         v-for="(row, i) in rows"
-                        :key="rowKey ? row[rowKey] : i"
+                        :key="getKey(row, i)"
                         class="border-t border-gray-100 hover:bg-gray-50"
                         :class="rowClass"
                     >
@@ -49,7 +49,7 @@
             </div>
             <div
                 v-for="(row, i) in rows"
-                :key="rowKey ? row[rowKey] : i"
+                :key="getKey(row, i)"
                 class="px-4 py-4 space-y-2"
                 :class="rowClass"
             >
@@ -73,7 +73,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
     columns: {
         type: Array,
         required: true,
@@ -83,7 +85,7 @@ defineProps({
         default: () => [],
     },
     rowKey: {
-        type: String,
+        type: [String, Function],
         default: '',
     },
     rowClass: {
@@ -95,6 +97,18 @@ defineProps({
         default: 'No data',
     },
 })
+
+const resolvedRowKey = computed(() => {
+    if (!props.rowKey) return ''
+    if (typeof props.rowKey === 'function') return (row, i) => props.rowKey(row) ?? i
+    return props.rowKey
+})
+
+function getKey(row, i) {
+    return typeof resolvedRowKey.value === 'function'
+        ? resolvedRowKey.value(row, i)
+        : resolvedRowKey.value ? row[resolvedRowKey.value] : i
+}
 
 function getNestedValue(obj, path) {
     return path.split('.').reduce((acc, part) => {

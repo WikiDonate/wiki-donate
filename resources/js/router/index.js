@@ -131,6 +131,11 @@ const routes = [
                 name: 'admin-how-it-works',
                 component: () => import('@/pages/admin/how-it-works.vue'),
             },
+            {
+                path: 'payouts',
+                name: 'admin-payouts',
+                component: () => import('@/pages/admin/payouts.vue'),
+            },
         ],
     },
     {

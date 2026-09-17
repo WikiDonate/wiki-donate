@@ -14,9 +14,14 @@ const updatePageContent = (page, content) => api.put(`/admin/page-contents/${pag
 
 const getDonations = (params) => api.get('/admin/donations', { params })
 
-const getTransactions = (params) => api.get('/admin/transactions', { params })
+const getPayoutAllocations = () => api.get('/admin/payouts/allocations')
 
-const getTransactionSummary = (params) => api.get('/admin/transactions/summary', { params })
+const getPayoutHistory = (formulaId, organization) =>
+    api.get('/admin/payouts/history', {
+        params: { donation_formula_id: formulaId, organization },
+    })
+
+const createPayout = (payload) => api.post('/admin/payouts', payload)
 
 export const adminService = {
     getDashboard,
@@ -28,4 +33,7 @@ export const adminService = {
     deleteArticle,
     getPageContent,
     updatePageContent,
+    getPayoutAllocations,
+    getPayoutHistory,
+    createPayout,
 }

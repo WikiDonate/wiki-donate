@@ -4,35 +4,42 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Organization payouts ledger (append-only).
- *
- * Owned by the payouts feature; the Admin Transaction Log reads from it for
- * expense rows. Amounts are never edited or deleted — corrections happen via
- * new entries. Balance is always computed live, never stored.
- */
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * Append-only payout ledger. Amounts are never edited or deleted;
+     * balances are always computed live from this ledger.
+     */
     public function up(): void
     {
+        if (Schema::hasTable('organization_payouts')) {
+            Schema::drop('organization_payouts');
+        }
+
         Schema::create('organization_payouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('donation_formula_id')->constrained('donation_formulas')->cascadeOnDelete();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('donation_formula_id')->constrained('donation_formulas')->onDelete('cascade');
             $table->string('organization_name');
+            $table->string('organization_key');
             $table->decimal('amount', 12, 2);
             $table->string('currency', 3)->default('usd');
             $table->enum('type', ['full', 'partial']);
-            $table->string('status')->default('completed');
-            $table->timestamp('paid_at')->nullable();
-            $table->foreignId('actor')->nullable()->constrained('users')->nullOnDelete();
+            $table->enum('status', ['paid'])->default('paid');
+            $table->timestamp('paid_at');
+            $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
             $table->text('note')->nullable();
-            $table->string('method')->nullable(); // bank | bKash | other
             $table->timestamps();
 
-            $table->index(['donation_formula_id', 'organization_name']);
+            $table->index(['donation_formula_id', 'organization_key']);
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('organization_payouts');
