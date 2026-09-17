@@ -22,7 +22,7 @@ instance.interceptors.request.use(
             message: 'Server Error',
             errors: ['Server not responding'],
         })
-    }
+    },
 )
 
 instance.interceptors.response.use(
@@ -43,7 +43,7 @@ instance.interceptors.response.use(
             message: 'Server Error',
             errors: ['Server not responding'],
         })
-    }
+    },
 )
 
 export default instance

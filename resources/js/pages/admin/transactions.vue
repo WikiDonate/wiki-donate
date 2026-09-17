@@ -181,128 +181,128 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { adminService } from '~/services/adminService'
-import api from '~/config/apiConfig'
-import { useToastify } from '~/composables/useToastify'
-import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
-import AdminTable from '~/components/admin/AdminTable.vue'
-import AdminBadge from '~/components/admin/AdminBadge.vue'
-import StatCard from '~/components/admin/StatCard.vue'
-import LoadingSpinner from '~/components/LoadingSpinner.vue'
-import Pagination from '~/components/Pagination.vue'
-import Button from '~/components/Button.vue'
+    import { ref, onMounted } from 'vue'
+    import { adminService } from '~/services/adminService'
+    import api from '~/config/apiConfig'
+    import { useToastify } from '~/composables/useToastify'
+    import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
+    import AdminTable from '~/components/admin/AdminTable.vue'
+    import AdminBadge from '~/components/admin/AdminBadge.vue'
+    import StatCard from '~/components/admin/StatCard.vue'
+    import LoadingSpinner from '~/components/LoadingSpinner.vue'
+    import Pagination from '~/components/Pagination.vue'
+    import Button from '~/components/Button.vue'
 
-const { notifyError } = useToastify()
+    const { notifyError } = useToastify()
 
-useHead({ title: 'Admin - Transactions' })
-definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
+    useHead({ title: 'Admin - Transactions' })
+    definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
-const transactions = ref([])
-const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
-const summary = ref({ totalIncome: 0, totalPayouts: 0, remainingPayable: 0, netInHand: 0 })
-const loading = ref(true)
-const exporting = ref(false)
+    const transactions = ref([])
+    const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
+    const summary = ref({ totalIncome: 0, totalPayouts: 0, remainingPayable: 0, netInHand: 0 })
+    const loading = ref(true)
+    const exporting = ref(false)
 
-const filterType = ref('')
-const filterMethod = ref('')
-const filterOrg = ref('')
-const filterArticle = ref('')
-const fromDate = ref('')
-const toDate = ref('')
+    const filterType = ref('')
+    const filterMethod = ref('')
+    const filterOrg = ref('')
+    const filterArticle = ref('')
+    const fromDate = ref('')
+    const toDate = ref('')
 
-const columns = [
-    { key: 'date', label: 'Date' },
-    { key: 'description', label: 'Description' },
-    { key: 'type', label: 'Type' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'method', label: 'Method' },
-    { key: 'status', label: 'Status' },
-    { key: 'context', label: 'Context' },
-]
+    const columns = [
+        { key: 'date', label: 'Date' },
+        { key: 'description', label: 'Description' },
+        { key: 'type', label: 'Type' },
+        { key: 'amount', label: 'Amount' },
+        { key: 'method', label: 'Method' },
+        { key: 'status', label: 'Status' },
+        { key: 'context', label: 'Context' },
+    ]
 
-function formatAmount(value) {
-    const n = Number(value ?? 0)
-    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
-
-function buildParams(page) {
-    const params = { page, per_page: 20 }
-    if (filterType.value) params.type = filterType.value
-    if (filterMethod.value) params.method = filterMethod.value
-    if (filterOrg.value.trim()) params.org = filterOrg.value.trim()
-    if (filterArticle.value.trim()) params.article = filterArticle.value.trim()
-    if (fromDate.value) params.from = fromDate.value
-    if (toDate.value) params.to = toDate.value
-    return params
-}
-
-const loadPage = async (page = 1) => {
-    loading.value = true
-    try {
-        const params = buildParams(page)
-        const [txRes, sumRes] = await Promise.all([
-            adminService.getTransactions(params),
-            adminService.getTransactionSummary(params),
-        ])
-        if (txRes.success) {
-            transactions.value = txRes.data
-            meta.value = txRes.meta
-        }
-        if (sumRes.success) {
-            summary.value = sumRes.data
-        }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to load transactions')
-    } finally {
-        loading.value = false
+    function formatAmount(value) {
+        const n = Number(value ?? 0)
+        return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     }
-}
 
-async function exportCsv() {
-    const params = buildParams(1)
-    delete params.page
-    delete params.per_page
-    exporting.value = true
-    try {
-        // apiConfig response interceptor unwraps axios responses to the body,
-        // so with responseType 'blob' the resolved value IS the Blob.
-        const res = await api.get('/admin/transactions/export', {
-            params,
-            responseType: 'blob',
-        })
-        const blob = res instanceof Blob ? res : new Blob([res], { type: 'text/csv' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `transactions-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '')}.csv`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(url)
-    } catch (e) {
-        const payload = e?.response?.data ?? e?.message
-        let message = 'Export failed'
-        if (payload instanceof Blob) {
-            try {
-                message = JSON.parse(await payload.text()).message || message
-            } catch {
-                // keep generic message
-            }
-        } else if (typeof payload === 'string' && payload) {
-            try {
-                message = JSON.parse(payload).message || message
-            } catch {
-                message = payload
-            }
-        } else if (payload?.message) {
-            message = payload.message
-        }
-        notifyError(message)
-    } finally {
-        exporting.value = false
+    function buildParams(page) {
+        const params = { page, per_page: 20 }
+        if (filterType.value) params.type = filterType.value
+        if (filterMethod.value) params.method = filterMethod.value
+        if (filterOrg.value.trim()) params.org = filterOrg.value.trim()
+        if (filterArticle.value.trim()) params.article = filterArticle.value.trim()
+        if (fromDate.value) params.from = fromDate.value
+        if (toDate.value) params.to = toDate.value
+        return params
     }
-}
 
-onMounted(loadPage)
+    const loadPage = async (page = 1) => {
+        loading.value = true
+        try {
+            const params = buildParams(page)
+            const [txRes, sumRes] = await Promise.all([
+                adminService.getTransactions(params),
+                adminService.getTransactionSummary(params),
+            ])
+            if (txRes.success) {
+                transactions.value = txRes.data
+                meta.value = txRes.meta
+            }
+            if (sumRes.success) {
+                summary.value = sumRes.data
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to load transactions')
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function exportCsv() {
+        const params = buildParams(1)
+        delete params.page
+        delete params.per_page
+        exporting.value = true
+        try {
+            // apiConfig response interceptor unwraps axios responses to the body,
+            // so with responseType 'blob' the resolved value IS the Blob.
+            const res = await api.get('/admin/transactions/export', {
+                params,
+                responseType: 'blob',
+            })
+            const blob = res instanceof Blob ? res : new Blob([res], { type: 'text/csv' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `transactions-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '')}.csv`
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+            URL.revokeObjectURL(url)
+        } catch (e) {
+            const payload = e?.response?.data ?? e?.message
+            let message = 'Export failed'
+            if (payload instanceof Blob) {
+                try {
+                    message = JSON.parse(await payload.text()).message || message
+                } catch {
+                    // keep generic message
+                }
+            } else if (typeof payload === 'string' && payload) {
+                try {
+                    message = JSON.parse(payload).message || message
+                } catch {
+                    message = payload
+                }
+            } else if (payload?.message) {
+                message = payload.message
+            }
+            notifyError(message)
+        } finally {
+            exporting.value = false
+        }
+    }
+
+    onMounted(loadPage)
 </script>

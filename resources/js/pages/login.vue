@@ -81,64 +81,64 @@
 </template>
 
 <script setup>
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { authService } from '~/services/authService'
-import { useAuthStore } from '~/stores/authStore'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import { authService } from '~/services/authService'
+    import { useAuthStore } from '~/stores/authStore'
 
-useHead({
-    title: 'Login',
-})
+    useHead({
+        title: 'Login',
+    })
 
-const router = useRouter()
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
-const isLoading = ref(false)
-const authStore = useAuthStore()
+    const router = useRouter()
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
+    const isLoading = ref(false)
+    const authStore = useAuthStore()
 
-const validationSchema = yup.object({
-    username: yup.string().required('Username is required'),
-    password: yup.string().required('Password is required'),
-})
+    const validationSchema = yup.object({
+        username: yup.string().required('Username is required'),
+        password: yup.string().required('Password is required'),
+    })
 
-// Setup VeeValidate
-const { handleSubmit, defineField, errors } = useForm({
-    validationSchema,
-})
+    // Setup VeeValidate
+    const { handleSubmit, defineField, errors } = useForm({
+        validationSchema,
+    })
 
-// Define fields using defineField
-const [username, usernameProps] = defineField('username')
-const [password, passwordProps] = defineField('password')
+    // Define fields using defineField
+    const [username, usernameProps] = defineField('username')
+    const [password, passwordProps] = defineField('password')
 
-const onSubmit = handleSubmit(async (values) => {
-    // Reset alert visibility
-    showAlert.value = false
-    isLoading.value = true
+    const onSubmit = handleSubmit(async (values) => {
+        // Reset alert visibility
+        showAlert.value = false
+        isLoading.value = true
 
-    try {
-        const response = await authService.login({
-            username: values.username,
-            password: values.password,
-        })
+        try {
+            const response = await authService.login({
+                username: values.username,
+                password: values.password,
+            })
 
-        if (!response.success) {
+            if (!response.success) {
+                alertVariant.value = 'error'
+                alertMessage.value = response.errors[0]
+                showAlert.value = true
+                isLoading.value = false
+                return
+            }
+
+            authStore.login(response.data)
+            localStorage.setItem('token', response.data.token)
+            router.push('/main')
+        } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = response.errors[0]
+            alertMessage.value = error.errors?.[0] || 'Login failed'
             showAlert.value = true
+        } finally {
             isLoading.value = false
-            return
         }
-
-        authStore.login(response.data)
-        localStorage.setItem('token', response.data.token)
-        router.push('/main')
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors?.[0] || 'Login failed'
-        showAlert.value = true
-    } finally {
-        isLoading.value = false
-    }
-})
+    })
 </script>

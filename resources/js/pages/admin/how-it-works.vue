@@ -125,127 +125,129 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { adminService } from '~/services/adminService'
-import { useToastify } from '~/composables/useToastify'
+    import { ref, onMounted } from 'vue'
+    import { adminService } from '~/services/adminService'
+    import { useToastify } from '~/composables/useToastify'
 
-const { notifySuccess, notifyError } = useToastify()
+    const { notifySuccess, notifyError } = useToastify()
 
-useHead({ title: 'Admin - How It Works' })
-definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
+    useHead({ title: 'Admin - How It Works' })
+    definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
-const loading = ref(true)
-const saving = ref(false)
-const steps = ref([])
-const originalSteps = ref([])
+    const loading = ref(true)
+    const saving = ref(false)
+    const steps = ref([])
+    const originalSteps = ref([])
 
-const availableIcons = [
-    ['fas', 'search'],
-    ['fas', 'calculator'],
-    ['fas', 'donate'],
-    ['fas', 'lightbulb'],
-    ['fas', 'pen'],
-    ['fas', 'hand-holding-heart'],
-    ['fas', 'globe'],
-    ['fas', 'users'],
-    ['fas', 'star'],
-    ['fas', 'heart'],
-    ['fas', 'book-open'],
-    ['fas', 'bell'],
-    ['fas', 'flag'],
-    ['fas', 'rocket'],
-    ['fas', 'cog'],
-    ['fas', 'handshake'],
-]
+    const availableIcons = [
+        ['fas', 'search'],
+        ['fas', 'calculator'],
+        ['fas', 'donate'],
+        ['fas', 'lightbulb'],
+        ['fas', 'pen'],
+        ['fas', 'hand-holding-heart'],
+        ['fas', 'globe'],
+        ['fas', 'users'],
+        ['fas', 'star'],
+        ['fas', 'heart'],
+        ['fas', 'book-open'],
+        ['fas', 'bell'],
+        ['fas', 'flag'],
+        ['fas', 'rocket'],
+        ['fas', 'cog'],
+        ['fas', 'handshake'],
+    ]
 
-function parseDescriptionToRaw(description) {
-    return description.map((seg) => (seg.type === 'link' ? `[[${seg.value}]]` : seg.value)).join('')
-}
+    function parseDescriptionToRaw(description) {
+        return description
+            .map((seg) => (seg.type === 'link' ? `[[${seg.value}]]` : seg.value))
+            .join('')
+    }
 
-function parseRawToDescription(raw) {
-    const segments = []
-    const regex = /\[\[([^\]]+)\]\]/g
-    let lastIndex = 0
-    let match
+    function parseRawToDescription(raw) {
+        const segments = []
+        const regex = /\[\[([^\]]+)\]\]/g
+        let lastIndex = 0
+        let match
 
-    while ((match = regex.exec(raw)) !== null) {
-        if (match.index > lastIndex) {
-            segments.push({
-                type: 'text',
-                value: raw.slice(lastIndex, match.index),
-            })
+        while ((match = regex.exec(raw)) !== null) {
+            if (match.index > lastIndex) {
+                segments.push({
+                    type: 'text',
+                    value: raw.slice(lastIndex, match.index),
+                })
+            }
+            segments.push({ type: 'link', value: match[1] })
+            lastIndex = regex.lastIndex
         }
-        segments.push({ type: 'link', value: match[1] })
-        lastIndex = regex.lastIndex
+
+        if (lastIndex < raw.length) {
+            segments.push({ type: 'text', value: raw.slice(lastIndex) })
+        }
+
+        return segments
     }
 
-    if (lastIndex < raw.length) {
-        segments.push({ type: 'text', value: raw.slice(lastIndex) })
+    const addStep = () => {
+        steps.value.push({
+            icon: ['fas', 'search'],
+            title: '',
+            rawDescription: '',
+        })
     }
 
-    return segments
-}
+    const removeStep = (index) => {
+        steps.value.splice(index, 1)
+    }
 
-const addStep = () => {
-    steps.value.push({
-        icon: ['fas', 'search'],
-        title: '',
-        rawDescription: '',
+    const resetForm = () => {
+        steps.value = originalSteps.value.map((s) => ({ ...s }))
+    }
+
+    const saveContent = async () => {
+        const content = steps.value.map((step) => ({
+            title: step.title,
+            icon: step.icon || ['fas', 'search'],
+            description: parseRawToDescription(step.rawDescription),
+        }))
+
+        saving.value = true
+        try {
+            const res = await adminService.updatePageContent('how-it-works', content)
+            if (res.success) {
+                notifySuccess('How It Works page updated successfully')
+                originalSteps.value = steps.value.map((s) => ({
+                    icon: s.icon,
+                    title: s.title,
+                    rawDescription: s.rawDescription,
+                }))
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to save page content')
+        } finally {
+            saving.value = false
+        }
+    }
+
+    onMounted(async () => {
+        try {
+            const res = await adminService.getPageContent('how-it-works')
+            if (res.success) {
+                steps.value = res.data.content.map((step) => ({
+                    icon: step.icon || ['fas', 'search'],
+                    title: step.title,
+                    rawDescription: parseDescriptionToRaw(step.description),
+                }))
+                originalSteps.value = steps.value.map((s) => ({
+                    icon: s.icon,
+                    title: s.title,
+                    rawDescription: s.rawDescription,
+                }))
+            }
+        } catch {
+            notifyError('Failed to load page content')
+        } finally {
+            loading.value = false
+        }
     })
-}
-
-const removeStep = (index) => {
-    steps.value.splice(index, 1)
-}
-
-const resetForm = () => {
-    steps.value = originalSteps.value.map((s) => ({ ...s }))
-}
-
-const saveContent = async () => {
-    const content = steps.value.map((step) => ({
-        title: step.title,
-        icon: step.icon || ['fas', 'search'],
-        description: parseRawToDescription(step.rawDescription),
-    }))
-
-    saving.value = true
-    try {
-        const res = await adminService.updatePageContent('how-it-works', content)
-        if (res.success) {
-            notifySuccess('How It Works page updated successfully')
-            originalSteps.value = steps.value.map((s) => ({
-                icon: s.icon,
-                title: s.title,
-                rawDescription: s.rawDescription,
-            }))
-        }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to save page content')
-    } finally {
-        saving.value = false
-    }
-}
-
-onMounted(async () => {
-    try {
-        const res = await adminService.getPageContent('how-it-works')
-        if (res.success) {
-            steps.value = res.data.content.map((step) => ({
-                icon: step.icon || ['fas', 'search'],
-                title: step.title,
-                rawDescription: parseDescriptionToRaw(step.description),
-            }))
-            originalSteps.value = steps.value.map((s) => ({
-                icon: s.icon,
-                title: s.title,
-                rawDescription: s.rawDescription,
-            }))
-        }
-    } catch {
-        notifyError('Failed to load page content')
-    } finally {
-        loading.value = false
-    }
-})
 </script>

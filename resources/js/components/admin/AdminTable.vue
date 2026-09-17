@@ -73,49 +73,49 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
 
-const props = defineProps({
-    columns: {
-        type: Array,
-        required: true,
-    },
-    rows: {
-        type: Array,
-        default: () => [],
-    },
-    rowKey: {
-        type: [String, Function],
-        default: '',
-    },
-    rowClass: {
-        type: String,
-        default: '',
-    },
-    emptyText: {
-        type: String,
-        default: 'No data',
-    },
-})
+    const props = defineProps({
+        columns: {
+            type: Array,
+            required: true,
+        },
+        rows: {
+            type: Array,
+            default: () => [],
+        },
+        rowKey: {
+            type: [String, Function],
+            default: '',
+        },
+        rowClass: {
+            type: String,
+            default: '',
+        },
+        emptyText: {
+            type: String,
+            default: 'No data',
+        },
+    })
 
-const resolvedRowKey = computed(() => {
-    if (!props.rowKey) return ''
-    if (typeof props.rowKey === 'function') return (row, i) => props.rowKey(row) ?? i
-    return props.rowKey
-})
+    const resolvedRowKey = computed(() => {
+        if (!props.rowKey) return ''
+        if (typeof props.rowKey === 'function') return (row, i) => props.rowKey(row) ?? i
+        return props.rowKey
+    })
 
-function getKey(row, i) {
-    return typeof resolvedRowKey.value === 'function'
-        ? resolvedRowKey.value(row, i)
-        : resolvedRowKey.value
-          ? row[resolvedRowKey.value]
-          : i
-}
+    function getKey(row, i) {
+        return typeof resolvedRowKey.value === 'function'
+            ? resolvedRowKey.value(row, i)
+            : resolvedRowKey.value
+              ? row[resolvedRowKey.value]
+              : i
+    }
 
-function getNestedValue(obj, path) {
-    return path.split('.').reduce((acc, part) => {
-        if (acc && typeof acc === 'object' && part in acc) return acc[part]
-        return ''
-    }, obj)
-}
+    function getNestedValue(obj, path) {
+        return path.split('.').reduce((acc, part) => {
+            if (acc && typeof acc === 'object' && part in acc) return acc[part]
+            return ''
+        }, obj)
+    }
 </script>

@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -56,7 +57,7 @@ class OrganizationPayoutTest extends TestCase
     private function addDonation(float $amount, string $status): void
     {
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'user_id' => $this->admin->id,
             'donation_formula_id' => $this->formula->id,
             'amount' => $amount,

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\v1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DonationFormula;
 use App\Models\Donation;
+use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
 use App\Services\Payout\OrganizationPayoutService;
 use Exception;
@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrganizationPayoutController extends Controller
 {
-    public function __construct(private OrganizationPayoutService $payouts)
-    {
-    }
+    public function __construct(private OrganizationPayoutService $payouts) {}
 
     /**
      * Payout ledger list (by formula, or all if no filter).

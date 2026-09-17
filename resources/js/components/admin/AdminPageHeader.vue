@@ -17,24 +17,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
 
-const props = defineProps({
-    title: {
-        type: String,
-        required: true,
-    },
-    subtitle: {
-        type: String,
-        default: '',
-    },
-    card: {
-        type: Boolean,
-        default: false,
-    },
-})
+    const props = defineProps({
+        title: {
+            type: String,
+            required: true,
+        },
+        subtitle: {
+            type: String,
+            default: '',
+        },
+        card: {
+            type: Boolean,
+            default: false,
+        },
+    })
 
-const containerClasses = computed(() =>
-    props.card ? 'px-4 sm:px-6 py-4' : 'rounded-xl px-4 sm:px-6 py-5 mb-6'
-)
+    const containerClasses = computed(() =>
+        props.card ? 'px-4 sm:px-6 py-4' : 'rounded-xl px-4 sm:px-6 py-5 mb-6',
+    )
 </script>

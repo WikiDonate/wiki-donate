@@ -34,48 +34,48 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+    import { computed, ref } from 'vue'
 
-// Define props
-const props = defineProps({
-    placeholder: {
-        type: String,
-        default: '',
-    },
-    modelValue: {
-        type: [String, Number],
-        default: '',
-    },
-    type: {
-        type: String,
-        default: 'text',
-    },
-    errorMessage: {
-        type: String,
-        default: '',
-    },
-    disabled: {
-        type: Boolean,
-        default: false,
-    },
-})
+    // Define props
+    const props = defineProps({
+        placeholder: {
+            type: String,
+            default: '',
+        },
+        modelValue: {
+            type: [String, Number],
+            default: '',
+        },
+        type: {
+            type: String,
+            default: 'text',
+        },
+        errorMessage: {
+            type: String,
+            default: '',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
+    })
 
-// state for show/hide password
-const showPassword = ref(false)
-const isPassword = computed(() => props.type === 'password')
+    // state for show/hide password
+    const showPassword = ref(false)
+    const isPassword = computed(() => props.type === 'password')
 
-// toggle function
-const togglePassword = () => {
-    showPassword.value = !showPassword.value
-}
+    // toggle function
+    const togglePassword = () => {
+        showPassword.value = !showPassword.value
+    }
 
-// Classes for input based on validation state
-const inputClasses = computed(() => {
-    return [
-        'border rounded py-2 px-3 w-full focus:outline-none',
-        props.errorMessage
-            ? 'border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:ring-blue-200',
-    ]
-})
+    // Classes for input based on validation state
+    const inputClasses = computed(() => {
+        return [
+            'border rounded py-2 px-3 w-full focus:outline-none',
+            props.errorMessage
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-gray-300 focus:ring-blue-200',
+        ]
+    })
 </script>

@@ -103,68 +103,68 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+    import { ref } from 'vue'
+    import { useRoute } from 'vue-router'
 
-const route = useRoute()
+    const route = useRoute()
 
-const navItems = [
-    {
-        type: 'link',
-        name: 'Dashboard',
-        link: '/admin',
-        icon: ['fas', 'chart-pie'],
-    },
-    {
-        type: 'link',
-        name: 'Transactions',
-        link: '/admin/transactions',
-        icon: ['fas', 'file-invoice-dollar'],
-    },
-    {
-        type: 'link',
-        name: 'Donations',
-        link: '/admin/donations',
-        icon: ['fas', 'hand-holding-heart'],
-    },
-    {
-        type: 'link',
-        name: 'Payouts',
-        link: '/admin/payouts',
-        icon: ['fas', 'money-check-dollar'],
-    },
-    {
-        type: 'link',
-        name: 'Articles',
-        link: '/admin/articles',
-        icon: ['fas', 'newspaper'],
-    },
-    {
-        type: 'group',
-        name: 'Pages',
-        icon: ['fas', 'file-alt'],
-        children: [
-            {
-                name: 'How It Works',
-                link: '/admin/how-it-works',
-                icon: ['fas', 'book-open'],
-            },
-        ],
-    },
-]
+    const navItems = [
+        {
+            type: 'link',
+            name: 'Dashboard',
+            link: '/admin',
+            icon: ['fas', 'chart-pie'],
+        },
+        {
+            type: 'link',
+            name: 'Transactions',
+            link: '/admin/transactions',
+            icon: ['fas', 'file-invoice-dollar'],
+        },
+        {
+            type: 'link',
+            name: 'Donations',
+            link: '/admin/donations',
+            icon: ['fas', 'hand-holding-heart'],
+        },
+        {
+            type: 'link',
+            name: 'Payouts',
+            link: '/admin/payouts',
+            icon: ['fas', 'money-check-dollar'],
+        },
+        {
+            type: 'link',
+            name: 'Articles',
+            link: '/admin/articles',
+            icon: ['fas', 'newspaper'],
+        },
+        {
+            type: 'group',
+            name: 'Pages',
+            icon: ['fas', 'file-alt'],
+            children: [
+                {
+                    name: 'How It Works',
+                    link: '/admin/how-it-works',
+                    icon: ['fas', 'book-open'],
+                },
+            ],
+        },
+    ]
 
-const openGroups = ref([])
+    const openGroups = ref([])
 
-const isActive = (link) => route.path === link
+    const isActive = (link) => route.path === link
 
-const isGroupActive = (children) => children.some((c) => route.path === c.link)
+    const isGroupActive = (children) => children.some((c) => route.path === c.link)
 
-const toggleGroup = (index) => {
-    const i = openGroups.value.indexOf(index)
-    if (i === -1) {
-        openGroups.value.push(index)
-    } else {
-        openGroups.value.splice(i, 1)
+    const toggleGroup = (index) => {
+        const i = openGroups.value.indexOf(index)
+        if (i === -1) {
+            openGroups.value.push(index)
+        } else {
+            openGroups.value.splice(i, 1)
+        }
     }
-}
 </script>

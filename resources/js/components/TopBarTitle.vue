@@ -17,15 +17,15 @@
 </template>
 
 <script setup>
-// Define props to accept dynamic content
-defineProps({
-    pageTitle: {
-        type: String,
-        default: 'Big Brother (UK TV series)', // default title if not provided
-    },
-    rightSide: {
-        type: String,
-        default: '',
-    },
-})
+    // Define props to accept dynamic content
+    defineProps({
+        pageTitle: {
+            type: String,
+            default: 'Big Brother (UK TV series)', // default title if not provided
+        },
+        rightSide: {
+            type: String,
+            default: '',
+        },
+    })
 </script>

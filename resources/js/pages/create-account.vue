@@ -158,121 +158,121 @@
 </template>
 
 <script setup>
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { userService } from '~/services/userService'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import { userService } from '~/services/userService'
 
-useHead({
-    title: 'Create Account',
-})
+    useHead({
+        title: 'Create Account',
+    })
 
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
-const registrationSuccess = ref(false)
-const registeredEmail = ref('')
-const resendCooldown = ref(0)
-let resendTimer = null
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
+    const registrationSuccess = ref(false)
+    const registeredEmail = ref('')
+    const resendCooldown = ref(0)
+    let resendTimer = null
 
-const validationSchema = yup.object({
-    username: yup
-        .string()
-        .required('Username is required')
-        .min(3, 'Username must be at least 3 characters'),
-    password: yup
-        .string()
-        .required('Password is required')
-        .min(6, 'Password must be at least 6 characters'),
-    confirmPassword: yup
-        .string()
-        .required('Confirm Password is required')
-        .oneOf([yup.ref('password'), null], 'Passwords must match'),
-    email: yup.string().required('Email is required').email('Email must be a valid email'),
-})
+    const validationSchema = yup.object({
+        username: yup
+            .string()
+            .required('Username is required')
+            .min(3, 'Username must be at least 3 characters'),
+        password: yup
+            .string()
+            .required('Password is required')
+            .min(6, 'Password must be at least 6 characters'),
+        confirmPassword: yup
+            .string()
+            .required('Confirm Password is required')
+            .oneOf([yup.ref('password'), null], 'Passwords must match'),
+        email: yup.string().required('Email is required').email('Email must be a valid email'),
+    })
 
-// Setup VeeValidate
-const { handleSubmit, defineField, errors, resetForm } = useForm({
-    validationSchema,
-})
+    // Setup VeeValidate
+    const { handleSubmit, defineField, errors, resetForm } = useForm({
+        validationSchema,
+    })
 
-// Define fields using defineField
-const [username, usernameProps] = defineField('username')
-const [password, passwordProps] = defineField('password')
-const [confirmPassword, confirmPasswordProps] = defineField('confirmPassword')
-const [email, emailProps] = defineField('email')
+    // Define fields using defineField
+    const [username, usernameProps] = defineField('username')
+    const [password, passwordProps] = defineField('password')
+    const [confirmPassword, confirmPasswordProps] = defineField('confirmPassword')
+    const [email, emailProps] = defineField('email')
 
-const isLoading = ref(false)
+    const isLoading = ref(false)
 
-const startResendCooldown = () => {
-    resendCooldown.value = 60
-    resendTimer = setInterval(() => {
-        resendCooldown.value--
-        if (resendCooldown.value <= 0) {
-            clearInterval(resendTimer)
-        }
-    }, 1000)
-}
-
-const resendVerification = async () => {
-    if (resendCooldown.value > 0) return
-
-    try {
-        const response = await userService.resendVerificationEmail({
-            email: registeredEmail.value,
-        })
-        if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = 'Verification email sent. Please check your inbox.'
-            showAlert.value = true
-            startResendCooldown()
-        } else {
-            alertVariant.value = 'error'
-            alertMessage.value =
-                response.errors?.[0] || response.message || 'Failed to resend email.'
-            showAlert.value = true
-        }
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors?.[0] || error.message || 'Failed to resend email.'
-        showAlert.value = true
+    const startResendCooldown = () => {
+        resendCooldown.value = 60
+        resendTimer = setInterval(() => {
+            resendCooldown.value--
+            if (resendCooldown.value <= 0) {
+                clearInterval(resendTimer)
+            }
+        }, 1000)
     }
-}
 
-const onSubmit = handleSubmit(async (values) => {
-    // Reset alert visibility
-    showAlert.value = false
-    isLoading.value = true
+    const resendVerification = async () => {
+        if (resendCooldown.value > 0) return
 
-    try {
-        const response = await userService.register({
-            ...values,
-        })
-        if (!response.success) {
+        try {
+            const response = await userService.resendVerificationEmail({
+                email: registeredEmail.value,
+            })
+            if (response.success) {
+                alertVariant.value = 'success'
+                alertMessage.value = 'Verification email sent. Please check your inbox.'
+                showAlert.value = true
+                startResendCooldown()
+            } else {
+                alertVariant.value = 'error'
+                alertMessage.value =
+                    response.errors?.[0] || response.message || 'Failed to resend email.'
+                showAlert.value = true
+            }
+        } catch (error) {
+            alertVariant.value = 'error'
+            alertMessage.value = error.errors?.[0] || error.message || 'Failed to resend email.'
+            showAlert.value = true
+        }
+    }
+
+    const onSubmit = handleSubmit(async (values) => {
+        // Reset alert visibility
+        showAlert.value = false
+        isLoading.value = true
+
+        try {
+            const response = await userService.register({
+                ...values,
+            })
+            if (!response.success) {
+                setTimeout(() => {
+                    alertVariant.value = 'error'
+                    alertMessage.value = response.errors[0]
+                    showAlert.value = true
+                }, 0)
+                isLoading.value = false
+                return
+            }
+
+            registeredEmail.value = values.email
+            resetForm()
+            registrationSuccess.value = true
+            startResendCooldown()
+        } catch (error) {
             setTimeout(() => {
                 alertVariant.value = 'error'
-                alertMessage.value = response.errors[0]
+                alertMessage.value = error.errors?.[0] || 'Registration failed'
                 showAlert.value = true
             }, 0)
+        } finally {
             isLoading.value = false
-            return
         }
+    })
 
-        registeredEmail.value = values.email
-        resetForm()
-        registrationSuccess.value = true
-        startResendCooldown()
-    } catch (error) {
-        setTimeout(() => {
-            alertVariant.value = 'error'
-            alertMessage.value = error.errors?.[0] || 'Registration failed'
-            showAlert.value = true
-        }, 0)
-    } finally {
-        isLoading.value = false
-    }
-})
-
-onUnmounted(() => {
-    if (resendTimer) clearInterval(resendTimer)
-})
+    onUnmounted(() => {
+        if (resendTimer) clearInterval(resendTimer)
+    })
 </script>

@@ -161,184 +161,184 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { useFieldArray, useForm } from 'vee-validate'
-import * as yup from 'yup'
-import FormTextarea from '~/components/FormTextarea.vue'
-import ConfirmModal from '~/components/ConfirmModal.vue'
+    import { computed, ref, watch } from 'vue'
+    import { useFieldArray, useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import FormTextarea from '~/components/FormTextarea.vue'
+    import ConfirmModal from '~/components/ConfirmModal.vue'
 
-const props = defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false,
-    },
-    initialData: {
-        type: Object,
-        default: () => ({ formula: [] }),
-    },
-    isSaving: {
-        type: Boolean,
-        default: false,
-    },
-    isEdit: {
-        type: Boolean,
-        default: false,
-    },
-    errorMessage: {
-        type: String,
-        default: '',
-    },
-})
+    const props = defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false,
+        },
+        initialData: {
+            type: Object,
+            default: () => ({ formula: [] }),
+        },
+        isSaving: {
+            type: Boolean,
+            default: false,
+        },
+        isEdit: {
+            type: Boolean,
+            default: false,
+        },
+        errorMessage: {
+            type: String,
+            default: '',
+        },
+    })
 
-const emit = defineEmits(['update:modelValue', 'save'])
+    const emit = defineEmits(['update:modelValue', 'save'])
 
-const validationSchema = yup.object({
-    name: yup
-        .string()
-        .required('Name is required')
-        .max(255, 'Name must be 255 characters or fewer.'),
-    details: yup.string().nullable(),
-    formula: yup
-        .array()
-        .min(1, 'Add at least one charity')
-        .of(
-            yup.object({
-                organization: yup.string().required('Organization is required'),
-                percentage: yup
-                    .number()
-                    .typeError('Percentage must be a number')
-                    .required('Percentage is required')
-                    .min(0.01, 'Percentage must be greater than 0')
-                    .max(100, 'Percentage must be at most 100'),
+    const validationSchema = yup.object({
+        name: yup
+            .string()
+            .required('Name is required')
+            .max(255, 'Name must be 255 characters or fewer.'),
+        details: yup.string().nullable(),
+        formula: yup
+            .array()
+            .min(1, 'Add at least one charity')
+            .of(
+                yup.object({
+                    organization: yup.string().required('Organization is required'),
+                    percentage: yup
+                        .number()
+                        .typeError('Percentage must be a number')
+                        .required('Percentage is required')
+                        .min(0.01, 'Percentage must be greater than 0')
+                        .max(100, 'Percentage must be at most 100'),
+                }),
+            )
+            .test('total-100', 'Total allocation must equal 100%', (arr) => {
+                const total = (arr ?? []).reduce((sum, row) => sum + Number(row.percentage || 0), 0)
+                return Math.abs(total - 100) < 0.01
+            }),
+    })
+
+    const { handleSubmit, defineField, setFieldError, errors, resetForm } = useForm({
+        validationSchema,
+        initialValues: {
+            name: '',
+            details: '',
+            formula: [],
+        },
+    })
+
+    const [name, nameProps] = defineField('name')
+    const [details, detailsProps] = defineField('details')
+
+    const { fields, push, remove } = useFieldArray('formula')
+
+    const localIsSaving = ref(false)
+    const showSaveConfirm = ref(false)
+    const pendingSaveData = ref(null)
+
+    const modalTitle = computed(() => {
+        return props.isEdit ? 'Edit Donation Formula' : 'Create Donation Formula'
+    })
+
+    // Reset or initialize fields when modal becomes visible
+    watch(
+        () => props.modelValue,
+        (val) => {
+            if (val) {
+                // Reset saving states when modal opens
+                localIsSaving.value = false
+                showSaveConfirm.value = false
+                pendingSaveData.value = null
+
+                const formula =
+                    props.initialData?.formula && props.initialData.formula.length > 0
+                        ? JSON.parse(JSON.stringify(props.initialData.formula))
+                        : [{ organization: '', percentage: 0 }]
+
+                resetForm({
+                    values: {
+                        name: props.initialData?.name || '',
+                        details: props.initialData?.details || '',
+                        formula,
+                    },
+                })
+            }
+        },
+        { immediate: true },
+    )
+
+    // Reset local saving state when parent isSaving becomes false
+    watch(
+        () => props.isSaving,
+        (val) => {
+            if (val === false) {
+                localIsSaving.value = false
+                showSaveConfirm.value = false
+                pendingSaveData.value = null
+            }
+        },
+    )
+
+    // Surface server-side validation errors (e.g. duplicate name) inline
+    watch(
+        () => props.errorMessage,
+        (val) => {
+            if (val) {
+                setFieldError('name', val)
+            }
+        },
+    )
+
+    // Computed property to calculate the current sum of percentages
+    const totalPercentage = computed(() => {
+        return fields.value.reduce((sum, field) => {
+            const val = parseFloat(field.value.percentage)
+            return sum + (isNaN(val) ? 0 : val)
+        }, 0)
+    })
+
+    // Whether the form passes all validation rules (schema-driven, not manual)
+    const canSubmit = computed(() => {
+        try {
+            validationSchema.validateSync({
+                name: name.value,
+                details: details.value,
+                formula: fields.value.map((field) => field.value),
             })
-        )
-        .test('total-100', 'Total allocation must equal 100%', (arr) => {
-            const total = (arr ?? []).reduce((sum, row) => sum + Number(row.percentage || 0), 0)
-            return Math.abs(total - 100) < 0.01
-        }),
-})
-
-const { handleSubmit, defineField, setFieldError, errors, resetForm } = useForm({
-    validationSchema,
-    initialValues: {
-        name: '',
-        details: '',
-        formula: [],
-    },
-})
-
-const [name, nameProps] = defineField('name')
-const [details, detailsProps] = defineField('details')
-
-const { fields, push, remove } = useFieldArray('formula')
-
-const localIsSaving = ref(false)
-const showSaveConfirm = ref(false)
-const pendingSaveData = ref(null)
-
-const modalTitle = computed(() => {
-    return props.isEdit ? 'Edit Donation Formula' : 'Create Donation Formula'
-})
-
-// Reset or initialize fields when modal becomes visible
-watch(
-    () => props.modelValue,
-    (val) => {
-        if (val) {
-            // Reset saving states when modal opens
-            localIsSaving.value = false
-            showSaveConfirm.value = false
-            pendingSaveData.value = null
-
-            const formula =
-                props.initialData?.formula && props.initialData.formula.length > 0
-                    ? JSON.parse(JSON.stringify(props.initialData.formula))
-                    : [{ organization: '', percentage: 0 }]
-
-            resetForm({
-                values: {
-                    name: props.initialData?.name || '',
-                    details: props.initialData?.details || '',
-                    formula,
-                },
-            })
+            return true
+        } catch {
+            return false
         }
-    },
-    { immediate: true }
-)
+    })
 
-// Reset local saving state when parent isSaving becomes false
-watch(
-    () => props.isSaving,
-    (val) => {
-        if (val === false) {
-            localIsSaving.value = false
-            showSaveConfirm.value = false
-            pendingSaveData.value = null
+    /**
+     * Adds a new empty row to the charity list
+     */
+    const addRow = () => {
+        push({ organization: '', percentage: 0 })
+    }
+
+    const handleSave = handleSubmit((values) => {
+        if (props.isSaving || localIsSaving.value) return
+
+        const sanitizedRows = values.formula.map((row) => ({
+            organization: String(row.organization).trim(),
+            percentage: parseFloat(row.percentage),
+        }))
+
+        pendingSaveData.value = {
+            name: values.name.trim(),
+            formula: sanitizedRows,
+            details: values.details || null,
         }
+        showSaveConfirm.value = true
+    })
+
+    const confirmSave = () => {
+        if (!pendingSaveData.value) return
+        localIsSaving.value = true
+        emit('save', pendingSaveData.value)
+        showSaveConfirm.value = false
+        pendingSaveData.value = null
     }
-)
-
-// Surface server-side validation errors (e.g. duplicate name) inline
-watch(
-    () => props.errorMessage,
-    (val) => {
-        if (val) {
-            setFieldError('name', val)
-        }
-    }
-)
-
-// Computed property to calculate the current sum of percentages
-const totalPercentage = computed(() => {
-    return fields.value.reduce((sum, field) => {
-        const val = parseFloat(field.value.percentage)
-        return sum + (isNaN(val) ? 0 : val)
-    }, 0)
-})
-
-// Whether the form passes all validation rules (schema-driven, not manual)
-const canSubmit = computed(() => {
-    try {
-        validationSchema.validateSync({
-            name: name.value,
-            details: details.value,
-            formula: fields.value.map((field) => field.value),
-        })
-        return true
-    } catch {
-        return false
-    }
-})
-
-/**
- * Adds a new empty row to the charity list
- */
-const addRow = () => {
-    push({ organization: '', percentage: 0 })
-}
-
-const handleSave = handleSubmit((values) => {
-    if (props.isSaving || localIsSaving.value) return
-
-    const sanitizedRows = values.formula.map((row) => ({
-        organization: String(row.organization).trim(),
-        percentage: parseFloat(row.percentage),
-    }))
-
-    pendingSaveData.value = {
-        name: values.name.trim(),
-        formula: sanitizedRows,
-        details: values.details || null,
-    }
-    showSaveConfirm.value = true
-})
-
-const confirmSave = () => {
-    if (!pendingSaveData.value) return
-    localIsSaving.value = true
-    emit('save', pendingSaveData.value)
-    showSaveConfirm.value = false
-    pendingSaveData.value = null
-}
 </script>

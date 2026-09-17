@@ -12,22 +12,22 @@
 </template>
 
 <script setup>
-// Define props for checkbox
-defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false, // Default unchecked state
-    },
-    checkboxId: {
-        type: Number,
-        default: null, // Optional custom ID for the checkbox
-    },
-})
+    // Define props for checkbox
+    defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false, // Default unchecked state
+        },
+        checkboxId: {
+            type: Number,
+            default: null, // Optional custom ID for the checkbox
+        },
+    })
 
-// Emit update event to notify parent of changes
-const emit = defineEmits(['update:modelValue'])
+    // Emit update event to notify parent of changes
+    const emit = defineEmits(['update:modelValue'])
 
-const emitChange = (event) => {
-    emit('update:modelValue', event.target.checked)
-}
+    const emitChange = (event) => {
+        emit('update:modelValue', event.target.checked)
+    }
 </script>

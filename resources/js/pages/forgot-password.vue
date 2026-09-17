@@ -62,57 +62,57 @@
 </template>
 
 <script setup>
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { userService } from '~/services/userService'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import { userService } from '~/services/userService'
 
-useHead({
-    title: 'Forgot Password',
-})
+    useHead({
+        title: 'Forgot Password',
+    })
 
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
-const isLoading = ref(false)
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
+    const isLoading = ref(false)
 
-const validationSchema = yup.object({
-    email: yup.string().required('Email is required').email('Email must be a valid email'),
-})
+    const validationSchema = yup.object({
+        email: yup.string().required('Email is required').email('Email must be a valid email'),
+    })
 
-// Setup VeeValidate
-const { handleSubmit, defineField, errors } = useForm({
-    validationSchema,
-})
+    // Setup VeeValidate
+    const { handleSubmit, defineField, errors } = useForm({
+        validationSchema,
+    })
 
-// Define fields using defineField
-const [email, emailProps] = defineField('email')
+    // Define fields using defineField
+    const [email, emailProps] = defineField('email')
 
-const onSubmit = handleSubmit(async (values) => {
-    showAlert.value = false
-    isLoading.value = true
+    const onSubmit = handleSubmit(async (values) => {
+        showAlert.value = false
+        isLoading.value = true
 
-    try {
-        const response = await userService.forgotPassword({
-            email: values.email,
-        })
+        try {
+            const response = await userService.forgotPassword({
+                email: values.email,
+            })
 
-        if (!response.success) {
-            alertVariant.value = 'error'
-            alertMessage.value = response.errors[0]
+            if (!response.success) {
+                alertVariant.value = 'error'
+                alertMessage.value = response.errors[0]
+                showAlert.value = true
+                isLoading.value = false
+                return
+            }
+
+            alertVariant.value = 'success'
+            alertMessage.value = response.message
             showAlert.value = true
+        } catch (error) {
+            alertVariant.value = 'error'
+            alertMessage.value = error.errors[0]
+            showAlert.value = true
+        } finally {
             isLoading.value = false
-            return
         }
-
-        alertVariant.value = 'success'
-        alertMessage.value = response.message
-        showAlert.value = true
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors[0]
-        showAlert.value = true
-    } finally {
-        isLoading.value = false
-    }
-})
+    })
 </script>

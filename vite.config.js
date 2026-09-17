@@ -38,11 +38,7 @@ export default defineConfig({
                         return 'vue'
                     }
                     if (id.includes('@fortawesome')) return 'fontawesome'
-                    if (
-                        id.includes('quill') ||
-                        id.includes('diff-match-patch') ||
-                        id.includes('interactjs')
-                    ) {
+                    if (id.includes('quill') || id.includes('interactjs')) {
                         return 'quill'
                     }
                     if (id.includes('@stripe')) return 'stripe'
@@ -50,8 +46,7 @@ export default defineConfig({
                         id.includes('axios') ||
                         id.includes('vee-validate') ||
                         id.includes('yup') ||
-                        id.includes('vue-toast-notification') ||
-                        id.includes('vue3-recaptcha-v2')
+                        id.includes('vue-toast-notification')
                     ) {
                         return 'vendor'
                     }

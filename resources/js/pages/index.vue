@@ -51,55 +51,55 @@
 </template>
 
 <script setup>
-useHead({ title: 'WikiDonate - Discover Charities' })
+    useHead({ title: 'WikiDonate - Discover Charities' })
 
-const router = useRouter()
-const route = useRoute()
-const { setLanguage } = useGoogleTranslate()
+    const router = useRouter()
+    const route = useRoute()
+    const { setLanguage } = useGoogleTranslate()
 
-const topLanguages = [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-    { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
-    { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
-    { code: 'ja', name: '日本語', flag: '🇯🇵' },
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-    { code: 'ur', name: 'اردو', flag: '🇵🇰' },
-    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-    { code: 'ko', name: '한국어', flag: '🇰🇷' },
-]
+    const topLanguages = [
+        { code: 'en', name: 'English', flag: '🇬🇧' },
+        { code: 'es', name: 'Español', flag: '🇪🇸' },
+        { code: 'fr', name: 'Français', flag: '🇫🇷' },
+        { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+        { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+        { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+        { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
+        { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
+        { code: 'ja', name: '日本語', flag: '🇯🇵' },
+        { code: 'pt', name: 'Português', flag: '🇧🇷' },
+        { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+        { code: 'ur', name: 'اردو', flag: '🇵🇰' },
+        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+        { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+        { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    ]
 
-const selectLanguage = (langCode) => {
-    setLanguage(langCode)
-    router.push('/main')
-}
-
-onMounted(() => {
-    if (route.query.title) {
-        router.replace(`/article?title=${encodeURIComponent(route.query.title)}`)
-        return
+    const selectLanguage = (langCode) => {
+        setLanguage(langCode)
+        router.push('/main')
     }
-    const script = document.createElement('script')
-    script.src = 'https://aichatbot.devshahaj.com/widget.js'
-    script.async = true
-    script.id = 'ai-chatbot-script'
-    script.setAttribute('data-chatbot-id', '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0')
-    script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
-    script.setAttribute('data-position', 'bottom-right')
-    script.setAttribute('data-primary-color', '#3b82f6')
-    script.setAttribute('data-secondary-color', '#ffffff')
-    script.setAttribute('data-name', 'Wikidonate Support')
-    script.setAttribute('data-avatar-url', '')
-    document.body.appendChild(script)
-})
 
-onBeforeUnmount(() => {
-    document.getElementById('ai-chatbot-script')?.remove()
-})
+    onMounted(() => {
+        if (route.query.title) {
+            router.replace(`/article?title=${encodeURIComponent(route.query.title)}`)
+            return
+        }
+        const script = document.createElement('script')
+        script.src = 'https://aichatbot.devshahaj.com/widget.js'
+        script.async = true
+        script.id = 'ai-chatbot-script'
+        script.setAttribute('data-chatbot-id', '805bcbc5-d8ca-49a7-8c0d-c4e0501c9ba0')
+        script.setAttribute('data-api-key', import.meta.env.VITE_AI_CHATBOT_API_KEY || '')
+        script.setAttribute('data-position', 'bottom-right')
+        script.setAttribute('data-primary-color', '#3b82f6')
+        script.setAttribute('data-secondary-color', '#ffffff')
+        script.setAttribute('data-name', 'Wikidonate Support')
+        script.setAttribute('data-avatar-url', '')
+        document.body.appendChild(script)
+    })
+
+    onBeforeUnmount(() => {
+        document.getElementById('ai-chatbot-script')?.remove()
+    })
 </script>

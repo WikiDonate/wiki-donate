@@ -186,87 +186,88 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { adminService } from '@/services/adminService'
+    import { ref } from 'vue'
+    import { adminService } from '@/services/adminService'
 
-const loading = ref(true)
-const allocations = ref([])
+    const loading = ref(true)
+    const allocations = ref([])
 
-const payTarget = ref(null)
-const payAmount = ref(0)
-const payNote = ref('')
-const payError = ref('')
-const paying = ref(false)
+    const payTarget = ref(null)
+    const payAmount = ref(0)
+    const payNote = ref('')
+    const payError = ref('')
+    const paying = ref(false)
 
-const historyTarget = ref(null)
-const history = ref([])
-const historyLoading = ref(false)
-const historyError = ref('')
+    const historyTarget = ref(null)
+    const history = ref([])
+    const historyLoading = ref(false)
+    const historyError = ref('')
 
-const columns = [
-    { key: 'organization', label: 'Organization / Allocation' },
-    { key: 'amounts', label: 'Owed / Paid / Balance' },
-    { key: 'actions', label: '', tdClass: 'text-right', thClass: 'text-right' },
-]
+    const columns = [
+        { key: 'organization', label: 'Organization / Allocation' },
+        { key: 'amounts', label: 'Owed / Paid / Balance' },
+        { key: 'actions', label: '', tdClass: 'text-right', thClass: 'text-right' },
+    ]
 
-const rowKey = (row) => `${row.formula_id}:${row.organization_key}`
+    const rowKey = (row) => `${row.formula_id}:${row.organization_key}`
 
-const fmt = (currency, value) =>
-    `${(currency || 'usd').toUpperCase()} ${Number(value || 0).toFixed(2)}`
+    const fmt = (currency, value) =>
+        `${(currency || 'usd').toUpperCase()} ${Number(value || 0).toFixed(2)}`
 
-const fetchAllocations = async () => {
-    loading.value = true
-    try {
-        allocations.value = (await adminService.getPayoutAllocations()).data ?? []
-    } catch (err) {
-        console.error('Failed to load payout allocations', err)
-        allocations.value = []
-    } finally {
-        loading.value = false
+    const fetchAllocations = async () => {
+        loading.value = true
+        try {
+            allocations.value = (await adminService.getPayoutAllocations()).data ?? []
+        } catch (err) {
+            console.error('Failed to load payout allocations', err)
+            allocations.value = []
+        } finally {
+            loading.value = false
+        }
     }
-}
 
-const openPay = (row) => {
-    payTarget.value = row
-    payAmount.value = Number(row.balance)
-    payNote.value = ''
-    payError.value = ''
-}
-
-const submitPay = async () => {
-    payError.value = ''
-    paying.value = true
-    try {
-        await adminService.createPayout({
-            donation_formula_id: payTarget.value.formula_id,
-            organization_name: payTarget.value.organization_name,
-            amount: payAmount.value,
-            currency: payTarget.value.currency,
-            note: payNote.value || null,
-        })
-        payTarget.value = null
-        await fetchAllocations()
-    } catch (err) {
-        payError.value = err.response?.data?.message || 'Failed to record payout. Please try again.'
-    } finally {
-        paying.value = false
+    const openPay = (row) => {
+        payTarget.value = row
+        payAmount.value = Number(row.balance)
+        payNote.value = ''
+        payError.value = ''
     }
-}
 
-const openHistory = async (row) => {
-    historyTarget.value = row
-    history.value = []
-    historyError.value = ''
-    historyLoading.value = true
-    try {
-        const res = await adminService.getPayoutHistory(row.formula_id, row.organization_name)
-        history.value = res.data ?? []
-    } catch (err) {
-        historyError.value = err.response?.data?.message || 'Failed to load history.'
-    } finally {
-        historyLoading.value = false
+    const submitPay = async () => {
+        payError.value = ''
+        paying.value = true
+        try {
+            await adminService.createPayout({
+                donation_formula_id: payTarget.value.formula_id,
+                organization_name: payTarget.value.organization_name,
+                amount: payAmount.value,
+                currency: payTarget.value.currency,
+                note: payNote.value || null,
+            })
+            payTarget.value = null
+            await fetchAllocations()
+        } catch (err) {
+            payError.value =
+                err.response?.data?.message || 'Failed to record payout. Please try again.'
+        } finally {
+            paying.value = false
+        }
     }
-}
 
-fetchAllocations()
+    const openHistory = async (row) => {
+        historyTarget.value = row
+        history.value = []
+        historyError.value = ''
+        historyLoading.value = true
+        try {
+            const res = await adminService.getPayoutHistory(row.formula_id, row.organization_name)
+            history.value = res.data ?? []
+        } catch (err) {
+            historyError.value = err.response?.data?.message || 'Failed to load history.'
+        } finally {
+            historyLoading.value = false
+        }
+    }
+
+    fetchAllocations()
 </script>

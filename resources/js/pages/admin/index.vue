@@ -245,87 +245,87 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { adminService } from '~/services/adminService'
-import { useToastify } from '~/composables/useToastify'
-import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
-import StatCard from '~/components/admin/StatCard.vue'
-import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
-import AdminTable from '~/components/admin/AdminTable.vue'
+    import { ref, onMounted, computed } from 'vue'
+    import { adminService } from '~/services/adminService'
+    import { useToastify } from '~/composables/useToastify'
+    import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
+    import StatCard from '~/components/admin/StatCard.vue'
+    import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
+    import AdminTable from '~/components/admin/AdminTable.vue'
 
-const { notifyError } = useToastify()
+    const { notifyError } = useToastify()
 
-const selectedDonation = ref(null)
-const selectedFormulaUrl = ref('')
-const showDonationDetail = ref(false)
+    const selectedDonation = ref(null)
+    const selectedFormulaUrl = ref('')
+    const showDonationDetail = ref(false)
 
-function statusVariant(status) {
-    if (status === 'completed' || status === 'succeeded') return 'success'
-    if (status === 'pending') return 'warning'
-    return 'danger'
-}
-
-function openDonationDetail(row) {
-    selectedDonation.value = row
-    selectedFormulaUrl.value = row.formula_url || ''
-    showDonationDetail.value = true
-}
-
-useHead({ title: 'Admin Dashboard' })
-definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
-
-const loading = ref(true)
-const stats = ref({
-    totalUsers: 0,
-    totalArticles: 0,
-    recentDonations: [],
-    recentUsers: [],
-    monthlyStats: { donations: [], registrations: [] },
-})
-
-const donationColumns = [
-    { key: 'date', label: 'Date' },
-    { key: 'user', label: 'Donor' },
-    { key: 'source', label: 'Source' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'status', label: 'Status' },
-    { key: 'article', label: 'Article' },
-    { key: 'action', label: 'Action' },
-]
-
-const recentRegistrationsCount = computed(() => {
-    const regs = stats.value.monthlyStats.registrations
-    return regs.length > 0 ? Number(regs[0].total) : 0
-})
-
-const userColumns = [
-    { key: 'username', label: 'Username', tdClass: 'font-medium' },
-    { key: 'email', label: 'Email' },
-    { key: 'joinedAt', label: 'Joined' },
-]
-
-const donationBarWidth = (row) => {
-    const all = stats.value.monthlyStats.donations
-    const max = Math.max(...all.map((r) => Number(r.total)), 1)
-    return `${(Number(row.total) / max) * 100}%`
-}
-
-const registrationBarWidth = (row) => {
-    const all = stats.value.monthlyStats.registrations
-    const max = Math.max(...all.map((r) => Number(r.total)), 1)
-    return `${(Number(row.total) / max) * 100}%`
-}
-
-onMounted(async () => {
-    try {
-        const response = await adminService.getDashboard()
-        if (response.success) {
-            stats.value = response.data
-        }
-    } catch {
-        notifyError('Failed to load dashboard data')
-    } finally {
-        loading.value = false
+    function statusVariant(status) {
+        if (status === 'completed' || status === 'succeeded') return 'success'
+        if (status === 'pending') return 'warning'
+        return 'danger'
     }
-})
+
+    function openDonationDetail(row) {
+        selectedDonation.value = row
+        selectedFormulaUrl.value = row.formula_url || ''
+        showDonationDetail.value = true
+    }
+
+    useHead({ title: 'Admin Dashboard' })
+    definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
+
+    const loading = ref(true)
+    const stats = ref({
+        totalUsers: 0,
+        totalArticles: 0,
+        recentDonations: [],
+        recentUsers: [],
+        monthlyStats: { donations: [], registrations: [] },
+    })
+
+    const donationColumns = [
+        { key: 'date', label: 'Date' },
+        { key: 'user', label: 'Donor' },
+        { key: 'source', label: 'Source' },
+        { key: 'amount', label: 'Amount' },
+        { key: 'status', label: 'Status' },
+        { key: 'article', label: 'Article' },
+        { key: 'action', label: 'Action' },
+    ]
+
+    const recentRegistrationsCount = computed(() => {
+        const regs = stats.value.monthlyStats.registrations
+        return regs.length > 0 ? Number(regs[0].total) : 0
+    })
+
+    const userColumns = [
+        { key: 'username', label: 'Username', tdClass: 'font-medium' },
+        { key: 'email', label: 'Email' },
+        { key: 'joinedAt', label: 'Joined' },
+    ]
+
+    const donationBarWidth = (row) => {
+        const all = stats.value.monthlyStats.donations
+        const max = Math.max(...all.map((r) => Number(r.total)), 1)
+        return `${(Number(row.total) / max) * 100}%`
+    }
+
+    const registrationBarWidth = (row) => {
+        const all = stats.value.monthlyStats.registrations
+        const max = Math.max(...all.map((r) => Number(r.total)), 1)
+        return `${(Number(row.total) / max) * 100}%`
+    }
+
+    onMounted(async () => {
+        try {
+            const response = await adminService.getDashboard()
+            if (response.success) {
+                stats.value = response.data
+            }
+        } catch {
+            notifyError('Failed to load dashboard data')
+        } finally {
+            loading.value = false
+        }
+    })
 </script>

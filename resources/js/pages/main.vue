@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-useHead({
-    title: 'Main Page',
-})
+    useHead({
+        title: 'Main Page',
+    })
 </script>

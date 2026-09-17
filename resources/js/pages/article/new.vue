@@ -70,56 +70,56 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { articleService } from '~/services/articleService'
+    import { ref } from 'vue'
+    import { articleService } from '~/services/articleService'
 
-useHead({
-    title: 'New Article',
-})
+    useHead({
+        title: 'New Article',
+    })
 
-const route = useRoute()
-const router = useRouter()
-const authStore = useAuthStore()
+    const route = useRoute()
+    const router = useRouter()
+    const authStore = useAuthStore()
 
-const articleTitle = ref(decodeURIComponent(route.query.title || ''))
-const showConfirmModal = ref(false)
-const isSaving = ref(false)
-const showAlert = ref(false)
-const alertVariant = ref('success')
-const alertMessage = ref('')
+    const articleTitle = ref(decodeURIComponent(route.query.title || ''))
+    const showConfirmModal = ref(false)
+    const isSaving = ref(false)
+    const showAlert = ref(false)
+    const alertVariant = ref('success')
+    const alertMessage = ref('')
 
-const handleSave = async () => {
-    if (isSaving.value) return
+    const handleSave = async () => {
+        if (isSaving.value) return
 
-    isSaving.value = true
-    showAlert.value = false
+        isSaving.value = true
+        showAlert.value = false
 
-    try {
-        const response = await articleService.saveArticle({
-            title: articleTitle.value,
-            content: '',
-        })
+        try {
+            const response = await articleService.saveArticle({
+                title: articleTitle.value,
+                content: '',
+            })
 
-        if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = response.message || 'Article saved successfully!'
-            showAlert.value = true
+            if (response.success) {
+                alertVariant.value = 'success'
+                alertMessage.value = response.message || 'Article saved successfully!'
+                showAlert.value = true
 
-            setTimeout(() => {
-                router.push(`/article?title=${encodeURIComponent(articleTitle.value)}`)
-            }, 1500)
-        } else {
+                setTimeout(() => {
+                    router.push(`/article?title=${encodeURIComponent(articleTitle.value)}`)
+                }, 1500)
+            } else {
+                alertVariant.value = 'error'
+                alertMessage.value = response.errors?.[0] || 'Failed to save article'
+                showAlert.value = true
+            }
+        } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = response.errors?.[0] || 'Failed to save article'
+            alertMessage.value = error.errors?.[0] || 'An error occurred while saving'
             showAlert.value = true
+        } finally {
+            isSaving.value = false
+            showConfirmModal.value = false
         }
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors?.[0] || 'An error occurred while saving'
-        showAlert.value = true
-    } finally {
-        isSaving.value = false
-        showConfirmModal.value = false
     }
-}
 </script>

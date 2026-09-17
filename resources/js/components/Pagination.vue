@@ -41,40 +41,40 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
 
-const props = defineProps({
-    currentPage: { type: Number, required: true },
-    totalPages: { type: Number, required: true },
-})
+    const props = defineProps({
+        currentPage: { type: Number, required: true },
+        totalPages: { type: Number, required: true },
+    })
 
-const emit = defineEmits(['page-change'])
+    const emit = defineEmits(['page-change'])
 
-const emitPage = (page) => {
-    if (page >= 1 && page <= props.totalPages) {
-        emit('page-change', page)
-    }
-}
-
-const displayPages = computed(() => {
-    const total = props.totalPages
-    const current = props.currentPage
-    const pages = []
-
-    if (total <= 3) {
-        for (let i = 1; i <= total; i++) pages.push(i)
-    } else if (total === 4) {
-        pages.push(1, 2, '...', 4)
-    } else {
-        if (current <= 2) {
-            pages.push(1, 2, '...', total)
-        } else if (current >= total - 1) {
-            pages.push(1, '...', total - 1, total)
-        } else {
-            pages.push(1, '...', current, '...', total)
+    const emitPage = (page) => {
+        if (page >= 1 && page <= props.totalPages) {
+            emit('page-change', page)
         }
     }
 
-    return pages
-})
+    const displayPages = computed(() => {
+        const total = props.totalPages
+        const current = props.currentPage
+        const pages = []
+
+        if (total <= 3) {
+            for (let i = 1; i <= total; i++) pages.push(i)
+        } else if (total === 4) {
+            pages.push(1, 2, '...', 4)
+        } else {
+            if (current <= 2) {
+                pages.push(1, 2, '...', total)
+            } else if (current >= total - 1) {
+                pages.push(1, '...', total - 1, total)
+            } else {
+                pages.push(1, '...', current, '...', total)
+            }
+        }
+
+        return pages
+    })
 </script>

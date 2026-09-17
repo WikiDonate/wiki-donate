@@ -223,212 +223,212 @@
 </template>
 
 <script setup>
-import { articleService } from '~/services/articleService'
+    import { articleService } from '~/services/articleService'
 
-const route = useRoute()
-const title = ref(decodeURIComponent(route.query.title))
-const articleTitle = ref('')
+    const route = useRoute()
+    const title = ref(decodeURIComponent(route.query.title))
+    const articleTitle = ref('')
 
-useHead(() => ({
-    title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : 'Article',
-}))
+    useHead(() => ({
+        title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : 'Article',
+    }))
 
-const articleStore = useArticleStore()
-const authStore = useAuthStore()
-const { clearToasts, notifySuccess, notifyError } = useToastify()
+    const articleStore = useArticleStore()
+    const authStore = useAuthStore()
+    const { clearToasts, notifySuccess, notifyError } = useToastify()
 
-const sections = ref([])
-const loading = ref(false)
-const submittingFormula = ref(false)
-const submittingDelete = ref(false)
+    const sections = ref([])
+    const loading = ref(false)
+    const submittingFormula = ref(false)
+    const submittingDelete = ref(false)
 
-const donationFormulas = ref([])
-const openFormulas = ref([])
-const showDonationModal = ref(false)
-const showConfirmDelete = ref(false)
-const formulaToDelete = ref(null)
-const selectedFormula = ref({ formula: [] })
-const formulaError = ref('')
-const copiedUuid = ref(null)
-const showPaymentModal = ref(false)
-const selectedPaymentFormula = ref(null)
+    const donationFormulas = ref([])
+    const openFormulas = ref([])
+    const showDonationModal = ref(false)
+    const showConfirmDelete = ref(false)
+    const formulaToDelete = ref(null)
+    const selectedFormula = ref({ formula: [] })
+    const formulaError = ref('')
+    const copiedUuid = ref(null)
+    const showPaymentModal = ref(false)
+    const selectedPaymentFormula = ref(null)
 
-const copyFormulaUrl = (uuid) => {
-    const url = new URL(window.location.href)
-    url.hash = `formula-${uuid}`
-    navigator.clipboard.writeText(url.toString())
-    copiedUuid.value = uuid
-    setTimeout(() => {
-        if (copiedUuid.value === uuid) copiedUuid.value = null
-    }, 2000)
-}
-
-const openDonateModal = (formula) => {
-    selectedPaymentFormula.value = formula
-    showPaymentModal.value = true
-}
-
-const handlePaymentSuccess = ({ method, amount }) => {
-    showPaymentModal.value = false
-    selectedPaymentFormula.value = null
-    notifySuccess(`$${amount} donation via ${method} completed successfully!`)
-}
-
-const getUserFormulaIndex = (currentFormula) => {
-    const userFormulas = donationFormulas.value.filter(
-        (f) => f.user?.uuid === currentFormula.user?.uuid
-    )
-    return userFormulas.findIndex((f) => f.uuid === currentFormula.uuid) + 1
-}
-
-const toggleFormula = (uuid) => {
-    const index = openFormulas.value.indexOf(uuid)
-    if (index > -1) {
-        openFormulas.value.splice(index, 1)
-    } else {
-        openFormulas.value.push(uuid)
+    const copyFormulaUrl = (uuid) => {
+        const url = new URL(window.location.href)
+        url.hash = `formula-${uuid}`
+        navigator.clipboard.writeText(url.toString())
+        copiedUuid.value = uuid
+        setTimeout(() => {
+            if (copiedUuid.value === uuid) copiedUuid.value = null
+        }, 2000)
     }
-}
 
-const isFormulaOpen = (uuid) => openFormulas.value.includes(uuid)
-
-const openCreateFormulaModal = () => {
-    selectedFormula.value = { formula: [{ organization: '', percentage: 0 }] }
-    formulaError.value = ''
-    showDonationModal.value = true
-}
-
-const openEditFormulaModal = (formula) => {
-    selectedFormula.value = JSON.parse(JSON.stringify(formula))
-    formulaError.value = ''
-    showDonationModal.value = true
-}
-
-const handleSaveDonationFormula = async (data) => {
-    if (submittingFormula.value) return
-    submittingFormula.value = true
-    clearToasts()
-    try {
-        let response
-        if (selectedFormula.value.uuid) {
-            response = await articleService.updateDonationFormula(selectedFormula.value.uuid, {
-                name: data.name,
-                formula: data.formula,
-                details: data.details,
-            })
-        } else {
-            response = await articleService.saveDonationFormula({
-                article_slug: articleStore.article.slug,
-                name: data.name,
-                formula: data.formula,
-                details: data.details,
-            })
-        }
-
-        if (response.success) {
-            showDonationModal.value = false
-            notifySuccess(
-                selectedFormula.value.uuid
-                    ? 'Donation formula updated!'
-                    : 'Donation formula created!'
-            )
-            await loadDonationFormulas(articleStore.article.slug, response.data.uuid)
-        } else {
-            throw new Error(response.message || 'Failed to save')
-        }
-    } catch (error) {
-        const message = error.message || error.errors?.[0] || 'Unexpected error'
-        if (message.includes('already exists')) {
-            formulaError.value = message
-        }
-        notifyError(message)
-    } finally {
-        submittingFormula.value = false
+    const openDonateModal = (formula) => {
+        selectedPaymentFormula.value = formula
+        showPaymentModal.value = true
     }
-}
 
-const handleDeleteFormula = (uuid) => {
-    formulaToDelete.value = uuid
-    showConfirmDelete.value = true
-}
-
-const handleConfirmDelete = async () => {
-    if (!formulaToDelete.value || submittingDelete.value) return
-    submittingDelete.value = true
-    clearToasts()
-    try {
-        const response = await articleService.deleteDonationFormula(formulaToDelete.value)
-        if (response.success) {
-            showConfirmDelete.value = false
-            formulaToDelete.value = null
-            notifySuccess('Donation formula deleted!')
-            await loadDonationFormulas(articleStore.article.slug)
-        } else {
-            throw new Error(response.message || 'Failed to delete')
-        }
-    } catch (error) {
-        notifyError(error.message || 'Failed to delete')
-    } finally {
-        submittingDelete.value = false
+    const handlePaymentSuccess = ({ method, amount }) => {
+        showPaymentModal.value = false
+        selectedPaymentFormula.value = null
+        notifySuccess(`$${amount} donation via ${method} completed successfully!`)
     }
-}
 
-const loadArticle = async (slug) => {
-    loading.value = true
-    try {
-        const response = await articleService.getArticle(slug)
-        if (response.success) {
-            articleTitle.value = response.data.title
-            sections.value = JSON.parse(response.data.sections)
-            articleStore.addArticle(response.data)
-            await loadDonationFormulas(response.data.slug)
+    const getUserFormulaIndex = (currentFormula) => {
+        const userFormulas = donationFormulas.value.filter(
+            (f) => f.user?.uuid === currentFormula.user?.uuid,
+        )
+        return userFormulas.findIndex((f) => f.uuid === currentFormula.uuid) + 1
+    }
+
+    const toggleFormula = (uuid) => {
+        const index = openFormulas.value.indexOf(uuid)
+        if (index > -1) {
+            openFormulas.value.splice(index, 1)
         } else {
+            openFormulas.value.push(uuid)
+        }
+    }
+
+    const isFormulaOpen = (uuid) => openFormulas.value.includes(uuid)
+
+    const openCreateFormulaModal = () => {
+        selectedFormula.value = { formula: [{ organization: '', percentage: 0 }] }
+        formulaError.value = ''
+        showDonationModal.value = true
+    }
+
+    const openEditFormulaModal = (formula) => {
+        selectedFormula.value = JSON.parse(JSON.stringify(formula))
+        formulaError.value = ''
+        showDonationModal.value = true
+    }
+
+    const handleSaveDonationFormula = async (data) => {
+        if (submittingFormula.value) return
+        submittingFormula.value = true
+        clearToasts()
+        try {
+            let response
+            if (selectedFormula.value.uuid) {
+                response = await articleService.updateDonationFormula(selectedFormula.value.uuid, {
+                    name: data.name,
+                    formula: data.formula,
+                    details: data.details,
+                })
+            } else {
+                response = await articleService.saveDonationFormula({
+                    article_slug: articleStore.article.slug,
+                    name: data.name,
+                    formula: data.formula,
+                    details: data.details,
+                })
+            }
+
+            if (response.success) {
+                showDonationModal.value = false
+                notifySuccess(
+                    selectedFormula.value.uuid
+                        ? 'Donation formula updated!'
+                        : 'Donation formula created!',
+                )
+                await loadDonationFormulas(articleStore.article.slug, response.data.uuid)
+            } else {
+                throw new Error(response.message || 'Failed to save')
+            }
+        } catch (error) {
+            const message = error.message || error.errors?.[0] || 'Unexpected error'
+            if (message.includes('already exists')) {
+                formulaError.value = message
+            }
+            notifyError(message)
+        } finally {
+            submittingFormula.value = false
+        }
+    }
+
+    const handleDeleteFormula = (uuid) => {
+        formulaToDelete.value = uuid
+        showConfirmDelete.value = true
+    }
+
+    const handleConfirmDelete = async () => {
+        if (!formulaToDelete.value || submittingDelete.value) return
+        submittingDelete.value = true
+        clearToasts()
+        try {
+            const response = await articleService.deleteDonationFormula(formulaToDelete.value)
+            if (response.success) {
+                showConfirmDelete.value = false
+                formulaToDelete.value = null
+                notifySuccess('Donation formula deleted!')
+                await loadDonationFormulas(articleStore.article.slug)
+            } else {
+                throw new Error(response.message || 'Failed to delete')
+            }
+        } catch (error) {
+            notifyError(error.message || 'Failed to delete')
+        } finally {
+            submittingDelete.value = false
+        }
+    }
+
+    const loadArticle = async (slug) => {
+        loading.value = true
+        try {
+            const response = await articleService.getArticle(slug)
+            if (response.success) {
+                articleTitle.value = response.data.title
+                sections.value = JSON.parse(response.data.sections)
+                articleStore.addArticle(response.data)
+                await loadDonationFormulas(response.data.slug)
+            } else {
+                sections.value = []
+                articleStore.clearArticle()
+            }
+        } catch {
             sections.value = []
             articleStore.clearArticle()
+        } finally {
+            loading.value = false
         }
-    } catch {
-        sections.value = []
-        articleStore.clearArticle()
-    } finally {
-        loading.value = false
     }
-}
 
-const loadDonationFormulas = async (slug, uuidToOpen = null) => {
-    try {
-        const response = await articleService.getDonationFormulasByArticle(slug)
-        if (response.success && response.data) {
-            donationFormulas.value = response.data
-            openFormulas.value = uuidToOpen ? [uuidToOpen] : []
+    const loadDonationFormulas = async (slug, uuidToOpen = null) => {
+        try {
+            const response = await articleService.getDonationFormulasByArticle(slug)
+            if (response.success && response.data) {
+                donationFormulas.value = response.data
+                openFormulas.value = uuidToOpen ? [uuidToOpen] : []
 
-            if (!uuidToOpen && route.hash?.startsWith('#formula-')) {
-                const uuid = route.hash.replace('#formula-', '')
-                if (response.data.some((f) => f.uuid === uuid)) {
-                    openFormulas.value = [uuid]
-                    setTimeout(() => {
-                        document.getElementById(`formula-${uuid}`)?.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center',
-                        })
-                    }, 500)
+                if (!uuidToOpen && route.hash?.startsWith('#formula-')) {
+                    const uuid = route.hash.replace('#formula-', '')
+                    if (response.data.some((f) => f.uuid === uuid)) {
+                        openFormulas.value = [uuid]
+                        setTimeout(() => {
+                            document.getElementById(`formula-${uuid}`)?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                            })
+                        }, 500)
+                    }
                 }
+            } else {
+                donationFormulas.value = []
+                openFormulas.value = []
             }
-        } else {
+        } catch {
             donationFormulas.value = []
             openFormulas.value = []
         }
-    } catch {
-        donationFormulas.value = []
-        openFormulas.value = []
     }
-}
 
-onMounted(() => loadArticle(title.value))
+    onMounted(() => loadArticle(title.value))
 
-watch(route, (newRoute) => {
-    if (newRoute.query.title) {
-        title.value = decodeURIComponent(newRoute.query.title)
-        loadArticle(decodeURIComponent(newRoute.query.title))
-    }
-})
+    watch(route, (newRoute) => {
+        if (newRoute.query.title) {
+            title.value = decodeURIComponent(newRoute.query.title)
+            loadArticle(decodeURIComponent(newRoute.query.title))
+        }
+    })
 </script>

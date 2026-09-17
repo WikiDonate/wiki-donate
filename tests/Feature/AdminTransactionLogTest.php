@@ -8,6 +8,8 @@ use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -26,8 +28,8 @@ class AdminTransactionLogTest extends TestCase
     {
         parent::setUp();
 
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Editor']);
+        Role::firstOrCreate(['name' => 'Admin']);
+        Role::firstOrCreate(['name' => 'Editor']);
 
         $this->admin = User::factory()->create();
         $this->admin->assignRole('Admin');
@@ -85,7 +87,7 @@ class AdminTransactionLogTest extends TestCase
         $formula = $this->articleWithFormula(60);
 
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
@@ -94,7 +96,7 @@ class AdminTransactionLogTest extends TestCase
             'status' => 'completed',
         ]);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Bob',
             'donor_email' => 'bob@example.com',
@@ -174,7 +176,7 @@ class AdminTransactionLogTest extends TestCase
         $formula = $this->articleWithFormula(50);
 
         $older = $this->createDonationWithDate([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
@@ -184,7 +186,7 @@ class AdminTransactionLogTest extends TestCase
             'created_at' => now()->subDays(2),
         ]);
         $newer = $this->createDonationWithDate([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Bob',
             'donor_email' => 'bob@example.com',
@@ -221,7 +223,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
         $donation = Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
@@ -263,7 +265,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
@@ -294,7 +296,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
@@ -304,7 +306,7 @@ class AdminTransactionLogTest extends TestCase
             'paypal_order_id' => 'PAY-123',
         ]);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Bob',
             'donor_email' => 'bob@example.com',
@@ -324,7 +326,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
         $this->createDonationWithDate([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Old',
             'donor_email' => 'old@example.com',
@@ -334,7 +336,7 @@ class AdminTransactionLogTest extends TestCase
             'created_at' => now()->subDays(10),
         ]);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'New',
             'donor_email' => 'new@example.com',
@@ -402,7 +404,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
         Donation::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',

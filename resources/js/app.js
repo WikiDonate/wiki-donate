@@ -136,7 +136,7 @@ library.add(
     faUser,
     faUserCog,
     faUserPlus,
-    faUsers
+    faUsers,
 )
 
 const app = createApp(App)
