@@ -28,13 +28,45 @@ class OrganizationPayoutService
             ->with('article:id,uuid,slug,title')
             ->get();
 
+        $formulaIds = $formulas->pluck('id');
+
+        // Batch aggregate donations per formula
+        $donationSums = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        // Batch aggregate payouts per (formula_id, organization_key)
+        $payoutSums = DB::table('organization_payouts')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->groupBy('donation_formula_id', 'organization_key')
+            ->selectRaw('donation_formula_id, organization_key, SUM(amount) as total')
+            ->get()
+            ->groupBy('donation_formula_id');
+
+        // Batch currency lookup per formula
+        $currencies = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, MIN(currency) as currency')
+            ->pluck('currency', 'donation_formula_id');
+
         $allocations = collect();
 
         foreach ($formulas as $formula) {
-            foreach ($this->normalizeItems($formula->formula) as $item) {
-                $owed = $this->owedFor($formula, $item['key']);
+            $totalDonated = (float) ($donationSums->get($formula->id) ?? 0);
+            $currency = (string) ($currencies->get($formula->id) ?? 'usd');
+            $formulaPayouts = collect($payoutSums->get($formula->id, collect()));
 
-                if ($owed->owed <= 0 && $owed->paid <= 0) {
+            foreach ($this->normalizeItems($formula->formula) as $item) {
+                $owed = round($totalDonated * ($item['percentage'] / 100), 2);
+                $paid = round((float) ($formulaPayouts->firstWhere('organization_key', $item['key'])?->total ?? 0), 2);
+                $balance = round($owed - $paid, 2);
+
+                if ($owed <= 0 && $paid <= 0) {
                     continue;
                 }
 
@@ -50,10 +82,10 @@ class OrganizationPayoutService
                     'organization_name' => $item['name'],
                     'organization_key' => $item['key'],
                     'percentage' => $item['percentage'],
-                    'currency' => $owed->currency,
-                    'owed' => $owed->owed,
-                    'paid' => $owed->paid,
-                    'balance' => $owed->balance,
+                    'currency' => $currency,
+                    'owed' => $owed,
+                    'paid' => $paid,
+                    'balance' => $balance,
                 ]);
             }
         }

@@ -16,7 +16,9 @@ class PageContentController extends Controller
     public function show(string $page): JsonResponse
     {
         try {
-            $content = PageContent::where('page', $page)->first();
+            $content = Cache::remember("page.{$page}", 3600, function () use ($page) {
+                return PageContent::where('page', $page)->first();
+            });
 
             if (! $content) {
                 return response()->json([
@@ -65,6 +67,7 @@ class PageContentController extends Controller
             );
 
             Cache::store('file')->forget('dashboard');
+            Cache::forget("page.{$page}");
 
             return response()->json([
                 'success' => true,

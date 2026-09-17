@@ -32,10 +32,13 @@ class OrganizationPayoutController extends Controller
             $query->where('organization_name', $request->organization);
         }
 
+        $perPage = (int) ($request->input('per_page') ?? 20);
+        $perPage = min(max($perPage, 1), 100);
+
         return response()->json([
             'success' => true,
             'message' => 'Payouts retrieved successfully',
-            'data' => $query->latest('paid_at')->get()->map(fn ($p) => $this->transform($p)),
+            'data' => $query->latest('paid_at')->paginate($perPage)->through(fn ($p) => $this->transform($p)),
         ], Response::HTTP_OK);
     }
 

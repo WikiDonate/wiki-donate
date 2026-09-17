@@ -38,9 +38,6 @@ export default defineConfig({
                         return 'vue'
                     }
                     if (id.includes('@fortawesome')) return 'fontawesome'
-                    if (id.includes('quill') || id.includes('interactjs')) {
-                        return 'quill'
-                    }
                     if (id.includes('@stripe')) return 'stripe'
                     if (
                         id.includes('axios') ||
