@@ -14,9 +14,15 @@ const updatePageContent = (page, content) => api.put(`/admin/page-contents/${pag
 
 const getDonations = (params) => api.get('/admin/donations', { params })
 
+const getTransactions = (params) => api.get('/admin/transactions', { params })
+
+const getTransactionSummary = (params) => api.get('/admin/transactions/summary', { params })
+
 export const adminService = {
     getDashboard,
     getDonations,
+    getTransactions,
+    getTransactionSummary,
     getArticles,
     getArticle,
     deleteArticle,
