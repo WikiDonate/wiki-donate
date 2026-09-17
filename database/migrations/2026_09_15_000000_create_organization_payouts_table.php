@@ -14,6 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('organization_payouts')) {
+            Schema::drop('organization_payouts');
+        }
+
         Schema::create('organization_payouts', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

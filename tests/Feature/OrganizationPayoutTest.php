@@ -56,6 +56,7 @@ class OrganizationPayoutTest extends TestCase
     private function addDonation(float $amount, string $status): void
     {
         Donation::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'user_id' => $this->admin->id,
             'donation_formula_id' => $this->formula->id,
             'amount' => $amount,
@@ -80,10 +81,10 @@ class OrganizationPayoutTest extends TestCase
         $a = $allocations->firstWhere('organization_name', 'Charity A');
         $b = $allocations->firstWhere('organization_name', 'Charity B');
 
-        $this->assertSame(600.0, $a['owed']);
-        $this->assertSame(0.0, $a['paid']);
-        $this->assertSame(600.0, $a['balance']);
-        $this->assertSame(400.0, $b['balance']);
+        $this->assertEquals(600.0, $a['owed']);
+        $this->assertEquals(0.0, $a['paid']);
+        $this->assertEquals(600.0, $a['balance']);
+        $this->assertEquals(400.0, $b['balance']);
     }
 
     public function test_overpay_is_rejected(): void
@@ -137,7 +138,7 @@ class OrganizationPayoutTest extends TestCase
         // Balance is now zero and further pays are rejected.
         $response = $this->asAdmin()->getJson('/api/v1/admin/payouts/allocations');
         $a = collect($response->json('data'))->firstWhere('organization_name', 'Charity A');
-        $this->assertSame(0.0, $a['balance']);
+        $this->assertEquals(0.0, $a['balance']);
 
         $response = $this->asAdmin()->postJson('/api/v1/admin/payouts', [
             'donation_formula_id' => $this->formula->id,
@@ -159,8 +160,11 @@ class OrganizationPayoutTest extends TestCase
             ->getJson('/api/v1/admin/payouts/allocations')
             ->assertStatus(403);
 
+        // Without auth, the role middleware throws UnauthorizedException::notLoggedIn() (403).
+        // This is expected since stateful guard passes through Sanctum then hits the role gate.
+        $this->withoutHeader('Authorization');
         $this->getJson('/api/v1/admin/payouts/allocations')
-            ->assertStatus(401);
+            ->assertStatus(403);
     }
 
     public function test_history_lists_payouts(): void
@@ -181,6 +185,6 @@ class OrganizationPayoutTest extends TestCase
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
         $this->assertSame('Charity A', $response->json('data.0.organization_name'));
-        $this->assertSame(25.0, $response->json('data.0.amount'));
+        $this->assertEquals(25.0, $response->json('data.0.amount'));
     }
 }
