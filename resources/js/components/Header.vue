@@ -4,19 +4,7 @@
         <div class="container mx-auto flex items-center justify-between px-2 sm:px-4">
             <!-- Left: Logo -->
             <NuxtLink to="/" class="flex items-center">
-                <div
-                    class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md mr-2"
-                >
-                    <font-awesome-icon
-                        :icon="['fas', 'hands-praying']"
-                        class="h-5 w-5 sm:h-6 sm:w-6 text-white"
-                    />
-                </div>
-                <h2
-                    class="font-bold text-lg sm:text-2xl bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
-                >
-                    WikiDonate
-                </h2>
+                <Logo size="sm" />
             </NuxtLink>
 
             <!-- Center: Desktop Search -->

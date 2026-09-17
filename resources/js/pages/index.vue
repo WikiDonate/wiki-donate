@@ -2,20 +2,8 @@
     <main class="w-full flex flex-col items-center justify-center px-2 sm:px-4 py-8">
         <!-- Header with logo -->
         <div class="w-full max-w-4xl flex flex-col items-center mb-8">
-            <div class="flex items-center justify-center mb-2">
-                <div
-                    class="w-12 h-12 lg:w-16 lg:h-16 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg mr-3"
-                >
-                    <font-awesome-icon
-                        :icon="['fas', 'hands-praying']"
-                        class="h-8 w-8 lg:h-10 lg:w-10 text-white"
-                    />
-                </div>
-                <h1
-                    class="font-bold text-2xl sm:text-3xl lg:text-5xl bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
-                >
-                    WikiDonate
-                </h1>
+            <div class="mb-2">
+                <Logo size="lg" />
             </div>
         </div>
 
