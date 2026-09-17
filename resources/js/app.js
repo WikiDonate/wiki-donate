@@ -98,8 +98,6 @@ library.add(
     faFileInvoiceDollar,
     faFlag,
     faGithub,
-    faMoneyCheckDollar,
-    faMoneyCheckDollar,
     faGlobe,
     faHandHoldingHeart,
     faHandsPraying,

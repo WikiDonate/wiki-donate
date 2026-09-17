@@ -64,7 +64,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $this->getJson('/api/v1/admin/transactions')->assertStatus(401);
         $this->getJson('/api/v1/admin/transactions/summary')->assertStatus(401);
-        $this->get('/api/v1/admin/transactions/export')->assertStatus(401);
+        $this->getJson('/api/v1/admin/transactions/export')->assertStatus(401);
     }
 
     public function test_transactions_forbid_non_admin_role(): void
@@ -117,13 +117,14 @@ class AdminTransactionLogTest extends TestCase
 
         $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
 
-        $res->assertOk()
-            ->assertJsonPath('data.totalIncome', 100.0)
-            ->assertJsonPath('data.totalPayouts', 30.0)
-            ->assertJsonPath('data.netInHand', 70.0);
+        $res->assertOk();
+        $this->assertEquals(100.0, $res->json('data.totalIncome'));
+        $this->assertEquals(30.0, $res->json('data.totalPayouts'));
+        $this->assertEquals(70.0, $res->json('data.netInHand'));
 
-        // remainingPayable uses live owed calc: owed to Wiki Org = 100 * 60% = 60, paid 30 => 30
-        $this->assertEquals(30.0, $res->json('data.remainingPayable'));
+        // remainingPayable = total owed across all orgs - total payouts
+        // owed: Wiki Org = 100*60%=60, Other Org = 100*40%=40 → total owed = 100. paid: 30 → remaining = 70
+        $this->assertEquals(70.0, $res->json('data.remainingPayable'));
     }
 
     public function test_summary_is_zero_when_no_data(): void
@@ -140,6 +141,22 @@ class AdminTransactionLogTest extends TestCase
         ]);
     }
 
+    private function createDonationWithDate(array $attrs): Donation
+    {
+        $date = $attrs['created_at'] ?? null;
+        unset($attrs['created_at']);
+
+        $donation = Donation::create($attrs);
+        if ($date !== null) {
+            $donation->created_at = $date;
+            $donation->timestamps = false;
+            $donation->save();
+            $donation->timestamps = true;
+        }
+
+        return $donation;
+    }
+
     // -------------------------------------------------------------------------
     // Merged feed: ordering + typing
     // -------------------------------------------------------------------------
@@ -148,7 +165,7 @@ class AdminTransactionLogTest extends TestCase
     {
         $formula = $this->articleWithFormula(50);
 
-        $older = Donation::create([
+        $older = $this->createDonationWithDate([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Alice',
@@ -158,7 +175,7 @@ class AdminTransactionLogTest extends TestCase
             'status' => 'completed',
             'created_at' => now()->subDays(2),
         ]);
-        $newer = Donation::create([
+        $newer = $this->createDonationWithDate([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Bob',
@@ -299,7 +316,7 @@ class AdminTransactionLogTest extends TestCase
     public function test_date_range_filter_applies_to_both_types(): void
     {
         $formula = $this->articleWithFormula(50);
-        Donation::create([
+        $this->createDonationWithDate([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Old',
@@ -362,7 +379,10 @@ class AdminTransactionLogTest extends TestCase
             'paid_at' => now(),
         ]);
 
-        $rows = $this->getJson('/api/v1/admin/transactions?type=expense&org=Wiki Org', $this->authHeader())->json('data');
+        $response = $this->getJson('/api/v1/admin/transactions?type=expense&org=Wiki Org', $this->authHeader());
+        $response->assertOk();
+        $this->assertNotNull($response->json('data'), 'data should not be null');
+        $rows = $response->json('data');
         $this->assertCount(1, $rows);
         $this->assertEquals('Wiki Org', $rows[0]['organization_name']);
     }
@@ -398,21 +418,23 @@ class AdminTransactionLogTest extends TestCase
         $res->assertOk();
         $csv = $this->extractStreamedContent($res);
 
-        $this->assertStringContainsString('income,Donation from Alice', $csv);
-        $this->assertStringContainsString('expense,Payout to Wiki Org', $csv);
+        $this->assertStringContainsString('income,"Donation from Alice"', $csv);
+        $this->assertStringContainsString('expense,"Payout to Wiki Org"', $csv);
         $this->assertStringContainsString('-20.00', $csv);
     }
 
     /**
-     * Captures the streamed CSV body by invoking the response's sendContent.
+     * Captures the streamed CSV body by invoking the base Symfony response's sendContent.
      */
     private function extractStreamedContent($response): string
     {
-        $ref = new \ReflectionMethod($response, 'sendContent');
+        $baseResponse = $response->baseResponse;
+
+        $ref = new \ReflectionMethod($baseResponse, 'sendContent');
         $ref->setAccessible(true);
 
         ob_start();
-        $ref->invoke($response);
+        $ref->invoke($baseResponse);
 
         return (string) ob_get_clean();
     }

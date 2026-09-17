@@ -176,11 +176,12 @@ class TransactionController extends Controller
         $articleSlug = trim((string) $request->input('article', ''));
 
         // ---- Income rows: completed donations --------------------------------
+        $methodFilter = trim((string) $request->input('method', ''));
         $income = (clone $this->applyDateFilter($request, Donation::query()))
             ->where('status', 'completed')
             ->with('formula.article:id,slug,title')
             ->get()
-            ->filter(function (Donation $d) use ($org, $articleSlug) {
+            ->filter(function (Donation $d) use ($org, $articleSlug, $methodFilter) {
                 $formula = $d->formula;
                 $article = $formula?->article;
 
@@ -189,6 +190,12 @@ class TransactionController extends Controller
                 }
                 if ($articleSlug !== '' && (! $article || $article->slug !== $articleSlug)) {
                     return false;
+                }
+                if ($methodFilter !== '') {
+                    $incomeMethod = $d->paypal_order_id ? 'paypal' : 'stripe';
+                    if (strcasecmp($incomeMethod, $methodFilter) !== 0) {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -199,7 +206,10 @@ class TransactionController extends Controller
         // ---- Expense rows: organization payouts -------------------------------
         $expense = OrganizationPayout::query()
             ->with('actorUser:id,username')
+            ->whereNotNull('paid_at')
             ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
+            ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
+            ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
             ->get()
             ->filter(function ($payout) use ($org) {
                 if ($org !== '' && strcasecmp($payout->organization_name, $org) !== 0) {
@@ -274,7 +284,7 @@ class TransactionController extends Controller
     private function mergeRows(Collection $income, Collection $expense, string $direction): Collection
     {
         return $income
-            ->merge($expense)
+            ->concat($expense)
             ->sort(function ($a, $b) use ($direction) {
                 if ($a['sort_date'] === $b['sort_date']) {
                     return $direction === 'desc'
