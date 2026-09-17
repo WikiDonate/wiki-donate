@@ -263,7 +263,6 @@ const onSubmit = handleSubmit(async (values) => {
         startResendCooldown()
     } catch (error) {
         setTimeout(() => {
-            if (import.meta.env.DEV) console.log(error)
             alertVariant.value = 'error'
             alertMessage.value = error.errors?.[0] || 'Registration failed'
             showAlert.value = true

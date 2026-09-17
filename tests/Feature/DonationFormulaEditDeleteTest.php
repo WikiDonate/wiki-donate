@@ -7,11 +7,18 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class DonationFormulaEditDeleteTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Role::firstOrCreate(['name' => 'Editor']);
+    }
 
     private function actingEditor(User $user): self
     {

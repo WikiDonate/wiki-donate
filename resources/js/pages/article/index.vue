@@ -50,7 +50,10 @@
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-red-600"
                                     title="This formula was edited after donations were made"
                                 >
-                                    <font-awesome-icon :icon="['fas', 'circle-exclamation']" class="w-3 h-3" />
+                                    <font-awesome-icon
+                                        :icon="['fas', 'circle-exclamation']"
+                                        class="w-3 h-3"
+                                    />
                                     Edited by user
                                 </span>
                                 <Button
