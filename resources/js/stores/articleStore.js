@@ -50,5 +50,5 @@ export const useArticleStore = defineStore(
     },
     {
         persist: { key: 'articleHistory' },
-    }
+    },
 )

@@ -158,98 +158,97 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { userService } from '~/services/userService'
-import { useToastify } from '~/composables/useToastify'
-import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
+    import { ref, onMounted, watch } from 'vue'
+    import { userService } from '~/services/userService'
+    import { useToastify } from '~/composables/useToastify'
+    import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
-const { notifyError } = useToastify()
+    const { notifyError } = useToastify()
 
-useHead({ title: 'My Donations' })
-definePageMeta({ middleware: 'auth' })
+    useHead({ title: 'My Donations' })
+    definePageMeta({ middleware: 'auth' })
 
-const loading = ref(true)
-const donations = ref([])
-const summary = ref({
-    totalDonated: 0,
-    totalDonations: 0,
-    pendingDonations: 0,
-    failedDonations: 0,
-    bySource: [],
-})
-const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
-const searchQuery = ref('')
-const filterStatus = ref('')
-const fromDate = ref('')
-const toDate = ref('')
+    const loading = ref(true)
+    const donations = ref([])
+    const summary = ref({
+        totalDonated: 0,
+        totalDonations: 0,
+        pendingDonations: 0,
+        failedDonations: 0,
+        bySource: [],
+    })
+    const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
+    const searchQuery = ref('')
+    const filterStatus = ref('')
+    const fromDate = ref('')
+    const toDate = ref('')
 
-const selectedDonation = ref(null)
-const selectedFormulaUrl = ref('')
-const showDetail = ref(false)
+    const selectedDonation = ref(null)
+    const selectedFormulaUrl = ref('')
+    const showDetail = ref(false)
 
-const columns = [
-    { key: 'date', label: 'Date' },
-    { key: 'source', label: 'Source' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'status', label: 'Status' },
-    { key: 'paymentId', label: 'Payment ID' },
-    { key: 'article', label: 'Article' },
-    { key: 'action', label: 'Action' },
-]
+    const columns = [
+        { key: 'date', label: 'Date' },
+        { key: 'source', label: 'Source' },
+        { key: 'amount', label: 'Amount' },
+        { key: 'status', label: 'Status' },
+        { key: 'paymentId', label: 'Payment ID' },
+        { key: 'article', label: 'Article' },
+        { key: 'action', label: 'Action' },
+    ]
 
-const usdFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-})
+    const usdFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    })
 
-const formatAmount = (amount) => usdFormatter.format(amount || 0)
+    const formatAmount = (amount) => usdFormatter.format(amount || 0)
 
-const statusVariants = {
-    completed: 'success',
-    succeeded: 'success',
-    pending: 'warning',
-}
-
-const statusVariant = (status) => statusVariants[status] || 'danger'
-
-function openDetail(row) {
-    console.log('Opening detail for donation:', row)
-    selectedDonation.value = {
-        ...row,
-        user: 'You',
-        email: row.donor_email,
+    const statusVariants = {
+        completed: 'success',
+        succeeded: 'success',
+        pending: 'warning',
     }
-    selectedFormulaUrl.value = row.formula_url || ''
-    showDetail.value = true
-}
 
-const loadPage = async (page = 1) => {
-    loading.value = true
-    try {
-        const params = { page, per_page: 15 }
-        if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
-        if (filterStatus.value) params.status = filterStatus.value
-        if (fromDate.value) params.from = fromDate.value
-        if (toDate.value) params.to = toDate.value
+    const statusVariant = (status) => statusVariants[status] || 'danger'
 
-        const res = await userService.getDonationReport(params)
-        if (res.success) {
-            donations.value = res.data.donations
-            summary.value = res.data.summary
-            meta.value = res.data.meta
+    function openDetail(row) {
+        selectedDonation.value = {
+            ...row,
+            user: 'You',
+            email: row.donor_email,
         }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to load donation report')
-    } finally {
-        loading.value = false
+        selectedFormulaUrl.value = row.formula_url || ''
+        showDetail.value = true
     }
-}
 
-let searchTimeout = null
-watch([searchQuery, filterStatus], () => {
-    clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(() => loadPage(1), 400)
-})
+    const loadPage = async (page = 1) => {
+        loading.value = true
+        try {
+            const params = { page, per_page: 15 }
+            if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
+            if (filterStatus.value) params.status = filterStatus.value
+            if (fromDate.value) params.from = fromDate.value
+            if (toDate.value) params.to = toDate.value
 
-onMounted(() => loadPage())
+            const res = await userService.getDonationReport(params)
+            if (res.success) {
+                donations.value = res.data.donations
+                summary.value = res.data.summary
+                meta.value = res.data.meta
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to load donation report')
+        } finally {
+            loading.value = false
+        }
+    }
+
+    let searchTimeout = null
+    watch([searchQuery, filterStatus], () => {
+        clearTimeout(searchTimeout)
+        searchTimeout = setTimeout(() => loadPage(1), 400)
+    })
+
+    onMounted(() => loadPage())
 </script>

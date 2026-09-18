@@ -26,5 +26,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PageContentSeeder::class,
         ]);
+
+        if (app()->environment('local')) {
+            $this->call(DemoDataSeeder::class);
+        }
     }
 }

@@ -55,82 +55,82 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { articleService } from '~/services/articleService'
+    import { onBeforeUnmount, onMounted, ref } from 'vue'
+    import { useRouter } from 'vue-router'
+    import { articleService } from '~/services/articleService'
 
-const router = useRouter()
-const searchQuery = ref('')
-const suggestions = ref([])
-const searchContainer = ref(null)
-const selectedSuggestions = ref(null)
+    const router = useRouter()
+    const searchQuery = ref('')
+    const suggestions = ref([])
+    const searchContainer = ref(null)
+    const selectedSuggestions = ref(null)
 
-const fetchSuggestions = async () => {
-    const query = searchQuery.value.trim()
-    if (query.length > 1) {
-        try {
-            selectedSuggestions.value = []
-            const response = await articleService.searchArticles(query)
-            suggestions.value = response.data
-            selectedSuggestions.value = response.data
-        } catch (error) {
-            if (import.meta.env.DEV) console.error(error)
-        }
-    } else {
-        suggestions.value = []
-    }
-}
-
-const handleSearch = async () => {
-    const query = searchQuery.value.trim()
-    if (query) {
-        let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
-        const foundSuggestion = selectedSuggestions.value?.find(
-            (suggestion) => suggestion.title.toLowerCase() === query.toLowerCase()
-        )
-
-        if (foundSuggestion) {
-            searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
-        } else {
+    const fetchSuggestions = async () => {
+        const query = searchQuery.value.trim()
+        if (query.length > 1) {
             try {
+                selectedSuggestions.value = []
                 const response = await articleService.searchArticles(query)
-                const results = response.data
-                const exactMatch = results.find(
-                    (r) => r.title.toLowerCase() === query.toLowerCase()
-                )
-                if (exactMatch) {
-                    searchUrl = `/article?title=${encodeURIComponent(exactMatch.slug)}`
-                }
-            } catch {
-                // fall through to new article page
+                suggestions.value = response.data
+                selectedSuggestions.value = response.data
+            } catch (error) {
+                if (import.meta.env.DEV) console.error(error)
             }
+        } else {
+            suggestions.value = []
         }
+    }
 
-        searchQuery.value = ''
+    const handleSearch = async () => {
+        const query = searchQuery.value.trim()
+        if (query) {
+            let searchUrl = `/article/new?title=${encodeURIComponent(query)}`
+            const foundSuggestion = selectedSuggestions.value?.find(
+                (suggestion) => suggestion.title.toLowerCase() === query.toLowerCase(),
+            )
+
+            if (foundSuggestion) {
+                searchUrl = `/article?title=${encodeURIComponent(foundSuggestion.slug)}`
+            } else {
+                try {
+                    const response = await articleService.searchArticles(query)
+                    const results = response.data
+                    const exactMatch = results.find(
+                        (r) => r.title.toLowerCase() === query.toLowerCase(),
+                    )
+                    if (exactMatch) {
+                        searchUrl = `/article?title=${encodeURIComponent(exactMatch.slug)}`
+                    }
+                } catch {
+                    // fall through to new article page
+                }
+            }
+
+            searchQuery.value = ''
+            suggestions.value = []
+            selectedSuggestions.value = []
+            router.push(searchUrl)
+        }
+    }
+
+    const selectSuggestion = (suggestion) => {
+        searchQuery.value = suggestion.title
+        const searchUrl = `/article?title=${encodeURIComponent(suggestion.slug)}`
         suggestions.value = []
-        selectedSuggestions.value = []
         router.push(searchUrl)
     }
-}
 
-const selectSuggestion = (suggestion) => {
-    searchQuery.value = suggestion.title
-    const searchUrl = `/article?title=${encodeURIComponent(suggestion.slug)}`
-    suggestions.value = []
-    router.push(searchUrl)
-}
-
-const handleClickOutside = (event) => {
-    if (searchContainer.value && !searchContainer.value.contains(event.target)) {
-        suggestions.value = []
+    const handleClickOutside = (event) => {
+        if (searchContainer.value && !searchContainer.value.contains(event.target)) {
+            suggestions.value = []
+        }
     }
-}
 
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-})
+    onMounted(() => {
+        document.addEventListener('click', handleClickOutside)
+    })
 
-onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-})
+    onBeforeUnmount(() => {
+        document.removeEventListener('click', handleClickOutside)
+    })
 </script>

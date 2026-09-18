@@ -111,76 +111,76 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { articleService } from '~/services/articleService'
-import { formatDateUTC } from '~/utils/dateFormatUTC'
+    import { ref } from 'vue'
+    import { articleService } from '~/services/articleService'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
 
-definePageMeta({
-    middleware: 'auth',
-})
+    definePageMeta({
+        middleware: 'auth',
+    })
 
-useHead({
-    title: 'My Articles',
-})
+    useHead({
+        title: 'My Articles',
+    })
 
-const articleStore = useArticleStore()
+    const articleStore = useArticleStore()
 
-const articles = computed(() => articleStore.articles || [])
-const articlesMeta = computed(() => articleStore.articlesMeta || {})
+    const articles = computed(() => articleStore.articles || [])
+    const articlesMeta = computed(() => articleStore.articlesMeta || {})
 
-// Alert state
-const showAlert = ref(false)
-const alertVariant = ref('success')
-const alertMessage = ref('')
+    // Alert state
+    const showAlert = ref(false)
+    const alertVariant = ref('success')
+    const alertMessage = ref('')
 
-// Loader state
-const loading = ref(false)
+    // Loader state
+    const loading = ref(false)
 
-const currentPage = ref(1)
+    const currentPage = ref(1)
 
-// Function to show alert
-const showAlertMessage = (message, variant = 'error') => {
-    alertMessage.value = message
-    alertVariant.value = variant
-    showAlert.value = true
-    setTimeout(() => {
-        showAlert.value = false
-    }, 5000)
-}
+    // Function to show alert
+    const showAlertMessage = (message, variant = 'error') => {
+        alertMessage.value = message
+        alertVariant.value = variant
+        showAlert.value = true
+        setTimeout(() => {
+            showAlert.value = false
+        }, 5000)
+    }
 
-// Function to load my articles
-const loadMyArticles = async (page = 1) => {
-    loading.value = true
-    try {
-        const response = await articleService.getMyArticles(page)
-        if (response.success) {
-            articleStore.addArticles({
-                articles: response.data,
-                articlesMeta: response.meta,
-            })
-            currentPage.value = response.meta.currentPage
-        } else {
+    // Function to load my articles
+    const loadMyArticles = async (page = 1) => {
+        loading.value = true
+        try {
+            const response = await articleService.getMyArticles(page)
+            if (response.success) {
+                articleStore.addArticles({
+                    articles: response.data,
+                    articlesMeta: response.meta,
+                })
+                currentPage.value = response.meta.currentPage
+            } else {
+                articleStore.clearArticles()
+                showAlertMessage(response.message || 'Failed to load articles')
+            }
+        } catch (error) {
+            if (import.meta.env.DEV) console.error('Error loading articles:', error)
             articleStore.clearArticles()
-            showAlertMessage(response.message || 'Failed to load articles')
+            showAlertMessage(error.message || 'An error occurred while loading articles')
+        } finally {
+            loading.value = false
         }
-    } catch (error) {
-        if (import.meta.env.DEV) console.error('Error loading articles:', error)
-        articleStore.clearArticles()
-        showAlertMessage(error.message || 'An error occurred while loading articles')
-    } finally {
-        loading.value = false
     }
-}
 
-const goToPage = (page) => {
-    if (page >= 1 && page <= articlesMeta.value.lastPage) {
-        loadMyArticles(page)
-        // Scroll to top when changing pages
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+    const goToPage = (page) => {
+        if (page >= 1 && page <= articlesMeta.value.lastPage) {
+            loadMyArticles(page)
+            // Scroll to top when changing pages
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
     }
-}
 
-onMounted(() => {
-    loadMyArticles()
-})
+    onMounted(() => {
+        loadMyArticles()
+    })
 </script>

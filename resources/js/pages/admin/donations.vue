@@ -119,73 +119,73 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { adminService } from '~/services/adminService'
-import { useToastify } from '~/composables/useToastify'
-import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
+    import { ref, onMounted, watch } from 'vue'
+    import { adminService } from '~/services/adminService'
+    import { useToastify } from '~/composables/useToastify'
+    import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
-const { notifyError } = useToastify()
+    const { notifyError } = useToastify()
 
-const selectedDonation = ref(null)
-const selectedFormulaUrl = ref('')
-const showDetail = ref(false)
+    const selectedDonation = ref(null)
+    const selectedFormulaUrl = ref('')
+    const showDetail = ref(false)
 
-function openDetail(row) {
-    selectedDonation.value = row
-    selectedFormulaUrl.value = row.formula_url || ''
-    showDetail.value = true
-}
-
-useHead({ title: 'Admin - Donations' })
-definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
-
-const donations = ref([])
-const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
-const loading = ref(true)
-const searchQuery = ref('')
-const filterStatus = ref('')
-let searchTimeout = null
-
-const columns = [
-    { key: 'date', label: 'Date' },
-    { key: 'donor', label: 'Donor' },
-    { key: 'source', label: 'Source' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'status', label: 'Status' },
-    { key: 'paymentId', label: 'Payment ID' },
-    { key: 'article', label: 'Article' },
-    { key: 'action', label: 'Action' },
-]
-
-function statusVariant(status) {
-    if (status === 'completed' || status === 'succeeded') return 'success'
-    if (status === 'pending') return 'warning'
-    return 'danger'
-}
-
-const loadPage = async (page = 1) => {
-    loading.value = true
-    try {
-        const params = { page, per_page: 15 }
-        if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
-        if (filterStatus.value) params.status = filterStatus.value
-
-        const res = await adminService.getDonations(params)
-        if (res.success) {
-            donations.value = res.data
-            meta.value = res.meta
-        }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to load donations')
-    } finally {
-        loading.value = false
+    function openDetail(row) {
+        selectedDonation.value = row
+        selectedFormulaUrl.value = row.formula_url || ''
+        showDetail.value = true
     }
-}
 
-watch([searchQuery, filterStatus], () => {
-    clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(() => loadPage(1), 400)
-})
+    useHead({ title: 'Admin - Donations' })
+    definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
-onMounted(() => loadPage())
+    const donations = ref([])
+    const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
+    const loading = ref(true)
+    const searchQuery = ref('')
+    const filterStatus = ref('')
+    let searchTimeout = null
+
+    const columns = [
+        { key: 'date', label: 'Date' },
+        { key: 'donor', label: 'Donor' },
+        { key: 'source', label: 'Source' },
+        { key: 'amount', label: 'Amount' },
+        { key: 'status', label: 'Status' },
+        { key: 'paymentId', label: 'Payment ID' },
+        { key: 'article', label: 'Article' },
+        { key: 'action', label: 'Action' },
+    ]
+
+    function statusVariant(status) {
+        if (status === 'completed' || status === 'succeeded') return 'success'
+        if (status === 'pending') return 'warning'
+        return 'danger'
+    }
+
+    const loadPage = async (page = 1) => {
+        loading.value = true
+        try {
+            const params = { page, per_page: 15 }
+            if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
+            if (filterStatus.value) params.status = filterStatus.value
+
+            const res = await adminService.getDonations(params)
+            if (res.success) {
+                donations.value = res.data
+                meta.value = res.meta
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to load donations')
+        } finally {
+            loading.value = false
+        }
+    }
+
+    watch([searchQuery, filterStatus], () => {
+        clearTimeout(searchTimeout)
+        searchTimeout = setTimeout(() => loadPage(1), 400)
+    })
+
+    onMounted(() => loadPage())
 </script>

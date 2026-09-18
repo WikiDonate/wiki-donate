@@ -16,27 +16,27 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
 
-// Define props
-const props = defineProps({
-    modelValue: {
-        type: [String, Number],
-        default: '',
-    },
-    errorMessage: {
-        type: String,
-        default: '',
-    },
-})
+    // Define props
+    const props = defineProps({
+        modelValue: {
+            type: [String, Number],
+            default: '',
+        },
+        errorMessage: {
+            type: String,
+            default: '',
+        },
+    })
 
-// Classes for textarea based on validation state
-const inputClasses = computed(() => {
-    return [
-        'border rounded py-2 px-3 w-full focus:outline-none resize-none',
-        props.errorMessage
-            ? 'border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:ring-blue-200',
-    ]
-})
+    // Classes for textarea based on validation state
+    const inputClasses = computed(() => {
+        return [
+            'border rounded py-2 px-3 w-full focus:outline-none resize-none',
+            props.errorMessage
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-gray-300 focus:ring-blue-200',
+        ]
+    })
 </script>

@@ -101,7 +101,7 @@ const initializeGoogleTranslate = () => {
             multilanguagePage: false,
             layout: window.google.translate.TranslateElement.InlineLayout.VERTICAL,
         },
-        'nuxt_translate_element'
+        'nuxt_translate_element',
     )
     isLoaded.value = true
     updateGoogleTranslate(activeLanguage.value)

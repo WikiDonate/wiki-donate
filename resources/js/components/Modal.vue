@@ -41,16 +41,16 @@
 </template>
 
 <script setup>
-defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false,
-    },
-    title: {
-        type: String,
-        default: 'Modal Title',
-    },
-})
+    defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false,
+        },
+        title: {
+            type: String,
+            default: 'Modal Title',
+        },
+    })
 
-defineEmits(['update:modelValue'])
+    defineEmits(['update:modelValue'])
 </script>

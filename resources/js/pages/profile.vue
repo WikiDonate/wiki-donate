@@ -84,74 +84,74 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from 'vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import FormInput from '~/components/FormInput.vue'
-import FormSubmitButton from '~/components/FormSubmitButton.vue'
-import AlertMessage from '~/components/AlertMessage.vue'
-import { useUserStore } from '@/stores/userStore'
+    import { onMounted, watch, ref } from 'vue'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import FormInput from '~/components/FormInput.vue'
+    import FormSubmitButton from '~/components/FormSubmitButton.vue'
+    import AlertMessage from '~/components/AlertMessage.vue'
+    import { useUserStore } from '@/stores/userStore'
 
-useHead({ title: 'Profile Details' })
-definePageMeta({ middleware: 'auth' })
+    useHead({ title: 'Profile Details' })
+    definePageMeta({ middleware: 'auth' })
 
-const userStore = useUserStore()
+    const userStore = useUserStore()
 
-// Alert state
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
+    // Alert state
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
 
-// Validation schema
-const validationSchema = yup.object({
-    name: yup.string().required('Full name is required'),
-    email: yup.string().required('Email is required').email('Invalid email'),
-    phone: yup.string().matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
-})
-
-// Setup vee-validate form
-const { handleSubmit, defineField, errors, resetForm } = useForm({
-    validationSchema,
-    initialValues: {
-        name: '',
-        email: '',
-        phone: '',
-    },
-})
-
-// Define form fields
-const [name, nameProps] = defineField('name')
-const [email, emailProps] = defineField('email')
-const [phone, phoneProps] = defineField('phone')
-
-// Fetch user on mounted
-onMounted(async () => {
-    userStore.getUserDetails()
-})
-
-// Watch for changes in user data and reset form
-watch(
-    () => userStore.user,
-    (user) => {
-        if (user) {
-            resetForm({
-                values: {
-                    name: user.name ?? '',
-                    email: user.email ?? '',
-                    phone: user.phone ?? '',
-                },
-            })
-        }
-    },
-    { immediate: true }
-)
-
-// Handle submit
-const onSubmit = handleSubmit(async (values) => {
-    userStore.updateUser({
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
+    // Validation schema
+    const validationSchema = yup.object({
+        name: yup.string().required('Full name is required'),
+        email: yup.string().required('Email is required').email('Invalid email'),
+        phone: yup.string().matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
     })
-})
+
+    // Setup vee-validate form
+    const { handleSubmit, defineField, errors, resetForm } = useForm({
+        validationSchema,
+        initialValues: {
+            name: '',
+            email: '',
+            phone: '',
+        },
+    })
+
+    // Define form fields
+    const [name, nameProps] = defineField('name')
+    const [email, emailProps] = defineField('email')
+    const [phone, phoneProps] = defineField('phone')
+
+    // Fetch user on mounted
+    onMounted(async () => {
+        userStore.getUserDetails()
+    })
+
+    // Watch for changes in user data and reset form
+    watch(
+        () => userStore.user,
+        (user) => {
+            if (user) {
+                resetForm({
+                    values: {
+                        name: user.name ?? '',
+                        email: user.email ?? '',
+                        phone: user.phone ?? '',
+                    },
+                })
+            }
+        },
+        { immediate: true },
+    )
+
+    // Handle submit
+    const onSubmit = handleSubmit(async (values) => {
+        userStore.updateUser({
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+        })
+    })
 </script>

@@ -4,19 +4,7 @@
         <div class="container mx-auto flex items-center justify-between px-2 sm:px-4">
             <!-- Left: Logo -->
             <NuxtLink to="/" class="flex items-center">
-                <div
-                    class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md mr-2"
-                >
-                    <font-awesome-icon
-                        :icon="['fas', 'hands-praying']"
-                        class="h-5 w-5 sm:h-6 sm:w-6 text-white"
-                    />
-                </div>
-                <h2
-                    class="font-bold text-lg sm:text-2xl bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
-                >
-                    WikiDonate
-                </h2>
+                <Logo size="sm" />
             </NuxtLink>
 
             <!-- Center: Desktop Search -->
@@ -218,88 +206,88 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { authService } from '~/services/authService'
-import menuData from '~/static/menu.json'
+    import { onMounted, onUnmounted, ref, computed } from 'vue'
+    import { useRoute } from 'vue-router'
+    import { authService } from '~/services/authService'
+    import menuData from '~/static/menu.json'
 
-const route = useRoute()
-const router = useRouter()
-const authStore = useAuthStore()
+    const route = useRoute()
+    const router = useRouter()
+    const authStore = useAuthStore()
 
-const activeDropdown = ref(null)
+    const activeDropdown = ref(null)
 
-// Menu Computed
-const topMenu = computed(() =>
-    menuData.filter((item) =>
-        authStore.isAuthenticated
-            ? item.type === 'TopMenu' && item.onLogin !== 'hide'
-            : item.type === 'TopMenu' && item.onLogin !== 'show'
+    // Menu Computed
+    const topMenu = computed(() =>
+        menuData.filter((item) =>
+            authStore.isAuthenticated
+                ? item.type === 'TopMenu' && item.onLogin !== 'hide'
+                : item.type === 'TopMenu' && item.onLogin !== 'show',
+        ),
     )
-)
 
-const mainMenu = computed(() =>
-    menuData.filter(
-        (item) =>
-            item.type === 'MainMenu' &&
-            item.onLogin !== 'hide' &&
-            (!item.role || authStore.roles?.includes(item.role))
+    const mainMenu = computed(() =>
+        menuData.filter(
+            (item) =>
+                item.type === 'MainMenu' &&
+                item.onLogin !== 'hide' &&
+                (!item.role || authStore.roles?.includes(item.role)),
+        ),
     )
-)
 
-const logoutMenu = computed(() =>
-    menuData.filter((item) =>
-        authStore.isAuthenticated
-            ? item.type === 'LogoutMenu' &&
-              item.onLogin !== 'hide' &&
-              (!item.role || authStore.roles?.includes(item.role))
-            : item.type === 'LogoutMenu' && item.onLogin !== 'show'
+    const logoutMenu = computed(() =>
+        menuData.filter((item) =>
+            authStore.isAuthenticated
+                ? item.type === 'LogoutMenu' &&
+                  item.onLogin !== 'hide' &&
+                  (!item.role || authStore.roles?.includes(item.role))
+                : item.type === 'LogoutMenu' && item.onLogin !== 'show',
+        ),
     )
-)
 
-const resolveLink = (item) => {
-    if (item.name === 'Logout') return '#'
-    return item.link
-}
+    const resolveLink = (item) => {
+        if (item.name === 'Logout') return '#'
+        return item.link
+    }
 
-const toggleDropdownMenu = (menuType) => {
-    activeDropdown.value = activeDropdown.value === menuType ? null : menuType
-}
+    const toggleDropdownMenu = (menuType) => {
+        activeDropdown.value = activeDropdown.value === menuType ? null : menuType
+    }
 
-const isActiveRoute = (path, route) => {
-    return route.path === path
-}
+    const isActiveRoute = (path, route) => {
+        return route.path === path
+    }
 
-const onClickOutside = (event) => {
-    const buttons = ['logoutButton', 'menuButton', 'moreButton']
-    if (!buttons.some((id) => document.getElementById(id)?.contains(event.target))) {
+    const onClickOutside = (event) => {
+        const buttons = ['logoutButton', 'menuButton', 'moreButton']
+        if (!buttons.some((id) => document.getElementById(id)?.contains(event.target))) {
+            activeDropdown.value = null
+        }
+    }
+
+    const handleLogout = async (event) => {
+        event.preventDefault()
+        authStore.logout()
+        localStorage.removeItem('token')
         activeDropdown.value = null
+        try {
+            await authService.logout()
+            router.push('/login')
+        } catch (error) {
+            if (import.meta.env.DEV) console.error(error.message)
+            router.push('/login')
+        }
     }
-}
 
-const handleLogout = async (event) => {
-    event.preventDefault()
-    authStore.logout()
-    localStorage.removeItem('token')
-    activeDropdown.value = null
-    try {
-        await authService.logout()
-        router.push('/login')
-    } catch (error) {
-        if (import.meta.env.DEV) console.error(error.message)
-        router.push('/login')
-    }
-}
+    onMounted(() => {
+        document.addEventListener('click', onClickOutside)
+    })
 
-onMounted(() => {
-    document.addEventListener('click', onClickOutside)
-})
+    onUnmounted(() => {
+        document.removeEventListener('click', onClickOutside)
+    })
 
-onUnmounted(() => {
-    document.removeEventListener('click', onClickOutside)
-})
-
-watch(route, () => {
-    activeDropdown.value = null
-})
+    watch(route, () => {
+        activeDropdown.value = null
+    })
 </script>

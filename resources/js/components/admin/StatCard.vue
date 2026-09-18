@@ -21,52 +21,52 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
 
-const props = defineProps({
-    icon: {
-        type: Array,
-        required: true,
-    },
-    iconBg: {
-        type: String,
-        default: 'indigo',
-    },
-    label: {
-        type: String,
-        required: true,
-    },
-    value: {
-        type: [String, Number],
-        required: true,
-    },
-})
+    const props = defineProps({
+        icon: {
+            type: Array,
+            required: true,
+        },
+        iconBg: {
+            type: String,
+            default: 'indigo',
+        },
+        label: {
+            type: String,
+            required: true,
+        },
+        value: {
+            type: [String, Number],
+            required: true,
+        },
+    })
 
-const bgMap = {
-    indigo: 'bg-indigo-50',
-    purple: 'bg-purple-50',
-    green: 'bg-green-50',
-    amber: 'bg-amber-50',
-    red: 'bg-red-50',
-    blue: 'bg-blue-50',
-}
-const colorMap = {
-    indigo: 'text-indigo-600',
-    purple: 'text-purple-600',
-    green: 'text-green-600',
-    amber: 'text-amber-600',
-    red: 'text-red-600',
-    blue: 'text-blue-600',
-}
-const dotMap = {
-    indigo: 'bg-indigo-400',
-    purple: 'bg-purple-400',
-    green: 'bg-green-400',
-    amber: 'bg-amber-400',
-    red: 'bg-red-400',
-    blue: 'bg-blue-400',
-}
-const iconBgClass = computed(() => bgMap[props.iconBg] || 'bg-indigo-50')
-const iconColorClass = computed(() => colorMap[props.iconBg] || 'text-indigo-600')
-const dotClass = computed(() => dotMap[props.iconBg] || 'bg-indigo-400')
+    const bgMap = {
+        indigo: 'bg-indigo-50',
+        purple: 'bg-purple-50',
+        green: 'bg-green-50',
+        amber: 'bg-amber-50',
+        red: 'bg-red-50',
+        blue: 'bg-blue-50',
+    }
+    const colorMap = {
+        indigo: 'text-indigo-600',
+        purple: 'text-purple-600',
+        green: 'text-green-600',
+        amber: 'text-amber-600',
+        red: 'text-red-600',
+        blue: 'text-blue-600',
+    }
+    const dotMap = {
+        indigo: 'bg-indigo-400',
+        purple: 'bg-purple-400',
+        green: 'bg-green-400',
+        amber: 'bg-amber-400',
+        red: 'bg-red-400',
+        blue: 'bg-blue-400',
+    }
+    const iconBgClass = computed(() => bgMap[props.iconBg] || 'bg-indigo-50')
+    const iconColorClass = computed(() => colorMap[props.iconBg] || 'text-indigo-600')
+    const dotClass = computed(() => dotMap[props.iconBg] || 'bg-indigo-400')
 </script>

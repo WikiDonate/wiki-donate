@@ -4,5 +4,5 @@
 </template>
 
 <script setup>
-import GoogleTranslate from '@/components/GoogleTranslate.vue'
+    import GoogleTranslate from '@/components/GoogleTranslate.vue'
 </script>

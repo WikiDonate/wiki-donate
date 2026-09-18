@@ -63,62 +63,62 @@
 </template>
 
 <script setup>
-import api from '~/config/apiConfig'
+    import api from '~/config/apiConfig'
 
-const route = useRoute()
-const sessionData = ref(null)
-const loading = ref(false)
-const paypalStatus = ref(null)
+    const route = useRoute()
+    const sessionData = ref(null)
+    const loading = ref(false)
+    const paypalStatus = ref(null)
 
-useHead({ title: 'Payment Successful' })
+    useHead({ title: 'Payment Successful' })
 
-definePageMeta({
-    // No auth middleware — users returning from Stripe/PayPal may not be authenticated
-})
+    definePageMeta({
+        // No auth middleware — users returning from Stripe/PayPal may not be authenticated
+    })
 
-const formatAmount = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount)
-}
-
-const backUrl = computed(() => {
-    const back = route.query.back
-    return back && back.startsWith('/') ? back : '/'
-})
-
-const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
-
-onMounted(async () => {
-    const sessionId = route.query.session_id
-
-    if (route.query.paypal === '1') {
-        // PayPal Smart Buttons flow — capture already completed client-side
-        loading.value = false
-        paypalStatus.value = 'completed'
-        sessionData.value = {
-            amount: route.query.amount || null,
-            currency: route.query.currency || 'USD',
-            payment_status: 'paid',
-            status: 'complete',
-        }
-        return
+    const formatAmount = (amount) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(amount)
     }
 
-    if (sessionId) {
-        // Stripe Checkout redirect
-        loading.value = true
-        try {
-            const response = await api.get(`/stripe/checkout/${sessionId}`)
-            if (response.success) {
-                sessionData.value = response.data
-            }
-        } catch {
-            // Silently fail — user still sees success message
-        } finally {
+    const backUrl = computed(() => {
+        const back = route.query.back
+        return back && back.startsWith('/') ? back : '/'
+    })
+
+    const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
+
+    onMounted(async () => {
+        const sessionId = route.query.session_id
+
+        if (route.query.paypal === '1') {
+            // PayPal Smart Buttons flow — capture already completed client-side
             loading.value = false
+            paypalStatus.value = 'completed'
+            sessionData.value = {
+                amount: route.query.amount || null,
+                currency: route.query.currency || 'USD',
+                payment_status: 'paid',
+                status: 'complete',
+            }
+            return
         }
-    }
-})
+
+        if (sessionId) {
+            // Stripe Checkout redirect
+            loading.value = true
+            try {
+                const response = await api.get(`/stripe/checkout/${sessionId}`)
+                if (response.success) {
+                    sessionData.value = response.data
+                }
+            } catch {
+                // Silently fail — user still sees success message
+            } finally {
+                loading.value = false
+            }
+        }
+    })
 </script>

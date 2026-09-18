@@ -38,36 +38,36 @@
 </template>
 
 <script setup>
-defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false,
-    },
-    title: {
-        type: String,
-        default: 'Confirm Action',
-    },
-    messageTitle: {
-        type: String,
-        default: 'Are you sure?',
-    },
-    message: {
-        type: String,
-        default: 'This action cannot be undone.',
-    },
-    confirmText: {
-        type: String,
-        default: 'Delete',
-    },
-    cancelText: {
-        type: String,
-        default: 'Cancel',
-    },
-    isLoading: {
-        type: Boolean,
-        default: false,
-    },
-})
+    defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false,
+        },
+        title: {
+            type: String,
+            default: 'Confirm Action',
+        },
+        messageTitle: {
+            type: String,
+            default: 'Are you sure?',
+        },
+        message: {
+            type: String,
+            default: 'This action cannot be undone.',
+        },
+        confirmText: {
+            type: String,
+            default: 'Delete',
+        },
+        cancelText: {
+            type: String,
+            default: 'Cancel',
+        },
+        isLoading: {
+            type: Boolean,
+            default: false,
+        },
+    })
 
-defineEmits(['update:modelValue', 'confirm'])
+    defineEmits(['update:modelValue', 'confirm'])
 </script>

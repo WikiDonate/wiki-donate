@@ -123,97 +123,97 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { adminService } from '~/services/adminService'
-import { useToastify } from '~/composables/useToastify'
+    import { ref, onMounted, watch } from 'vue'
+    import { adminService } from '~/services/adminService'
+    import { useToastify } from '~/composables/useToastify'
 
-const { notifySuccess, notifyError } = useToastify()
+    const { notifySuccess, notifyError } = useToastify()
 
-useHead({ title: 'Admin - Articles' })
-definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
+    useHead({ title: 'Admin - Articles' })
+    definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
-const articles = ref([])
-const meta = ref({ currentPage: 1, lastPage: 1, total: 0, perPage: 15 })
-const loading = ref(true)
-const showDeleteModal = ref(false)
-const deleteTarget = ref(null)
-const deleting = ref(false)
-const searchQuery = ref('')
-const filterType = ref('')
-const filterAccess = ref('')
-let searchTimeout = null
+    const articles = ref([])
+    const meta = ref({ currentPage: 1, lastPage: 1, total: 0, perPage: 15 })
+    const loading = ref(true)
+    const showDeleteModal = ref(false)
+    const deleteTarget = ref(null)
+    const deleting = ref(false)
+    const searchQuery = ref('')
+    const filterType = ref('')
+    const filterAccess = ref('')
+    let searchTimeout = null
 
-const columns = [
-    { key: 'title', label: 'Title' },
-    { key: 'author', label: 'Author' },
-    { key: 'type', label: 'Type' },
-    { key: 'accessType', label: 'Access' },
-    { key: 'updatedAt', label: 'Updated' },
-    {
-        key: 'actions',
-        label: 'Actions',
-        thClass: 'text-right',
-        tdClass: 'text-right',
-    },
-]
-
-const loadPage = async (page = 1) => {
-    loading.value = true
-    try {
-        const params = { page }
-        if (searchQuery.value.trim()) {
-            params.search = searchQuery.value.trim()
-        }
-        if (filterType.value) {
-            params.type = filterType.value
-        }
-        if (filterAccess.value) {
-            params.access_type = filterAccess.value
-        }
-        const res = await adminService.getArticles(params)
-        if (res.success) {
-            articles.value = res.data
-            meta.value = res.meta
-        }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to load articles')
-    } finally {
-        loading.value = false
-    }
-}
-
-const confirmDelete = (article) => {
-    deleteTarget.value = article
-    showDeleteModal.value = true
-}
-
-const handleDelete = async () => {
-    if (deleting.value) return
-    deleting.value = true
-    try {
-        const res = await adminService.deleteArticle(deleteTarget.value.slug)
-        if (res.success) {
-            notifySuccess('Article deleted successfully')
-            showDeleteModal.value = false
-            deleteTarget.value = null
-            await loadPage(meta.value.currentPage)
-        }
-    } catch (error) {
-        notifyError(error.errors?.[0] || 'Failed to delete article')
-    } finally {
-        deleting.value = false
-    }
-}
-
-watch([searchQuery, filterType, filterAccess], () => {
-    clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(
-        () => {
-            loadPage(1)
+    const columns = [
+        { key: 'title', label: 'Title' },
+        { key: 'author', label: 'Author' },
+        { key: 'type', label: 'Type' },
+        { key: 'accessType', label: 'Access' },
+        { key: 'updatedAt', label: 'Updated' },
+        {
+            key: 'actions',
+            label: 'Actions',
+            thClass: 'text-right',
+            tdClass: 'text-right',
         },
-        searchQuery.value !== undefined ? 400 : 0
-    )
-})
+    ]
 
-onMounted(() => loadPage())
+    const loadPage = async (page = 1) => {
+        loading.value = true
+        try {
+            const params = { page }
+            if (searchQuery.value.trim()) {
+                params.search = searchQuery.value.trim()
+            }
+            if (filterType.value) {
+                params.type = filterType.value
+            }
+            if (filterAccess.value) {
+                params.access_type = filterAccess.value
+            }
+            const res = await adminService.getArticles(params)
+            if (res.success) {
+                articles.value = res.data
+                meta.value = res.meta
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to load articles')
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const confirmDelete = (article) => {
+        deleteTarget.value = article
+        showDeleteModal.value = true
+    }
+
+    const handleDelete = async () => {
+        if (deleting.value) return
+        deleting.value = true
+        try {
+            const res = await adminService.deleteArticle(deleteTarget.value.slug)
+            if (res.success) {
+                notifySuccess('Article deleted successfully')
+                showDeleteModal.value = false
+                deleteTarget.value = null
+                await loadPage(meta.value.currentPage)
+            }
+        } catch (error) {
+            notifyError(error.errors?.[0] || 'Failed to delete article')
+        } finally {
+            deleting.value = false
+        }
+    }
+
+    watch([searchQuery, filterType, filterAccess], () => {
+        clearTimeout(searchTimeout)
+        searchTimeout = setTimeout(
+            () => {
+                loadPage(1)
+            },
+            searchQuery.value !== undefined ? 400 : 0,
+        )
+    })
+
+    onMounted(() => loadPage())
 </script>

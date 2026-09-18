@@ -50,18 +50,18 @@
 </template>
 
 <script setup>
-useHead({ title: 'Payment Cancelled' })
+    useHead({ title: 'Payment Cancelled' })
 
-definePageMeta({
-    // No auth middleware — users returning from Stripe may not be authenticated
-})
+    definePageMeta({
+        // No auth middleware — users returning from Stripe may not be authenticated
+    })
 
-const route = useRoute()
+    const route = useRoute()
 
-const backUrl = computed(() => {
-    const back = route.query.back
-    return back && back.startsWith('/') ? back : '/'
-})
+    const backUrl = computed(() => {
+        const back = route.query.back
+        return back && back.startsWith('/') ? back : '/'
+    })
 
-const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
+    const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
 </script>

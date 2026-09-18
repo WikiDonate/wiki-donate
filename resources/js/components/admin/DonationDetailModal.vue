@@ -85,7 +85,7 @@
                             {{ donation.currency || 'USD' }}
                             {{
                                 ((Number(donation.amount) * Number(item.percentage)) / 100).toFixed(
-                                    2
+                                    2,
                                 )
                             }}
                         </p>
@@ -127,26 +127,26 @@
 </template>
 
 <script setup>
-defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false,
-    },
-    donation: {
-        type: Object,
-        default: null,
-    },
-    formulaUrl: {
-        type: String,
-        default: '',
-    },
-})
+    defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false,
+        },
+        donation: {
+            type: Object,
+            default: null,
+        },
+        formulaUrl: {
+            type: String,
+            default: '',
+        },
+    })
 
-defineEmits(['update:modelValue'])
+    defineEmits(['update:modelValue'])
 
-function statusVariant(status) {
-    if (status === 'completed' || status === 'succeeded') return 'success'
-    if (status === 'expired') return 'amber'
-    return 'danger'
-}
+    function statusVariant(status) {
+        if (status === 'completed' || status === 'succeeded') return 'success'
+        if (status === 'expired') return 'amber'
+        return 'danger'
+    }
 </script>

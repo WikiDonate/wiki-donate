@@ -83,7 +83,7 @@
                                             @click="
                                                 router.push(
                                                     '/article?title=' +
-                                                        encodeURIComponent(seg.value)
+                                                        encodeURIComponent(seg.value),
                                                 )
                                             "
                                         >
@@ -103,35 +103,35 @@
 </template>
 
 <script setup>
-import api from '~/config/apiConfig'
+    import api from '~/config/apiConfig'
 
-useHead({
-    title: 'How to Use WikiDonate',
-})
+    useHead({
+        title: 'How to Use WikiDonate',
+    })
 
-const router = useRouter()
-const activeSection = ref('step-0')
-const steps = ref([])
-const loading = ref(true)
+    const router = useRouter()
+    const activeSection = ref('step-0')
+    const steps = ref([])
+    const loading = ref(true)
 
-const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-        activeSection.value = sectionId
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-}
-
-onMounted(async () => {
-    try {
-        const res = await api.get('/page-contents/how-it-works')
-        if (res.success) {
-            steps.value = res.data.content
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId)
+        if (element) {
+            activeSection.value = sectionId
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
-    } catch {
-        steps.value = []
-    } finally {
-        loading.value = false
     }
-})
+
+    onMounted(async () => {
+        try {
+            const res = await api.get('/page-contents/how-it-works')
+            if (res.success) {
+                steps.value = res.data.content
+            }
+        } catch {
+            steps.value = []
+        } finally {
+            loading.value = false
+        }
+    })
 </script>

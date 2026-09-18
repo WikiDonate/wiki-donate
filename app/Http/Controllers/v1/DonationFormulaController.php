@@ -207,14 +207,8 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            // Immutability: formulas with linked donations cannot be edited
-            if ($formula->donations()->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot edit formula with existing donations',
-                    'errors' => ['This formula cannot be edited because donations already reference it.'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+            // Immutability check removed: formulas may now be updated even
+            // when donations reference them (edits are flagged via is_edited).
 
             // Reject duplicate name for the same user on the same article
             $duplicate = DonationFormula::where('article_id', $formula->article_id)
@@ -244,11 +238,23 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            // Track edits that affect donations already paid: mark as edited
+            // for transparency in donation details.
+            $hadCompletedDonation = $formula->hasCompletedDonation();
+
             $formula->update([
                 'name' => $request->name,
                 'formula' => $request->formula,
                 'details' => $request->details ?? null,
             ]);
+
+            if ($hadCompletedDonation) {
+                $formula->forceFill([
+                    'is_edited' => true,
+                    'edited_at' => now(),
+                ])->save();
+                $formula->refresh();
+            }
 
             return response()->json([
                 'success' => true,
@@ -290,15 +296,8 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            // Immutability: formulas with linked donations cannot be deleted
-            if ($formula->donations()->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot delete formula with existing donations',
-                    'errors' => ['This formula cannot be deleted because donations already reference it.'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
+            // Soft delete so donation_formula_id references remain valid for
+            // history; deleted formulas no longer appear in public lists.
             $formula->delete();
 
             return response()->json([

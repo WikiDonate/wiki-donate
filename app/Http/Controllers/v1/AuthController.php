@@ -77,7 +77,8 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'username' => 'required',
+                'username' => 'required_without:email',
+                'email' => 'required_without:username|email',
                 'password' => 'required',
             ]);
 
@@ -92,8 +93,9 @@ class AuthController extends Controller
                 );
             }
 
+            $field = $request->filled('email') ? 'email' : 'username';
             $credentials = [
-                'username' => $request->username,
+                $field => $request->$field,
                 'password' => $request->password,
             ];
 

@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
+import { createHead } from '@vueuse/head'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import { createHead } from '@vueuse/head'
+import { createApp } from 'vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -18,8 +18,11 @@ import {
     faChartPie,
     faCheckCircle,
     faChevronDown,
-    faCoins,
+    faChevronRight,
+    faChevronUp,
+    faCircleExclamation,
     faCog,
+    faCoins,
     faCreditCard,
     faDonate,
     faEdit,
@@ -43,6 +46,7 @@ import {
     faLink,
     faLock,
     faMagnifyingGlass,
+    faMoneyCheckDollar,
     faNewspaper,
     faPen,
     faPlus,
@@ -66,11 +70,11 @@ import {
 import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons'
 
 import App from './App.vue'
-import router from './router'
 import { initGoogleTranslate } from './plugins/googleTranslate'
+import router from './router'
 
-import './assets/css/main.css'
 import 'vue-toast-notification/dist/theme-default.css'
+import './assets/css/main.css'
 
 library.add(
     faAngleLeft,
@@ -84,6 +88,9 @@ library.add(
     faChartPie,
     faCheckCircle,
     faChevronDown,
+    faChevronRight,
+    faChevronUp,
+    faCircleExclamation,
     faCoins,
     faCog,
     faCreditCard,
@@ -110,6 +117,7 @@ library.add(
     faLink,
     faLock,
     faMagnifyingGlass,
+    faMoneyCheckDollar,
     faNewspaper,
     faPaypal,
     faPen,
@@ -128,7 +136,7 @@ library.add(
     faUser,
     faUserCog,
     faUserPlus,
-    faUsers
+    faUsers,
 )
 
 const app = createApp(App)

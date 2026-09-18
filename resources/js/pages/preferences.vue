@@ -210,161 +210,161 @@
 </template>
 
 <script setup>
-import { useForm } from 'vee-validate'
-import { ref } from 'vue'
-import * as yup from 'yup'
-import { userService } from '~/services/userService'
+    import { useForm } from 'vee-validate'
+    import { ref } from 'vue'
+    import * as yup from 'yup'
+    import { userService } from '~/services/userService'
 
-definePageMeta({
-    middleware: 'auth',
-})
+    definePageMeta({
+        middleware: 'auth',
+    })
 
-useHead({
-    title: 'Preferences',
-})
+    useHead({
+        title: 'Preferences',
+    })
 
-const authStore = useAuthStore()
+    const authStore = useAuthStore()
 
-// Active tab state
-const activeTab = ref('profile')
-// Alert state
-const showAlert = ref(false)
-const alertVariant = ref('success')
-const alertMessage = ref('')
-const showAlertError = ref(false)
-// Preferences state
-const editTalkPage = ref(false)
-const editUserPage = ref(false)
-const pageReview = ref(false)
-const emailFromOther = ref(false)
-const successfulMention = ref(false)
-const loading = ref(false)
-const submittingNotifications = ref(false)
+    // Active tab state
+    const activeTab = ref('profile')
+    // Alert state
+    const showAlert = ref(false)
+    const alertVariant = ref('success')
+    const alertMessage = ref('')
+    const showAlertError = ref(false)
+    // Preferences state
+    const editTalkPage = ref(false)
+    const editUserPage = ref(false)
+    const pageReview = ref(false)
+    const emailFromOther = ref(false)
+    const successfulMention = ref(false)
+    const loading = ref(false)
+    const submittingNotifications = ref(false)
 
-// Modal state
-const isModalOpen = ref(false)
-const submittingPassword = ref(false)
+    // Modal state
+    const isModalOpen = ref(false)
+    const submittingPassword = ref(false)
 
-// Function to save preferences
-const saveNotifications = async () => {
-    if (submittingNotifications.value) return
-    submittingNotifications.value = true
-    // Reset alert message
-    showAlert.value = false
-    try {
-        const response = await userService.updateNotifications({
-            editTalkPage: editTalkPage.value ? 1 : 0,
-            editUserPage: editUserPage.value ? 1 : 0,
-            pageReview: pageReview.value ? 1 : 0,
-            emailFromOther: emailFromOther.value ? 1 : 0,
-            successfulMention: successfulMention.value ? 1 : 0,
-        })
+    // Function to save preferences
+    const saveNotifications = async () => {
+        if (submittingNotifications.value) return
+        submittingNotifications.value = true
+        // Reset alert message
+        showAlert.value = false
+        try {
+            const response = await userService.updateNotifications({
+                editTalkPage: editTalkPage.value ? 1 : 0,
+                editUserPage: editUserPage.value ? 1 : 0,
+                pageReview: pageReview.value ? 1 : 0,
+                emailFromOther: emailFromOther.value ? 1 : 0,
+                successfulMention: successfulMention.value ? 1 : 0,
+            })
 
-        if (!response.success) {
-            throw new Error(response.errors?.[0] || 'Failed to save preferences')
+            if (!response.success) {
+                throw new Error(response.errors?.[0] || 'Failed to save preferences')
+            }
+
+            alertVariant.value = 'success'
+            alertMessage.value = response.message
+            showAlert.value = true
+            await loadNotifications()
+        } catch (error) {
+            if (import.meta.env.DEV) console.error(error)
+            alertVariant.value = 'error'
+            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            showAlert.value = true
+        } finally {
+            submittingNotifications.value = false
         }
-
-        alertVariant.value = 'success'
-        alertMessage.value = response.message
-        showAlert.value = true
-        await loadNotifications()
-    } catch (error) {
-        if (import.meta.env.DEV) console.error(error)
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
-        showAlert.value = true
-    } finally {
-        submittingNotifications.value = false
     }
-}
 
-// Function to load notification preferences
-const loadNotifications = async () => {
-    loading.value = true
-    try {
-        const response = await userService.getNotifications()
+    // Function to load notification preferences
+    const loadNotifications = async () => {
+        loading.value = true
+        try {
+            const response = await userService.getNotifications()
 
-        if (Object.keys(response.data).length > 0) {
-            editTalkPage.value = response.data.editTalkPage === 1
-            editUserPage.value = response.data.editUserPage === 1
-            pageReview.value = response.data.pageReview === 1
-            emailFromOther.value = response.data.emailFromOther === 1
-            successfulMention.value = response.data.successfulMention === 1
+            if (Object.keys(response.data).length > 0) {
+                editTalkPage.value = response.data.editTalkPage === 1
+                editUserPage.value = response.data.editUserPage === 1
+                pageReview.value = response.data.pageReview === 1
+                emailFromOther.value = response.data.emailFromOther === 1
+                successfulMention.value = response.data.successfulMention === 1
+            }
+        } catch (error) {
+            if (import.meta.env.DEV) console.error(error)
+            alertVariant.value = 'error'
+            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            showAlert.value = true
+        } finally {
+            loading.value = false
         }
-    } catch (error) {
-        if (import.meta.env.DEV) console.error(error)
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
-        showAlert.value = true
-    } finally {
-        loading.value = false
     }
-}
 
-// Define validation schema
-const validationSchema = yup.object({
-    password: yup
-        .string()
-        .required('Password is required')
-        .min(6, 'Password must be at least 6 characters'),
-    confirmPassword: yup
-        .string()
-        .required('Confirm Password is required')
-        .oneOf([yup.ref('password'), null], 'Passwords must match'),
-})
+    // Define validation schema
+    const validationSchema = yup.object({
+        password: yup
+            .string()
+            .required('Password is required')
+            .min(6, 'Password must be at least 6 characters'),
+        confirmPassword: yup
+            .string()
+            .required('Confirm Password is required')
+            .oneOf([yup.ref('password'), null], 'Passwords must match'),
+    })
 
-// Setup VeeValidate
-const { handleSubmit, defineField, resetForm, errors } = useForm({
-    validationSchema,
-})
+    // Setup VeeValidate
+    const { handleSubmit, defineField, resetForm, errors } = useForm({
+        validationSchema,
+    })
 
-// Define fields using defineField
-const [password, passwordProps] = defineField('password')
-const [confirmPassword, confirmPasswordProps] = defineField('confirmPassword')
+    // Define fields using defineField
+    const [password, passwordProps] = defineField('password')
+    const [confirmPassword, confirmPasswordProps] = defineField('confirmPassword')
 
-// Function to handle password change
-const submitChangePassword = handleSubmit(async (values) => {
-    if (submittingPassword.value) return
-    submittingPassword.value = true
-    showAlert.value = false
+    // Function to handle password change
+    const submitChangePassword = handleSubmit(async (values) => {
+        if (submittingPassword.value) return
+        submittingPassword.value = true
+        showAlert.value = false
 
-    try {
-        const response = await userService.changePassword({
-            newPassword: values.password,
-            confirmPassword: values.confirmPassword,
-        })
+        try {
+            const response = await userService.changePassword({
+                newPassword: values.password,
+                confirmPassword: values.confirmPassword,
+            })
 
-        if (!response.success) {
-            throw new Error(response.errors?.[0] || 'Failed to change password')
+            if (!response.success) {
+                throw new Error(response.errors?.[0] || 'Failed to change password')
+            }
+
+            alertVariant.value = 'success'
+            alertMessage.value = response.message
+            showAlert.value = true
+            closeModal()
+        } catch (error) {
+            if (import.meta.env.DEV) console.error(error)
+            alertVariant.value = 'error'
+            alertMessage.value = error.errors?.[0] || error.message || 'Unexpected error'
+            showAlertError.value = true
+        } finally {
+            submittingPassword.value = false
         }
+    })
 
-        alertVariant.value = 'success'
-        alertMessage.value = response.message
-        showAlert.value = true
-        closeModal()
-    } catch (error) {
-        if (import.meta.env.DEV) console.error(error)
-        alertVariant.value = 'error'
-        alertMessage.value = error.errors?.[0] || error.message || 'Unexpected error'
-        showAlertError.value = true
-    } finally {
-        submittingPassword.value = false
+    // Function to open the modal
+    const openModal = () => {
+        resetForm()
+        isModalOpen.value = true
     }
-})
 
-// Function to open the modal
-const openModal = () => {
-    resetForm()
-    isModalOpen.value = true
-}
+    // Function to close the modal
+    const closeModal = () => {
+        isModalOpen.value = false
+        resetForm()
+    }
 
-// Function to close the modal
-const closeModal = () => {
-    isModalOpen.value = false
-    resetForm()
-}
-
-onMounted(() => {
-    loadNotifications()
-})
+    onMounted(() => {
+        loadNotifications()
+    })
 </script>

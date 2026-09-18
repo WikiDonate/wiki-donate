@@ -109,53 +109,53 @@
 </template>
 
 <script setup>
-import { userService } from '~/services/userService'
+    import { userService } from '~/services/userService'
 
-useHead({
-    title: 'Verify Email',
-})
+    useHead({
+        title: 'Verify Email',
+    })
 
-const route = useRoute()
-const isLoading = ref(true)
-const isSuccess = ref(false)
-const errorMessage = ref('')
+    const route = useRoute()
+    const isLoading = ref(true)
+    const isSuccess = ref(false)
+    const errorMessage = ref('')
 
-onMounted(async () => {
-    // Check if we have query parameters from backend redirect
-    const { status, message } = route.query
+    onMounted(async () => {
+        // Check if we have query parameters from backend redirect
+        const { status, message } = route.query
 
-    if (status) {
-        // Handle redirect from backend
-        isLoading.value = false
-        if (status === 'success') {
-            isSuccess.value = true
-        } else {
-            errorMessage.value = message || 'Verification failed.'
+        if (status) {
+            // Handle redirect from backend
+            isLoading.value = false
+            if (status === 'success') {
+                isSuccess.value = true
+            } else {
+                errorMessage.value = message || 'Verification failed.'
+            }
+            return
         }
-        return
-    }
 
-    // Handle direct API call with id and hash
-    const { id, hash } = route.query
+        // Handle direct API call with id and hash
+        const { id, hash } = route.query
 
-    if (!id || !hash) {
-        isLoading.value = false
-        errorMessage.value = 'Invalid verification link.'
-        return
-    }
-
-    try {
-        const response = await userService.verifyEmail(id, hash)
-
-        if (response.success) {
-            isSuccess.value = true
-        } else {
-            errorMessage.value = response.message || 'Verification failed.'
+        if (!id || !hash) {
+            isLoading.value = false
+            errorMessage.value = 'Invalid verification link.'
+            return
         }
-    } catch (error) {
-        errorMessage.value = error.message || 'An error occurred during verification.'
-    } finally {
-        isLoading.value = false
-    }
-})
+
+        try {
+            const response = await userService.verifyEmail(id, hash)
+
+            if (response.success) {
+                isSuccess.value = true
+            } else {
+                errorMessage.value = response.message || 'Verification failed.'
+            }
+        } catch (error) {
+            errorMessage.value = error.message || 'An error occurred during verification.'
+        } finally {
+            isLoading.value = false
+        }
+    })
 </script>

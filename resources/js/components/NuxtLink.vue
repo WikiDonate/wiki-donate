@@ -5,13 +5,13 @@
 </template>
 
 <script setup>
-import { computed, useAttrs } from 'vue'
-import { RouterLink } from 'vue-router'
+    import { computed, useAttrs } from 'vue'
+    import { RouterLink } from 'vue-router'
 
-const attrs = useAttrs()
+    const attrs = useAttrs()
 
-const linkProps = computed(() => {
-    const { exact, ...rest } = attrs
-    return rest
-})
+    const linkProps = computed(() => {
+        const { exact, ...rest } = attrs
+        return rest
+    })
 </script>

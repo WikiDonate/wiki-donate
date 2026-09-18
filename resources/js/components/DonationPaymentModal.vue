@@ -154,244 +154,248 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { donateService } from '~/services/donateService'
+    import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
+    import { donateService } from '~/services/donateService'
 
-const authStore = useAuthStore()
-const route = useRoute()
+    const authStore = useAuthStore()
+    const route = useRoute()
 
-const props = defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false,
-    },
-    formula: {
-        type: Array,
-        default: () => [],
-    },
-    formulaId: {
-        type: [Number, String],
-        default: null,
-    },
-    details: {
-        type: String,
-        default: '',
-    },
-})
-
-defineEmits(['update:modelValue', 'paymentSuccess', 'paymentError'])
-
-const quickAmounts = [10, 25, 50, 100, 250, 500]
-
-const amount = ref('')
-const isDonating = ref(false)
-const alertMessage = ref('')
-const alertVariant = ref('error')
-const showFormula = ref(false)
-
-const paypalSdkLoaded = ref(false)
-const paypalButtonsRendered = ref(false)
-let paypalButtonsInstance = null
-
-const alertClass = computed(() => {
-    const map = {
-        success: 'bg-green-100 border-green-400 text-green-700',
-        error: 'bg-red-100 border-red-400 text-red-700',
-    }
-    return map[alertVariant.value] || ''
-})
-
-const hasValidAmount = computed(() => Number(amount.value) > 0 && props.modelValue)
-
-const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || ''
-
-function loadPayPalSdk() {
-    return new Promise((resolve, reject) => {
-        if (window.paypal) {
-            resolve(window.paypal)
-            return
-        }
-
-        const existing = document.getElementById('paypal-js-sdk')
-        if (existing) {
-            existing.addEventListener('load', () => resolve(window.paypal))
-            existing.addEventListener('error', () => reject(new Error('Failed to load PayPal SDK')))
-            return
-        }
-
-        const script = document.createElement('script')
-        script.id = 'paypal-js-sdk'
-        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
-            clientId
-        )}&currency=USD`
-        script.async = true
-        script.onload = () => resolve(window.paypal)
-        script.onerror = () => reject(new Error('Failed to load PayPal SDK'))
-        document.head.appendChild(script)
+    const props = defineProps({
+        modelValue: {
+            type: Boolean,
+            default: false,
+        },
+        formula: {
+            type: Array,
+            default: () => [],
+        },
+        formulaId: {
+            type: [Number, String],
+            default: null,
+        },
+        details: {
+            type: String,
+            default: '',
+        },
     })
-}
 
-function destroyPaypalButtons() {
-    const container = document.getElementById('paypal-button-container')
-    if (paypalButtonsInstance && typeof paypalButtonsInstance.close === 'function') {
-        try {
-            paypalButtonsInstance.close()
-        } catch {
-            // ignore teardown errors
+    defineEmits(['update:modelValue', 'paymentSuccess', 'paymentError'])
+
+    const quickAmounts = [10, 25, 50, 100, 250, 500]
+
+    const amount = ref('')
+    const isDonating = ref(false)
+    const alertMessage = ref('')
+    const alertVariant = ref('error')
+    const showFormula = ref(false)
+
+    const paypalSdkLoaded = ref(false)
+    const paypalButtonsRendered = ref(false)
+    let paypalButtonsInstance = null
+
+    const alertClass = computed(() => {
+        const map = {
+            success: 'bg-green-100 border-green-400 text-green-700',
+            error: 'bg-red-100 border-red-400 text-red-700',
         }
-    }
-    paypalButtonsInstance = null
-    if (container) {
-        container.innerHTML = ''
-    }
-    paypalButtonsRendered.value = false
-}
+        return map[alertVariant.value] || ''
+    })
 
-async function renderPaypalButtons() {
-    // Clear any previously rendered buttons before re-rendering.
-    const container = document.getElementById('paypal-button-container')
-    if (!container) return
+    const hasValidAmount = computed(() => Number(amount.value) > 0 && props.modelValue)
 
-    // If a previous button set is still alive (e.g. modal reopened), close it
-    // and clear the container so we don't stack duplicate button sets.
-    if (paypalButtonsRendered.value && paypalButtonsInstance) {
-        destroyPaypalButtons()
-    }
+    const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || ''
 
-    if (paypalButtonsRendered.value) {
-        return
-    }
+    function loadPayPalSdk() {
+        return new Promise((resolve, reject) => {
+            if (window.paypal) {
+                resolve(window.paypal)
+                return
+            }
 
-    if (!clientId) {
-        alertVariant.value = 'error'
-        alertMessage.value = 'PayPal is not configured.'
-        paypalSdkLoaded.value = true
-        return
-    }
+            const existing = document.getElementById('paypal-js-sdk')
+            if (existing) {
+                existing.addEventListener('load', () => resolve(window.paypal))
+                existing.addEventListener('error', () =>
+                    reject(new Error('Failed to load PayPal SDK')),
+                )
+                return
+            }
 
-    try {
-        const paypal = await loadPayPalSdk()
-        paypalSdkLoaded.value = true
-
-        paypalButtonsInstance = paypal
-            .Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'gold',
-                    shape: 'rect',
-                    label: 'paypal',
-                    height: 45,
-                },
-                createOrder: async () => {
-                    if (!amount.value || Number(amount.value) <= 0) {
-                        throw new Error('Please enter a valid donation amount.')
-                    }
-
-                    const params = {
-                        amount: Number(amount.value),
-                        donor_name: authStore.user?.username || '',
-                        donor_email: authStore.user?.email || '',
-                        formula_id: props.formulaId || null,
-                        details: props.details,
-                    }
-                    const response = await donateService.createPaypalOrder(params)
-
-                    if (response.success && response.data?.order_id) {
-                        return response.data.order_id
-                    }
-
-                    throw new Error(
-                        response.errors?.[0] || response.message || 'Failed to create PayPal order'
-                    )
-                },
-                onApprove: async (data) => {
-                    isDonating.value = true
-                    alertMessage.value = ''
-                    try {
-                        const response = await donateService.capturePaypalOrder({
-                            order_id: data.orderID,
-                        })
-
-                        if (response.success) {
-                            const donationId = response.data?.donation_id || ''
-                            const amt = response.data?.amount ?? amount.value ?? ''
-                            const cur = response.data?.currency || 'USD'
-                            window.location.href = `/payment/success?paypal=1&donation_id=${donationId}&amount=${amt}&currency=${cur}&back=${encodeURIComponent(route.fullPath)}`
-                        } else {
-                            alertVariant.value = 'error'
-                            alertMessage.value =
-                                response.errors?.[0] ||
-                                response.message ||
-                                'Failed to capture payment'
-                            isDonating.value = false
-                        }
-                    } catch (error) {
-                        alertVariant.value = 'error'
-                        alertMessage.value =
-                            error?.errors?.[0] || error?.message || 'Failed to process donation'
-                        isDonating.value = false
-                    }
-                },
-                onCancel: () => {
-                    window.location.href = `/payment/cancel?back=${encodeURIComponent(route.fullPath)}`
-                },
-                onError: (err) => {
-                    alertVariant.value = 'error'
-                    alertMessage.value = err?.message || 'Something went wrong with PayPal.'
-                },
-            })
-            .render('#paypal-button-container')
-
-        paypalButtonsRendered.value = true
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error?.message || 'Failed to load PayPal. Please try again.'
-    }
-}
-
-onMounted(() => {
-    if (props.modelValue) {
-        loadPayPalSdkPreload()
-    }
-})
-
-// Preload the SDK in the background while the user is still choosing an amount,
-// so buttons render quickly once they select PayPal.
-function loadPayPalSdkPreload() {
-    if (clientId && !window.paypal && !document.getElementById('paypal-js-sdk')) {
-        loadPayPalSdk().catch(() => {
-            // Swallow preload errors — the synchronous render path will surface them.
+            const script = document.createElement('script')
+            script.id = 'paypal-js-sdk'
+            script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
+                clientId,
+            )}&currency=USD`
+            script.async = true
+            script.onload = () => resolve(window.paypal)
+            script.onerror = () => reject(new Error('Failed to load PayPal SDK'))
+            document.head.appendChild(script)
         })
     }
-}
 
-watch(
-    () => props.modelValue,
-    (val) => {
-        if (val) {
-            amount.value = ''
-            alertMessage.value = ''
-            isDonating.value = false
-            showFormula.value = false
+    function destroyPaypalButtons() {
+        const container = document.getElementById('paypal-button-container')
+        if (paypalButtonsInstance && typeof paypalButtonsInstance.close === 'function') {
+            try {
+                paypalButtonsInstance.close()
+            } catch {
+                // ignore teardown errors
+            }
+        }
+        paypalButtonsInstance = null
+        if (container) {
+            container.innerHTML = ''
+        }
+        paypalButtonsRendered.value = false
+    }
+
+    async function renderPaypalButtons() {
+        // Clear any previously rendered buttons before re-rendering.
+        const container = document.getElementById('paypal-button-container')
+        if (!container) return
+
+        // If a previous button set is still alive (e.g. modal reopened), close it
+        // and clear the container so we don't stack duplicate button sets.
+        if (paypalButtonsRendered.value && paypalButtonsInstance) {
             destroyPaypalButtons()
-            loadPayPalSdkPreload()
+        }
+
+        if (paypalButtonsRendered.value) {
+            return
+        }
+
+        if (!clientId) {
+            alertVariant.value = 'error'
+            alertMessage.value = 'PayPal is not configured.'
+            paypalSdkLoaded.value = true
+            return
+        }
+
+        try {
+            const paypal = await loadPayPalSdk()
+            paypalSdkLoaded.value = true
+
+            paypalButtonsInstance = paypal
+                .Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'paypal',
+                        height: 45,
+                    },
+                    createOrder: async () => {
+                        if (!amount.value || Number(amount.value) <= 0) {
+                            throw new Error('Please enter a valid donation amount.')
+                        }
+
+                        const params = {
+                            amount: Number(amount.value),
+                            donor_name: authStore.user?.username || '',
+                            donor_email: authStore.user?.email || '',
+                            formula_id: props.formulaId || null,
+                            details: props.details,
+                        }
+                        const response = await donateService.createPaypalOrder(params)
+
+                        if (response.success && response.data?.order_id) {
+                            return response.data.order_id
+                        }
+
+                        throw new Error(
+                            response.errors?.[0] ||
+                                response.message ||
+                                'Failed to create PayPal order',
+                        )
+                    },
+                    onApprove: async (data) => {
+                        isDonating.value = true
+                        alertMessage.value = ''
+                        try {
+                            const response = await donateService.capturePaypalOrder({
+                                order_id: data.orderID,
+                            })
+
+                            if (response.success) {
+                                const donationId = response.data?.donation_id || ''
+                                const amt = response.data?.amount ?? amount.value ?? ''
+                                const cur = response.data?.currency || 'USD'
+                                window.location.href = `/payment/success?paypal=1&donation_id=${donationId}&amount=${amt}&currency=${cur}&back=${encodeURIComponent(route.fullPath)}`
+                            } else {
+                                alertVariant.value = 'error'
+                                alertMessage.value =
+                                    response.errors?.[0] ||
+                                    response.message ||
+                                    'Failed to capture payment'
+                                isDonating.value = false
+                            }
+                        } catch (error) {
+                            alertVariant.value = 'error'
+                            alertMessage.value =
+                                error?.errors?.[0] || error?.message || 'Failed to process donation'
+                            isDonating.value = false
+                        }
+                    },
+                    onCancel: () => {
+                        window.location.href = `/payment/cancel?back=${encodeURIComponent(route.fullPath)}`
+                    },
+                    onError: (err) => {
+                        alertVariant.value = 'error'
+                        alertMessage.value = err?.message || 'Something went wrong with PayPal.'
+                    },
+                })
+                .render('#paypal-button-container')
+
+            paypalButtonsRendered.value = true
+        } catch (error) {
+            alertVariant.value = 'error'
+            alertMessage.value = error?.message || 'Failed to load PayPal. Please try again.'
         }
     }
-)
 
-// Render the real PayPal buttons only once a valid amount is entered, and
-// tear them down again if the amount is cleared or becomes invalid.
-watch(amount, (val) => {
-    if (!props.modelValue) return
+    onMounted(() => {
+        if (props.modelValue) {
+            loadPayPalSdkPreload()
+        }
+    })
 
-    if (Number(val) > 0 && !paypalButtonsRendered.value) {
-        nextTick(() => renderPaypalButtons())
-    } else if (Number(val) <= 0 && paypalButtonsRendered.value) {
-        destroyPaypalButtons()
+    // Preload the SDK in the background while the user is still choosing an amount,
+    // so buttons render quickly once they select PayPal.
+    function loadPayPalSdkPreload() {
+        if (clientId && !window.paypal && !document.getElementById('paypal-js-sdk')) {
+            loadPayPalSdk().catch(() => {
+                // Swallow preload errors — the synchronous render path will surface them.
+            })
+        }
     }
-})
 
-onBeforeUnmount(() => {
-    destroyPaypalButtons()
-})
+    watch(
+        () => props.modelValue,
+        (val) => {
+            if (val) {
+                amount.value = ''
+                alertMessage.value = ''
+                isDonating.value = false
+                showFormula.value = false
+                destroyPaypalButtons()
+                loadPayPalSdkPreload()
+            }
+        },
+    )
+
+    // Render the real PayPal buttons only once a valid amount is entered, and
+    // tear them down again if the amount is cleared or becomes invalid.
+    watch(amount, (val) => {
+        if (!props.modelValue) return
+
+        if (Number(val) > 0 && !paypalButtonsRendered.value) {
+            nextTick(() => renderPaypalButtons())
+        } else if (Number(val) <= 0 && paypalButtonsRendered.value) {
+            destroyPaypalButtons()
+        }
+    })
+
+    onBeforeUnmount(() => {
+        destroyPaypalButtons()
+    })
 </script>

@@ -97,54 +97,54 @@
 </template>
 
 <script setup>
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import api from '~/config/apiConfig'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
+    import api from '~/config/apiConfig'
 
-useHead({
-    title: 'Contact Us',
-})
+    useHead({
+        title: 'Contact Us',
+    })
 
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
 
-const validationSchema = yup.object({
-    firstname: yup.string().required('First name is required'),
-    lastname: yup.string().required('Last name is required'),
-    subject: yup.string().required('Subject name is required'),
-    message: yup.string().required('Message details is required'),
-    email: yup.string().required('Email is required').email('Email must be a valid email'),
-})
+    const validationSchema = yup.object({
+        firstname: yup.string().required('First name is required'),
+        lastname: yup.string().required('Last name is required'),
+        subject: yup.string().required('Subject name is required'),
+        message: yup.string().required('Message details is required'),
+        email: yup.string().required('Email is required').email('Email must be a valid email'),
+    })
 
-// Setup VeeValidate
-const { handleSubmit, defineField, errors, resetForm } = useForm({
-    validationSchema,
-})
+    // Setup VeeValidate
+    const { handleSubmit, defineField, errors, resetForm } = useForm({
+        validationSchema,
+    })
 
-// Define fields using defineField
-const [firstname, firstnameProps] = defineField('firstname')
-const [lastname, lastnameProps] = defineField('lastname')
-const [subject, subjectProps] = defineField('subject')
-const [message, messageProps] = defineField('message')
-const [email, emailProps] = defineField('email')
+    // Define fields using defineField
+    const [firstname, firstnameProps] = defineField('firstname')
+    const [lastname, lastnameProps] = defineField('lastname')
+    const [subject, subjectProps] = defineField('subject')
+    const [message, messageProps] = defineField('message')
+    const [email, emailProps] = defineField('email')
 
-const onSubmit = handleSubmit(async (values) => {
-    try {
-        const response = await api.post('/contact', values)
-        if (response.success) {
-            alertVariant.value = 'success'
-            alertMessage.value = 'Your message has been sent successfully!'
-            resetForm()
-        } else {
+    const onSubmit = handleSubmit(async (values) => {
+        try {
+            const response = await api.post('/contact', values)
+            if (response.success) {
+                alertVariant.value = 'success'
+                alertMessage.value = 'Your message has been sent successfully!'
+                resetForm()
+            } else {
+                alertVariant.value = 'error'
+                alertMessage.value = response.errors?.[0] || 'Failed to send message'
+            }
+        } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = response.errors?.[0] || 'Failed to send message'
+            alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
+        } finally {
+            showAlert.value = true
         }
-    } catch (error) {
-        alertVariant.value = 'error'
-        alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
-    } finally {
-        showAlert.value = true
-    }
-})
+    })
 </script>

@@ -44,126 +44,126 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+    import { ref, onMounted, onUnmounted } from 'vue'
 
-const { activeLanguage, supportedLanguages, setLanguage, isLoaded } = useGoogleTranslate()
+    const { activeLanguage, supportedLanguages, setLanguage, isLoaded } = useGoogleTranslate()
 
-const isOpen = ref(false)
+    const isOpen = ref(false)
 
-const selectLang = (lang) => {
-    isOpen.value = false
-    setLanguage(lang)
-}
-
-const close = (e) => {
-    if (!e.target.closest('.language-select-wrapper')) {
+    const selectLang = (lang) => {
         isOpen.value = false
+        setLanguage(lang)
     }
-}
 
-onMounted(() => document.addEventListener('click', close))
-onUnmounted(() => document.removeEventListener('click', close))
+    const close = (e) => {
+        if (!e.target.closest('.language-select-wrapper')) {
+            isOpen.value = false
+        }
+    }
 
-const flags = {
-    en: '🇬🇧',
-    bn: '🇧🇩',
-    ur: '🇵🇰',
-    hi: '🇮🇳',
-    ar: '🇸🇦',
-    es: '🇪🇸',
-    fr: '🇫🇷',
-    de: '🇩🇪',
-    it: '🇮🇹',
-    pt: '🇧🇷',
-    ru: '🇷🇺',
-    'zh-CN': '🇨🇳',
-    'zh-TW': '🇹🇼',
-    ja: '🇯🇵',
-    ko: '🇰🇷',
-    tr: '🇹🇷',
-    nl: '🇳🇱',
-    pl: '🇵🇱',
-    sv: '🇸🇪',
-    th: '🇹🇭',
-    vi: '🇻🇳',
-    id: '🇮🇩',
-    ms: '🇲🇾',
-    tl: '🇵🇭',
-    uk: '🇺🇦',
-    ro: '🇷🇴',
-    el: '🇬🇷',
-    cs: '🇨🇿',
-    hu: '🇭🇺',
-    fi: '🇫🇮',
-    da: '🇩🇰',
-    no: '🇳🇴',
-    he: '🇮🇱',
-    fa: '🇮🇷',
-    ta: '🇮🇳',
-    te: '🇮🇳',
-    mr: '🇮🇳',
-    gu: '🇮🇳',
-    sw: '🇰🇪',
-    am: '🇪🇹',
-    my: '🇲🇲',
-    km: '🇰🇭',
-}
+    onMounted(() => document.addEventListener('click', close))
+    onUnmounted(() => document.removeEventListener('click', close))
 
-const languageNames = {
-    en: 'English',
-    bn: 'বাংলা',
-    ur: 'اردو',
-    hi: 'हिन्दी',
-    ar: 'العربية',
-    es: 'Español',
-    fr: 'Français',
-    de: 'Deutsch',
-    it: 'Italiano',
-    pt: 'Português',
-    ru: 'Русский',
-    'zh-CN': '中文 (简体)',
-    'zh-TW': '中文 (繁體)',
-    ja: '日本語',
-    ko: '한국어',
-    tr: 'Türkçe',
-    nl: 'Nederlands',
-    pl: 'Polski',
-    sv: 'Svenska',
-    th: 'ไทย',
-    vi: 'Tiếng Việt',
-    id: 'Bahasa Indonesia',
-    ms: 'Bahasa Melayu',
-    tl: 'Filipino',
-    uk: 'Українська',
-    ro: 'Română',
-    el: 'Ελληνικά',
-    cs: 'Čeština',
-    hu: 'Magyar',
-    fi: 'Suomi',
-    da: 'Dansk',
-    no: 'Norsk',
-    he: 'עברית',
-    fa: 'فارسی',
-    ta: 'தமிழ்',
-    te: 'తెలుగు',
-    mr: 'मराठी',
-    gu: 'ગુજરાતી',
-    sw: 'Kiswahili',
-    am: 'አማርኛ',
-    my: 'မြန်မာစာ',
-    km: 'ភាសាខ្មែរ',
-}
+    const flags = {
+        en: '🇬🇧',
+        bn: '🇧🇩',
+        ur: '🇵🇰',
+        hi: '🇮🇳',
+        ar: '🇸🇦',
+        es: '🇪🇸',
+        fr: '🇫🇷',
+        de: '🇩🇪',
+        it: '🇮🇹',
+        pt: '🇧🇷',
+        ru: '🇷🇺',
+        'zh-CN': '🇨🇳',
+        'zh-TW': '🇹🇼',
+        ja: '🇯🇵',
+        ko: '🇰🇷',
+        tr: '🇹🇷',
+        nl: '🇳🇱',
+        pl: '🇵🇱',
+        sv: '🇸🇪',
+        th: '🇹🇭',
+        vi: '🇻🇳',
+        id: '🇮🇩',
+        ms: '🇲🇾',
+        tl: '🇵🇭',
+        uk: '🇺🇦',
+        ro: '🇷🇴',
+        el: '🇬🇷',
+        cs: '🇨🇿',
+        hu: '🇭🇺',
+        fi: '🇫🇮',
+        da: '🇩🇰',
+        no: '🇳🇴',
+        he: '🇮🇱',
+        fa: '🇮🇷',
+        ta: '🇮🇳',
+        te: '🇮🇳',
+        mr: '🇮🇳',
+        gu: '🇮🇳',
+        sw: '🇰🇪',
+        am: '🇪🇹',
+        my: '🇲🇲',
+        km: '🇰🇭',
+    }
+
+    const languageNames = {
+        en: 'English',
+        bn: 'বাংলা',
+        ur: 'اردو',
+        hi: 'हिन्दी',
+        ar: 'العربية',
+        es: 'Español',
+        fr: 'Français',
+        de: 'Deutsch',
+        it: 'Italiano',
+        pt: 'Português',
+        ru: 'Русский',
+        'zh-CN': '中文 (简体)',
+        'zh-TW': '中文 (繁體)',
+        ja: '日本語',
+        ko: '한국어',
+        tr: 'Türkçe',
+        nl: 'Nederlands',
+        pl: 'Polski',
+        sv: 'Svenska',
+        th: 'ไทย',
+        vi: 'Tiếng Việt',
+        id: 'Bahasa Indonesia',
+        ms: 'Bahasa Melayu',
+        tl: 'Filipino',
+        uk: 'Українська',
+        ro: 'Română',
+        el: 'Ελληνικά',
+        cs: 'Čeština',
+        hu: 'Magyar',
+        fi: 'Suomi',
+        da: 'Dansk',
+        no: 'Norsk',
+        he: 'עברית',
+        fa: 'فارسی',
+        ta: 'தமிழ்',
+        te: 'తెలుగు',
+        mr: 'मराठी',
+        gu: 'ગુજરાતી',
+        sw: 'Kiswahili',
+        am: 'አማርኛ',
+        my: 'မြန်မာစာ',
+        km: 'ភាសាខ្មែរ',
+    }
 </script>
 
 <style scoped>
-.language-select-wrapper :deep(.language-options::-webkit-scrollbar) {
-    width: 4px;
-}
-.language-select-wrapper :deep(.language-options::-webkit-scrollbar-track) {
-    background: #f9fafb;
-}
-.language-select-wrapper :deep(.language-options::-webkit-scrollbar-thumb) {
-    background: #d1d5db;
-    border-radius: 2px;
-}
+    .language-select-wrapper :deep(.language-options::-webkit-scrollbar) {
+        width: 4px;
+    }
+    .language-select-wrapper :deep(.language-options::-webkit-scrollbar-track) {
+        background: #f9fafb;
+    }
+    .language-select-wrapper :deep(.language-options::-webkit-scrollbar-thumb) {
+        background: #d1d5db;
+        border-radius: 2px;
+    }
 </style>

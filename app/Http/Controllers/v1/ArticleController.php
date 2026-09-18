@@ -72,22 +72,32 @@ class ArticleController extends Controller
             type: 'object'
         )
     )]
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            $articles = Article::with('user')->get();
-            if ($articles->isEmpty()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'No articles found',
-                    'data' => [],
-                ], Response::HTTP_OK);
-            }
+            $perPage = (int) ($request->input('per_page') ?? 20);
+            $perPage = min(max($perPage, 1), 100);
+
+            $cacheKey = 'articles.public.'.$perPage.'.'.$request->input('page', 1);
+            $data = Cache::remember($cacheKey, 300, function () use ($perPage) {
+                $articles = Article::with('user')->paginate($perPage);
+
+                return [
+                    'data' => ArticleResource::collection($articles->items()),
+                    'meta' => [
+                        'currentPage' => $articles->currentPage(),
+                        'perPage' => $articles->perPage(),
+                        'total' => $articles->total(),
+                        'lastPage' => $articles->lastPage(),
+                    ],
+                ];
+            });
 
             return response()->json([
                 'success' => true,
                 'message' => 'Articles found successfully',
-                'data' => ArticleResource::collection($articles),
+                'data' => $data['data'],
+                'meta' => $data['meta'],
             ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
@@ -169,7 +179,10 @@ class ArticleController extends Controller
     public function show($slug): JsonResponse
     {
         try {
-            $article = Article::where('slug', $slug)->first();
+            $article = Cache::remember("article.{$slug}", 3600, function () use ($slug) {
+                return Article::where('slug', $slug)->first();
+            });
+
             if (empty($article)) {
                 return response()->json([
                     'success' => false,
@@ -575,6 +588,9 @@ class ArticleController extends Controller
             // Update article
             $existsArticle->update($updatePayload);
 
+            Cache::forget("article.{$existsArticle->slug}");
+            Cache::forget('articles.public.');
+
             $latestVersionNumber = Revision::where('article_id', $existsArticle->id)->max('version') ?? 0;
 
             // Create versions
@@ -788,7 +804,7 @@ class ArticleController extends Controller
      *     )
      * )
      */
-    public function history($slug)
+    public function history(Request $request, $slug)
     {
         try {
             $article = Article::where('slug', $slug)->first();
@@ -800,7 +816,14 @@ class ArticleController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $versions = Revision::with('user')->where('article_id', $article->id)->orderBy('version', 'desc')->get();
+            $perPage = (int) ($request->input('per_page') ?? 20);
+            $perPage = min(max($perPage, 1), 100);
+
+            $versions = Revision::with('user')
+                ->where('article_id', $article->id)
+                ->orderBy('version', 'desc')
+                ->paginate($perPage);
+
             if ($versions->isEmpty()) {
                 return response()->json([
                     'success' => false,
@@ -811,7 +834,13 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'History found successfully',
-                'data' => RevisionResource::collection($versions),
+                'data' => RevisionResource::collection($versions->items()),
+                'meta' => [
+                    'currentPage' => $versions->currentPage(),
+                    'perPage' => $versions->perPage(),
+                    'total' => $versions->total(),
+                    'lastPage' => $versions->lastPage(),
+                ],
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
@@ -833,7 +862,8 @@ class ArticleController extends Controller
             $perPage = (int) ($request->input('per_page') ?? 10);
             $perPage = $perPage > 0 && $perPage <= 100 ? $perPage : 10;
 
-            $articles = Article::where('user_id', Auth::id())
+            $articles = Article::with('user')
+                ->where('user_id', Auth::id())
                 ->where(function ($q) {
                     $q->whereNull('type')->orWhere('type', 'article');
                 })

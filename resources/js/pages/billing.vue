@@ -135,209 +135,209 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import AlertMessage from '~/components/AlertMessage.vue'
-import FormSubmitButton from '~/components/FormSubmitButton.vue'
-import LoadingSpinner from '~/components/LoadingSpinner.vue'
-import { paymentMethodService } from '~/services/paymentMethodService'
-import { useClientStripe } from '@/plugins/useClientStripe'
+    import { computed, nextTick, onMounted, ref, watch } from 'vue'
+    import AlertMessage from '~/components/AlertMessage.vue'
+    import FormSubmitButton from '~/components/FormSubmitButton.vue'
+    import LoadingSpinner from '~/components/LoadingSpinner.vue'
+    import { paymentMethodService } from '~/services/paymentMethodService'
+    import { useClientStripe } from '@/plugins/useClientStripe'
 
-useHead({
-    title: 'Billing',
-})
-
-definePageMeta({
-    middleware: 'auth',
-})
-
-const stripe = ref(null)
-
-// State
-const showAlert = ref(false)
-const alertVariant = ref('')
-const alertMessage = ref('')
-const isCardElementMounting = ref(true)
-const cardNumberElement = ref(null)
-const cardExpiryElement = ref(null)
-const cardCvcElement = ref(null)
-const isSaving = ref(false)
-const isFetchingCard = ref(true)
-const showCardForm = ref(false)
-const currentCard = ref(null)
-
-// Computed
-const cardBrand = computed(() => {
-    if (!currentCard.value) return ''
-    return currentCard.value?.brand?.toUpperCase() || ''
-})
-
-// Methods
-const showError = (message) => {
-    showAlert.value = true
-    alertVariant.value = 'error'
-    alertMessage.value = message
-}
-
-const showSuccess = (message) => {
-    showAlert.value = true
-    alertVariant.value = 'success'
-    alertMessage.value = message
-}
-
-const mountStripeElements = () => {
-    if (!document.getElementById('card-number') || !stripe.value) {
-        setTimeout(mountStripeElements, 100)
-        return
-    }
-
-    // Clean up existing elements if any
-    if (cardNumberElement.value) {
-        cardNumberElement.value.destroy()
-    }
-    if (cardExpiryElement.value) {
-        cardExpiryElement.value.destroy()
-    }
-    if (cardCvcElement.value) {
-        cardCvcElement.value.destroy()
-    }
-
-    const elements = stripe.value.elements()
-    const style = {
-        base: {
-            color: '#374151',
-            fontFamily: '"Inter", sans-serif',
-            fontSize: '16px',
-            '::placeholder': {
-                color: '#9CA3AF',
-            },
-        },
-        invalid: {
-            color: '#EF4444',
-        },
-    }
-
-    cardNumberElement.value = elements.create('cardNumber', {
-        style,
-        showIcon: true,
+    useHead({
+        title: 'Billing',
     })
-    cardNumberElement.value.mount('#card-number')
 
-    cardExpiryElement.value = elements.create('cardExpiry', { style })
-    cardExpiryElement.value.mount('#card-expiry')
+    definePageMeta({
+        middleware: 'auth',
+    })
 
-    cardCvcElement.value = elements.create('cardCvc', { style })
-    cardCvcElement.value.mount('#card-cvc')
+    const stripe = ref(null)
 
-    isCardElementMounting.value = false
-}
+    // State
+    const showAlert = ref(false)
+    const alertVariant = ref('')
+    const alertMessage = ref('')
+    const isCardElementMounting = ref(true)
+    const cardNumberElement = ref(null)
+    const cardExpiryElement = ref(null)
+    const cardCvcElement = ref(null)
+    const isSaving = ref(false)
+    const isFetchingCard = ref(true)
+    const showCardForm = ref(false)
+    const currentCard = ref(null)
 
-const showEditForm = async () => {
-    showCardForm.value = true
-    isCardElementMounting.value = true
-    await nextTick()
-    mountStripeElements()
-}
+    // Computed
+    const cardBrand = computed(() => {
+        if (!currentCard.value) return ''
+        return currentCard.value?.brand?.toUpperCase() || ''
+    })
 
-const cancelEdit = () => {
-    showCardForm.value = false
-}
+    // Methods
+    const showError = (message) => {
+        showAlert.value = true
+        alertVariant.value = 'error'
+        alertMessage.value = message
+    }
 
-const handleSubmit = async (e) => {
-    e.preventDefault()
-    isSaving.value = true
-    showAlert.value = false
+    const showSuccess = (message) => {
+        showAlert.value = true
+        alertVariant.value = 'success'
+        alertMessage.value = message
+    }
 
-    try {
-        const { paymentMethod, error } = await stripe.value.createPaymentMethod({
-            type: 'card',
-            card: cardNumberElement.value,
-        })
-
-        if (error) {
-            showError(error.message)
-            isSaving.value = false
+    const mountStripeElements = () => {
+        if (!document.getElementById('card-number') || !stripe.value) {
+            setTimeout(mountStripeElements, 100)
             return
         }
 
-        const response = await paymentMethodService.saveCard({
-            payment_method_id: paymentMethod?.id,
+        // Clean up existing elements if any
+        if (cardNumberElement.value) {
+            cardNumberElement.value.destroy()
+        }
+        if (cardExpiryElement.value) {
+            cardExpiryElement.value.destroy()
+        }
+        if (cardCvcElement.value) {
+            cardCvcElement.value.destroy()
+        }
+
+        const elements = stripe.value.elements()
+        const style = {
+            base: {
+                color: '#374151',
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#9CA3AF',
+                },
+            },
+            invalid: {
+                color: '#EF4444',
+            },
+        }
+
+        cardNumberElement.value = elements.create('cardNumber', {
+            style,
+            showIcon: true,
         })
+        cardNumberElement.value.mount('#card-number')
 
-        if (response.success) {
-            currentCard.value = response.data
-            showCardForm.value = false
-            showSuccess('Card saved successfully')
-        } else {
-            if (response.errors && response.errors.length > 0) {
-                showError(response.errors.join(', ') || 'Validation error')
-            } else {
-                showError(response.message || 'Failed to save card')
-            }
-        }
-    } catch (error) {
-        if (error?.errors && error?.errors.length > 0) {
-            // Also show in alert if you want
-            showError(error.errors.join(', ') || 'Failed to save card')
-        } else {
-            // Fallback to generic error
-            showError(error?.message || 'Failed to save card')
-        }
-    } finally {
-        isSaving.value = false
+        cardExpiryElement.value = elements.create('cardExpiry', { style })
+        cardExpiryElement.value.mount('#card-expiry')
+
+        cardCvcElement.value = elements.create('cardCvc', { style })
+        cardCvcElement.value.mount('#card-cvc')
+
+        isCardElementMounting.value = false
     }
-}
 
-const fetchPaymentMethod = async () => {
-    isFetchingCard.value = true
-    try {
-        const response = await paymentMethodService.getCard()
-        if (response.success) {
-            currentCard.value = response.data
-            // Only hide the form if we actually got a card
-            if (currentCard.value) {
-                showCardForm.value = false
-            }
-        } else {
-            // If no card exists, show the form
-            showCardForm.value = true
-        }
-    } catch (error) {
-        if (error?.errors && error?.errors.length > 0) {
-            // Also show in alert if you want
-            showError(error.errors.join(', ') || 'Failed to load card details')
-        } else {
-            // Fallback to generic error
-            showError(error?.message || 'Failed to load card details')
-        }
-        // On error, still show the form so user can add a card
+    const showEditForm = async () => {
         showCardForm.value = true
-    } finally {
-        isFetchingCard.value = false
-        if (showCardForm.value) {
-            await nextTick()
-            mountStripeElements()
-        }
-    }
-}
-
-onMounted(async () => {
-    stripe.value = await useClientStripe()
-    await fetchPaymentMethod()
-
-    // If no card exists, mount the form immediately
-    if (!currentCard.value) {
-        showCardForm.value = true
-        await nextTick()
-        mountStripeElements()
-    }
-})
-
-// Watch for form visibility changes
-watch(showCardForm, async (newVal) => {
-    if (newVal) {
         isCardElementMounting.value = true
         await nextTick()
         mountStripeElements()
     }
-})
+
+    const cancelEdit = () => {
+        showCardForm.value = false
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        isSaving.value = true
+        showAlert.value = false
+
+        try {
+            const { paymentMethod, error } = await stripe.value.createPaymentMethod({
+                type: 'card',
+                card: cardNumberElement.value,
+            })
+
+            if (error) {
+                showError(error.message)
+                isSaving.value = false
+                return
+            }
+
+            const response = await paymentMethodService.saveCard({
+                payment_method_id: paymentMethod?.id,
+            })
+
+            if (response.success) {
+                currentCard.value = response.data
+                showCardForm.value = false
+                showSuccess('Card saved successfully')
+            } else {
+                if (response.errors && response.errors.length > 0) {
+                    showError(response.errors.join(', ') || 'Validation error')
+                } else {
+                    showError(response.message || 'Failed to save card')
+                }
+            }
+        } catch (error) {
+            if (error?.errors && error?.errors.length > 0) {
+                // Also show in alert if you want
+                showError(error.errors.join(', ') || 'Failed to save card')
+            } else {
+                // Fallback to generic error
+                showError(error?.message || 'Failed to save card')
+            }
+        } finally {
+            isSaving.value = false
+        }
+    }
+
+    const fetchPaymentMethod = async () => {
+        isFetchingCard.value = true
+        try {
+            const response = await paymentMethodService.getCard()
+            if (response.success) {
+                currentCard.value = response.data
+                // Only hide the form if we actually got a card
+                if (currentCard.value) {
+                    showCardForm.value = false
+                }
+            } else {
+                // If no card exists, show the form
+                showCardForm.value = true
+            }
+        } catch (error) {
+            if (error?.errors && error?.errors.length > 0) {
+                // Also show in alert if you want
+                showError(error.errors.join(', ') || 'Failed to load card details')
+            } else {
+                // Fallback to generic error
+                showError(error?.message || 'Failed to load card details')
+            }
+            // On error, still show the form so user can add a card
+            showCardForm.value = true
+        } finally {
+            isFetchingCard.value = false
+            if (showCardForm.value) {
+                await nextTick()
+                mountStripeElements()
+            }
+        }
+    }
+
+    onMounted(async () => {
+        stripe.value = await useClientStripe()
+        await fetchPaymentMethod()
+
+        // If no card exists, mount the form immediately
+        if (!currentCard.value) {
+            showCardForm.value = true
+            await nextTick()
+            mountStripeElements()
+        }
+    })
+
+    // Watch for form visibility changes
+    watch(showCardForm, async (newVal) => {
+        if (newVal) {
+            isCardElementMounting.value = true
+            await nextTick()
+            mountStripeElements()
+        }
+    })
 </script>
