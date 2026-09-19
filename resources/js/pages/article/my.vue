@@ -169,7 +169,7 @@
         } catch (error) {
             if (import.meta.env.DEV) console.error('Error loading articles:', error)
             articleStore.clearArticles()
-            showAlertMessage(error.message || 'An error occurred while loading articles')
+            showAlertMessage(error.message || t('article.loadArticlesError'))
         } finally {
             loading.value = false
         }

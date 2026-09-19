@@ -123,7 +123,10 @@
         "fullNameRequired": "ឈ្មោះពេញត្រូវបានទាមទារ",
         "invalidEmail": "អ៊ីមែលមិនត្រឹមត្រូវ",
         "phoneInvalid": "លេខទូរស័ព្ទត្រូវតែមាន 12 ខ្ទង់",
-        "loadingUser": "កំពុងផ្ទុកព័ត៌មានលម្អិតអ្នកប្រើប្រាស់"
+        "loadingUser": "កំពុងផ្ទុកព័ត៌មានលម្អិតអ្នកប្រើប្រាស់",
+        "loading": "កំពុងផ្ទុកព័ត៌មានលម្អិតរបស់អ្នកប្រើ",
+        "emailRequired": "អ៊ីមែលត្រូវបានទាមទារ",
+        "emailInvalid": "អ៊ីមែលមិនត្រឹមត្រូវ"
     },
     "preferences": {
         "title": "ចំណូលចិត្ត",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "បញ្ចូលពាក្យសម្ងាត់របស់អ្នក។",
         "confirmPasswordPlaceholder": "បញ្ជាក់ពាក្យសម្ងាត់",
         "loading": "កំពុងផ្ទុកចំណូលចិត្ត",
-        "saving": "កំពុងរក្សាទុក..."
+        "saving": "កំពុងរក្សាទុក...",
+        "confirmPasswordRequired": "ការបញ្ជាក់ពាក្យសម្ងាត់ត្រូវបានទាមទារ"
     },
     "billing": {
         "title": "វិក័យប័ត្រ",
@@ -517,7 +521,9 @@
         "close": "បិទ",
         "effectiveAtDonation": "មានប្រសិទ្ធភាពនៅពេលបរិច្ចាគ",
         "pay": "បង់",
-        "loadingHistory": "កំពុងផ្ទុកប្រវត្តិ..."
+        "loadingHistory": "កំពុងផ្ទុកប្រវត្តិ...",
+        "noData": "គ្មានទិន្នន័យ",
+        "failedToLoadPayouts": "ការផ្ទុកការបែងចែកការទូទាត់បានបរាជ័យ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

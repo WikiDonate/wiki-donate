@@ -123,7 +123,10 @@
         "fullNameRequired": "الاسم الكامل مطلوب",
         "invalidEmail": "بريد إلكتروني غير صالح",
         "phoneInvalid": "يجب أن يتكون رقم الهاتف من 12 رقمًا بالضبط",
-        "loadingUser": "جارٍ تحميل تفاصيل المستخدم"
+        "loadingUser": "جارٍ تحميل تفاصيل المستخدم",
+        "emailInvalid": "بريد إلكتروني غير صالح",
+        "loading": "جارٍ تحميل تفاصيل المستخدم",
+        "emailRequired": "البريد الإلكتروني مطلوب"
     },
     "preferences": {
         "title": "التفضيلات",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
         "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
         "loading": "تحميل التفضيلات",
-        "saving": "جارٍ الحفظ..."
+        "saving": "جارٍ الحفظ...",
+        "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب"
     },
     "billing": {
         "title": "الفواتير",
@@ -517,7 +521,9 @@
         "close": "إغلاق",
         "effectiveAtDonation": "فعالة في وقت التبرع",
         "pay": "ادفع",
-        "loadingHistory": "جارٍ تحميل السجل..."
+        "loadingHistory": "جارٍ تحميل السجل...",
+        "noData": "لا توجد بيانات",
+        "failedToLoadPayouts": "فشل تحميل مخصصات الدفع"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

@@ -18,7 +18,7 @@
 
         <!-- Loading -->
         <div v-if="userStore.isLoadingUser" class="text-center text-gray-600">
-            <LoadingSpinner text="Loading user details" />
+            <LoadingSpinner :text="t('profile.loading')" />
         </div>
 
         <form v-else class="space-y-8" @submit.prevent="onSubmit">
@@ -39,7 +39,7 @@
                         <FormInput
                             v-model="name"
                             type="text"
-                            placeholder="Enter full name"
+                            :placeholder="t('profile.fullNamePlaceholder')"
                             v-bind="nameProps"
                             :error-message="errors.name"
                         />
@@ -64,7 +64,7 @@
                         <FormInput
                             v-model="phone"
                             type="text"
-                            placeholder="Phone number"
+                            :placeholder="t('profile.phonePlaceholder')"
                             v-bind="phoneProps"
                             :error-message="errors.phone"
                         />
@@ -110,9 +110,9 @@
 
     // Validation schema
     const validationSchema = yup.object({
-        name: yup.string().required('Full name is required'),
-        email: yup.string().required('Email is required').email('Invalid email'),
-        phone: yup.string().matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
+        name: yup.string().required(t('profile.fullNameRequired')),
+        email: yup.string().required(t('profile.emailRequired')).email(t('profile.emailInvalid')),
+        phone: yup.string().matches(/^\d{12}$/, t('profile.phoneInvalid')),
     })
 
     // Setup vee-validate form

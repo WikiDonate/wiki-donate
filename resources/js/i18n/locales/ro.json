@@ -123,7 +123,10 @@
         "fullNameRequired": "Numele complet este necesar",
         "invalidEmail": "E-mail nevalid",
         "phoneInvalid": "Numărul de telefon trebuie să aibă exact 12 cifre",
-        "loadingUser": "Se încarcă detaliile utilizatorului"
+        "loadingUser": "Se încarcă detaliile utilizatorului",
+        "emailInvalid": "E-mail nevalid",
+        "loading": "Se încarcă detaliile utilizatorului",
+        "emailRequired": "E-mailul este obligatoriu"
     },
     "preferences": {
         "title": "Preferințe",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Introduceți parola",
         "confirmPasswordPlaceholder": "Confirmați parola",
         "loading": "Se încarcă preferințe",
-        "saving": "Se salvează..."
+        "saving": "Se salvează...",
+        "confirmPasswordRequired": "Este necesară confirmarea parolei"
     },
     "billing": {
         "title": "Facturare",
@@ -517,7 +521,9 @@
         "close": "Închide",
         "effectiveAtDonation": "În vigoare în momentul donării",
         "pay": "Plătiți",
-        "loadingHistory": "Se încarcă istoricul..."
+        "loadingHistory": "Se încarcă istoricul...",
+        "noData": "Fără date",
+        "failedToLoadPayouts": "Nu s-au încărcat alocările plăților"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

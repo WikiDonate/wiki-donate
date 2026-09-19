@@ -123,7 +123,10 @@
         "fullNameRequired": "पूरा नाम आवश्यक है",
         "invalidEmail": "अमान्य ईमेल",
         "phoneInvalid": "फ़ोन नंबर बिल्कुल 12 अंकों का होना चाहिए",
-        "loadingUser": "उपयोगकर्ता विवरण लोड हो रहा है"
+        "loadingUser": "उपयोगकर्ता विवरण लोड हो रहा है",
+        "emailInvalid": "अमान्य ईमेल",
+        "loading": "उपयोगकर्ता विवरण लोड हो रहा है",
+        "emailRequired": "ईमेल आवश्यक है"
     },
     "preferences": {
         "title": "प्राथमिकताएँ",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
         "confirmPasswordPlaceholder": "पासवर्ड की पुष्टि करें",
         "loading": "प्राथमिकताएँ लोड हो रही हैं",
-        "saving": "सहेजा जा रहा है..."
+        "saving": "सहेजा जा रहा है...",
+        "confirmPasswordRequired": "पुष्टि पासवर्ड आवश्यक है"
     },
     "billing": {
         "title": "बिलिंग",
@@ -517,7 +521,9 @@
         "close": "बंद करें",
         "effectiveAtDonation": "दान के समय प्रभावी",
         "pay": "भुगतान करें",
-        "loadingHistory": "इतिहास लोड हो रहा है..."
+        "loadingHistory": "इतिहास लोड हो रहा है...",
+        "noData": "कोई डेटा नहीं",
+        "failedToLoadPayouts": "भुगतान आवंटन लोड करने में विफल"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्वाधिकार सुरक्षित।"

@@ -123,7 +123,10 @@
         "fullNameRequired": "Требуется полное имя",
         "invalidEmail": "Неверный адрес электронной почты",
         "phoneInvalid": "Номер телефона должен состоять ровно из 12 цифр.",
-        "loadingUser": "Загрузка данных пользователя"
+        "loadingUser": "Загрузка данных пользователя",
+        "emailInvalid": "Неверный адрес электронной почты",
+        "loading": "Загрузка данных пользователя",
+        "emailRequired": "Требуется адрес электронной почты"
     },
     "preferences": {
         "title": "Предпочтения",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Введите свой пароль",
         "confirmPasswordPlaceholder": "Подтвердите пароль",
         "loading": "Загрузка настроек",
-        "saving": "Сохранение..."
+        "saving": "Сохранение...",
+        "confirmPasswordRequired": "Требуется подтверждение пароля"
     },
     "billing": {
         "title": "Биллинг",
@@ -517,7 +521,9 @@
         "close": "Закрыть",
         "effectiveAtDonation": "Действует на момент пожертвования",
         "pay": "Оплата",
-        "loadingHistory": "Загрузка истории..."
+        "loadingHistory": "Загрузка истории...",
+        "noData": "Нет данных",
+        "failedToLoadPayouts": "Не удалось загрузить распределения выплат."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Все права защищены."

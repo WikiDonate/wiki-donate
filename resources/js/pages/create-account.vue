@@ -81,7 +81,7 @@
                         <FormInput
                             v-model="username"
                             type="text"
-                            placeholder="Enter your username"
+                            :placeholder="t('auth.usernamePlaceholder')"
                             v-bind="usernameProps"
                             :error-message="errors['username']"
                         />
@@ -91,7 +91,7 @@
                         <FormInput
                             v-model="password"
                             type="password"
-                            placeholder="Enter your password"
+                            :placeholder="t('auth.passwordPlaceholder')"
                             v-bind="passwordProps"
                             :error-message="errors['password']"
                         />
@@ -115,7 +115,7 @@
                         <FormInput
                             v-model="email"
                             type="email"
-                            placeholder="Enter your email"
+                            :placeholder="t('auth.emailPlaceholder')"
                             v-bind="emailProps"
                             :error-message="errors['email']"
                         />
@@ -265,7 +265,7 @@
         } catch (error) {
             setTimeout(() => {
                 alertVariant.value = 'error'
-                alertMessage.value = error.errors?.[0] || 'Registration failed'
+                alertMessage.value = error.errors?.[0] || t('auth.registrationFailed')
                 showAlert.value = true
             }, 0)
         } finally {

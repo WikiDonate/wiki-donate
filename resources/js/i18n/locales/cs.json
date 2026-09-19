@@ -123,7 +123,10 @@
         "fullNameRequired": "Je vyžadováno celé jméno",
         "invalidEmail": "Neplatný email",
         "phoneInvalid": "Telefonní číslo musí mít přesně 12 číslic",
-        "loadingUser": "Načítání podrobností o uživateli"
+        "loadingUser": "Načítání podrobností o uživateli",
+        "emailInvalid": "Neplatný email",
+        "loading": "Načítání podrobností uživatele",
+        "emailRequired": "E-mail je povinný"
     },
     "preferences": {
         "title": "Předvolby",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Zadejte své heslo",
         "confirmPasswordPlaceholder": "Potvrďte heslo",
         "loading": "Načítání předvoleb",
-        "saving": "Ukládání..."
+        "saving": "Ukládání...",
+        "confirmPasswordRequired": "Je vyžadováno potvrzení hesla"
     },
     "billing": {
         "title": "Fakturace",
@@ -517,7 +521,9 @@
         "close": "Zavřít",
         "effectiveAtDonation": "Účinné v době darování",
         "pay": "Zaplať",
-        "loadingHistory": "Načítání historie..."
+        "loadingHistory": "Načítání historie...",
+        "noData": "Žádná data",
+        "failedToLoadPayouts": "Nepodařilo se načíst alokace plateb"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

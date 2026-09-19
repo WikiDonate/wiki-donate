@@ -117,7 +117,7 @@
     const { t } = useI18n()
 
     useHead({
-        title: 'Verify Email',
+        title: t('auth.emailVerification'),
     })
 
     const route = useRoute()

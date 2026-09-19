@@ -221,7 +221,7 @@
         try {
             allocations.value = (await adminService.getPayoutAllocations()).data ?? []
         } catch (err) {
-            console.error('Failed to load payout allocations', err)
+            console.error(t('admin.failedToLoadPayouts'), err)
             allocations.value = []
         } finally {
             loading.value = false

@@ -35,7 +35,7 @@
                     </tr>
                     <tr v-if="rows.length === 0">
                         <td :colspan="columns.length" class="px-4 py-8 text-center text-gray-400">
-                            {{ emptyText }}
+                            {{ isKey(emptyText) ? t(emptyText) : emptyText }}
                         </td>
                     </tr>
                 </tbody>
@@ -45,7 +45,7 @@
         <!-- Mobile card layout (< md) -->
         <div class="md:hidden divide-y divide-gray-100">
             <div v-if="rows.length === 0" class="px-4 py-8 text-center text-gray-400">
-                {{ emptyText }}
+                {{ isKey(emptyText) ? t(emptyText) : emptyText }}
             </div>
             <div
                 v-for="(row, i) in rows"
@@ -74,6 +74,10 @@
 
 <script setup>
     import { computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
 
     const props = defineProps({
         columns: {
@@ -94,7 +98,7 @@
         },
         emptyText: {
             type: String,
-            default: 'No data',
+            default: 'admin.noData',
         },
     })
 

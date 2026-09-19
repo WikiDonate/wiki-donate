@@ -123,7 +123,10 @@
         "fullNameRequired": "Απαιτείται πλήρες όνομα",
         "invalidEmail": "Μη έγκυρο email",
         "phoneInvalid": "Ο αριθμός τηλεφώνου πρέπει να είναι ακριβώς 12 ψηφία",
-        "loadingUser": "Φόρτωση στοιχείων χρήστη"
+        "loadingUser": "Φόρτωση στοιχείων χρήστη",
+        "emailInvalid": "Μη έγκυρο email",
+        "loading": "Φόρτωση λεπτομερειών χρήστη",
+        "emailRequired": "Απαιτείται email"
     },
     "preferences": {
         "title": "Προτιμήσεις",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Εισαγάγετε τον κωδικό πρόσβασής σας",
         "confirmPasswordPlaceholder": "Επιβεβαίωση κωδικού πρόσβασης",
         "loading": "Φόρτωση προτιμήσεων",
-        "saving": "Αποθήκευση..."
+        "saving": "Αποθήκευση...",
+        "confirmPasswordRequired": "Απαιτείται επιβεβαίωση κωδικού πρόσβασης"
     },
     "billing": {
         "title": "Χρέωση",
@@ -517,7 +521,9 @@
         "close": "Κλείσιμο",
         "effectiveAtDonation": "Ισχύει τη στιγμή της δωρεάς",
         "pay": "Πληρώστε",
-        "loadingHistory": "Φόρτωση ιστορικού..."
+        "loadingHistory": "Φόρτωση ιστορικού...",
+        "noData": "Δεν υπάρχουν δεδομένα",
+        "failedToLoadPayouts": "Η φόρτωση των κατανομών πληρωμών απέτυχε"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Με την επιφύλαξη παντός δικαιώματος."

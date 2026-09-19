@@ -123,7 +123,10 @@
         "fullNameRequired": "Wymagane jest pełne imię i nazwisko",
         "invalidEmail": "Nieprawidłowy adres e-mail",
         "phoneInvalid": "Numer telefonu musi mieć dokładnie 12 cyfr",
-        "loadingUser": "Ładowanie danych użytkownika"
+        "loadingUser": "Ładowanie danych użytkownika",
+        "emailInvalid": "Nieprawidłowy adres e-mail",
+        "loading": "Ładowanie danych użytkownika",
+        "emailRequired": "Adres e-mail jest wymagany"
     },
     "preferences": {
         "title": "Preferencje",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Wpisz swoje hasło",
         "confirmPasswordPlaceholder": "Potwierdź hasło",
         "loading": "Ładowanie preferencji",
-        "saving": "Zapisywanie..."
+        "saving": "Zapisywanie...",
+        "confirmPasswordRequired": "Potwierdź, że wymagane jest hasło"
     },
     "billing": {
         "title": "Rozliczenia",
@@ -517,7 +521,9 @@
         "close": "Zamknij",
         "effectiveAtDonation": "Obowiązuje w momencie przekazania darowizny",
         "pay": "Zapłać",
-        "loadingHistory": "Ładowanie historii..."
+        "loadingHistory": "Ładowanie historii...",
+        "noData": "Brak danych",
+        "failedToLoadPayouts": "Nie udało się załadować alokacji wypłat"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Wszelkie prawa zastrzeżone."

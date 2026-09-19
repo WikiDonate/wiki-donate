@@ -123,7 +123,10 @@
         "fullNameRequired": "Tên đầy đủ là bắt buộc",
         "invalidEmail": "Email không hợp lệ",
         "phoneInvalid": "Số điện thoại phải chính xác 12 chữ số",
-        "loadingUser": "Đang tải chi tiết người dùng"
+        "loadingUser": "Đang tải chi tiết người dùng",
+        "emailInvalid": "Email không hợp lệ",
+        "loading": "Đang tải thông tin người dùng",
+        "emailRequired": "Email là bắt buộc"
     },
     "preferences": {
         "title": "Tùy chọn",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Nhập mật khẩu của bạn",
         "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
         "loading": "Đang tải tùy chọn",
-        "saving": "Đang lưu..."
+        "saving": "Đang lưu...",
+        "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc"
     },
     "billing": {
         "title": "Thanh toán",
@@ -517,7 +521,9 @@
         "close": "Đóng",
         "effectiveAtDonation": "Có hiệu lực tại thời điểm quyên góp",
         "pay": "Trả tiền",
-        "loadingHistory": "Đang tải lịch sử..."
+        "loadingHistory": "Đang tải lịch sử...",
+        "noData": "Không có dữ liệu",
+        "failedToLoadPayouts": "Không thể tải phân bổ thanh toán"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

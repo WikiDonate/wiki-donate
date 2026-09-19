@@ -123,7 +123,10 @@
         "fullNameRequired": "Nama lengkap wajib diisi",
         "invalidEmail": "Email tidak valid",
         "phoneInvalid": "Nomor telepon harus tepat 12 digit",
-        "loadingUser": "Memuat detail pengguna"
+        "loadingUser": "Memuat detail pengguna",
+        "emailInvalid": "Email tidak valid",
+        "loading": "Memuat detail pengguna",
+        "emailRequired": "Email wajib diisi"
     },
     "preferences": {
         "title": "Preferensi",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Masukkan kata sandi Anda",
         "confirmPasswordPlaceholder": "Konfirmasikan kata sandi",
         "loading": "Memuat Preferensi",
-        "saving": "Menyimpan..."
+        "saving": "Menyimpan...",
+        "confirmPasswordRequired": "Konfirmasi Kata Sandi diperlukan"
     },
     "billing": {
         "title": "Penagihan",
@@ -517,7 +521,9 @@
         "close": "Tutup",
         "effectiveAtDonation": "Efektif pada saat donasi",
         "pay": "Bayar",
-        "loadingHistory": "Memuat riwayat..."
+        "loadingHistory": "Memuat riwayat...",
+        "noData": "Tidak ada data",
+        "failedToLoadPayouts": "Gagal memuat alokasi pembayaran"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak dilindungi undang-undang."

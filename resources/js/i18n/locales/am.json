@@ -123,7 +123,10 @@
         "fullNameRequired": "ሙሉ ስም ያስፈልጋል",
         "invalidEmail": "ልክ ያልሆነ ኢሜይል",
         "phoneInvalid": "ስልክ ቁጥር በትክክል 12 አሃዞች መሆን አለበት።",
-        "loadingUser": "የተጠቃሚ ዝርዝሮችን በመጫን ላይ"
+        "loadingUser": "የተጠቃሚ ዝርዝሮችን በመጫን ላይ",
+        "loading": "የተጠቃሚ ዝርዝሮች በመጫን ላይ",
+        "emailRequired": "ኢሜይል ያስፈልጋል",
+        "emailInvalid": "ልክ ያልሆነ ኢሜይል"
     },
     "preferences": {
         "title": "ምርጫዎች",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "የይለፍ ቃልዎን ያስገቡ",
         "confirmPasswordPlaceholder": "የይለፍ ቃል ያረጋግጡ",
         "loading": "ምርጫዎችን በመጫን ላይ",
-        "saving": "በማስቀመጥ ላይ..."
+        "saving": "በማስቀመጥ ላይ...",
+        "confirmPasswordRequired": "የይለፍ ቃል ማረጋገጥ ያስፈልጋል"
     },
     "billing": {
         "title": "የሂሳብ አከፋፈል",
@@ -517,7 +521,9 @@
         "close": "ዝጋ",
         "effectiveAtDonation": "በስጦታ ጊዜ ውጤታማ",
         "pay": "ይክፈሉ።",
-        "loadingHistory": "ታሪክን በመጫን ላይ..."
+        "loadingHistory": "ታሪክን በመጫን ላይ...",
+        "noData": "ምንም ውሂብ የለም",
+        "failedToLoadPayouts": "የክፍያ ድርሻዎችን መጫን አልተሳካም"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

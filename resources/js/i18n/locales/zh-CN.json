@@ -123,7 +123,10 @@
         "fullNameRequired": "需要全名",
         "invalidEmail": "电子邮件无效",
         "phoneInvalid": "电话号码必须正好是 12 位数字",
-        "loadingUser": "正在加载用户详细信息"
+        "loadingUser": "正在加载用户详细信息",
+        "emailInvalid": "电子邮件无效",
+        "loading": "正在加载用户详细信息",
+        "emailRequired": "邮箱为必填项"
     },
     "preferences": {
         "title": "偏好设置",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "输入您的密码",
         "confirmPasswordPlaceholder": "确认密码",
         "loading": "加载首选项",
-        "saving": "正在保存..."
+        "saving": "正在保存...",
+        "confirmPasswordRequired": "需要确认密码"
     },
     "billing": {
         "title": "计费",
@@ -517,7 +521,9 @@
         "close": "关闭",
         "effectiveAtDonation": "捐赠时生效",
         "pay": "支付",
-        "loadingHistory": "加载历史记录..."
+        "loadingHistory": "加载历史记录...",
+        "noData": "无数据",
+        "failedToLoadPayouts": "无法加载支付分配"
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"

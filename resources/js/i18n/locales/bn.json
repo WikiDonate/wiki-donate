@@ -123,7 +123,10 @@
         "fullNameRequired": "সম্পূর্ণ নাম প্রয়োজন",
         "invalidEmail": "অবৈধ ইমেল",
         "phoneInvalid": "ফোন নম্বরটি অবশ্যই 12 সংখ্যার হতে হবে",
-        "loadingUser": "ব্যবহারকারীর বিবরণ লোড হচ্ছে"
+        "loadingUser": "ব্যবহারকারীর বিবরণ লোড হচ্ছে",
+        "emailInvalid": "অবৈধ ইমেল",
+        "loading": "ব্যবহারকারীর বিবরণ লোড হচ্ছে",
+        "emailRequired": "ইমেইল প্রয়োজন"
     },
     "preferences": {
         "title": "পছন্দসমূহ",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "আপনার পাসওয়ার্ড লিখুন",
         "confirmPasswordPlaceholder": "পাসওয়ার্ড নিশ্চিত করুন",
         "loading": "পছন্দগুলি লোড হচ্ছে৷",
-        "saving": "সংরক্ষণ করা হচ্ছে..."
+        "saving": "সংরক্ষণ করা হচ্ছে...",
+        "confirmPasswordRequired": "পাসওয়ার্ড নিশ্চিত করুন প্রয়োজন"
     },
     "billing": {
         "title": "বিলিং",
@@ -517,7 +521,9 @@
         "close": "বন্ধ",
         "effectiveAtDonation": "দান করার সময় কার্যকর",
         "pay": "বেতন",
-        "loadingHistory": "ইতিহাস লোড হচ্ছে..."
+        "loadingHistory": "ইতিহাস লোড হচ্ছে...",
+        "noData": "কোন তথ্য নেই",
+        "failedToLoadPayouts": "পেআউট বরাদ্দ লোড করতে ব্যর্থ হয়েছে"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. সর্বস্বত্ব সংরক্ষিত"

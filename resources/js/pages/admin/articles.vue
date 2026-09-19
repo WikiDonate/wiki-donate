@@ -77,13 +77,13 @@
                                 :to="'/article?title=' + encodeURIComponent(row.slug)"
                                 target="_blank"
                                 class="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
-                                title="View article"
+                                :title="t('admin.viewArticle')"
                             >
                                 <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
                             </NuxtLink>
                             <button
                                 class="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
-                                title="Delete article"
+                                :title="t('admin.deleteArticle')"
                                 @click="confirmDelete(row)"
                             >
                                 <font-awesome-icon :icon="['fas', 'trash']" class="w-4 h-4" />

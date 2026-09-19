@@ -123,7 +123,10 @@
         "fullNameRequired": "Fullt navn kreves",
         "invalidEmail": "Ugyldig e-post",
         "phoneInvalid": "Telefonnummeret må bestå av nøyaktig 12 sifre",
-        "loadingUser": "Laster inn brukerdetaljer"
+        "loadingUser": "Laster inn brukerdetaljer",
+        "loading": "Laster brukerdetaljer",
+        "emailRequired": "E-post er påkrevd",
+        "emailInvalid": "Ugyldig e-post"
     },
     "preferences": {
         "title": "Preferanser",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "Skriv inn passordet ditt",
         "confirmPasswordPlaceholder": "Bekreft passord",
         "loading": "Lasteinnstillinger",
-        "saving": "Lagrer..."
+        "saving": "Lagrer...",
+        "confirmPasswordRequired": "Bekreftelse av passord er påkrevd"
     },
     "billing": {
         "title": "Fakturering",
@@ -517,7 +521,9 @@
         "close": "Lukk",
         "effectiveAtDonation": "Gjelder ved donasjonstidspunktet",
         "pay": "Betal",
-        "loadingHistory": "Laster inn loggen ..."
+        "loadingHistory": "Laster inn loggen ...",
+        "noData": "Ingen data",
+        "failedToLoadPayouts": "Kunne ikke laste utbetalingsallokeringer"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

@@ -46,6 +46,6 @@
     const { t } = useI18n()
 
     useHead({
-        title: 'Main Page',
+        title: t('main.title'),
     })
 </script>

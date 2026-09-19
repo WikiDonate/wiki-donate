@@ -123,7 +123,10 @@
         "fullNameRequired": "முழு பெயர் தேவை",
         "invalidEmail": "தவறான மின்னஞ்சல்",
         "phoneInvalid": "தொலைபேசி எண் சரியாக 12 இலக்கங்களாக இருக்க வேண்டும்",
-        "loadingUser": "பயனர் விவரங்களை ஏற்றுகிறது"
+        "loadingUser": "பயனர் விவரங்களை ஏற்றுகிறது",
+        "loading": "பயனர் விவரங்கள் ஏற்றப்படுகின்றன",
+        "emailRequired": "மின்னஞ்சல் தேவை",
+        "emailInvalid": "தவறான மின்னஞ்சல்"
     },
     "preferences": {
         "title": "விருப்பங்கள்",
@@ -158,7 +161,8 @@
         "passwordPlaceholder": "உங்கள் கடவுச்சொல்லை உள்ளிடவும்",
         "confirmPasswordPlaceholder": "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
         "loading": "விருப்பத்தேர்வுகளை ஏற்றுகிறது",
-        "saving": "சேமிக்கிறது..."
+        "saving": "சேமிக்கிறது...",
+        "confirmPasswordRequired": "கடவுச்சொல் உறுதிப்படுத்தல் தேவை"
     },
     "billing": {
         "title": "பில்லிங்",
@@ -517,7 +521,9 @@
         "close": "மூடு",
         "effectiveAtDonation": "நன்கொடை நேரத்தில் பயனுள்ளதாக இருக்கும்",
         "pay": "செலுத்து",
-        "loadingHistory": "வரலாற்றை ஏற்றுகிறது..."
+        "loadingHistory": "வரலாற்றை ஏற்றுகிறது...",
+        "noData": "தரவு இல்லை",
+        "failedToLoadPayouts": "கட்டண ஒதுக்கீடுகளை ஏற்ற முடியவில்லை"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."

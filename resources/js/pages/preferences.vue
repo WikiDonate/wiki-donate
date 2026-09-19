@@ -282,7 +282,7 @@
             })
 
             if (!response.success) {
-                throw new Error(response.errors?.[0] || 'Failed to save preferences')
+                throw new Error(response.errors?.[0] || t('preferences.failedToSavePreferences'))
             }
 
             alertVariant.value = 'success'
@@ -292,7 +292,8 @@
         } catch (error) {
             if (import.meta.env.DEV) console.error(error)
             alertVariant.value = 'error'
-            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            alertMessage.value =
+                error.errors[0] || error.message || t('preferences.unexpectedError')
             showAlert.value = true
         } finally {
             submittingNotifications.value = false
@@ -315,7 +316,8 @@
         } catch (error) {
             if (import.meta.env.DEV) console.error(error)
             alertVariant.value = 'error'
-            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            alertMessage.value =
+                error.errors[0] || error.message || t('preferences.unexpectedError')
             showAlert.value = true
         } finally {
             loading.value = false
@@ -326,12 +328,12 @@
     const validationSchema = yup.object({
         password: yup
             .string()
-            .required('Password is required')
+            .required(t('preferences.passwordRequired'))
             .min(6, 'Password must be at least 6 characters'),
         confirmPassword: yup
             .string()
-            .required('Confirm Password is required')
-            .oneOf([yup.ref('password'), null], 'Passwords must match'),
+            .required(t('preferences.confirmPasswordRequired'))
+            .oneOf([yup.ref('password'), null], t('preferences.passwordsMustMatch')),
     })
 
     // Setup VeeValidate
@@ -356,7 +358,7 @@
             })
 
             if (!response.success) {
-                throw new Error(response.errors?.[0] || 'Failed to change password')
+                throw new Error(response.errors?.[0] || t('preferences.failedToChangePassword'))
             }
 
             alertVariant.value = 'success'
