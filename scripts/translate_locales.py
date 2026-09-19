@@ -46,11 +46,10 @@ SUPPORTED = [
 
 # Keys that must never be machine-translated (brands, codes, values, or
 # strings that would corrupt identifiers if translated).
+# NOTE: Only genuinely untranslatable values belong here (brand names and
+# symbols). User-visible labels must be translated in every locale.
 KEEP_EN = {
-    'common.loading', 'common.required', 'common.page', 'common.of',
-    'common.you', 'common.pay', 'language.loading', 'admin.stripe',
-    'admin.paypal', 'billing.cvc', 'admin.paymentId', 'report.paymentId',
-    'admin.allStatus', 'report.allStatus',
+    'common.of', 'admin.stripe', 'admin.paypal',
 }
 
 BATCH = 16
