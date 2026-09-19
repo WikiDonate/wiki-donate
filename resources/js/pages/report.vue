@@ -46,7 +46,12 @@
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                             />
                         </div>
-                        <Button variant="primary" :text="t('common.apply')" width="auto" @click="loadPage(1)" />
+                        <Button
+                            variant="primary"
+                            :text="t('common.apply')"
+                            width="auto"
+                            @click="loadPage(1)"
+                        />
                     </div>
                 </div>
             </div>
@@ -58,19 +63,27 @@
                 <p class="text-3xl font-bold text-indigo-600 mb-1">
                     {{ formatAmount(summary.totalDonated) }}
                 </p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">{{ t('report.totalDonated') }}</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.totalDonated') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-green-600 mb-1">{{ summary.totalDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">{{ t('report.completedLabel') }}</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.completedLabel') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-amber-500 mb-1">{{ summary.pendingDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">{{ t('report.pendingLabel') }}</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.pendingLabel') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-red-500 mb-1">{{ summary.failedDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">{{ t('report.failedLabel') }}</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.failedLabel') }}
+                </p>
             </div>
         </div>
 
@@ -128,7 +141,7 @@
                             class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
                             @click="openDetail(row)"
                         >
-                            View
+                            {{ t('common.view') }}
                         </button>
                     </template>
                 </AdminTable>
@@ -138,8 +151,13 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        {{ t('report.pageOf', { current: meta.currentPage, last: meta.lastPage,
-                            total: meta.total }) }}
+                        {{
+                            t('report.pageOf', {
+                                current: meta.currentPage,
+                                last: meta.lastPage,
+                                total: meta.total,
+                            })
+                        }}
                     </span>
                     <Pagination
                         :current-page="meta.currentPage"

@@ -89,7 +89,12 @@
                         type="date"
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     />
-                    <Button variant="primary" :text="t('common.apply')" width="auto" @click="loadPage(1)" />
+                    <Button
+                        variant="primary"
+                        :text="t('common.apply')"
+                        width="auto"
+                        @click="loadPage(1)"
+                    />
                 </div>
             </div>
 
@@ -119,7 +124,9 @@
                         <template #cell-type="{ row }">
                             <AdminBadge
                                 :variant="row.type === 'income' ? 'success' : 'danger'"
-                                :text="row.type === 'income' ? t('admin.income') : t('admin.expense')"
+                                :text="
+                                    row.type === 'income' ? t('admin.income') : t('admin.expense')
+                                "
                             />
                         </template>
                         <template #cell-amount="{ row }">
@@ -141,7 +148,11 @@
                             <template v-else>
                                 <AdminBadge
                                     :variant="row.payout_type === 'full' ? 'info' : 'amber'"
-                                    :text="row.payout_type === 'full' ? t('admin.full') : t('admin.partial')"
+                                    :text="
+                                        row.payout_type === 'full'
+                                            ? t('admin.full')
+                                            : t('admin.partial')
+                                    "
                                 />
                             </template>
                         </template>
@@ -154,7 +165,7 @@
                                 :to="`/article?title=${encodeURIComponent(row.article.slug)}`"
                                 class="text-indigo-600 hover:text-indigo-800 text-xs underline"
                             >
-                                View
+                                {{ t('common.view') }}
                             </RouterLink>
                             <span v-else class="text-xs text-gray-400">—</span>
                         </template>
@@ -165,8 +176,13 @@
                         class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                     >
                         <span class="text-sm text-gray-500 order-2 sm:order-1">
-                            {{ t('report.pageOf', { current: meta.currentPage, last: meta.lastPage,
-                            total: meta.total }) }}
+                            {{
+                                t('report.pageOf', {
+                                    current: meta.currentPage,
+                                    last: meta.lastPage,
+                                    total: meta.total,
+                                })
+                            }}
                         </span>
                         <Pagination
                             :current-page="meta.currentPage"
@@ -214,13 +230,13 @@
     const toDate = ref('')
 
     const columns = [
-        { key: 'date', label: 'Date' },
-        { key: 'description', label: 'Description' },
-        { key: 'type', label: 'Type' },
-        { key: 'amount', label: 'Amount' },
-        { key: 'method', label: 'Method' },
-        { key: 'status', label: 'Status' },
-        { key: 'context', label: 'Context' },
+        { key: 'date', label: t('admin.date') },
+        { key: 'description', label: t('admin.description') },
+        { key: 'type', label: t('admin.type') },
+        { key: 'amount', label: t('admin.amount') },
+        { key: 'method', label: t('admin.method') },
+        { key: 'status', label: t('admin.status') },
+        { key: 'context', label: t('admin.context') },
     ]
 
     function formatAmount(value) {
@@ -255,7 +271,7 @@
                 summary.value = sumRes.data
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to load transactions')
+            notifyError(error.errors?.[0] || t('admin.failedToLoadTransactions'))
         } finally {
             loading.value = false
         }
@@ -284,7 +300,7 @@
             URL.revokeObjectURL(url)
         } catch (e) {
             const payload = e?.response?.data ?? e?.message
-            let message = 'Export failed'
+            let message = t('admin.exportFailed')
             if (payload instanceof Blob) {
                 try {
                     message = JSON.parse(await payload.text()).message || message

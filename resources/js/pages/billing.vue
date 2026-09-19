@@ -25,7 +25,9 @@
                 <!-- Section Header -->
                 <div class="p-3 sm:p-4 md:p-6 border-b border-gray-200 bg-indigo-50 rounded-t-xl">
                     <h2 class="text-xl sm:text-2xl font-semibold text-indigo-700">
-                        {{ currentCard ? t('billing.updatePaymentMethod') : t('billing.addNewCard') }}
+                        {{
+                            currentCard ? t('billing.updatePaymentMethod') : t('billing.addNewCard')
+                        }}
                     </h2>
                 </div>
 
@@ -52,8 +54,12 @@
                                     **** **** **** {{ currentCard.last4 }}
                                 </h3>
                                 <p class="text-xs sm:text-sm text-gray-500">
-                                    {{ t('billing.expires', { month: currentCard.exp_month, year:
-                                        currentCard.exp_year.toString().slice(-2) }) }}
+                                    {{
+                                        t('billing.expires', {
+                                            month: currentCard.exp_month,
+                                            year: currentCard.exp_year.toString().slice(-2),
+                                        })
+                                    }}
                                 </p>
                             </div>
                         </div>
@@ -110,7 +116,7 @@
                         <div class="flex flex-col sm:flex-row gap-4 mt-8">
                             <FormSubmitButton
                                 class="flex-1"
-                                 :text="isSaving ? t('billing.saving') : t('billing.saveCard')"
+                                :text="isSaving ? t('billing.saving') : t('billing.saveCard')"
                                 type="button"
                                 variant="primary"
                                 :disabled="isSaving"

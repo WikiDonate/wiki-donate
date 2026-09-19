@@ -24,25 +24,33 @@
             <!-- Info Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{ t('admin.donor') }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.donor')
+                    }}</span>
                     <p class="text-gray-800 font-medium text-sm mt-0.5">
                         {{ donation.user || '—' }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{ t('admin.email') }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.email')
+                    }}</span>
                     <p class="text-gray-800 text-sm mt-0.5 truncate">
                         {{ donation.email || '—' }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{ t('admin.date') }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.date')
+                    }}</span>
                     <p class="text-gray-800 text-sm mt-0.5">
                         {{ donation.date }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{ t('admin.paymentId') }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.paymentId')
+                    }}</span>
                     <p class="text-gray-800 text-xs font-mono mt-0.5 truncate">
                         {{ donation.payment_id || donation.stripe_session_id || '—' }}
                     </p>
@@ -55,7 +63,9 @@
                 class="border border-gray-100 rounded-xl overflow-hidden"
             >
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                    <h4 class="text-sm font-semibold text-gray-700">{{ t('admin.distributionFormula') }}</h4>
+                    <h4 class="text-sm font-semibold text-gray-700">
+                        {{ t('admin.distributionFormula') }}
+                    </h4>
                 </div>
                 <div class="divide-y divide-gray-50">
                     <div
@@ -96,7 +106,9 @@
             <!-- Details -->
             <div v-if="donation.details" class="border border-gray-100 rounded-xl overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                    <h4 class="text-sm font-semibold text-gray-700">{{ t('admin.additionalDetails') }}</h4>
+                    <h4 class="text-sm font-semibold text-gray-700">
+                        {{ t('admin.additionalDetails') }}
+                    </h4>
                 </div>
                 <div class="px-4 py-3">
                     <p class="text-gray-600 text-sm">{{ donation.details }}</p>

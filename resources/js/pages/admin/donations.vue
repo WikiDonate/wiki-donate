@@ -88,7 +88,7 @@
                             class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
                             @click="openDetail(row)"
                         >
-                            View
+                            {{ t('common.view') }}
                         </button>
                     </template>
                 </AdminTable>
@@ -98,8 +98,13 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        {{ t('report.pageOf', { current: meta.currentPage, last: meta.lastPage,
-                            total: meta.total }) }}
+                        {{
+                            t('report.pageOf', {
+                                current: meta.currentPage,
+                                last: meta.lastPage,
+                                total: meta.total,
+                            })
+                        }}
                     </span>
                     <Pagination
                         :current-page="meta.currentPage"

@@ -7,10 +7,12 @@
         <div class="space-y-5">
             <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
                 <div class="flex justify-between items-center mb-3">
-                    <h4 class="font-semibold text-indigo-700 text-sm">{{ t('donate.formulaBreakdown') }}</h4>
+                    <h4 class="font-semibold text-indigo-700 text-sm">
+                        {{ t('donate.formulaBreakdown') }}
+                    </h4>
                     <button
                         class="text-indigo-400 hover:text-indigo-600 transition-colors"
-                         :title="showFormula ? t('donate.hideFormula') : t('donate.showFormula')"
+                        :title="showFormula ? t('donate.hideFormula') : t('donate.showFormula')"
                         @click="showFormula = !showFormula"
                     >
                         <font-awesome-icon

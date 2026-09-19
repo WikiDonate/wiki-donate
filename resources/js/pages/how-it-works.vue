@@ -7,7 +7,9 @@
                 class="lg:w-64 shrink-0 bg-white rounded-2xl shadow-md overflow-hidden lg:sticky lg:top-6 lg:h-fit"
             >
                 <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-3 px-4 text-center">
-                    <span class="font-bold text-white tracking-wide">{{ t('howItWorks.steps') }}</span>
+                    <span class="font-bold text-white tracking-wide">{{
+                        t('howItWorks.steps')
+                    }}</span>
                 </div>
                 <nav class="py-2">
                     <button

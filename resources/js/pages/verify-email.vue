@@ -7,7 +7,9 @@
                 <div
                     class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">{{ t('auth.emailVerification') }}</h1>
+                    <h1 class="text-2xl md:text-3xl font-bold">
+                        {{ t('auth.emailVerification') }}
+                    </h1>
                     <p class="mt-2 text-sm">{{ t('auth.emailVerificationSubtitle') }}</p>
                 </div>
 
@@ -50,7 +52,9 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">{{ t('auth.emailVerified') }}</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            {{ t('auth.emailVerified') }}
+                        </h2>
                         <p class="text-gray-600 text-sm">
                             {{ t('auth.emailVerifiedMsg') }}
                         </p>
@@ -85,11 +89,11 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">{{ t('auth.verificationFailed') }}</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            {{ t('auth.verificationFailed') }}
+                        </h2>
                         <p class="text-gray-600 text-sm">
-                            {{
-                                errorMessage || t('auth.verificationFailedMsg')
-                            }}
+                            {{ errorMessage || t('auth.verificationFailedMsg') }}
                         </p>
                         <div class="pt-4 space-y-2">
                             <NuxtLink

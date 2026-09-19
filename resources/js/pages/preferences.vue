@@ -122,7 +122,9 @@
                             <Checkbox v-model="editUserPage" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">{{ t('preferences.pageReview') }}</span>
+                            <span class="text-gray-700 text-sm">{{
+                                t('preferences.pageReview')
+                            }}</span>
                             <Checkbox v-model="pageReview" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
@@ -177,9 +179,9 @@
                     />
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >{{ t('preferences.newPassword') }}</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('preferences.newPassword')
+                        }}</label>
                         <FormInput
                             v-model="password"
                             type="password"
@@ -190,9 +192,9 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >{{ t('preferences.confirmPassword') }}</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('preferences.confirmPassword')
+                        }}</label>
                         <FormInput
                             v-model="confirmPassword"
                             type="password"

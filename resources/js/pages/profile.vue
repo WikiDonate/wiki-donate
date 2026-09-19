@@ -46,7 +46,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >{{ t('profile.emailAddress') }}<span class="text-red-500">*</span></label
+                            >{{ t('profile.emailAddress')
+                            }}<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="email"
@@ -57,9 +58,9 @@
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >{{ t('profile.phoneNumber') }}</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('profile.phoneNumber')
+                        }}</label>
                         <FormInput
                             v-model="phone"
                             type="text"

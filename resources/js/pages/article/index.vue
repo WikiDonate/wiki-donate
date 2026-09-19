@@ -167,11 +167,11 @@
                 />
                 <p class="text-gray-500">
                     {{ t('article.noFormulas') }}
-                    <template v-if="authStore.isAuthenticated"
-                        >{{ t('article.beFirst') }}</template
-                    >
+                    <template v-if="authStore.isAuthenticated">{{ t('article.beFirst') }}</template>
                     <template v-else>
-                        <NuxtLink to="/login" class="text-indigo-600 font-semibold hover:underline"
+                        <NuxtLink
+                            to="/login"
+                            class="text-indigo-600 font-semibold hover:underline"
                             >{{ t('article.logInToCreate') }}</NuxtLink
                         >
                     </template>
@@ -235,9 +235,7 @@
     const articleTitle = ref('')
 
     useHead(() => ({
-        title: articleTitle.value
-            ? `${articleTitle.value} - WikiDonate`
-            : t('article.title'),
+        title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : t('article.title'),
     }))
 
     const articleStore = useArticleStore()
@@ -278,9 +276,7 @@
     const handlePaymentSuccess = ({ method, amount }) => {
         showPaymentModal.value = false
         selectedPaymentFormula.value = null
-        notifySuccess(
-            t('article.donationCompleted', { amount: `$${amount}`, method }),
-        )
+        notifySuccess(t('article.donationCompleted', { amount: `$${amount}`, method }))
     }
 
     const getUserFormulaIndex = (currentFormula) => {
@@ -346,8 +342,7 @@
                 throw new Error(response.message || t('article.failedToSave'))
             }
         } catch (error) {
-            const message =
-                error.message || error.errors?.[0] || t('article.unexpectedError')
+            const message = error.message || error.errors?.[0] || t('article.unexpectedError')
             if (message.includes('already exists')) {
                 formulaError.value = message
             }

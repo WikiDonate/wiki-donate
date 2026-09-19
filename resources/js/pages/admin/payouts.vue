@@ -249,8 +249,7 @@
             payTarget.value = null
             await fetchAllocations()
         } catch (err) {
-            payError.value =
-                err.response?.data?.message || t('admin.failedToRecord')
+            payError.value = err.response?.data?.message || t('admin.failedToRecord')
         } finally {
             paying.value = false
         }

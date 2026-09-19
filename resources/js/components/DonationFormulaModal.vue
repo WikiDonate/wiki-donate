@@ -157,9 +157,7 @@
         v-model="showSaveConfirm"
         :title="props.isEdit ? t('formula.updateConfirmTitle') : t('formula.saveConfirmTitle')"
         :message-title="t('formula.confirmYourAction')"
-        :message="
-            props.isEdit ? t('formula.updateConfirmMsg') : t('formula.saveConfirmMsg')
-        "
+        :message="props.isEdit ? t('formula.updateConfirmMsg') : t('formula.saveConfirmMsg')"
         :confirm-text="props.isEdit ? t('formula.update') : t('formula.save')"
         :is-loading="localIsSaving || props.isSaving"
         @confirm="confirmSave"
@@ -203,12 +201,12 @@
     const validationSchema = yup.object({
         name: yup
             .string()
-            .required('Name is required')
-            .max(255, 'Name must be 255 characters or fewer.'),
+            .required(t('formula.nameRequired'))
+            .max(255, t('formula.nameTooLong')),
         details: yup.string().nullable(),
         formula: yup
             .array()
-            .min(1, 'Add at least one charity')
+            .min(1, t('formula.addAtLeastOne'))
             .of(
                 yup.object({
                     organization: yup.string().required(t('formula.organizationRequired')),
@@ -220,7 +218,7 @@
                         .max(100, t('formula.percentageMax')),
                 }),
             )
-            .test('total-100', 'Total allocation must equal 100%', (arr) => {
+            .test('total-100', t('formula.totalMustEqual100'), (arr) => {
                 const total = (arr ?? []).reduce((sum, row) => sum + Number(row.percentage || 0), 0)
                 return Math.abs(total - 100) < 0.01
             }),

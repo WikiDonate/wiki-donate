@@ -40,7 +40,9 @@
 
                 <p class="text-gray-400 text-xs">
                     {{ t('payment.havingTrouble') }}
-                    <NuxtLink to="/contact" class="text-indigo-600 hover:text-indigo-800 underline"
+                    <NuxtLink
+                        to="/contact"
+                        class="text-indigo-600 hover:text-indigo-800 underline"
                         >{{ t('payment.contactSupport') }}</NuxtLink
                     >
                 </p>
