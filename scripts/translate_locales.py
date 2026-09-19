@@ -70,8 +70,8 @@ def translate(text, target):
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode('utf-8'))
-        if isinstance(data, list) and data and isinstance(data[0], list) and data[0]:
-            return data[0][0]
+        if isinstance(data, list) and data and isinstance(data[0], str):
+            return data[0]
         return text
     except Exception:
         return None
@@ -80,17 +80,27 @@ def translate(text, target):
 _PLACEHOLDER_RE = re.compile(r'(\{[a-zA-Z0-9_]+\}|\[\[[^\]]+\]\])')
 
 
+def translate_seg(seg, target):
+    """Translate a text segment, preserving its original surrounding whitespace."""
+    lead = len(seg) - len(seg.lstrip(' \t'))
+    trail = len(seg) - len(seg.rstrip(' \t'))
+    core = seg.strip()
+    if not core:
+        return seg
+    out = translate(core, target)
+    if out is None:
+        return seg
+    return ' ' * lead + out + ' ' * trail
+
+
 def translate_with_placeholders(text, target):
     parts = _PLACEHOLDER_RE.split(text)
     out = []
     for idx, part in enumerate(parts):
         if idx % 2 == 1:
             out.append(part)
-        elif part.strip():
-            res = translate(part, target)
-            out.append(res if res is not None else part)
         else:
-            out.append(part)
+            out.append(translate_seg(part, target))
     return ''.join(out)
 
 
