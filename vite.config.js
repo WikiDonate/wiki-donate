@@ -70,10 +70,6 @@ export default defineConfig({
                     from: path.join(root, 'resources/js/shims.js'),
                     imports: ['definePageMeta', 'navigateTo'],
                 },
-                {
-                    from: path.join(root, 'resources/js/plugins/googleTranslate.js'),
-                    imports: ['useGoogleTranslate'],
-                },
             ],
             dirs: [
                 path.join(root, 'resources/js/stores/**'),
