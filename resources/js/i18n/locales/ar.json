@@ -29,7 +29,10 @@
         "you": "You",
         "back": "العودة",
         "update": "تحديث",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "ترقيم الصفحات",
+        "previousPage": "الصفحة السابقة",
+        "nextPage": "الصفحة التالية"
     },
     "auth": {
         "loginTitle": "تسجيل الدخول إلى حسابك",

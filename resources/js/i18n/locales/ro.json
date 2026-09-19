@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Înapoi",
         "update": "Actualizare",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Paginare",
+        "previousPage": "Pagina anterioară",
+        "nextPage": "Pagina următoare"
     },
     "auth": {
         "loginTitle": "Conectați-vă la contul dvs",

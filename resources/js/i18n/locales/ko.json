@@ -29,7 +29,10 @@
         "you": "You",
         "back": "뒤로",
         "update": "업데이트",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "페이지 매김",
+        "previousPage": "이전 페이지",
+        "nextPage": "다음 페이지"
     },
     "auth": {
         "loginTitle": "귀하의 계정에 로그인하십시오",

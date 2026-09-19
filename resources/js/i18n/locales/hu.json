@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Vissza",
         "update": "Frissítés",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Lapozás",
+        "previousPage": "Előző oldal",
+        "nextPage": "Következő oldal"
     },
     "auth": {
         "loginTitle": "Jelentkezzen be fiókjába",

@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Bumalik",
         "update": "Update",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Pagbilang ng pahina",
+        "previousPage": "Nakaraang pahina",
+        "nextPage": "Susunod na pahina"
     },
     "auth": {
         "loginTitle": "Mag-login sa Iyong Account",

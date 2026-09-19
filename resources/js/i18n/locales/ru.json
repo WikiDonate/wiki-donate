@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Назад",
         "update": "Обновить",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Пагинация",
+        "previousPage": "Предыдущая страница",
+        "nextPage": "Следующая страница"
     },
     "auth": {
         "loginTitle": "Войдите в свою учетную запись",

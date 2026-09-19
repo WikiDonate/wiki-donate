@@ -29,7 +29,10 @@
         "you": "You",
         "back": "ត្រឡប់មកវិញ",
         "update": "ធ្វើបច្ចុប្បន្នភាព",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "ការដាក់ទំព័រ",
+        "previousPage": "ទំព័រមុន",
+        "nextPage": "ទំព័របន្ទាប់"
     },
     "auth": {
         "loginTitle": "ចូលទៅគណនីរបស់អ្នក។",

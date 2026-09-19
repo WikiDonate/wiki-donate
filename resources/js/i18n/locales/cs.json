@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Zpět",
         "update": "Aktualizovat",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Stránkování",
+        "previousPage": "Předchozí stránka",
+        "nextPage": "Další stránka"
     },
     "auth": {
         "loginTitle": "Přihlaste se ke svému účtu",

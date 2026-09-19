@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Πίσω",
         "update": "Ενημέρωση",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Σελιδοποίηση",
+        "previousPage": "Προηγούμενη σελίδα",
+        "nextPage": "Επόμενη σελίδα"
     },
     "auth": {
         "loginTitle": "Συνδεθείτε στον λογαριασμό σας",

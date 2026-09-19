@@ -29,7 +29,10 @@
         "you": "You",
         "back": "برگشت",
         "update": "به روز رسانی",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "صفحه‌بندی",
+        "previousPage": "صفحه قبلی",
+        "nextPage": "صفحه بعدی"
     },
     "auth": {
         "loginTitle": "وارد حساب کاربری خود شوید",

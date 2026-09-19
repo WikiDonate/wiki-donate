@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Takaisin",
         "update": "Päivitä",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Sivutus",
+        "previousPage": "Edellinen sivu",
+        "nextPage": "Seuraava sivu"
     },
     "auth": {
         "loginTitle": "Kirjaudu tilillesi",

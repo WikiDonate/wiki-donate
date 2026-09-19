@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Indietro",
         "update": "Aggiorna",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Impaginazione",
+        "previousPage": "Pagina precedente",
+        "nextPage": "Pagina successiva"
     },
     "auth": {
         "loginTitle": "Accedi al tuo account",

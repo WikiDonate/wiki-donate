@@ -29,7 +29,10 @@
         "you": "You",
         "back": "ተመለስ",
         "update": "አዘምን",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "ገጽ መቁጠሪያ",
+        "previousPage": "ቀዳሚ ገጽ",
+        "nextPage": "ቀጣይ ገጽ"
     },
     "auth": {
         "loginTitle": "ወደ መለያዎ ይግቡ",

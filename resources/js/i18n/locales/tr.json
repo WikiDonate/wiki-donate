@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Geri",
         "update": "Güncelleme",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Sayfalandırma",
+        "previousPage": "Önceki sayfa",
+        "nextPage": "Sonraki sayfa"
     },
     "auth": {
         "loginTitle": "Hesabınıza Giriş Yapın",

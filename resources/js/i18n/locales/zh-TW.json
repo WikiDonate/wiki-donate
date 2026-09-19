@@ -29,7 +29,10 @@
         "you": "You",
         "back": "返回",
         "update": "更新",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "分頁",
+        "previousPage": "上一頁",
+        "nextPage": "下一頁"
     },
     "auth": {
         "loginTitle": "登入您的帳戶",

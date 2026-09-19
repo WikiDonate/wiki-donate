@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Tilbake",
         "update": "Update",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Paginering",
+        "previousPage": "Forrige side",
+        "nextPage": "Neste side"
     },
     "auth": {
         "loginTitle": "Login to Your Account",

@@ -29,7 +29,10 @@
         "you": "You",
         "back": "ফিরে",
         "update": "আপডেট",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "পৃষ্ঠা সংখ্যা",
+        "previousPage": "আগের পৃষ্ঠা",
+        "nextPage": "পরবর্তী পৃষ্ঠা"
     },
     "auth": {
         "loginTitle": "আপনার অ্যাকাউন্টে লগইন করুন",

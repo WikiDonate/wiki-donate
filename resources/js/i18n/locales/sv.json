@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Tillbaka",
         "update": "Uppdatering",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Paginering",
+        "previousPage": "Föregående sida",
+        "nextPage": "Nästa sida"
     },
     "auth": {
         "loginTitle": "Logga in på ditt konto",

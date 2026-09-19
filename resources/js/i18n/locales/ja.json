@@ -29,7 +29,10 @@
         "you": "You",
         "back": "戻る",
         "update": "アップデート",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "ページネーション",
+        "previousPage": "前のページへ",
+        "nextPage": "次のページ"
     },
     "auth": {
         "loginTitle": "アカウントにログイン",

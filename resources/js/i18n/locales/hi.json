@@ -29,7 +29,10 @@
         "you": "You",
         "back": "वापस",
         "update": "अद्यतन करें",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "पेजिनेशन",
+        "previousPage": "पिछला पृष्ठ",
+        "nextPage": "अगला पेज"
     },
     "auth": {
         "loginTitle": "अपने खाते में लॉगिन करें",

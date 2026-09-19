@@ -29,7 +29,10 @@
         "you": "You",
         "back": "ကျော",
         "update": "မွမ်းမံ",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "စာမျက်နှာခွဲခြင်း",
+        "previousPage": "ယခင်စာမျက်နှာ",
+        "nextPage": "နောက်စာမျက်နှာ"
     },
     "auth": {
         "loginTitle": "သင့်အကောင့်သို့ ဝင်ရောက်ပါ။",

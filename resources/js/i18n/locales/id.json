@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Kembali",
         "update": "Pembaruan",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Paginasi",
+        "previousPage": "Halaman sebelumnya",
+        "nextPage": "Halaman berikutnya"
     },
     "auth": {
         "loginTitle": "Masuk ke Akun Anda",

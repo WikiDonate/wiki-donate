@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Quay lại",
         "update": "cập nhật",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Phân trang",
+        "previousPage": "Trang trước",
+        "nextPage": "Trang tiếp theo"
     },
     "auth": {
         "loginTitle": "Đăng nhập vào tài khoản của bạn",

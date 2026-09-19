@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Tilbage",
         "update": "Opdatering",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Sideinddeling",
+        "previousPage": "Forrige side",
+        "nextPage": "Næste side"
     },
     "auth": {
         "loginTitle": "Log ind på din konto",

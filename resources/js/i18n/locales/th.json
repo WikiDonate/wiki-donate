@@ -29,7 +29,10 @@
         "you": "You",
         "back": "กลับ",
         "update": "อัปเดต",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "การแบ่งหน้า",
+        "previousPage": "หน้าก่อน",
+        "nextPage": "หน้าถัดไป"
     },
     "auth": {
         "loginTitle": "เข้าสู่ระบบบัญชีของคุณ",

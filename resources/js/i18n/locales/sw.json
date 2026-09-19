@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Nyuma",
         "update": "Sasisha",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Pagination",
+        "previousPage": "Ukurasa uliotangulia",
+        "nextPage": "Ukurasa unaofuata"
     },
     "auth": {
         "loginTitle": "Ingia kwa Akaunti Yako",

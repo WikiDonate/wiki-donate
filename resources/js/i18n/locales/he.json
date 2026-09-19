@@ -29,7 +29,10 @@
         "you": "You",
         "back": "חזרה",
         "update": "עדכון",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "עימוד דפים",
+        "previousPage": "עמוד קודם",
+        "nextPage": "עמוד הבא"
     },
     "auth": {
         "loginTitle": "היכנס לחשבון שלך",

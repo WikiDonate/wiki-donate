@@ -29,7 +29,10 @@
         "you": "You",
         "back": "Назад",
         "update": "Оновлення",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "Пагінація",
+        "previousPage": "Попередня сторінка",
+        "nextPage": "Наступна сторінка"
     },
     "auth": {
         "loginTitle": "Увійдіть до свого облікового запису",

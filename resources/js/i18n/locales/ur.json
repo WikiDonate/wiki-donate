@@ -29,7 +29,10 @@
         "you": "You",
         "back": "پیچھے",
         "update": "اپڈیٹ کریں۔",
-        "pay": "Pay"
+        "pay": "Pay",
+        "pagination": "صفحہ بندی",
+        "previousPage": "پچھلا صفحہ",
+        "nextPage": "اگلا صفحہ"
     },
     "auth": {
         "loginTitle": "اپنے اکاؤنٹ میں لاگ ان کریں۔",
