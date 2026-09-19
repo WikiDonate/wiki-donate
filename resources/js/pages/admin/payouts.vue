@@ -20,7 +20,7 @@
                         <div>
                             <span class="font-medium text-sm">{{ row.organization_name }}</span>
                             <span class="block text-xs text-gray-400">
-                                {{ row.percentage }}% · {{ row.formula_name || 'Formula' }}
+                                {{ row.percentage }}% · {{ row.formula_name || t('admin.formula') }}
                             </span>
                             <span v-if="row.article" class="block text-xs text-gray-400">
                                 {{ row.article.title }}

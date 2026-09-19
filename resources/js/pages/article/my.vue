@@ -164,7 +164,7 @@
                 currentPage.value = response.meta.currentPage
             } else {
                 articleStore.clearArticles()
-                showAlertMessage(response.message || 'Failed to load articles')
+                showAlertMessage(response.message || t('article.loadArticlesError'))
             }
         } catch (error) {
             if (import.meta.env.DEV) console.error('Error loading articles:', error)

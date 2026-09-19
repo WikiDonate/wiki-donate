@@ -195,13 +195,13 @@
         try {
             const res = await adminService.deleteArticle(deleteTarget.value.slug)
             if (res.success) {
-                notifySuccess('Article deleted successfully')
+                notifySuccess(t('admin.articleDeleted'))
                 showDeleteModal.value = false
                 deleteTarget.value = null
                 await loadPage(meta.value.currentPage)
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to delete article')
+            notifyError(error.errors?.[0] || t('admin.failedToDeleteArticle'))
         } finally {
             deleting.value = false
         }

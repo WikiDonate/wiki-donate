@@ -219,7 +219,7 @@
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.paypal))
                 existing.addEventListener('error', () =>
-                    reject(new Error('Failed to load PayPal SDK')),
+                    reject(new Error(t('donate.failedToLoadPaypal'))),
                 )
                 return
             }
@@ -231,7 +231,7 @@
             )}&currency=USD`
             script.async = true
             script.onload = () => resolve(window.paypal)
-            script.onerror = () => reject(new Error('Failed to load PayPal SDK'))
+            script.onerror = () => reject(new Error(t('donate.failedToLoadPaypal')))
             document.head.appendChild(script)
         })
     }

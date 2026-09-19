@@ -82,7 +82,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-800 truncate">
-                                {{ item.organization || item.name || 'Organization' }}
+                                {{ item.organization || item.name || t('formula.organization') }}
                             </p>
                             <div class="mt-1 w-full bg-gray-100 rounded-full h-1.5">
                                 <div

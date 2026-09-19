@@ -199,10 +199,7 @@
     const emit = defineEmits(['update:modelValue', 'save'])
 
     const validationSchema = yup.object({
-        name: yup
-            .string()
-            .required(t('formula.nameRequired'))
-            .max(255, t('formula.nameTooLong')),
+        name: yup.string().required(t('formula.nameRequired')).max(255, t('formula.nameTooLong')),
         details: yup.string().nullable(),
         formula: yup
             .array()
