@@ -65,3 +65,6 @@ TOOLS.md
 USER.md
 docs/*
 memory/*
+.agent-*
+.agent-config.*
+agent-*.log
