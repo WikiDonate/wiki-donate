@@ -482,7 +482,7 @@
         "history": "Storia",
         "payTitle": "Paga {org}",
         "liveBalance": "Saldo in tempo reale:",
-        "formulaLabel": "Formula: {name}",
+        "formulaLabel": "Formula:{name}",
         "amountLabel": "Importo ({currency})",
         "noteLabel": "Nota (riferimento banca/bKash)",
         "recordPayout": "Registra il pagamento",

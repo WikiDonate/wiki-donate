@@ -375,7 +375,7 @@
     },
     "admin": {
         "panel": "Adminpanel",
-        "dashboard": "Admin Dashboard",
+        "dashboard": "Admininstrumentpanel",
         "dashboardSubtitle": "Översikt över din WikiDonate-plattform",
         "loadingDashboard": "Laddar instrumentpanelen...",
         "totalUsers": "Totalt antal användare",
@@ -423,7 +423,7 @@
         "allTypes": "Alla typer",
         "articleType": "Artikel",
         "userPage": "Användarsida",
-        "allAccess": "All Access",
+        "allAccess": "Full åtkomst",
         "public": "Offentligt",
         "private": "Privat",
         "loadingArticles": "Läser in artiklar...",
