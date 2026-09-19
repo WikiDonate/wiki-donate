@@ -2,8 +2,8 @@
     <main>
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
-                title="How It Works"
-                subtitle="Edit the steps shown on the How It Works page"
+                :title="t('admin.howItWorks')"
+                :subtitle="t('admin.howItWorksSubtitle')"
                 :card="true"
             >
                 <template #actions>
@@ -12,12 +12,12 @@
                         @click="addStep"
                     >
                         <font-awesome-icon :icon="['fas', 'plus']" class="w-3.5 h-3.5 mr-1.5" />
-                        Add Step
+                        {{ t('admin.addStep') }}
                     </button>
                 </template>
             </AdminPageHeader>
 
-            <LoadingSpinner v-if="loading" text="Loading page content..." />
+            <LoadingSpinner v-if="loading" :text="t('admin.loadingPageContent')" />
 
             <template v-else>
                 <div class="p-4 sm:p-6 space-y-6">
@@ -34,7 +34,7 @@
                             </span>
                             <button
                                 class="text-gray-400 hover:text-red-600 transition-colors p-1"
-                                title="Remove step"
+                                :title="t('admin.removeStep')"
                                 @click="removeStep(index)"
                             >
                                 <font-awesome-icon :icon="['fas', 'times']" class="w-4 h-4" />
@@ -44,7 +44,7 @@
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Icon
+                                    {{ t('admin.icon') }}
                                 </label>
                                 <div class="flex flex-wrap gap-2">
                                     <button
@@ -67,36 +67,34 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Title
+                                    {{ t('admin.title') }}
                                 </label>
                                 <input
                                     v-model="step.title"
                                     type="text"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                                    placeholder="Step title"
+                                    :placeholder="t('admin.stepTitlePlaceholder')"
                                 />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Description
+                                    {{ t('admin.description') }}
                                 </label>
                                 <textarea
                                     v-model="step.rawDescription"
                                     rows="3"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-y"
-                                    placeholder="Step description. Use [[link]] for clickable article links."
+                                    :placeholder="t('admin.stepDescriptionPlaceholder')"
                                 ></textarea>
                                 <p class="text-xs text-gray-400 mt-1">
-                                    Use
-                                    <code class="text-indigo-500">[[article-title]]</code>
-                                    to create a link to an article.
+                                    {{ t('admin.stepHint') }}
                                 </p>
                             </div>
                         </div>
                     </div>
 
                     <div v-if="steps.length === 0" class="text-center py-8 text-gray-400">
-                        No steps yet. Click "Add Step" to create one.
+                        {{ t('admin.noSteps') }}
                     </div>
                 </div>
 
@@ -105,14 +103,14 @@
                 >
                     <Button
                         variant="secondary"
-                        text="Reset"
+                        :text="t('common.reset')"
                         width="auto"
                         class="px-4"
                         @click="resetForm"
                     />
                     <Button
                         variant="primary"
-                        :text="saving ? 'Saving...' : 'Save Changes'"
+                        :text="saving ? t('common.saving') : t('admin.saveChanges')"
                         width="auto"
                         class="px-4"
                         :disabled="saving"
@@ -131,7 +129,9 @@
 
     const { notifySuccess, notifyError } = useToastify()
 
-    useHead({ title: 'Admin - How It Works' })
+    const { t } = useI18n()
+
+    useHead({ title: t('admin.howItWorks') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const loading = ref(true)
@@ -215,7 +215,7 @@
         try {
             const res = await adminService.updatePageContent('how-it-works', content)
             if (res.success) {
-                notifySuccess('How It Works page updated successfully')
+                notifySuccess(t('admin.pageUpdated'))
                 originalSteps.value = steps.value.map((s) => ({
                     icon: s.icon,
                     title: s.title,
@@ -223,7 +223,7 @@
                 }))
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to save page content')
+            notifyError(error.errors?.[0] || t('admin.failedToSaveContent'))
         } finally {
             saving.value = false
         }
@@ -245,7 +245,7 @@
                 }))
             }
         } catch {
-            notifyError('Failed to load page content')
+            notifyError(t('admin.failedToLoadContent'))
         } finally {
             loading.value = false
         }

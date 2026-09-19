@@ -2,8 +2,8 @@
     <main>
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
-                title="Articles"
-                subtitle="Manage all articles on the platform"
+                :title="t('admin.articles')"
+                :subtitle="t('admin.articlesSubtitle')"
                 :card="true"
             />
 
@@ -17,7 +17,7 @@
                         <input
                             v-model="searchQuery"
                             type="text"
-                            placeholder="Search by title, slug, or author..."
+                            :placeholder="t('admin.searchArticlesPlaceholder')"
                             class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                         />
                     </div>
@@ -26,29 +26,29 @@
                             v-model="filterType"
                             class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
                         >
-                            <option value="">All Types</option>
-                            <option value="article">Article</option>
-                            <option value="user page">User Page</option>
+                            <option value="">{{ t('admin.allTypes') }}</option>
+                            <option value="article">{{ t('admin.article') }}</option>
+                            <option value="user page">{{ t('admin.userPage') }}</option>
                         </select>
                         <select
                             v-model="filterAccess"
                             class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
                         >
-                            <option value="">All Access</option>
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
+                            <option value="">{{ t('admin.allAccess') }}</option>
+                            <option value="public">{{ t('admin.public') }}</option>
+                            <option value="private">{{ t('admin.private') }}</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <LoadingSpinner v-if="loading" text="Loading articles..." />
+            <LoadingSpinner v-if="loading" :text="t('admin.loadingArticles')" />
             <template v-else>
                 <AdminTable
                     :columns="columns"
                     :rows="articles"
                     row-key="uuid"
-                    empty-text="No articles found"
+                    :empty-text="t('admin.noArticlesFound')"
                 >
                     <template #cell-title="{ row }">
                         <span class="font-medium max-w-xs truncate block">{{ row.title }}</span>
@@ -111,11 +111,11 @@
 
         <ConfirmModal
             v-model="showDeleteModal"
-            title="Delete Article"
-            message-title="Are you sure?"
-            :message="`Delete '${deleteTarget?.title}'? This action cannot be undone.`"
-            confirm-text="Delete"
-            cancel-text="Cancel"
+            :title="t('admin.deleteArticleTitle')"
+            :message-title="t('admin.areYouSure')"
+            :message="t('admin.deleteArticleMsg', { title: deleteTarget?.title })"
+            :confirm-text="t('common.delete')"
+            :cancel-text="t('common.cancel')"
             :is-loading="deleting"
             @confirm="handleDelete"
         />
@@ -129,7 +129,9 @@
 
     const { notifySuccess, notifyError } = useToastify()
 
-    useHead({ title: 'Admin - Articles' })
+    const { t } = useI18n()
+
+    useHead({ title: t('admin.articles') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const articles = ref([])
@@ -144,14 +146,14 @@
     let searchTimeout = null
 
     const columns = [
-        { key: 'title', label: 'Title' },
-        { key: 'author', label: 'Author' },
-        { key: 'type', label: 'Type' },
-        { key: 'accessType', label: 'Access' },
-        { key: 'updatedAt', label: 'Updated' },
+        { key: 'title', label: t('admin.title') },
+        { key: 'author', label: t('admin.author') },
+        { key: 'type', label: t('admin.type') },
+        { key: 'accessType', label: t('admin.access') },
+        { key: 'updatedAt', label: t('admin.updated') },
         {
             key: 'actions',
-            label: 'Actions',
+            label: t('admin.actions'),
             thClass: 'text-right',
             tdClass: 'text-right',
         },
@@ -176,7 +178,7 @@
                 meta.value = res.meta
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to load articles')
+            notifyError(error.errors?.[0] || t('admin.failedToLoadArticles'))
         } finally {
             loading.value = false
         }

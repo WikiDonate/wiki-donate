@@ -3,10 +3,10 @@
         <!-- Gradient Header -->
         <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-6 px-6 text-center">
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wide">
-                Payment Method
+                {{ t('billing.title') }}
             </h1>
             <p class="text-base sm:text-lg text-indigo-100 mt-2">
-                Manage your saved cards securely.
+                {{ t('billing.subtitle') }}
             </p>
         </div>
 
@@ -25,13 +25,13 @@
                 <!-- Section Header -->
                 <div class="p-3 sm:p-4 md:p-6 border-b border-gray-200 bg-indigo-50 rounded-t-xl">
                     <h2 class="text-xl sm:text-2xl font-semibold text-indigo-700">
-                        {{ currentCard ? 'Update Payment Method' : 'Add New Card' }}
+                        {{ currentCard ? t('billing.updatePaymentMethod') : t('billing.addNewCard') }}
                     </h2>
                 </div>
 
                 <!-- Loading state -->
                 <div v-if="isFetchingCard" class="p-6 sm:p-8 text-center">
-                    <LoadingSpinner text="Loading your card details..." />
+                    <LoadingSpinner :text="t('billing.loadingCard')" />
                 </div>
 
                 <!-- Saved Card -->
@@ -52,9 +52,8 @@
                                     **** **** **** {{ currentCard.last4 }}
                                 </h3>
                                 <p class="text-xs sm:text-sm text-gray-500">
-                                    Expires {{ currentCard.exp_month }}/{{
-                                        currentCard.exp_year.toString().slice(-2)
-                                    }}
+                                    {{ t('billing.expires', { month: currentCard.exp_month, year:
+                                        currentCard.exp_year.toString().slice(-2) }) }}
                                 </p>
                             </div>
                         </div>
@@ -62,7 +61,7 @@
                             class="inline-flex items-center justify-center bg-linear-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full shadow hover:from-indigo-500 hover:to-purple-500 transition"
                             @click="showEditForm"
                         >
-                            Edit
+                            {{ t('billing.edit') }}
                         </button>
                     </div>
                 </div>
@@ -71,13 +70,13 @@
                 <div v-else class="p-4 sm:p-6">
                     <!-- Stripe form loading -->
                     <div v-if="isCardElementMounting" class="text-center py-12">
-                        <LoadingSpinner text="Loading payment form..." />
+                        <LoadingSpinner :text="t('billing.loadingPaymentForm')" />
                     </div>
 
                     <div v-show="!isCardElementMounting" class="space-y-6">
                         <div>
                             <label class="block text-gray-700 text-sm font-semibold mb-2">
-                                Card Number <span class="text-red-500">*</span>
+                                {{ t('billing.cardNumber') }} <span class="text-red-500">*</span>
                             </label>
                             <div
                                 id="card-number"
@@ -88,7 +87,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-gray-700 text-sm font-semibold mb-2">
-                                    Expiry Date
+                                    {{ t('billing.expiryDate') }}
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <div
@@ -98,7 +97,7 @@
                             </div>
                             <div>
                                 <label class="block text-gray-700 text-sm font-semibold mb-2">
-                                    CVC <span class="text-red-500">*</span>
+                                    {{ t('billing.cvc') }} <span class="text-red-500">*</span>
                                 </label>
                                 <div
                                     id="card-cvc"
@@ -111,7 +110,7 @@
                         <div class="flex flex-col sm:flex-row gap-4 mt-8">
                             <FormSubmitButton
                                 class="flex-1"
-                                :text="isSaving ? 'Saving...' : 'Save Card'"
+                                 :text="isSaving ? t('billing.saving') : t('billing.saveCard')"
                                 type="button"
                                 variant="primary"
                                 :disabled="isSaving"
@@ -120,7 +119,7 @@
                             <FormSubmitButton
                                 v-if="currentCard"
                                 class="flex-1"
-                                text="Cancel"
+                                :text="t('billing.cancel')"
                                 :disabled="isSaving"
                                 type="button"
                                 variant="secondary"
@@ -142,8 +141,10 @@
     import { paymentMethodService } from '~/services/paymentMethodService'
     import { useClientStripe } from '@/plugins/useClientStripe'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'Billing',
+        title: t('billing.title'),
     })
 
     definePageMeta({
@@ -266,21 +267,21 @@
             if (response.success) {
                 currentCard.value = response.data
                 showCardForm.value = false
-                showSuccess('Card saved successfully')
+                showSuccess(t('billing.cardSaved'))
             } else {
                 if (response.errors && response.errors.length > 0) {
-                    showError(response.errors.join(', ') || 'Validation error')
+                    showError(response.errors.join(', ') || t('billing.validationError'))
                 } else {
-                    showError(response.message || 'Failed to save card')
+                    showError(response.message || t('billing.failedToSaveCard'))
                 }
             }
         } catch (error) {
             if (error?.errors && error?.errors.length > 0) {
                 // Also show in alert if you want
-                showError(error.errors.join(', ') || 'Failed to save card')
+                showError(error.errors.join(', ') || t('billing.failedToSaveCard'))
             } else {
                 // Fallback to generic error
-                showError(error?.message || 'Failed to save card')
+                showError(error?.message || t('billing.failedToSaveCard'))
             }
         } finally {
             isSaving.value = false
@@ -304,10 +305,10 @@
         } catch (error) {
             if (error?.errors && error?.errors.length > 0) {
                 // Also show in alert if you want
-                showError(error.errors.join(', ') || 'Failed to load card details')
+                showError(error.errors.join(', ') || t('billing.failedToLoadCard'))
             } else {
                 // Fallback to generic error
-                showError(error?.message || 'Failed to load card details')
+                showError(error?.message || t('billing.failedToLoadCard'))
             }
             // On error, still show the form so user can add a card
             showCardForm.value = true

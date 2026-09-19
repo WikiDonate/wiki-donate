@@ -8,7 +8,7 @@
             <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Search wikidonate..."
+                :placeholder="t('search.placeholder')"
                 class="grow border-0 p-2 pl-5 text-gray-700 focus:outline-none w-full rounded-l-md"
                 @input="onInput"
             />
@@ -27,7 +27,7 @@
         >
             <ul>
                 <template v-if="isSearching">
-                    <li class="px-5 py-2 text-gray-500 italic">Searching wikidonate...</li>
+                    <li class="px-5 py-2 text-gray-500 italic">{{ t('search.searching') }}</li>
                 </template>
 
                 <template v-else>
@@ -48,7 +48,7 @@
                         </li>
                     </template>
                     <template v-else-if="searchQuery.length > 0">
-                        <li class="px-5 py-2 text-gray-500 italic">No search results found</li>
+                        <li class="px-5 py-2 text-gray-500 italic">{{ t('search.noResults') }}</li>
                     </template>
                 </template>
             </ul>
@@ -61,6 +61,7 @@
     import { useRouter } from 'vue-router'
     import { articleService } from '~/services/articleService'
 
+    const { t } = useI18n()
     const router = useRouter()
 
     const searchQuery = ref('')

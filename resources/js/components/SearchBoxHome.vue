@@ -9,7 +9,7 @@
             <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Search Wikidonate..."
+                :placeholder="t('search.placeholder')"
                 class="grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
                 @input="fetchSuggestions"
             />
@@ -59,6 +59,7 @@
     import { useRouter } from 'vue-router'
     import { articleService } from '~/services/articleService'
 
+    const { t } = useI18n()
     const router = useRouter()
     const searchQuery = ref('')
     const suggestions = ref([])

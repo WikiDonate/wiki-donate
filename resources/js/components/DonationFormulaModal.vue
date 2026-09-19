@@ -6,11 +6,13 @@
     >
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"> Name </label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ t('formula.name') }}
+                </label>
                 <FormInput
                     v-model="name"
                     v-bind="nameProps"
-                    placeholder="Enter a name for this formula"
+                    :placeholder="t('formula.namePlaceholder')"
                     :error-message="errors.name"
                 />
             </div>
@@ -19,8 +21,8 @@
                 <div
                     class="hidden sm:grid grid-cols-12 gap-4 font-bold text-gray-700 border-b pb-2"
                 >
-                    <div class="col-span-7 text-sm">Organization</div>
-                    <div class="col-span-4 text-sm text-center">Percentage (%)</div>
+                    <div class="col-span-7 text-sm">{{ t('formula.organization') }}</div>
+                    <div class="col-span-4 text-sm text-center">{{ t('formula.percentage') }}</div>
                     <div class="col-span-1" />
                 </div>
 
@@ -32,16 +34,16 @@
                     >
                         <div class="col-span-12 sm:col-span-7">
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
-                                Organization
+                                {{ t('formula.organization') }}
                             </label>
                             <FormInput
                                 v-model="field.value.organization"
-                                placeholder="Organization name"
+                                :placeholder="t('formula.organizationPlaceholder')"
                             />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
-                                Percentage (%)
+                                {{ t('formula.percentage') }}
                             </label>
                             <FormInput
                                 v-model.number="field.value.percentage"
@@ -55,7 +57,7 @@
                             <button
                                 type="button"
                                 class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
-                                title="Delete Row"
+                                :title="t('formula.deleteRow')"
                                 @click="remove(index)"
                             >
                                 <font-awesome-icon :icon="['fas', 'trash-alt']" />
@@ -71,7 +73,7 @@
                         @click="addRow"
                     >
                         <font-awesome-icon :icon="['fas', 'plus-circle']" />
-                        <span>Add Charity</span>
+                        <span>{{ t('formula.addCharity') }}</span>
                     </button>
                 </div>
             </div>
@@ -86,7 +88,7 @@
                             totalPercentage === 100 ? 'text-green-600' : 'text-red-600',
                         ]"
                     >
-                        Total Allocation: {{ totalPercentage }}%
+                        {{ t('formula.totalAllocation', { total: totalPercentage }) }}
                     </span>
                     <div class="flex items-center gap-2">
                         <font-awesome-icon
@@ -100,7 +102,7 @@
                             class="text-red-500"
                         />
                         <span v-if="totalPercentage !== 100" class="text-xs text-red-500">
-                            Must equal 100%
+                            {{ t('formula.mustEqual100') }}
                         </span>
                     </div>
                 </div>
@@ -108,17 +110,19 @@
                     {{ errors.formula }}
                 </p>
                 <p class="text-xs text-gray-600 mt-2 italic">
-                    * Enter organization names. Total must be 100%.
+                    {{ t('formula.helper') }}
                 </p>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"> Details </label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ t('formula.details') }}
+                </label>
                 <FormTextarea
                     v-model="details"
                     v-bind="detailsProps"
                     rows="3"
-                    placeholder="Add any additional details..."
+                    :placeholder="t('formula.detailsPlaceholder')"
                     :error-message="errors.details"
                 />
             </div>
@@ -127,7 +131,7 @@
         <template #footer>
             <Button
                 variant="secondary"
-                text="Cancel"
+                :text="t('formula.cancel')"
                 width="auto"
                 class="px-6"
                 @click="$emit('update:modelValue', false)"
@@ -135,7 +139,11 @@
             <Button
                 variant="primary"
                 :text="
-                    localIsSaving || props.isSaving ? 'Saving...' : props.isEdit ? 'Update' : 'Save'
+                    localIsSaving || props.isSaving
+                        ? t('formula.saving')
+                        : props.isEdit
+                          ? t('formula.update')
+                          : t('formula.save')
                 "
                 width="auto"
                 class="px-6"
@@ -147,14 +155,12 @@
 
     <ConfirmModal
         v-model="showSaveConfirm"
-        :title="props.isEdit ? 'Update Donation Formula' : 'Save Donation Formula'"
-        message-title="Confirm Your Action"
+        :title="props.isEdit ? t('formula.updateConfirmTitle') : t('formula.saveConfirmTitle')"
+        :message-title="t('formula.confirmYourAction')"
         :message="
-            props.isEdit
-                ? 'Are you sure you want to update this donation formula?'
-                : 'Are you sure you want to save this donation formula?'
+            props.isEdit ? t('formula.updateConfirmMsg') : t('formula.saveConfirmMsg')
         "
-        :confirm-text="props.isEdit ? 'Update' : 'Save'"
+        :confirm-text="props.isEdit ? t('formula.update') : t('formula.save')"
         :is-loading="localIsSaving || props.isSaving"
         @confirm="confirmSave"
     />
@@ -166,6 +172,8 @@
     import * as yup from 'yup'
     import FormTextarea from '~/components/FormTextarea.vue'
     import ConfirmModal from '~/components/ConfirmModal.vue'
+
+    const { t } = useI18n()
 
     const props = defineProps({
         modelValue: {
@@ -203,13 +211,13 @@
             .min(1, 'Add at least one charity')
             .of(
                 yup.object({
-                    organization: yup.string().required('Organization is required'),
+                    organization: yup.string().required(t('formula.organizationRequired')),
                     percentage: yup
                         .number()
-                        .typeError('Percentage must be a number')
-                        .required('Percentage is required')
-                        .min(0.01, 'Percentage must be greater than 0')
-                        .max(100, 'Percentage must be at most 100'),
+                        .typeError(t('formula.percentageNumber'))
+                        .required(t('formula.percentageRequired'))
+                        .min(0.01, t('formula.percentageMin'))
+                        .max(100, t('formula.percentageMax')),
                 }),
             )
             .test('total-100', 'Total allocation must equal 100%', (arr) => {
@@ -237,7 +245,7 @@
     const pendingSaveData = ref(null)
 
     const modalTitle = computed(() => {
-        return props.isEdit ? 'Edit Donation Formula' : 'Create Donation Formula'
+        return props.isEdit ? t('formula.editTitle') : t('formula.createTitle')
     })
 
     // Reset or initialize fields when modal becomes visible

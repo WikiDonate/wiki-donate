@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Background translator for vue-i18n locale files (resumable, offline-safe).
+"""Background translator for vue-i18n locale files (resumable, batched).
 
 Reads the authoritative en.json, translates every key to the target
-language via the public Google Translate dict-chrome endpoint, and writes
-<lang>.json with English fallback for untranslatable keys.
+language via the public Google Translate dict-chrome endpoint in batches
+(newline-joined, newline-split), and writes <lang>.json with English
+fallback for untranslatable keys.
 
 Resumable: per-language progress is kept in storage/i18n-progress/.
 Safe to re-run; skips keys already translated.
@@ -14,6 +15,7 @@ import json
 import os
 import re
 import sys
+import fcntl
 import time
 import urllib.parse
 import urllib.request
@@ -21,6 +23,19 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALES = os.path.join(ROOT, 'resources', 'js', 'i18n', 'locales')
 STATE_DIR = os.path.join(ROOT, 'storage', 'i18n-progress')
+LOCK_FILE = os.path.join(STATE_DIR, '.lock')
+
+
+def acquire_lock():
+    """Single-instance guard: only one translator process may run at a time."""
+    os.makedirs(STATE_DIR, exist_ok=True)
+    lock_fd = open(LOCK_FILE, 'w')
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print('Another translator instance is running; exiting.', flush=True)
+        sys.exit(0)
+    return lock_fd
 
 SUPPORTED = [
     'en', 'bn', 'ur', 'hi', 'ar', 'es', 'fr', 'de', 'it', 'pt', 'ru',
@@ -37,6 +52,10 @@ KEEP_EN = {
     'admin.paypal', 'billing.cvc', 'admin.paymentId', 'report.paymentId',
     'admin.allStatus', 'report.allStatus',
 }
+
+BATCH = 16
+RETRY_DELAY = 3.0
+MAX_RETRIES = 8
 
 
 def flat(d, p=''):
@@ -61,60 +80,58 @@ def nest(flat_dict):
     return out
 
 
-def translate(text, target):
-    if not text or not text.strip():
-        return text
-    q = urllib.parse.quote(text)
-    url = f'https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl={target}&q={q}'
+def translate_batch(texts, target):
+    """Translate a batch of strings, preserving order via newline splitting."""
+    joined = '\n'.join(texts)
+    q = urllib.parse.quote(joined)
+    url = (
+        f'https://clients5.google.com/translate_a/t?client=dict-chrome-ex'
+        f'&sl=en&tl={target}&q={q}'
+    )
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode('utf-8'))
-        if isinstance(data, list) and data and isinstance(data[0], str):
-            return data[0]
-        return text
-    except Exception:
-        return None
+    last_err = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+            if isinstance(data, list) and data and isinstance(data[0], str):
+                out = data[0].split('\n')
+                if len(out) == len(texts):
+                    return out
+                return None
+            return None
+        except Exception as err:
+            last_err = err
+            time.sleep(RETRY_DELAY * (attempt + 1))
+    raise last_err
 
 
-_PLACEHOLDER_RE = re.compile(r'(\{[a-zA-Z0-9_]+\}|\[\[[^\]]+\]\])')
+_placeholder_re = re.compile(r'(\{[a-zA-Z0-9_]+\}|\[\[[^\]]+\]\])')
 
 
-def translate_seg(seg, target):
-    """Translate a text segment, preserving its original surrounding whitespace."""
-    lead = len(seg) - len(seg.lstrip(' \t'))
-    trail = len(seg) - len(seg.rstrip(' \t'))
-    core = seg.strip()
-    if not core:
-        return seg
-    out = translate(core, target)
-    if out is None:
-        return seg
-    return ' ' * lead + out + ' ' * trail
-
-
-def translate_with_placeholders(text, target):
-    parts = _PLACEHOLDER_RE.split(text)
+def split_tokens(text):
+    """Split a string into (is_placeholder, token) preserving order."""
+    parts = _placeholder_re.split(text)
     out = []
     for idx, part in enumerate(parts):
-        if idx % 2 == 1:
-            out.append(part)
-        else:
-            out.append(translate_seg(part, target))
-    return ''.join(out)
+        out.append((idx % 2 == 1, part))
+    return out
 
 
 def main():
+    lock_fd = acquire_lock()
     langs = sys.argv[1:] or [l for l in SUPPORTED if l != 'en']
     os.makedirs(STATE_DIR, exist_ok=True)
     os.makedirs(LOCALES, exist_ok=True)
 
     with open(os.path.join(LOCALES, 'en.json'), encoding='utf-8') as f:
         en_flat = flat(json.load(f))
+
     print(f'English source: {len(en_flat)} keys', flush=True)
 
     for lang in langs:
         state_path = os.path.join(STATE_DIR, f'{lang}.json')
+        os.makedirs(os.path.dirname(state_path), exist_ok=True)
         if os.path.exists(state_path):
             with open(state_path, encoding='utf-8') as f:
                 state = json.load(f)
@@ -124,23 +141,52 @@ def main():
         todo = {k: v for k, v in en_flat.items() if k not in state['done'] and k not in KEEP_EN}
         print(f'[{lang}] {len(todo)} remaining of {len(en_flat)}', flush=True)
 
-        for key, value in todo.items():
-            translated = translate_with_placeholders(value, lang)
-            if translated is None:
-                state['retries'] += 1
-                if state['retries'] >= 3:
-                    state['done'][key] = value
-                    state['retries'] = 0
-                    continue
-                time.sleep(2)
-                break
-            state['done'][key] = translated
-            state['retries'] = 0
-            if len(state['done']) % 25 == 0:
+        keys = list(todo.keys())
+        for i in range(0, len(keys), BATCH):
+            batch_keys = keys[i:i + BATCH]
+
+            # Flatten: for each key, list of (token_index, is_placeholder, token)
+            key_tokens = {k: split_tokens(todo[k]) for k in batch_keys}
+            # Positions of plain tokens in order
+            plain_pos = []  # list of (key, token_index)
+            for k in batch_keys:
+                for ti, (is_ph, tok) in enumerate(key_tokens[k]):
+                    if not is_ph:
+                        plain_pos.append((k, ti))
+
+            plain_texts = [key_tokens[k][ti][1] for (k, ti) in plain_pos]
+
+            translated_plain = {}
+            if plain_texts:
+                res = translate_batch(plain_texts, lang)
+                if res is None:
+                    # Batch failed — translate individually with English fallback
+                    for (k, ti), text in zip(plain_pos, plain_texts):
+                        try:
+                            one = translate_batch([text], lang)
+                            translated_plain[(k, ti)] = one[0] if one else text
+                        except Exception:
+                            translated_plain[(k, ti)] = text
+                else:
+                    for (k, ti), tr in zip(plain_pos, res):
+                        translated_plain[(k, ti)] = tr
+
+            for k in batch_keys:
+                rebuilt = []
+                for ti, (is_ph, tok) in enumerate(key_tokens[k]):
+                    if is_ph:
+                        rebuilt.append(tok)
+                    else:
+                        rebuilt.append(translated_plain.get((k, ti), tok))
+                state['done'][k] = ''.join(rebuilt)
+
+            if (i // BATCH) % 4 == 0:
+                print(f'  {len(state["done"])}/{len(en_flat)}', flush=True)
                 with open(state_path, 'w', encoding='utf-8') as f:
                     json.dump(state, f, ensure_ascii=False)
-            time.sleep(0.12)
+            time.sleep(0.25)
 
+        # Write locale file from state (English fallback for unfinished keys)
         merged = {k: state['done'].get(k, v) for k, v in en_flat.items()}
         with open(os.path.join(LOCALES, f'{lang}.json'), 'w', encoding='utf-8') as f:
             json.dump(nest(merged), f, ensure_ascii=False, indent=4)

@@ -2,7 +2,7 @@
     <main class="w-full mx-auto">
         <div class="container mx-auto p-4 md:p-6 w-full sm:w-2/3">
             <h1 class="text-2xl lg:text-4xl font-bold text-gray-800 mb-6 text-center">
-                Contact Us
+                {{ t('contact.title') }}
             </h1>
 
             <!-- Message -->
@@ -19,12 +19,12 @@
                 <div class="flex space-x-4">
                     <div class="flex-1">
                         <label for="firstname" class="block text-sm font-medium text-gray-700"
-                            >First Name
+                            >{{ t('contact.firstName') }}
                         </label>
                         <FormInput
                             v-model="firstname"
                             type="text"
-                            placeholder="Enter your first name"
+                            :placeholder="t('contact.firstNamePlaceholder')"
                             class="mb-3"
                             v-bind="firstnameProps"
                             :error-message="errors['firstname']"
@@ -33,12 +33,12 @@
 
                     <div class="flex-1">
                         <label for="lastname" class="block text-sm font-medium text-gray-700"
-                            >Last Name
+                            >{{ t('contact.lastName') }}
                         </label>
                         <FormInput
                             v-model="lastname"
                             type="text"
-                            placeholder="Enter your last name"
+                            :placeholder="t('contact.lastNamePlaceholder')"
                             class="mb-3"
                             v-bind="lastnameProps"
                             :error-message="errors['lastname']"
@@ -47,11 +47,13 @@
                 </div>
 
                 <!-- Email -->
-                <label for="email" class="block text-sm font-medium text-gray-700"> Email </label>
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                    {{ t('contact.email') }}
+                </label>
                 <FormInput
                     v-model="email"
                     type="email"
-                    placeholder="Enter your email"
+                    :placeholder="t('contact.emailPlaceholder')"
                     class="mb-3"
                     v-bind="emailProps"
                     :error-message="errors['email']"
@@ -59,12 +61,12 @@
 
                 <!-- Subject -->
                 <label for="subject" class="block text-sm font-medium text-gray-700">
-                    Subject
+                    {{ t('contact.subject') }}
                 </label>
                 <FormInput
                     v-model="subject"
                     type="text"
-                    placeholder="Enter your subject"
+                    :placeholder="t('contact.subjectPlaceholder')"
                     class="mb-3"
                     v-bind="subjectProps"
                     :error-message="errors['subject']"
@@ -72,11 +74,11 @@
 
                 <!-- Message Details (Textarea) -->
                 <label for="message" class="block text-sm font-medium text-gray-700">
-                    Message Details
+                    {{ t('contact.message') }}
                 </label>
                 <FormTextarea
                     v-model="message"
-                    placeholder="Enter your message details"
+                    :placeholder="t('contact.messagePlaceholder')"
                     class="mb-3"
                     v-bind="messageProps"
                     :error-message="errors['message']"
@@ -85,7 +87,7 @@
                 <!-- Submit Button -->
                 <div class="flex justify-center">
                     <FormSubmitButton
-                        text="Submit"
+                        :text="t('common.submit')"
                         type="submit"
                         variant="primary"
                         @click="onSubmit"
@@ -101,8 +103,10 @@
     import * as yup from 'yup'
     import api from '~/config/apiConfig'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'Contact Us',
+        title: t('contact.title'),
     })
 
     const showAlert = ref(false)
@@ -110,11 +114,11 @@
     const alertMessage = ref('')
 
     const validationSchema = yup.object({
-        firstname: yup.string().required('First name is required'),
-        lastname: yup.string().required('Last name is required'),
-        subject: yup.string().required('Subject name is required'),
-        message: yup.string().required('Message details is required'),
-        email: yup.string().required('Email is required').email('Email must be a valid email'),
+        firstname: yup.string().required(t('contact.firstNameRequired')),
+        lastname: yup.string().required(t('contact.lastNameRequired')),
+        subject: yup.string().required(t('contact.subjectRequired')),
+        message: yup.string().required(t('contact.messageRequired')),
+        email: yup.string().required(t('contact.emailRequired')).email(t('contact.emailInvalid')),
     })
 
     // Setup VeeValidate
@@ -134,15 +138,15 @@
             const response = await api.post('/contact', values)
             if (response.success) {
                 alertVariant.value = 'success'
-                alertMessage.value = 'Your message has been sent successfully!'
+                alertMessage.value = t('contact.sentSuccess')
                 resetForm()
             } else {
                 alertVariant.value = 'error'
-                alertMessage.value = response.errors?.[0] || 'Failed to send message'
+                alertMessage.value = response.errors?.[0] || t('contact.failedToSend')
             }
         } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = error?.errors?.[0] || error?.message || 'Failed to send message'
+            alertMessage.value = error?.errors?.[0] || error?.message || t('contact.failedToSend')
         } finally {
             showAlert.value = true
         }

@@ -1,16 +1,16 @@
 <template>
     <Modal
         :model-value="modelValue"
-        title="Donate via Formula"
+        :title="t('donate.title')"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="space-y-5">
             <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
                 <div class="flex justify-between items-center mb-3">
-                    <h4 class="font-semibold text-indigo-700 text-sm">Formula Breakdown</h4>
+                    <h4 class="font-semibold text-indigo-700 text-sm">{{ t('donate.formulaBreakdown') }}</h4>
                     <button
                         class="text-indigo-400 hover:text-indigo-600 transition-colors"
-                        :title="showFormula ? 'Hide formula details' : 'Show formula details'"
+                         :title="showFormula ? t('donate.hideFormula') : t('donate.showFormula')"
                         @click="showFormula = !showFormula"
                     >
                         <font-awesome-icon
@@ -37,7 +37,7 @@
                         <div
                             class="flex justify-between items-center pt-2 border-t border-indigo-200 font-bold text-gray-800"
                         >
-                            <span>Total</span>
+                            <span>{{ t('donate.total') }}</span>
                             <span class="text-indigo-700">100%</span>
                         </div>
                     </div>
@@ -57,14 +57,14 @@
             >
                 <font-awesome-icon :icon="['fas', 'lock']" class="w-8 h-8 text-amber-500 mb-3" />
                 <p class="text-gray-700 text-sm font-medium mb-3">
-                    Please log in to make a donation.
+                    {{ t('donate.loginPrompt') }}
                 </p>
                 <NuxtLink
                     to="/login"
                     class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
                 >
                     <font-awesome-icon :icon="['fas', 'sign-in-alt']" class="w-4 h-4" />
-                    Log In
+                    {{ t('donate.logIn') }}
                 </NuxtLink>
             </div>
 
@@ -72,7 +72,7 @@
             <template v-else>
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">
-                        Donation Amount ($)
+                        {{ t('donate.donationAmount') }}
                         <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -80,7 +80,7 @@
                         type="number"
                         min="1"
                         step="0.01"
-                        placeholder="Enter amount"
+                        :placeholder="t('donate.enterAmount')"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                         :disabled="isDonating"
                     />
@@ -100,7 +100,7 @@
                         </button>
                     </div>
                     <p class="text-xs text-gray-600 mt-3 italic">
-                        * A maximum of 0.1% is for operational costs.
+                        {{ t('donate.operationalCosts') }}
                     </p>
                 </div>
 
@@ -135,7 +135,7 @@
                         class="w-full h-11.25 flex items-center justify-center gap-2 rounded-lg bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed"
                     >
                         <font-awesome-icon :icon="['fab', 'paypal']" class="w-4 h-4" />
-                        Enter amount to donate
+                        {{ t('donate.enterAmountToDonate') }}
                     </button>
                 </div>
             </template>
@@ -144,7 +144,7 @@
         <template #footer>
             <Button
                 variant="secondary"
-                text="Cancel"
+                :text="t('common.cancel')"
                 width="auto"
                 class="px-6"
                 @click="$emit('update:modelValue', false)"
@@ -157,6 +157,7 @@
     import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
     import { donateService } from '~/services/donateService'
 
+    const { t } = useI18n()
     const authStore = useAuthStore()
     const route = useRoute()
 
@@ -266,7 +267,7 @@
 
         if (!clientId) {
             alertVariant.value = 'error'
-            alertMessage.value = 'PayPal is not configured.'
+            alertMessage.value = t('donate.paypalNotConfigured')
             paypalSdkLoaded.value = true
             return
         }
@@ -286,7 +287,7 @@
                     },
                     createOrder: async () => {
                         if (!amount.value || Number(amount.value) <= 0) {
-                            throw new Error('Please enter a valid donation amount.')
+                            throw new Error(t('donate.enterValidAmount'))
                         }
 
                         const params = {
@@ -305,7 +306,7 @@
                         throw new Error(
                             response.errors?.[0] ||
                                 response.message ||
-                                'Failed to create PayPal order',
+                                t('donate.failedToCreateOrder'),
                         )
                     },
                     onApprove: async (data) => {
@@ -326,13 +327,13 @@
                                 alertMessage.value =
                                     response.errors?.[0] ||
                                     response.message ||
-                                    'Failed to capture payment'
+                                    t('donate.failedToCapture')
                                 isDonating.value = false
                             }
                         } catch (error) {
                             alertVariant.value = 'error'
                             alertMessage.value =
-                                error?.errors?.[0] || error?.message || 'Failed to process donation'
+                                error?.errors?.[0] || error?.message || t('donate.failedToProcess')
                             isDonating.value = false
                         }
                     },
@@ -341,7 +342,7 @@
                     },
                     onError: (err) => {
                         alertVariant.value = 'error'
-                        alertMessage.value = err?.message || 'Something went wrong with PayPal.'
+                        alertMessage.value = err?.message || t('donate.paypalError')
                     },
                 })
                 .render('#paypal-button-container')
@@ -349,7 +350,7 @@
             paypalButtonsRendered.value = true
         } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = error?.message || 'Failed to load PayPal. Please try again.'
+            alertMessage.value = error?.message || t('donate.failedToLoadPaypal')
         }
     }
 
