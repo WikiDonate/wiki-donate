@@ -82,6 +82,11 @@ class DonationReportController extends Controller
                 $snapshot = $metadata['formula_snapshot'] ?? null;
                 $usesSnapshot = is_array($snapshot) && count($snapshot) > 0;
 
+                // Prefer the frozen snapshot's article link when it exists, so
+                // the modal's "Effective at time of donation" stays reachable
+                // even if the live formula was later edited or deleted.
+                $snapshotUuid = $metadata['formula_uuid'] ?? null;
+
                 return [
                     'id' => $donation->id,
                     'source' => $donation->paypal_order_id ? 'paypal' : 'stripe',
@@ -101,8 +106,8 @@ class DonationReportController extends Controller
                         'slug' => $article->slug,
                         'title' => $article->title,
                     ] : null,
-                    'formula_url' => $article && $formula
-                        ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                    'formula_url' => $article && ($snapshotUuid ?? $formula?->uuid)
+                        ? "/article?title={$article->slug}#formula-".($snapshotUuid ?? $formula->uuid)
                         : null,
                 ];
             });

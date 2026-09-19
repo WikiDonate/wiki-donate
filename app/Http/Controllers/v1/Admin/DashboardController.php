@@ -29,6 +29,9 @@ class DashboardController extends Controller
                 $snapshot = $metadata['formula_snapshot'] ?? null;
                 $usesSnapshot = is_array($snapshot) && count($snapshot) > 0;
 
+                // Prefer the frozen snapshot's article link (see DonationReportController).
+                $snapshotUuid = $metadata['formula_uuid'] ?? null;
+
                 return [
                     'id' => $donation->id,
                     'source' => $source,
@@ -48,8 +51,8 @@ class DashboardController extends Controller
                         'slug' => $article->slug,
                         'title' => $article->title,
                     ] : null,
-                    'formula_url' => $article && $formula
-                        ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                    'formula_url' => $article && ($snapshotUuid ?? $formula?->uuid)
+                        ? "/article?title={$article->slug}#formula-".($snapshotUuid ?? $formula->uuid)
                         : null,
                 ];
             });
@@ -138,6 +141,7 @@ class DashboardController extends Controller
                 'data' => $paginator->map(function ($donation) {
                     $formula = $donation->formula;
                     $article = $formula?->article;
+                    $snapshotUuid = $donation->metadata['formula_uuid'] ?? null;
 
                     return [
                         'id' => $donation->id,
@@ -157,14 +161,15 @@ class DashboardController extends Controller
                         'formula' => $donation->metadata['formula_snapshot']
                             ?? $donation->metadata['formula']
                             ?? $formula?->formula,
-                        'formula_snapshot_used' => is_array($donation->metadata['formula_snapshot'] ?? null),
+                        'formula_snapshot_used' => is_array($donation->metadata['formula_snapshot'] ?? null)
+                            && count($donation->metadata['formula_snapshot']) > 0,
                         'details' => $donation->metadata['details'] ?? $formula?->details ?? null,
                         'article' => $article ? [
                             'slug' => $article->slug,
                             'title' => $article->title,
                         ] : null,
-                        'formula_url' => $article && $formula
-                            ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                        'formula_url' => $article && ($snapshotUuid ?? $formula?->uuid)
+                            ? "/article?title={$article->slug}#formula-".($snapshotUuid ?? $formula->uuid)
                             : null,
                     ];
                 }),
