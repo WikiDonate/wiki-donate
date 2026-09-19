@@ -35,19 +35,19 @@
             iconContainer: 'w-8 h-8 sm:w-10 sm:h-10',
             icon: 'h-5 w-5 sm:h-6 sm:w-6',
             text: 'text-lg sm:text-2xl',
-            container: '',
+            container: 'gap-2',
         },
         md: {
             iconContainer: 'w-10 h-10',
             icon: 'h-6 w-6',
             text: 'text-xl',
-            container: '',
+            container: 'gap-2',
         },
         lg: {
             iconContainer: 'w-12 h-12 lg:w-16 lg:h-16',
             icon: 'h-8 w-8 lg:h-10 lg:w-10',
             text: 'text-2xl sm:text-3xl lg:text-5xl',
-            container: '',
+            container: 'gap-3',
         },
     }
 

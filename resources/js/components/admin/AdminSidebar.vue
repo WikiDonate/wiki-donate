@@ -117,9 +117,9 @@
         },
         {
             type: 'link',
-            name: 'Transactions',
-            link: '/admin/transactions',
-            icon: ['fas', 'file-invoice-dollar'],
+            name: 'Articles',
+            link: '/admin/articles',
+            icon: ['fas', 'newspaper'],
         },
         {
             type: 'link',
@@ -135,9 +135,9 @@
         },
         {
             type: 'link',
-            name: 'Articles',
-            link: '/admin/articles',
-            icon: ['fas', 'newspaper'],
+            name: 'Transactions',
+            link: '/admin/transactions',
+            icon: ['fas', 'file-invoice-dollar'],
         },
         {
             type: 'group',
