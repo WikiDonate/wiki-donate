@@ -56,6 +56,12 @@
             >
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
                     <h4 class="text-sm font-semibold text-gray-700">Distribution Formula</h4>
+                    <p
+                        v-if="donation.formula_snapshot_used"
+                        class="text-xs text-gray-400 mt-1 italic"
+                    >
+                        Effective at time of donation
+                    </p>
                 </div>
                 <div class="divide-y divide-gray-50">
                     <div

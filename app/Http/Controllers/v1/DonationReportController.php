@@ -78,6 +78,9 @@ class DonationReportController extends Controller
             $donations = $paginator->map(function (Donation $donation) {
                 $formula = $donation->formula;
                 $article = $formula?->article;
+                $metadata = $donation->metadata ?? [];
+                $snapshot = $metadata['formula_snapshot'] ?? null;
+                $usesSnapshot = is_array($snapshot) && count($snapshot) > 0;
 
                 return [
                     'id' => $donation->id,
@@ -88,11 +91,12 @@ class DonationReportController extends Controller
                     'date' => $donation->created_at->format('d M, Y'),
                     'donor_email' => $donation->donor_email,
                     'payment_id' => $donation->paypal_order_id
-                        ? ($donation->metadata['payment_id'] ?? $donation->paypal_order_id)
+                        ? ($metadata['payment_id'] ?? $donation->paypal_order_id)
                         : ($donation->stripe_payment_intent_id ?? $donation->stripe_session_id),
-                    'formula_id' => $formula?->id,
-                    'formula' => $formula?->formula,
-                    'details' => $donation->metadata['details'] ?? $formula?->details,
+                    'formula_id' => $metadata['formula_id'] ?? $formula?->id,
+                    'formula' => $snapshot ?? $formula?->formula,
+                    'formula_snapshot_used' => $usesSnapshot,
+                    'details' => $metadata['details'] ?? $formula?->details,
                     'article' => $article ? [
                         'slug' => $article->slug,
                         'title' => $article->title,

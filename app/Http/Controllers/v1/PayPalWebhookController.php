@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Models\DonationFormula;
 use App\Models\PayPalPendingOrder;
 use App\Services\PayPalClient;
 use Illuminate\Http\JsonResponse;
@@ -179,6 +180,8 @@ class PayPalWebhookController extends Controller
             }
         }
 
+        $formula = $pending?->donation_formula_id ? DonationFormula::find($pending->donation_formula_id) : null;
+
         $donation = Donation::create([
             'paypal_order_id' => $orderId,
             'user_id' => $pending?->user_id,
@@ -192,6 +195,9 @@ class PayPalWebhookController extends Controller
                 'payment_id' => $captureData['payment_id'] ?? null,
                 'source' => 'paypal_webhook',
                 'details' => $pending?->details,
+                'formula_snapshot' => $formula?->formula,
+                'formula_id' => $pending?->donation_formula_id,
+                'formula_uuid' => $formula?->uuid,
             ],
         ]);
 

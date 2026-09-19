@@ -146,6 +146,9 @@ class StripeWebhookController extends Controller
                     'source' => $sessionMetadata->source ?? 'wikidonate',
                     'formula' => $metaFormula,
                     'details' => $metaDetails,
+                    'formula_snapshot' => is_array($metaFormula) ? $metaFormula : null,
+                    'formula_id' => isset($sessionMetadata->formula_id) ? $sessionMetadata->formula_id : null,
+                    'formula_uuid' => isset($sessionMetadata->formula_uuid) ? $sessionMetadata->formula_uuid : null,
                 ],
             ]);
         } else {
