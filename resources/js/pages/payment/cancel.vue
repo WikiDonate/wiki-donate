@@ -54,7 +54,7 @@
 
     const { t } = useI18n()
 
-    useHead({ title: 'Payment Cancelled' })
+    useHead({ title: t('payment.cancelTitle') })
 
     definePageMeta({
         // No auth middleware — users returning from Stripe may not be authenticated

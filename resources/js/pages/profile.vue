@@ -4,7 +4,7 @@
         <h1
             class="text-3xl sm:text-4xl font-bold text-center bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 mb-8"
         >
-            Profile Details
+            {{ t('profile.title') }}
         </h1>
 
         <!-- Alert -->
@@ -26,7 +26,9 @@
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <!-- Card Header -->
                 <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                    <h2 class="text-lg sm:text-xl font-semibold">Your Information</h2>
+                    <h2 class="text-lg sm:text-xl font-semibold">
+                        {{ t('profile.yourInformation') }}
+                    </h2>
                 </div>
                 <!-- Card Body -->
                 <div class="p-6 space-y-5">
@@ -95,7 +97,7 @@
 
     const { t } = useI18n()
 
-    useHead({ title: 'Profile Details' })
+    useHead({ title: t('profile.title') })
     definePageMeta({ middleware: 'auth' })
 
     const userStore = useUserStore()

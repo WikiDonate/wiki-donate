@@ -24,7 +24,7 @@
                     <!-- Form -->
                     <form class="space-y-4" @submit.prevent="onSubmit">
                         <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
-                            Username <span class="text-red-500">*</span>
+                            {{ t('auth.username') }} <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="username"
@@ -34,7 +34,7 @@
                             :error-message="errors['username']"
                         />
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1"
-                            >Password <span class="text-red-500">*</span>
+                            >{{ t('auth.password') }} <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="password"

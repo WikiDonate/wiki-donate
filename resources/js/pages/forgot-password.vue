@@ -24,7 +24,7 @@
                     <!-- Form -->
                     <form class="space-y-4" @submit.prevent="onSubmit">
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1"
-                            >Email <span class="text-red-500">*</span>
+                            >{{ t('auth.email') }} <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="email"

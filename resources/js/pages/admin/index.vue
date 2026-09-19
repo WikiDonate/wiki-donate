@@ -2,12 +2,12 @@
     <main>
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
-                title="Admin Dashboard"
-                subtitle="Overview of your WikiDonate platform"
+                :title="t('admin.dashboard')"
+                :subtitle="t('admin.dashboardSubtitle')"
                 :card="true"
             />
 
-            <LoadingSpinner v-if="loading" text="Loading dashboard..." />
+            <LoadingSpinner v-if="loading" :text="t('admin.loadingDashboard')" />
 
             <template v-else>
                 <!-- Stat Cards -->
@@ -16,25 +16,25 @@
                         <StatCard
                             :icon="['fas', 'users']"
                             icon-bg="indigo"
-                            label="Total Users"
+                            :label="t('admin.totalUsers')"
                             :value="stats.totalUsers"
                         />
                         <StatCard
                             :icon="['fas', 'newspaper']"
                             icon-bg="purple"
-                            label="Total Articles"
+                            :label="t('admin.totalArticles')"
                             :value="stats.totalArticles"
                         />
                         <StatCard
                             :icon="['fas', 'coins']"
                             icon-bg="green"
-                            label="Total Donations"
+                            :label="t('admin.totalDonations')"
                             :value="stats.monthlyStats.donations.length"
                         />
                         <StatCard
                             :icon="['fas', 'user-plus']"
                             icon-bg="amber"
-                            label="New This Month"
+                            :label="t('admin.newThisMonth')"
                             :value="recentRegistrationsCount"
                         />
                     </div>
@@ -51,7 +51,7 @@
                             :icon="['fas', 'chart-line']"
                             class="w-4 h-4 text-indigo-600"
                         />
-                        Monthly Trends
+                        {{ t('admin.monthlyTrends') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -62,7 +62,7 @@
                                     :icon="['fas', 'coins']"
                                     class="w-3 h-3 text-green-500"
                                 />
-                                Donations
+                                {{ t('admin.donations') }}
                             </h4>
                             <div class="space-y-2">
                                 <div
@@ -91,7 +91,7 @@
                                     v-if="stats.monthlyStats.donations.length === 0"
                                     class="text-xs text-gray-400 text-center py-3"
                                 >
-                                    No donation data yet
+                                    {{ t('admin.noDonationData') }}
                                 </p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                                     :icon="['fas', 'user-plus']"
                                     class="w-3 h-3 text-indigo-500"
                                 />
-                                New Users
+                                {{ t('admin.newUsers') }}
                             </h4>
                             <div class="space-y-2">
                                 <div
@@ -131,7 +131,7 @@
                                     v-if="stats.monthlyStats.registrations.length === 0"
                                     class="text-xs text-gray-400 text-center py-3"
                                 >
-                                    No registration data yet
+                                    {{ t('admin.noRegistrationData') }}
                                 </p>
                             </div>
                         </div>
@@ -164,10 +164,10 @@
                         <AdminTable
                             :columns="donationColumns"
                             :rows="stats.recentDonations"
-                            empty-text="No donations yet"
+                            empty-text="admin.noDonationsYet"
                         >
                             <template #cell-source>
-                                <AdminBadge variant="info" text="Checkout" />
+                                <AdminBadge variant="info" :text="t('admin.checkout')" />
                             </template>
                             <template #cell-amount="{ row }"
                                 >{{ row.currency }} {{ Number(row.amount).toFixed(2) }}</template
@@ -200,7 +200,7 @@
                                     class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
                                     @click="openDonationDetail(row)"
                                 >
-                                    View
+                                    {{ t('admin.view') }}
                                 </button>
                             </template>
                         </AdminTable>
@@ -216,13 +216,13 @@
                                     :icon="['fas', 'user-plus']"
                                     class="w-3.5 h-3.5 text-indigo-600"
                                 />
-                                Recent Users
+                                {{ t('admin.recentUsers') }}
                             </h3>
                         </div>
                         <AdminTable
                             :columns="userColumns"
                             :rows="stats.recentUsers"
-                            empty-text="No users yet"
+                            empty-text="admin.noUsersYet"
                         >
                             <template #cell-email="{ row }">{{ row.email || '—' }}</template>
                             <template #cell-joinedAt="{ row }"
@@ -273,7 +273,7 @@
         showDonationDetail.value = true
     }
 
-    useHead({ title: 'Admin Dashboard' })
+    useHead({ title: t('admin.dashboard') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const loading = ref(true)
@@ -286,13 +286,13 @@
     })
 
     const donationColumns = [
-        { key: 'date', label: 'Date' },
-        { key: 'user', label: 'Donor' },
-        { key: 'source', label: 'Source' },
-        { key: 'amount', label: 'Amount' },
-        { key: 'status', label: 'Status' },
-        { key: 'article', label: 'Article' },
-        { key: 'action', label: 'Action' },
+        { key: 'date', label: t('admin.date') },
+        { key: 'user', label: t('admin.donor') },
+        { key: 'source', label: t('admin.source') },
+        { key: 'amount', label: t('admin.amount') },
+        { key: 'status', label: t('admin.status') },
+        { key: 'article', label: t('admin.article') },
+        { key: 'action', label: t('admin.action') },
     ]
 
     const recentRegistrationsCount = computed(() => {
@@ -301,9 +301,9 @@
     })
 
     const userColumns = [
-        { key: 'username', label: 'Username', tdClass: 'font-medium' },
-        { key: 'email', label: 'Email' },
-        { key: 'joinedAt', label: 'Joined' },
+        { key: 'username', label: t('admin.username'), tdClass: 'font-medium' },
+        { key: 'email', label: t('admin.email') },
+        { key: 'joinedAt', label: t('admin.joined') },
     ]
 
     const donationBarWidth = (row) => {
@@ -325,7 +325,7 @@
                 stats.value = response.data
             }
         } catch {
-            notifyError('Failed to load dashboard data')
+            notifyError(t('admin.failedToLoadDashboard'))
         } finally {
             loading.value = false
         }

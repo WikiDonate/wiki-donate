@@ -25,7 +25,7 @@
                         "
                         @click="activeTab = 'profile'"
                     >
-                        User Profile
+                        {{ t('preferences.userProfile') }}
                     </button>
 
                     <!-- <button
@@ -47,24 +47,26 @@
                 <!-- User Profile Tab -->
                 <div v-if="activeTab === 'profile'">
                     <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
-                        Basic Information
+                        {{ t('preferences.basicInformation') }}
                     </h2>
 
                     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                         <div>
-                            <dt class="text-sm text-gray-500">Username</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.username') }}</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.username }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Email</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.email') }}</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.email }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Member of Group</dt>
+                            <dt class="text-sm text-gray-500">
+                                {{ t('preferences.memberOfGroup') }}
+                            </dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.roles[0] }}
                             </dd>
@@ -76,7 +78,9 @@
                             <dd class="font-medium text-gray-800">0</dd>
                         </div> -->
                         <div>
-                            <dt class="text-sm text-gray-500">Registration Time</dt>
+                            <dt class="text-sm text-gray-500">
+                                {{ t('preferences.registrationTime') }}
+                            </dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.createdAt }}
                             </dd>
@@ -97,38 +101,50 @@
                 <!-- Notifications Tab -->
                 <div v-if="activeTab === 'notifications'">
                     <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
-                        Notification Preferences
+                        {{ t('preferences.notificationPreferences') }}
                     </h2>
                     <!-- loader -->
                     <div v-if="loading" class="flex items-center justify-center py-12">
-                        <LoadingSpinner text="Loading Preferences" />
+                        <LoadingSpinner :text="t('preferences.loading')" />
                     </div>
 
                     <div v-else class="space-y-4">
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Edit to my talk page</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.editTalkPage') }}
+                            </span>
                             <Checkbox v-model="editTalkPage" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Edit to my user page</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.editUserPage') }}
+                            </span>
                             <Checkbox v-model="editUserPage" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Page review</span>
+                            <span class="text-gray-700 text-sm">{{ t('preferences.pageReview') }}</span>
                             <Checkbox v-model="pageReview" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Email from other user</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.emailFromOther') }}
+                            </span>
                             <Checkbox v-model="emailFromOther" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Successful mention</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.successfulMention') }}
+                            </span>
                             <Checkbox v-model="successfulMention" />
                         </div>
 
                         <div class="pt-4">
                             <FormSubmitButton
-                                :text="submittingNotifications ? 'Saving...' : 'Save Preferences'"
+                                :text="
+                                    submittingNotifications
+                                        ? t('preferences.saving')
+                                        : t('preferences.savePreferences')
+                                "
                                 :disabled="submittingNotifications"
                                 class="w-full sm:w-[160px]"
                                 @click="saveNotifications()"
@@ -148,7 +164,7 @@
                 <h3
                     class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
                 >
-                    Change Password
+                    {{ t('preferences.changePassword') }}
                 </h3>
 
                 <form @submit.prevent="submitChangePassword">
@@ -167,7 +183,7 @@
                         <FormInput
                             v-model="password"
                             type="password"
-                            placeholder="Enter your password"
+                            :placeholder="t('preferences.passwordPlaceholder')"
                             v-bind="passwordProps"
                             :error-message="errors['password']"
                         />
@@ -180,7 +196,7 @@
                         <FormInput
                             v-model="confirmPassword"
                             type="password"
-                            placeholder="Confirm password"
+                            :placeholder="t('preferences.confirmPasswordPlaceholder')"
                             v-bind="confirmPasswordProps"
                             :error-message="errors['confirmPassword']"
                         />
@@ -193,7 +209,7 @@
                             :disabled="submittingPassword"
                             @click="closeModal"
                         >
-                            Cancel
+                            {{ t('common.cancel') }}
                         </button>
                         <button
                             type="submit"
