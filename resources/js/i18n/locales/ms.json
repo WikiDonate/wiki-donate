@@ -153,7 +153,9 @@
         "failedToChangePassword": "Gagal menukar kata laluan",
         "changePasswordTitle": "Tukar Kata Laluan",
         "passwordPlaceholder": "Masukkan kata laluan anda",
-        "confirmPasswordPlaceholder": "Sahkan kata laluan"
+        "confirmPasswordPlaceholder": "Sahkan kata laluan",
+        "loading": "Memuatkan Keutamaan",
+        "saving": "Menyimpan..."
     },
     "billing": {
         "title": "Pengebilan",
@@ -172,7 +174,9 @@
         "cardSaved": "Kad berjaya disimpan",
         "validationError": "Ralat pengesahan",
         "failedToSaveCard": "Gagal menyimpan kad",
-        "failedToLoadCard": "Gagal memuatkan butiran kad"
+        "failedToLoadCard": "Gagal memuatkan butiran kad",
+        "cancel": "Batal",
+        "saving": "Menyimpan..."
     },
     "contact": {
         "title": "Hubungi Kami",
@@ -194,13 +198,16 @@
         "subjectRequired": "Subjek diperlukan",
         "messageRequired": "Butiran mesej diperlukan",
         "emailRequired": "E-mel diperlukan",
-        "emailInvalid": "E-mel mestilah e-mel yang sah"
+        "emailInvalid": "E-mel mestilah e-mel yang sah",
+        "message": "Butiran Mesej"
     },
     "howItWorks": {
         "title": "Cara Menggunakan WikiDonate",
         "steps": "Langkah",
         "pageTitle": "Bagaimana WikiDonate Berfungsi",
-        "subtitle": "Platform sumbangan kerjasama. Bermula dalam beberapa minit dan mula menerima sokongan untuk kerja anda."
+        "subtitle": "Platform sumbangan kerjasama. Bermula dalam beberapa minit dan mula menerima sokongan untuk kerja anda.",
+        "heroTitle": "Bagaimana WikiDonate Berfungsi",
+        "heroSubtitle": "Platform sumbangan kerjasama. Bermula dalam beberapa minit dan mula menerima sokongan untuk kerja anda."
     },
     "report": {
         "title": "Sumbangan Saya",
@@ -227,7 +234,10 @@
         "article": "Artikel",
         "action": "Tindakan",
         "failedToLoad": "Gagal memuatkan laporan derma",
-        "pageOf": "Halaman {current} / {last} (jumlah {total})"
+        "pageOf": "Halaman {current} / {last} (jumlah {total})",
+        "completedLabel": "Selesai",
+        "pendingLabel": "Belum selesai",
+        "failedLabel": "gagal"
     },
     "article": {
         "loading": "Memuatkan Artikel",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikel berjaya disimpan!",
         "failedToSaveArticle": "Gagal menyimpan artikel",
         "savingError": "Ralat berlaku semasa menyimpan",
-        "newArticleTitle": "Artikel Baru"
+        "newArticleTitle": "Artikel Baru",
+        "newTitle": "Artikel Baru",
+        "titlePlaceholder": "Masukkan tajuk artikel",
+        "confirmSave": "Adakah anda pasti mahu menyimpan artikel ini?",
+        "savedSuccess": "Artikel berjaya disimpan!",
+        "saveFailed": "Gagal menyimpan artikel",
+        "saveError": "Ralat berlaku semasa menyimpan"
     },
     "formula": {
         "name": "Nama",
@@ -345,7 +361,10 @@
         "safeMsg": "Jangan risau — maklumat pembayaran anda selamat.",
         "tryAgain": "Anda boleh mencuba lagi apabila anda sudah bersedia.",
         "havingTrouble": "Menghadapi masalah?",
-        "contactSupport": "Hubungi sokongan"
+        "contactSupport": "Hubungi sokongan",
+        "thankYou": "Terima kasih atas sumbangan murah hati anda!",
+        "amountLabel": "Jumlah:",
+        "successful": "Pembayaran anda berjaya."
     },
     "admin": {
         "panel": "Panel Pentadbir",
@@ -493,7 +512,9 @@
         "additionalDetails": "Butiran Tambahan",
         "viewFormula": "Lihat formula",
         "close": "tutup",
-        "effectiveAtDonation": "Berkesan pada masa pendermaan"
+        "effectiveAtDonation": "Berkesan pada masa pendermaan",
+        "pay": "bayar",
+        "loadingHistory": "Memuatkan sejarah..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

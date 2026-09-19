@@ -153,7 +153,9 @@
         "failedToChangePassword": "Failed to change password",
         "changePasswordTitle": "Змінити пароль",
         "passwordPlaceholder": "Введіть свій пароль",
-        "confirmPasswordPlaceholder": "Підтвердьте пароль"
+        "confirmPasswordPlaceholder": "Підтвердьте пароль",
+        "loading": "Завантаження налаштувань",
+        "saving": "Збереження..."
     },
     "billing": {
         "title": "Виставлення рахунків",
@@ -172,7 +174,9 @@
         "cardSaved": "Картку успішно збережено",
         "validationError": "Помилка підтвердження",
         "failedToSaveCard": "Не вдалося зберегти картку",
-        "failedToLoadCard": "Не вдалося завантажити дані картки"
+        "failedToLoadCard": "Не вдалося завантажити дані картки",
+        "cancel": "Скасувати",
+        "saving": "Збереження..."
     },
     "contact": {
         "title": "Зв'яжіться з нами",
@@ -194,13 +198,16 @@
         "subjectRequired": "Тема обов’язкова",
         "messageRequired": "Деталі повідомлення обов’язкові",
         "emailRequired": "Необхідно вказати адресу електронної пошти",
-        "emailInvalid": "Електронна адреса має бути дійсною"
+        "emailInvalid": "Електронна адреса має бути дійсною",
+        "message": "Деталі повідомлення"
     },
     "howItWorks": {
         "title": "Як використовувати WikiDonate",
         "steps": "Кроки",
         "pageTitle": "Як працює WikiDonate",
-        "subtitle": "Платформа для пожертвувань. Почніть роботу за лічені хвилини й отримайте підтримку для своєї роботи."
+        "subtitle": "Платформа для пожертвувань. Почніть роботу за лічені хвилини й отримайте підтримку для своєї роботи.",
+        "heroTitle": "Як працює WikiDonate",
+        "heroSubtitle": "Платформа для пожертвувань. Почніть роботу за лічені хвилини й отримайте підтримку для своєї роботи."
     },
     "report": {
         "title": "Мої пожертви",
@@ -227,7 +234,10 @@
         "article": "ст",
         "action": "Дія",
         "failedToLoad": "Не вдалося завантажити звіт про пожертви",
-        "pageOf": "Сторінка {current} / {last} (всього {total})"
+        "pageOf": "Сторінка {current} / {last} (всього {total})",
+        "completedLabel": "Виконано",
+        "pendingLabel": "В очікуванні",
+        "failedLabel": "Не вдалося"
     },
     "article": {
         "loading": "Завантаження статті",
@@ -275,7 +285,13 @@
         "articleSaved": "Стаття успішно збережена!",
         "failedToSaveArticle": "Не вдалося зберегти статтю",
         "savingError": "Під час збереження сталася помилка",
-        "newArticleTitle": "Нова стаття"
+        "newArticleTitle": "Нова стаття",
+        "newTitle": "Нова стаття",
+        "titlePlaceholder": "Введіть назву статті",
+        "confirmSave": "Ви впевнені, що хочете зберегти цю статтю?",
+        "savedSuccess": "Стаття успішно збережена!",
+        "saveFailed": "Не вдалося зберегти статтю",
+        "saveError": "Під час збереження сталася помилка"
     },
     "formula": {
         "name": "Ім'я",
@@ -345,7 +361,10 @@
         "safeMsg": "Не хвилюйтеся — ваша платіжна інформація в безпеці.",
         "tryAgain": "Ви можете спробувати знову, коли будете готові.",
         "havingTrouble": "Виникли проблеми?",
-        "contactSupport": "Зверніться до служби підтримки"
+        "contactSupport": "Зверніться до служби підтримки",
+        "thankYou": "Дякуємо за вашу щедру пожертву!",
+        "amountLabel": "сума:",
+        "successful": "Ваш платіж пройшов успішно."
     },
     "admin": {
         "panel": "Панель адміністратора",
@@ -493,7 +512,9 @@
         "additionalDetails": "Додаткова інформація",
         "viewFormula": "Переглянути формулу",
         "close": "Закрити",
-        "effectiveAtDonation": "Діє на момент пожертвування"
+        "effectiveAtDonation": "Діє на момент пожертвування",
+        "pay": "платити",
+        "loadingHistory": "Завантаження історії..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Всі права захищені."

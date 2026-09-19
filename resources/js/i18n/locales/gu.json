@@ -153,7 +153,9 @@
         "failedToChangePassword": "પાસવર્ડ બદલવામાં નિષ્ફળ",
         "changePasswordTitle": "પાસવર્ડ બદલો",
         "passwordPlaceholder": "તમારો પાસવર્ડ દાખલ કરો",
-        "confirmPasswordPlaceholder": "પાસવર્ડની પુષ્ટિ કરો"
+        "confirmPasswordPlaceholder": "પાસવર્ડની પુષ્ટિ કરો",
+        "loading": "પસંદગીઓ લોડ કરી રહ્યું છે",
+        "saving": "સાચવી રહ્યું છે..."
     },
     "billing": {
         "title": "બિલિંગ",
@@ -172,7 +174,9 @@
         "cardSaved": "કાર્ડ સફળતાપૂર્વક સાચવ્યું",
         "validationError": "માન્યતા ભૂલ",
         "failedToSaveCard": "કાર્ડ સાચવવામાં નિષ્ફળ",
-        "failedToLoadCard": "કાર્ડ વિગતો લોડ કરવામાં નિષ્ફળ"
+        "failedToLoadCard": "કાર્ડ વિગતો લોડ કરવામાં નિષ્ફળ",
+        "cancel": "રદ કરો",
+        "saving": "સાચવી રહ્યું છે..."
     },
     "contact": {
         "title": "અમારો સંપર્ક કરો",
@@ -194,13 +198,16 @@
         "subjectRequired": "વિષય જરૂરી છે",
         "messageRequired": "સંદેશની વિગતો જરૂરી છે",
         "emailRequired": "ઇમેઇલ આવશ્યક છે",
-        "emailInvalid": "ઇમેઇલ એક માન્ય ઇમેઇલ હોવો આવશ્યક છે"
+        "emailInvalid": "ઇમેઇલ એક માન્ય ઇમેઇલ હોવો આવશ્યક છે",
+        "message": "સંદેશ વિગતો"
     },
     "howItWorks": {
         "title": "WikiDonate નો ઉપયોગ કેવી રીતે કરવો",
         "steps": "પગલાં",
         "pageTitle": "WikiDonate કેવી રીતે કામ કરે છે",
-        "subtitle": "એક સહયોગી દાન પ્લેટફોર્મ. મિનિટોમાં પ્રારંભ કરો અને તમારા કાર્ય માટે સમર્થન પ્રાપ્ત કરવાનું પ્રારંભ કરો."
+        "subtitle": "એક સહયોગી દાન પ્લેટફોર્મ. મિનિટોમાં પ્રારંભ કરો અને તમારા કાર્ય માટે સમર્થન પ્રાપ્ત કરવાનું પ્રારંભ કરો.",
+        "heroTitle": "WikiDonate કેવી રીતે કામ કરે છે",
+        "heroSubtitle": "એક સહયોગી દાન પ્લેટફોર્મ. મિનિટોમાં પ્રારંભ કરો અને તમારા કાર્ય માટે સમર્થન પ્રાપ્ત કરવાનું પ્રારંભ કરો."
     },
     "report": {
         "title": "મારા દાન",
@@ -227,7 +234,10 @@
         "article": "કલમ",
         "action": "ક્રિયા",
         "failedToLoad": "ડોનેશન રિપોર્ટ લોડ કરવામાં નિષ્ફળ",
-        "pageOf": "પૃષ્ઠ {current} / {last} (કુલ {total})"
+        "pageOf": "પૃષ્ઠ {current} / {last} (કુલ {total})",
+        "completedLabel": "પૂર્ણ થયું",
+        "pendingLabel": "બાકી છે",
+        "failedLabel": "નિષ્ફળ"
     },
     "article": {
         "loading": "લેખ લોડ કરી રહ્યું છે",
@@ -275,7 +285,13 @@
         "articleSaved": "લેખ સફળતાપૂર્વક સાચવ્યો!",
         "failedToSaveArticle": "લેખ સાચવવામાં નિષ્ફળ",
         "savingError": "સાચવતી વખતે એક ભૂલ આવી",
-        "newArticleTitle": "નવો લેખ"
+        "newArticleTitle": "નવો લેખ",
+        "newTitle": "નવો લેખ",
+        "titlePlaceholder": "લેખનું શીર્ષક દાખલ કરો",
+        "confirmSave": "શું તમે ખરેખર આ લેખ સાચવવા માંગો છો?",
+        "savedSuccess": "લેખ સફળતાપૂર્વક સાચવ્યો!",
+        "saveFailed": "લેખ સાચવવામાં નિષ્ફળ",
+        "saveError": "સાચવતી વખતે એક ભૂલ આવી"
     },
     "formula": {
         "name": "નામ",
@@ -345,7 +361,10 @@
         "safeMsg": "ચિંતા કરશો નહીં - તમારી ચુકવણી માહિતી સુરક્ષિત છે.",
         "tryAgain": "જ્યારે પણ તમે તૈયાર હોવ ત્યારે તમે ફરી પ્રયાસ કરી શકો છો.",
         "havingTrouble": "મુશ્કેલી આવી રહી છે?",
-        "contactSupport": "સપોર્ટનો સંપર્ક કરો"
+        "contactSupport": "સપોર્ટનો સંપર્ક કરો",
+        "thankYou": "તમારા ઉદાર દાન બદલ આભાર!",
+        "amountLabel": "રકમ:",
+        "successful": "તમારી ચુકવણી સફળ રહી."
     },
     "admin": {
         "panel": "એડમિન પેનલ",
@@ -493,7 +512,9 @@
         "additionalDetails": "વધારાની વિગતો",
         "viewFormula": "ફોર્મ્યુલા જુઓ",
         "close": "બંધ કરો",
-        "effectiveAtDonation": "દાન સમયે અસરકારક"
+        "effectiveAtDonation": "દાન સમયે અસરકારક",
+        "pay": "પે",
+        "loadingHistory": "ઇતિહાસ લોડ કરી રહ્યું છે..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. સર્વાધિકાર આરક્ષિત."

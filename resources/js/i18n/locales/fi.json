@@ -153,7 +153,9 @@
         "failedToChangePassword": "Salasanan vaihto epäonnistui",
         "changePasswordTitle": "Vaihda salasana",
         "passwordPlaceholder": "Kirjoita salasanasi",
-        "confirmPasswordPlaceholder": "Vahvista salasana"
+        "confirmPasswordPlaceholder": "Vahvista salasana",
+        "loading": "Ladataan asetuksia",
+        "saving": "Tallennetaan..."
     },
     "billing": {
         "title": "Laskutus",
@@ -172,7 +174,9 @@
         "cardSaved": "Kortti tallennettu onnistuneesti",
         "validationError": "Vahvistusvirhe",
         "failedToSaveCard": "Kortin tallentaminen epäonnistui",
-        "failedToLoadCard": "Kortin tietojen lataaminen epäonnistui"
+        "failedToLoadCard": "Kortin tietojen lataaminen epäonnistui",
+        "cancel": "Peruuta",
+        "saving": "Tallennetaan..."
     },
     "contact": {
         "title": "Ota yhteyttä",
@@ -194,13 +198,16 @@
         "subjectRequired": "Aihe vaaditaan",
         "messageRequired": "Viestin tiedot vaaditaan",
         "emailRequired": "Sähköposti vaaditaan",
-        "emailInvalid": "Sähköpostin on oltava kelvollinen sähköpostiosoite"
+        "emailInvalid": "Sähköpostin on oltava kelvollinen sähköpostiosoite",
+        "message": "Viestin tiedot"
     },
     "howItWorks": {
         "title": "Kuinka käyttää WikiDonatea",
         "steps": "Vaiheet",
         "pageTitle": "Kuinka WikiDonate toimii",
-        "subtitle": "Yhteistyössä toimiva lahjoitusalusta. Aloita muutamassa minuutissa ja ala saada tukea työhösi."
+        "subtitle": "Yhteistyössä toimiva lahjoitusalusta. Aloita muutamassa minuutissa ja ala saada tukea työhösi.",
+        "heroTitle": "Kuinka WikiDonate toimii",
+        "heroSubtitle": "Yhteistyössä toimiva lahjoitusalusta. Aloita muutamassa minuutissa ja ala saada tukea työhösi."
     },
     "report": {
         "title": "Minun lahjoitukseni",
@@ -227,7 +234,10 @@
         "article": "Artikkeli",
         "action": "Toiminta",
         "failedToLoad": "Lahjoitusraportin lataaminen epäonnistui",
-        "pageOf": "Sivu {current} / {last} (yhteensä {total})"
+        "pageOf": "Sivu {current} / {last} (yhteensä {total})",
+        "completedLabel": "Valmis",
+        "pendingLabel": "Odottaa",
+        "failedLabel": "Epäonnistui"
     },
     "article": {
         "loading": "Ladataan artikkelia",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikkeli tallennettu onnistuneesti!",
         "failedToSaveArticle": "Artikkelin tallennus epäonnistui",
         "savingError": "Tallennettaessa tapahtui virhe",
-        "newArticleTitle": "Uusi artikkeli"
+        "newArticleTitle": "Uusi artikkeli",
+        "newTitle": "Uusi artikkeli",
+        "titlePlaceholder": "Kirjoita artikkelin otsikko",
+        "confirmSave": "Haluatko varmasti tallentaa tämän artikkelin?",
+        "savedSuccess": "Artikkeli tallennettu onnistuneesti!",
+        "saveFailed": "Artikkelin tallennus epäonnistui",
+        "saveError": "Tallennettaessa tapahtui virhe"
     },
     "formula": {
         "name": "Nimi",
@@ -345,7 +361,10 @@
         "safeMsg": "Älä huoli – maksutietosi ovat turvassa.",
         "tryAgain": "Voit yrittää uudelleen, kun olet valmis.",
         "havingTrouble": "Onko sinulla ongelmia?",
-        "contactSupport": "Ota yhteyttä tukeen"
+        "contactSupport": "Ota yhteyttä tukeen",
+        "thankYou": "Kiitos runsaasta lahjoituksestasi!",
+        "amountLabel": "Summa:",
+        "successful": "Maksusi onnistui."
     },
     "admin": {
         "panel": "Hallintapaneeli",
@@ -493,7 +512,9 @@
         "additionalDetails": "Lisätiedot",
         "viewFormula": "Näytä kaava",
         "close": "Sulje",
-        "effectiveAtDonation": "Voimassa luovutushetkellä"
+        "effectiveAtDonation": "Voimassa luovutushetkellä",
+        "pay": "Maksa",
+        "loadingHistory": "Ladataan historiaa..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Kaikki oikeudet pidätetään."

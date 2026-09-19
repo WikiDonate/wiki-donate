@@ -153,7 +153,9 @@
         "failedToChangePassword": "パスワードの変更に失敗しました",
         "changePasswordTitle": "パスワードの変更",
         "passwordPlaceholder": "パスワードを入力してください",
-        "confirmPasswordPlaceholder": "パスワードの確認"
+        "confirmPasswordPlaceholder": "パスワードの確認",
+        "loading": "設定の読み込み",
+        "saving": "保存中..."
     },
     "billing": {
         "title": "請求",
@@ -172,7 +174,9 @@
         "cardSaved": "カードが正常に保存されました",
         "validationError": "検証エラー",
         "failedToSaveCard": "カードの保存に失敗しました",
-        "failedToLoadCard": "カード詳細のロードに失敗しました"
+        "failedToLoadCard": "カード詳細のロードに失敗しました",
+        "cancel": "キャンセル",
+        "saving": "保存中..."
     },
     "contact": {
         "title": "お問い合わせ",
@@ -194,13 +198,16 @@
         "subjectRequired": "件名は必須です",
         "messageRequired": "メッセージの詳細は必須です",
         "emailRequired": "メールアドレスは必須です",
-        "emailInvalid": "電子メールは有効な電子メールである必要があります"
+        "emailInvalid": "電子メールは有効な電子メールである必要があります",
+        "message": "メッセージの詳細"
     },
     "howItWorks": {
         "title": "WikiDonateの使用方法",
         "steps": "ステップ",
         "pageTitle": "WikiDonateの仕組み",
-        "subtitle": "協力的な寄付プラットフォーム。数分で開始して、作業のサポートを受け始めます。"
+        "subtitle": "協力的な寄付プラットフォーム。数分で開始して、作業のサポートを受け始めます。",
+        "heroTitle": "WikiDonateの仕組み",
+        "heroSubtitle": "協力的な寄付プラットフォーム。数分で開始して、作業のサポートを受け始めます。"
     },
     "report": {
         "title": "私の寄付",
@@ -227,7 +234,10 @@
         "article": "記事",
         "action": "アクション",
         "failedToLoad": "寄付レポートの読み込みに失敗しました",
-        "pageOf": "ページ {current} / {last} (合計 {total})"
+        "pageOf": "ページ {current} / {last} (合計 {total})",
+        "completedLabel": "完了しました",
+        "pendingLabel": "保留中",
+        "failedLabel": "失敗しました"
     },
     "article": {
         "loading": "記事を読み込んでいます",
@@ -275,7 +285,13 @@
         "articleSaved": "記事が正常に保存されました。",
         "failedToSaveArticle": "記事の保存に失敗しました",
         "savingError": "保存中にエラーが発生しました",
-        "newArticleTitle": "新しい記事"
+        "newArticleTitle": "新しい記事",
+        "newTitle": "新しい記事",
+        "titlePlaceholder": "記事タイトルを入力してください",
+        "confirmSave": "この記事を保存してもよろしいですか?",
+        "savedSuccess": "記事が正常に保存されました。",
+        "saveFailed": "記事の保存に失敗しました",
+        "saveError": "保存中にエラーが発生しました"
     },
     "formula": {
         "name": "名前",
@@ -345,7 +361,10 @@
         "safeMsg": "心配しないでください。お支払い情報は安全です。",
         "tryAgain": "準備ができたらいつでも再試行できます。",
         "havingTrouble": "お困りですか?",
-        "contactSupport": "サポートに連絡する"
+        "contactSupport": "サポートに連絡する",
+        "thankYou": "寛大なご寄付に感謝いたします!",
+        "amountLabel": "金額:",
+        "successful": "お支払いは正常に完了しました。"
     },
     "admin": {
         "panel": "管理者パネル",
@@ -493,7 +512,9 @@
         "additionalDetails": "追加の詳細",
         "viewFormula": "式を表示する",
         "close": "閉じる",
-        "effectiveAtDonation": "寄付時点で有効"
+        "effectiveAtDonation": "寄付時点で有効",
+        "pay": "支払う",
+        "loadingHistory": "履歴を読み込んでいます..."
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

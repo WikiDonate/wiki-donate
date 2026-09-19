@@ -153,7 +153,9 @@
         "failedToChangePassword": "Nabigong baguhin ang password",
         "changePasswordTitle": "Baguhin ang Password",
         "passwordPlaceholder": "Ipasok ang iyong password",
-        "confirmPasswordPlaceholder": "Kumpirmahin ang password"
+        "confirmPasswordPlaceholder": "Kumpirmahin ang password",
+        "loading": "Naglo-load ng Mga Kagustuhan",
+        "saving": "Nagse-save..."
     },
     "billing": {
         "title": "Pagsingil",
@@ -172,7 +174,9 @@
         "cardSaved": "Matagumpay na na-save ang card",
         "validationError": "Error sa pagpapatunay",
         "failedToSaveCard": "Nabigong i-save ang card",
-        "failedToLoadCard": "Nabigong i-load ang mga detalye ng card"
+        "failedToLoadCard": "Nabigong i-load ang mga detalye ng card",
+        "cancel": "Kanselahin",
+        "saving": "Nagse-save..."
     },
     "contact": {
         "title": "Makipag-ugnayan sa Amin",
@@ -194,13 +198,16 @@
         "subjectRequired": "Kinakailangan ang paksa",
         "messageRequired": "Kinakailangan ang mga detalye ng mensahe",
         "emailRequired": "Kinakailangan ang email",
-        "emailInvalid": "Ang email ay dapat na isang wastong email"
+        "emailInvalid": "Ang email ay dapat na isang wastong email",
+        "message": "Mga Detalye ng Mensahe"
     },
     "howItWorks": {
         "title": "Paano Gamitin ang WikiDonate",
         "steps": "Mga hakbang",
         "pageTitle": "Paano Gumagana ang WikiDonate",
-        "subtitle": "Isang collaborative na platform ng donasyon. Magsimula sa ilang minuto at magsimulang makatanggap ng suporta para sa iyong trabaho."
+        "subtitle": "Isang collaborative na platform ng donasyon. Magsimula sa ilang minuto at magsimulang makatanggap ng suporta para sa iyong trabaho.",
+        "heroTitle": "Paano Gumagana ang WikiDonate",
+        "heroSubtitle": "Isang collaborative na platform ng donasyon. Magsimula sa ilang minuto at magsimulang makatanggap ng suporta para sa iyong trabaho."
     },
     "report": {
         "title": "Aking mga Donasyon",
@@ -227,7 +234,10 @@
         "article": "Artikulo",
         "action": "Aksyon",
         "failedToLoad": "Nabigong i-load ang ulat ng donasyon",
-        "pageOf": "Pahina {current} / {last} (kabuuan {total})"
+        "pageOf": "Pahina {current} / {last} (kabuuan {total})",
+        "completedLabel": "Nakumpleto",
+        "pendingLabel": "Nakabinbin",
+        "failedLabel": "Nabigo"
     },
     "article": {
         "loading": "Naglo-load ng Artikulo",
@@ -275,7 +285,13 @@
         "articleSaved": "Matagumpay na na-save ang artikulo!",
         "failedToSaveArticle": "Nabigong i-save ang artikulo",
         "savingError": "Nagkaroon ng error habang nagse-save",
-        "newArticleTitle": "Bagong Artikulo"
+        "newArticleTitle": "Bagong Artikulo",
+        "newTitle": "Bagong Artikulo",
+        "titlePlaceholder": "Ilagay ang pamagat ng artikulo",
+        "confirmSave": "Sigurado ka bang gusto mong i-save ang artikulong ito?",
+        "savedSuccess": "Matagumpay na na-save ang artikulo!",
+        "saveFailed": "Nabigong i-save ang artikulo",
+        "saveError": "Nagkaroon ng error habang nagse-save"
     },
     "formula": {
         "name": "Pangalan",
@@ -345,7 +361,10 @@
         "safeMsg": "Huwag mag-alala — ligtas ang iyong impormasyon sa pagbabayad.",
         "tryAgain": "Maaari mong subukang muli kapag handa ka na.",
         "havingTrouble": "Nagkakaproblema?",
-        "contactSupport": "Makipag-ugnayan sa suporta"
+        "contactSupport": "Makipag-ugnayan sa suporta",
+        "thankYou": "Salamat sa iyong mapagbigay na donasyon!",
+        "amountLabel": "Halaga:",
+        "successful": "Ang iyong pagbabayad ay matagumpay."
     },
     "admin": {
         "panel": "Admin Panel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Karagdagang Detalye",
         "viewFormula": "Tingnan ang formula",
         "close": "Isara",
-        "effectiveAtDonation": "Epektibo sa oras ng donasyon"
+        "effectiveAtDonation": "Epektibo sa oras ng donasyon",
+        "pay": "Magbayad",
+        "loadingHistory": "Nilo-load ang history..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

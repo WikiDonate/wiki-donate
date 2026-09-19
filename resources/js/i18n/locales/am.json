@@ -153,7 +153,9 @@
         "failedToChangePassword": "የይለፍ ቃል መቀየር አልተሳካም።",
         "changePasswordTitle": "የይለፍ ቃል ቀይር",
         "passwordPlaceholder": "የይለፍ ቃልዎን ያስገቡ",
-        "confirmPasswordPlaceholder": "የይለፍ ቃል ያረጋግጡ"
+        "confirmPasswordPlaceholder": "የይለፍ ቃል ያረጋግጡ",
+        "loading": "ምርጫዎችን በመጫን ላይ",
+        "saving": "በማስቀመጥ ላይ..."
     },
     "billing": {
         "title": "የሂሳብ አከፋፈል",
@@ -172,7 +174,9 @@
         "cardSaved": "ካርድ በተሳካ ሁኔታ ተቀምጧል",
         "validationError": "የማረጋገጫ ስህተት",
         "failedToSaveCard": "ካርድ ማስቀመጥ አልተሳካም።",
-        "failedToLoadCard": "የካርድ ዝርዝሮችን መጫን አልተሳካም።"
+        "failedToLoadCard": "የካርድ ዝርዝሮችን መጫን አልተሳካም።",
+        "cancel": "ሰርዝ",
+        "saving": "በማስቀመጥ ላይ..."
     },
     "contact": {
         "title": "ያግኙን",
@@ -194,13 +198,16 @@
         "subjectRequired": "ርዕሰ ጉዳይ ያስፈልጋል",
         "messageRequired": "የመልእክት ዝርዝሮች ያስፈልጋሉ።",
         "emailRequired": "ኢሜል ያስፈልጋል",
-        "emailInvalid": "ኢሜል ትክክለኛ ኢሜይል መሆን አለበት።"
+        "emailInvalid": "ኢሜል ትክክለኛ ኢሜይል መሆን አለበት።",
+        "message": "የመልዕክት ዝርዝሮች"
     },
     "howItWorks": {
         "title": "WikiDonateን እንዴት መጠቀም እንደሚቻል",
         "steps": "እርምጃዎች",
         "pageTitle": "WikiDonate እንዴት እንደሚሰራ",
-        "subtitle": "የትብብር ልገሳ መድረክ። በደቂቃዎች ውስጥ ይጀምሩ እና ለስራዎ ድጋፍ መቀበል ይጀምሩ።"
+        "subtitle": "የትብብር ልገሳ መድረክ። በደቂቃዎች ውስጥ ይጀምሩ እና ለስራዎ ድጋፍ መቀበል ይጀምሩ።",
+        "heroTitle": "WikiDonate እንዴት እንደሚሰራ",
+        "heroSubtitle": "የትብብር ልገሳ መድረክ። በደቂቃዎች ውስጥ ይጀምሩ እና ለስራዎ ድጋፍ መቀበል ይጀምሩ።"
     },
     "report": {
         "title": "የእኔ ልገሳዎች",
@@ -227,7 +234,10 @@
         "article": "አንቀጽ",
         "action": "ድርጊት",
         "failedToLoad": "የልገሳ ሪፖርት መጫን አልተሳካም።",
-        "pageOf": "ገጽ {current} / {last} (ጠቅላላ {total})"
+        "pageOf": "ገጽ {current} / {last} (ጠቅላላ {total})",
+        "completedLabel": "ተጠናቀቀ",
+        "pendingLabel": "በመጠባበቅ ላይ",
+        "failedLabel": "አልተሳካም።"
     },
     "article": {
         "loading": "አንቀፅን በመጫን ላይ",
@@ -275,7 +285,13 @@
         "articleSaved": "ጽሑፉ በተሳካ ሁኔታ ተቀምጧል!",
         "failedToSaveArticle": "ጽሁፍ ማስቀመጥ አልተሳካም።",
         "savingError": "በማስቀመጥ ላይ ስህተት ተከስቷል።",
-        "newArticleTitle": "አዲስ ጽሑፍ"
+        "newArticleTitle": "አዲስ ጽሑፍ",
+        "newTitle": "አዲስ ጽሑፍ",
+        "titlePlaceholder": "የጽሁፉን ርዕስ አስገባ",
+        "confirmSave": "እርግጠኛ ነዎት ይህን ጽሑፍ ማስቀመጥ ይፈልጋሉ?",
+        "savedSuccess": "ጽሑፉ በተሳካ ሁኔታ ተቀምጧል!",
+        "saveFailed": "ጽሁፍ ማስቀመጥ አልተሳካም።",
+        "saveError": "በማስቀመጥ ላይ ስህተት ተከስቷል።"
     },
     "formula": {
         "name": "ስም",
@@ -345,7 +361,10 @@
         "safeMsg": "አይጨነቁ - የክፍያ መረጃዎ ደህንነቱ የተጠበቀ ነው።",
         "tryAgain": "ዝግጁ በሚሆኑበት ጊዜ እንደገና መሞከር ይችላሉ።",
         "havingTrouble": "ችግር እያጋጠመዎት ነው?",
-        "contactSupport": "ድጋፍን ያነጋግሩ"
+        "contactSupport": "ድጋፍን ያነጋግሩ",
+        "thankYou": "ለጋስ ልገሳዎ እናመሰግናለን!",
+        "amountLabel": "መጠን፡",
+        "successful": "ክፍያዎ የተሳካ ነበር።"
     },
     "admin": {
         "panel": "የአስተዳዳሪ ፓነል",
@@ -493,7 +512,9 @@
         "additionalDetails": "ተጨማሪ ዝርዝሮች",
         "viewFormula": "ቀመር ይመልከቱ",
         "close": "ዝጋ",
-        "effectiveAtDonation": "በስጦታ ጊዜ ውጤታማ"
+        "effectiveAtDonation": "በስጦታ ጊዜ ውጤታማ",
+        "pay": "ይክፈሉ።",
+        "loadingHistory": "ታሪክን በመጫን ላይ..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

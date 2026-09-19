@@ -153,7 +153,9 @@
         "failedToChangePassword": "ไม่สามารถเปลี่ยนรหัสผ่าน",
         "changePasswordTitle": "เปลี่ยนรหัสผ่าน",
         "passwordPlaceholder": "ใส่รหัสผ่านของคุณ",
-        "confirmPasswordPlaceholder": "ยืนยันรหัสผ่าน"
+        "confirmPasswordPlaceholder": "ยืนยันรหัสผ่าน",
+        "loading": "กำลังโหลดการตั้งค่า",
+        "saving": "กำลังบันทึก..."
     },
     "billing": {
         "title": "การเรียกเก็บเงิน",
@@ -172,7 +174,9 @@
         "cardSaved": "บันทึกการ์ดเรียบร้อยแล้ว",
         "validationError": "ข้อผิดพลาดในการตรวจสอบ",
         "failedToSaveCard": "ไม่สามารถบันทึกบัตรได้",
-        "failedToLoadCard": "โหลดรายละเอียดการ์ดไม่สำเร็จ"
+        "failedToLoadCard": "โหลดรายละเอียดการ์ดไม่สำเร็จ",
+        "cancel": "ยกเลิก",
+        "saving": "กำลังบันทึก..."
     },
     "contact": {
         "title": "ติดต่อเรา",
@@ -194,13 +198,16 @@
         "subjectRequired": "ต้องระบุหัวเรื่อง",
         "messageRequired": "ต้องระบุรายละเอียดข้อความ",
         "emailRequired": "จำเป็นต้องระบุอีเมล",
-        "emailInvalid": "อีเมลต้องเป็นอีเมลที่ถูกต้อง"
+        "emailInvalid": "อีเมลต้องเป็นอีเมลที่ถูกต้อง",
+        "message": "รายละเอียดข้อความ"
     },
     "howItWorks": {
         "title": "วิธีใช้วิกิโดเนต",
         "steps": "ขั้นตอน",
         "pageTitle": "WikiDonate ทำงานอย่างไร",
-        "subtitle": "แพลตฟอร์มการบริจาคร่วมกัน เริ่มต้นในไม่กี่นาทีและเริ่มรับการสนับสนุนสำหรับงานของคุณ"
+        "subtitle": "แพลตฟอร์มการบริจาคร่วมกัน เริ่มต้นในไม่กี่นาทีและเริ่มรับการสนับสนุนสำหรับงานของคุณ",
+        "heroTitle": "WikiDonate ทำงานอย่างไร",
+        "heroSubtitle": "แพลตฟอร์มการบริจาคร่วมกัน เริ่มต้นในไม่กี่นาทีและเริ่มรับการสนับสนุนสำหรับงานของคุณ"
     },
     "report": {
         "title": "เงินบริจาคของฉัน",
@@ -227,7 +234,10 @@
         "article": "บทความ",
         "action": "การดำเนินการ",
         "failedToLoad": "โหลดรายงานการบริจาคไม่สำเร็จ",
-        "pageOf": "หน้า {current} / {last} (รวม {total})"
+        "pageOf": "หน้า {current} / {last} (รวม {total})",
+        "completedLabel": "เสร็จสิ้น",
+        "pendingLabel": "รอดำเนินการ",
+        "failedLabel": "ล้มเหลว"
     },
     "article": {
         "loading": "กำลังโหลดบทความ",
@@ -275,7 +285,13 @@
         "articleSaved": "บันทึกบทความเรียบร้อยแล้ว!",
         "failedToSaveArticle": "ไม่สามารถบันทึกบทความได้",
         "savingError": "เกิดข้อผิดพลาดขณะบันทึก",
-        "newArticleTitle": "บทความใหม่"
+        "newArticleTitle": "บทความใหม่",
+        "newTitle": "บทความใหม่",
+        "titlePlaceholder": "ป้อนชื่อบทความ",
+        "confirmSave": "คุณแน่ใจหรือไม่ว่าต้องการบันทึกบทความนี้",
+        "savedSuccess": "บันทึกบทความเรียบร้อยแล้ว!",
+        "saveFailed": "ไม่สามารถบันทึกบทความได้",
+        "saveError": "เกิดข้อผิดพลาดขณะบันทึก"
     },
     "formula": {
         "name": "ชื่อ",
@@ -345,7 +361,10 @@
         "safeMsg": "ไม่ต้องกังวล ข้อมูลการชำระเงินของคุณปลอดภัย",
         "tryAgain": "คุณสามารถลองอีกครั้งได้ทุกเมื่อที่คุณพร้อม",
         "havingTrouble": "มีปัญหาเหรอ?",
-        "contactSupport": "ติดต่อฝ่ายสนับสนุน"
+        "contactSupport": "ติดต่อฝ่ายสนับสนุน",
+        "thankYou": "ขอบคุณสำหรับการบริจาคอันมีน้ำใจของคุณ!",
+        "amountLabel": "จำนวน:",
+        "successful": "การชำระเงินของคุณสำเร็จแล้ว"
     },
     "admin": {
         "panel": "แผงผู้ดูแลระบบ",
@@ -493,7 +512,9 @@
         "additionalDetails": "รายละเอียดเพิ่มเติม",
         "viewFormula": "ดูสูตร",
         "close": "ปิด",
-        "effectiveAtDonation": "มีผลบังคับใช้ ณ เวลาที่บริจาค"
+        "effectiveAtDonation": "มีผลบังคับใช้ ณ เวลาที่บริจาค",
+        "pay": "จ่าย",
+        "loadingHistory": "กำลังโหลดประวัติ..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org สงวนลิขสิทธิ์."

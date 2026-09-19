@@ -153,7 +153,9 @@
         "failedToChangePassword": "Kan wachtwoord niet wijzigen",
         "changePasswordTitle": "Wachtwoord wijzigen",
         "passwordPlaceholder": "Voer uw wachtwoord in",
-        "confirmPasswordPlaceholder": "Bevestig wachtwoord"
+        "confirmPasswordPlaceholder": "Bevestig wachtwoord",
+        "loading": "Voorkeuren laden",
+        "saving": "Opslaan..."
     },
     "billing": {
         "title": "Facturering",
@@ -172,7 +174,9 @@
         "cardSaved": "Kaart succesvol opgeslagen",
         "validationError": "Validatiefout",
         "failedToSaveCard": "Kan de kaart niet opslaan",
-        "failedToLoadCard": "Kan kaartgegevens niet laden"
+        "failedToLoadCard": "Kan kaartgegevens niet laden",
+        "cancel": "Annuleer",
+        "saving": "Opslaan..."
     },
     "contact": {
         "title": "Neem contact met ons op",
@@ -194,13 +198,16 @@
         "subjectRequired": "Onderwerp is vereist",
         "messageRequired": "Berichtgegevens zijn vereist",
         "emailRequired": "E-mail is vereist",
-        "emailInvalid": "E-mail moet een geldig e-mailadres zijn"
+        "emailInvalid": "E-mail moet een geldig e-mailadres zijn",
+        "message": "Berichtdetails"
     },
     "howItWorks": {
         "title": "Hoe WikiDonate te gebruiken",
         "steps": "Stappen",
         "pageTitle": "Hoe WikiDonate werkt",
-        "subtitle": "Een collaboratief donatieplatform. Ga binnen enkele minuten aan de slag en ontvang ondersteuning voor uw werk."
+        "subtitle": "Een collaboratief donatieplatform. Ga binnen enkele minuten aan de slag en ontvang ondersteuning voor uw werk.",
+        "heroTitle": "Hoe WikiDonate werkt",
+        "heroSubtitle": "Een collaboratief donatieplatform. Ga binnen enkele minuten aan de slag en ontvang ondersteuning voor uw werk."
     },
     "report": {
         "title": "Mijn donaties",
@@ -227,7 +234,10 @@
         "article": "Artikel",
         "action": "Actie",
         "failedToLoad": "Kan het donatierapport niet laden",
-        "pageOf": "Pagina {current} / {last} (totaal {total})"
+        "pageOf": "Pagina {current} / {last} (totaal {total})",
+        "completedLabel": "Voltooid",
+        "pendingLabel": "In behandeling",
+        "failedLabel": "Mislukt"
     },
     "article": {
         "loading": "Artikel laden",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikel succesvol opgeslagen!",
         "failedToSaveArticle": "Kan artikel niet opslaan",
         "savingError": "Er is een fout opgetreden tijdens het opslaan",
-        "newArticleTitle": "Nieuw artikel"
+        "newArticleTitle": "Nieuw artikel",
+        "newTitle": "Nieuw artikel",
+        "titlePlaceholder": "Voer de titel van het artikel in",
+        "confirmSave": "Weet je zeker dat je dit artikel wilt opslaan?",
+        "savedSuccess": "Artikel succesvol opgeslagen!",
+        "saveFailed": "Kan artikel niet opslaan",
+        "saveError": "Er is een fout opgetreden tijdens het opslaan"
     },
     "formula": {
         "name": "Naam",
@@ -345,7 +361,10 @@
         "safeMsg": "Maakt u zich geen zorgen: uw betalingsgegevens zijn veilig.",
         "tryAgain": "Je kunt het opnieuw proberen wanneer je er klaar voor bent.",
         "havingTrouble": "Heeft u problemen?",
-        "contactSupport": "Neem contact op met ondersteuning"
+        "contactSupport": "Neem contact op met ondersteuning",
+        "thankYou": "Bedankt voor uw genereuze donatie!",
+        "amountLabel": "Bedrag:",
+        "successful": "Uw betaling is gelukt."
     },
     "admin": {
         "panel": "Beheerderspaneel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Aanvullende details",
         "viewFormula": "Bekijk formule",
         "close": "Sluiten",
-        "effectiveAtDonation": "Geldig op het moment van donatie"
+        "effectiveAtDonation": "Geldig op het moment van donatie",
+        "pay": "Betaal",
+        "loadingHistory": "Geschiedenis laden..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rechten voorbehouden."

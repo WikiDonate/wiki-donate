@@ -153,7 +153,9 @@
         "failedToChangePassword": "שינוי הסיסמה נכשל",
         "changePasswordTitle": "שנה סיסמה",
         "passwordPlaceholder": "הזן את הסיסמה שלך",
-        "confirmPasswordPlaceholder": "אשר את הסיסמה"
+        "confirmPasswordPlaceholder": "אשר את הסיסמה",
+        "loading": "טעינה העדפות",
+        "saving": "שומר..."
     },
     "billing": {
         "title": "חיוב",
@@ -172,7 +174,9 @@
         "cardSaved": "הכרטיס נשמר בהצלחה",
         "validationError": "שגיאת אימות",
         "failedToSaveCard": "שמירת הכרטיס נכשלה",
-        "failedToLoadCard": "טעינת פרטי הכרטיס נכשלה"
+        "failedToLoadCard": "טעינת פרטי הכרטיס נכשלה",
+        "cancel": "בטל",
+        "saving": "שומר..."
     },
     "contact": {
         "title": "צור קשר",
@@ -194,13 +198,16 @@
         "subjectRequired": "נושא חובה",
         "messageRequired": "יש צורך בפרטי הודעה",
         "emailRequired": "נדרש אימייל",
-        "emailInvalid": "האימייל חייב להיות אימייל חוקי"
+        "emailInvalid": "האימייל חייב להיות אימייל חוקי",
+        "message": "פרטי הודעה"
     },
     "howItWorks": {
         "title": "כיצד להשתמש ב-WikiDonate",
         "steps": "שלבים",
         "pageTitle": "כיצד פועלת WikiDonate",
-        "subtitle": "פלטפורמת תרומות שיתופית. התחל תוך דקות והתחל לקבל תמיכה לעבודה שלך."
+        "subtitle": "פלטפורמת תרומות שיתופית. התחל תוך דקות והתחל לקבל תמיכה לעבודה שלך.",
+        "heroTitle": "כיצד פועלת WikiDonate",
+        "heroSubtitle": "פלטפורמת תרומות שיתופית. התחל תוך דקות והתחל לקבל תמיכה לעבודה שלך."
     },
     "report": {
         "title": "התרומות שלי",
@@ -227,7 +234,10 @@
         "article": "מאמר",
         "action": "פעולה",
         "failedToLoad": "טעינת דוח התרומה נכשלה",
-        "pageOf": "עמוד {current} / {last} (סה\"כ {total})"
+        "pageOf": "עמוד {current} / {last} (סה\"כ {total})",
+        "completedLabel": "הושלם",
+        "pendingLabel": "בהמתנה",
+        "failedLabel": "נכשל"
     },
     "article": {
         "loading": "טוען מאמר",
@@ -275,7 +285,13 @@
         "articleSaved": "המאמר נשמר בהצלחה!",
         "failedToSaveArticle": "שמירת המאמר נכשלה",
         "savingError": "אירעה שגיאה במהלך השמירה",
-        "newArticleTitle": "מאמר חדש"
+        "newArticleTitle": "מאמר חדש",
+        "newTitle": "מאמר חדש",
+        "titlePlaceholder": "הזן את כותרת המאמר",
+        "confirmSave": "האם אתה בטוח שברצונך לשמור מאמר זה?",
+        "savedSuccess": "המאמר נשמר בהצלחה!",
+        "saveFailed": "שמירת המאמר נכשלה",
+        "saveError": "אירעה שגיאה במהלך השמירה"
     },
     "formula": {
         "name": "שם",
@@ -345,7 +361,10 @@
         "safeMsg": "אל דאגה - פרטי התשלום שלך בטוחים.",
         "tryAgain": "אתה יכול לנסות שוב בכל פעם שאתה מוכן.",
         "havingTrouble": "מתקשה?",
-        "contactSupport": "צור קשר עם התמיכה"
+        "contactSupport": "צור קשר עם התמיכה",
+        "thankYou": "תודה על תרומתך הנדיבה!",
+        "amountLabel": "כמות:",
+        "successful": "התשלום שלך הצליח."
     },
     "admin": {
         "panel": "פאנל ניהול",
@@ -493,7 +512,9 @@
         "additionalDetails": "פרטים נוספים",
         "viewFormula": "צפה בנוסחה",
         "close": "סגור",
-        "effectiveAtDonation": "תקף בזמן התרומה"
+        "effectiveAtDonation": "תקף בזמן התרומה",
+        "pay": "שלם",
+        "loadingHistory": "טוען היסטוריה..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. כֹּל הַזְכוּיוֹת שְׁמוּרוֹת."

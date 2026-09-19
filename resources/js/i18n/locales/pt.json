@@ -153,7 +153,9 @@
         "failedToChangePassword": "Falha ao alterar a senha",
         "changePasswordTitle": "Alterar senha",
         "passwordPlaceholder": "Digite sua senha",
-        "confirmPasswordPlaceholder": "Confirmar senha"
+        "confirmPasswordPlaceholder": "Confirmar senha",
+        "loading": "Carregando preferências",
+        "saving": "Salvando..."
     },
     "billing": {
         "title": "Faturamento",
@@ -172,7 +174,9 @@
         "cardSaved": "Cartão salvo com sucesso",
         "validationError": "Erro de validação",
         "failedToSaveCard": "Falha ao salvar o cartão",
-        "failedToLoadCard": "Falha ao carregar os detalhes do cartão"
+        "failedToLoadCard": "Falha ao carregar os detalhes do cartão",
+        "cancel": "Cancelar",
+        "saving": "Salvando..."
     },
     "contact": {
         "title": "Contate-nos",
@@ -194,13 +198,16 @@
         "subjectRequired": "O assunto é obrigatório",
         "messageRequired": "Os detalhes da mensagem são obrigatórios",
         "emailRequired": "O e-mail é obrigatório",
-        "emailInvalid": "O e-mail deve ser um e-mail válido"
+        "emailInvalid": "O e-mail deve ser um e-mail válido",
+        "message": "Detalhes da mensagem"
     },
     "howItWorks": {
         "title": "Como usar o WikiDonate",
         "steps": "Passos",
         "pageTitle": "Como funciona o WikiDonate",
-        "subtitle": "Uma plataforma colaborativa de doações. Comece em minutos e comece a receber suporte para o seu trabalho."
+        "subtitle": "Uma plataforma colaborativa de doações. Comece em minutos e comece a receber suporte para o seu trabalho.",
+        "heroTitle": "Como funciona o WikiDonate",
+        "heroSubtitle": "Uma plataforma colaborativa de doações. Comece em minutos e comece a receber suporte para o seu trabalho."
     },
     "report": {
         "title": "Minhas doações",
@@ -227,7 +234,10 @@
         "article": "Artigo",
         "action": "Ação",
         "failedToLoad": "Falha ao carregar o relatório de doações",
-        "pageOf": "Página {current} / {last} (total {total})"
+        "pageOf": "Página {current} / {last} (total {total})",
+        "completedLabel": "Concluído",
+        "pendingLabel": "Pendente",
+        "failedLabel": "Falha"
     },
     "article": {
         "loading": "Carregando Artigo",
@@ -275,7 +285,13 @@
         "articleSaved": "Artigo salvo com sucesso!",
         "failedToSaveArticle": "Falha ao salvar o artigo",
         "savingError": "Ocorreu um erro ao salvar",
-        "newArticleTitle": "Novo artigo"
+        "newArticleTitle": "Novo artigo",
+        "newTitle": "Novo artigo",
+        "titlePlaceholder": "Insira o título do artigo",
+        "confirmSave": "Tem certeza de que deseja salvar este artigo?",
+        "savedSuccess": "Artigo salvo com sucesso!",
+        "saveFailed": "Falha ao salvar o artigo",
+        "saveError": "Ocorreu um erro ao salvar"
     },
     "formula": {
         "name": "Nome",
@@ -345,7 +361,10 @@
         "safeMsg": "Não se preocupe: suas informações de pagamento estão seguras.",
         "tryAgain": "Você pode tentar novamente quando estiver pronto.",
         "havingTrouble": "Está com problemas?",
-        "contactSupport": "Contate o suporte"
+        "contactSupport": "Contate o suporte",
+        "thankYou": "Obrigado pela sua generosa doação!",
+        "amountLabel": "Quantidade:",
+        "successful": "Seu pagamento foi realizado com sucesso."
     },
     "admin": {
         "panel": "Painel de administração",
@@ -493,7 +512,9 @@
         "additionalDetails": "Detalhes Adicionais",
         "viewFormula": "Ver fórmula",
         "close": "Fechar",
-        "effectiveAtDonation": "Em vigor no momento da doação"
+        "effectiveAtDonation": "Em vigor no momento da doação",
+        "pay": "Pagar",
+        "loadingHistory": "Carregando histórico..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Todos os direitos reservados."

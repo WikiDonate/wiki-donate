@@ -153,7 +153,9 @@
         "failedToChangePassword": "Kunne ikke endre passord",
         "changePasswordTitle": "Endre passord",
         "passwordPlaceholder": "Skriv inn passordet ditt",
-        "confirmPasswordPlaceholder": "Bekreft passord"
+        "confirmPasswordPlaceholder": "Bekreft passord",
+        "loading": "Lasteinnstillinger",
+        "saving": "Lagrer..."
     },
     "billing": {
         "title": "Fakturering",
@@ -172,7 +174,9 @@
         "cardSaved": "Kortet er lagret",
         "validationError": "Valideringsfeil",
         "failedToSaveCard": "Kunne ikke lagre kortet",
-        "failedToLoadCard": "Kunne ikke laste inn kortdetaljer"
+        "failedToLoadCard": "Kunne ikke laste inn kortdetaljer",
+        "cancel": "Avbryt",
+        "saving": "Lagrer..."
     },
     "contact": {
         "title": "Kontakt oss",
@@ -194,13 +198,16 @@
         "subjectRequired": "Emne er påkrevd",
         "messageRequired": "Meldingsdetaljer kreves",
         "emailRequired": "E-post er påkrevd",
-        "emailInvalid": "E-post må være en gyldig e-post"
+        "emailInvalid": "E-post må være en gyldig e-post",
+        "message": "Meldingsdetaljer"
     },
     "howItWorks": {
         "title": "Hvordan bruke WikiDonate",
         "steps": "Trinn",
         "pageTitle": "Hvordan WikiDonate fungerer",
-        "subtitle": "En samarbeidsplattform for donasjoner. Kom i gang på få minutter og begynn å motta støtte for arbeidet ditt."
+        "subtitle": "En samarbeidsplattform for donasjoner. Kom i gang på få minutter og begynn å motta støtte for arbeidet ditt.",
+        "heroTitle": "Hvordan WikiDonate fungerer",
+        "heroSubtitle": "En samarbeidsplattform for donasjoner. Kom i gang på få minutter og begynn å motta støtte for arbeidet ditt."
     },
     "report": {
         "title": "Mine donasjoner",
@@ -227,7 +234,10 @@
         "article": "Artikkel",
         "action": "Handling",
         "failedToLoad": "Kunne ikke laste inn donasjonsrapporten",
-        "pageOf": "Side {current} / {last} (totalt {total})"
+        "pageOf": "Side {current} / {last} (totalt {total})",
+        "completedLabel": "Fullført",
+        "pendingLabel": "Venter",
+        "failedLabel": "Mislyktes"
     },
     "article": {
         "loading": "Laster artikkel",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikkelen er lagret!",
         "failedToSaveArticle": "Kunne ikke lagre artikkelen",
         "savingError": "Det oppsto en feil under lagring",
-        "newArticleTitle": "Ny artikkel"
+        "newArticleTitle": "Ny artikkel",
+        "newTitle": "Ny artikkel",
+        "titlePlaceholder": "Skriv inn artikkeltittel",
+        "confirmSave": "Er du sikker på at du vil lagre denne artikkelen?",
+        "savedSuccess": "Artikkelen er lagret!",
+        "saveFailed": "Kunne ikke lagre artikkelen",
+        "saveError": "Det oppsto en feil under lagring"
     },
     "formula": {
         "name": "Navn",
@@ -345,7 +361,10 @@
         "safeMsg": "Ikke bekymre deg – betalingsinformasjonen din er trygg.",
         "tryAgain": "Du kan prøve igjen når du er klar.",
         "havingTrouble": "Har du problemer?",
-        "contactSupport": "Kontakt support"
+        "contactSupport": "Kontakt support",
+        "thankYou": "Takk for din sjenerøse donasjon!",
+        "amountLabel": "Beløp:",
+        "successful": "Betalingen din var vellykket."
     },
     "admin": {
         "panel": "Administrasjonspanel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Ytterligere detaljer",
         "viewFormula": "Se formel",
         "close": "Lukk",
-        "effectiveAtDonation": "Gjelder ved donasjonstidspunktet"
+        "effectiveAtDonation": "Gjelder ved donasjonstidspunktet",
+        "pay": "Betal",
+        "loadingHistory": "Laster inn loggen ..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

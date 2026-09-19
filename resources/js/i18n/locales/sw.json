@@ -153,7 +153,9 @@
         "failedToChangePassword": "Imeshindwa kubadilisha nenosiri",
         "changePasswordTitle": "Badilisha Nenosiri",
         "passwordPlaceholder": "Weka nenosiri lako",
-        "confirmPasswordPlaceholder": "Thibitisha nenosiri"
+        "confirmPasswordPlaceholder": "Thibitisha nenosiri",
+        "loading": "Inapakia Mapendeleo",
+        "saving": "Inahifadhi..."
     },
     "billing": {
         "title": "Bili",
@@ -172,7 +174,9 @@
         "cardSaved": "Kadi imehifadhiwa",
         "validationError": "Hitilafu ya uthibitishaji",
         "failedToSaveCard": "Imeshindwa kuhifadhi kadi",
-        "failedToLoadCard": "Imeshindwa kupakia maelezo ya kadi"
+        "failedToLoadCard": "Imeshindwa kupakia maelezo ya kadi",
+        "cancel": "Ghairi",
+        "saving": "Inahifadhi..."
     },
     "contact": {
         "title": "Wasiliana Nasi",
@@ -194,13 +198,16 @@
         "subjectRequired": "Mada inahitajika",
         "messageRequired": "Maelezo ya ujumbe yanahitajika",
         "emailRequired": "Barua pepe inahitajika",
-        "emailInvalid": "Barua pepe lazima iwe barua pepe halali"
+        "emailInvalid": "Barua pepe lazima iwe barua pepe halali",
+        "message": "Maelezo ya Ujumbe"
     },
     "howItWorks": {
         "title": "Jinsi ya kutumia WikiDonate",
         "steps": "Hatua",
         "pageTitle": "Jinsi WikiDonate Inafanya kazi",
-        "subtitle": "Jukwaa la uchangiaji shirikishi. Anza kwa dakika chache na anza kupokea usaidizi kwa kazi yako."
+        "subtitle": "Jukwaa la uchangiaji shirikishi. Anza kwa dakika chache na anza kupokea usaidizi kwa kazi yako.",
+        "heroTitle": "Jinsi WikiDonate Inafanya kazi",
+        "heroSubtitle": "Jukwaa la uchangiaji shirikishi. Anza kwa dakika chache na anza kupokea usaidizi kwa kazi yako."
     },
     "report": {
         "title": "Michango Yangu",
@@ -227,7 +234,10 @@
         "article": "Kifungu",
         "action": "Kitendo",
         "failedToLoad": "Imeshindwa kupakia ripoti ya mchango",
-        "pageOf": "Ukurasa {current} / {last} (jumla {total})"
+        "pageOf": "Ukurasa {current} / {last} (jumla {total})",
+        "completedLabel": "Imekamilika",
+        "pendingLabel": "Inasubiri",
+        "failedLabel": "Imeshindwa"
     },
     "article": {
         "loading": "Inapakia Kifungu",
@@ -275,7 +285,13 @@
         "articleSaved": "Kifungu kimehifadhiwa!",
         "failedToSaveArticle": "Imeshindwa kuhifadhi makala",
         "savingError": "Hitilafu imetokea wakati wa kuhifadhi",
-        "newArticleTitle": "Makala Mpya"
+        "newArticleTitle": "Makala Mpya",
+        "newTitle": "Makala Mpya",
+        "titlePlaceholder": "Weka kichwa cha makala",
+        "confirmSave": "Je, una uhakika ungependa kuhifadhi makala haya?",
+        "savedSuccess": "Kifungu kimehifadhiwa!",
+        "saveFailed": "Imeshindwa kuhifadhi makala",
+        "saveError": "Hitilafu imetokea wakati wa kuhifadhi"
     },
     "formula": {
         "name": "Jina",
@@ -345,7 +361,10 @@
         "safeMsg": "Usijali - maelezo yako ya malipo yako salama.",
         "tryAgain": "Unaweza kujaribu tena wakati wowote ukiwa tayari.",
         "havingTrouble": "Una shida?",
-        "contactSupport": "Wasiliana na usaidizi"
+        "contactSupport": "Wasiliana na usaidizi",
+        "thankYou": "Asante kwa mchango wako wa ukarimu!",
+        "amountLabel": "Kiasi:",
+        "successful": "Malipo yako yamefaulu."
     },
     "admin": {
         "panel": "Paneli ya Msimamizi",
@@ -493,7 +512,9 @@
         "additionalDetails": "Maelezo ya Ziada",
         "viewFormula": "Tazama fomula",
         "close": "Funga",
-        "effectiveAtDonation": "Inafaa wakati wa kutoa mchango"
+        "effectiveAtDonation": "Inafaa wakati wa kutoa mchango",
+        "pay": "Lipa",
+        "loadingHistory": "Inapakia historia..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

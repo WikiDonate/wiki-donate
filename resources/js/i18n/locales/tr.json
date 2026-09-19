@@ -153,7 +153,9 @@
         "failedToChangePassword": "Şifre değiştirilemedi",
         "changePasswordTitle": "Şifreyi Değiştir",
         "passwordPlaceholder": "Şifrenizi girin",
-        "confirmPasswordPlaceholder": "Şifreyi onayla"
+        "confirmPasswordPlaceholder": "Şifreyi onayla",
+        "loading": "Tercihler Yükleniyor",
+        "saving": "Kaydediliyor..."
     },
     "billing": {
         "title": "Faturalandırma",
@@ -172,7 +174,9 @@
         "cardSaved": "Kart başarıyla kaydedildi",
         "validationError": "Doğrulama hatası",
         "failedToSaveCard": "Kart kaydedilemedi",
-        "failedToLoadCard": "Kart ayrıntıları yüklenemedi"
+        "failedToLoadCard": "Kart ayrıntıları yüklenemedi",
+        "cancel": "İptal",
+        "saving": "Kaydediliyor..."
     },
     "contact": {
         "title": "Bize Ulaşın",
@@ -194,13 +198,16 @@
         "subjectRequired": "Konu gerekli",
         "messageRequired": "Mesaj ayrıntıları gerekli",
         "emailRequired": "E-posta gerekli",
-        "emailInvalid": "E-posta geçerli bir e-posta olmalıdır"
+        "emailInvalid": "E-posta geçerli bir e-posta olmalıdır",
+        "message": "Mesaj Detayları"
     },
     "howItWorks": {
         "title": "WikiDonate Nasıl Kullanılır?",
         "steps": "Adımlar",
         "pageTitle": "WikiDonate Nasıl Çalışır?",
-        "subtitle": "İşbirliğine dayalı bir bağış platformu. Dakikalar içinde başlayın ve işiniz için destek almaya başlayın."
+        "subtitle": "İşbirliğine dayalı bir bağış platformu. Dakikalar içinde başlayın ve işiniz için destek almaya başlayın.",
+        "heroTitle": "WikiDonate Nasıl Çalışır?",
+        "heroSubtitle": "İşbirliğine dayalı bir bağış platformu. Dakikalar içinde başlayın ve işiniz için destek almaya başlayın."
     },
     "report": {
         "title": "Bağışlarım",
@@ -227,7 +234,10 @@
         "article": "Makale",
         "action": "Eylem",
         "failedToLoad": "Bağış raporu yüklenemedi",
-        "pageOf": "Sayfa {current} / {last} (toplam {total})"
+        "pageOf": "Sayfa {current} / {last} (toplam {total})",
+        "completedLabel": "Tamamlandı",
+        "pendingLabel": "Beklemede",
+        "failedLabel": "Başarısız"
     },
     "article": {
         "loading": "Makale Yükleniyor",
@@ -275,7 +285,13 @@
         "articleSaved": "Makale başarıyla kaydedildi!",
         "failedToSaveArticle": "Makale kaydedilemedi",
         "savingError": "Kaydedilirken bir hata oluştu",
-        "newArticleTitle": "Yeni Makale"
+        "newArticleTitle": "Yeni Makale",
+        "newTitle": "Yeni Makale",
+        "titlePlaceholder": "Makale başlığını girin",
+        "confirmSave": "Bu makaleyi kaydetmek istediğinizden emin misiniz?",
+        "savedSuccess": "Makale başarıyla kaydedildi!",
+        "saveFailed": "Makale kaydedilemedi",
+        "saveError": "Kaydedilirken bir hata oluştu"
     },
     "formula": {
         "name": "İsim",
@@ -345,7 +361,10 @@
         "safeMsg": "Endişelenmeyin; ödeme bilgileriniz güvende.",
         "tryAgain": "Hazır olduğunuzda tekrar deneyebilirsiniz.",
         "havingTrouble": "Sorun mu yaşıyorsunuz?",
-        "contactSupport": "Desteğe başvurun"
+        "contactSupport": "Desteğe başvurun",
+        "thankYou": "Cömert bağışınız için teşekkür ederiz!",
+        "amountLabel": "Tutar:",
+        "successful": "Ödemeniz başarılı oldu."
     },
     "admin": {
         "panel": "Yönetici Paneli",
@@ -493,7 +512,9 @@
         "additionalDetails": "Ek Ayrıntılar",
         "viewFormula": "Formülü görüntüle",
         "close": "Kapat",
-        "effectiveAtDonation": "Bağış anında geçerli"
+        "effectiveAtDonation": "Bağış anında geçerli",
+        "pay": "Ödeme",
+        "loadingHistory": "Geçmiş yükleniyor..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."

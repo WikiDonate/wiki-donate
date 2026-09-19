@@ -153,7 +153,9 @@
         "failedToChangePassword": "पासवर्ड बदलण्यात अयशस्वी",
         "changePasswordTitle": "पासवर्ड बदला",
         "passwordPlaceholder": "तुमचा पासवर्ड टाका",
-        "confirmPasswordPlaceholder": "पासवर्डची पुष्टी करा"
+        "confirmPasswordPlaceholder": "पासवर्डची पुष्टी करा",
+        "loading": "प्राधान्ये लोड करत आहे",
+        "saving": "सेव्ह करत आहे..."
     },
     "billing": {
         "title": "बिलिंग",
@@ -172,7 +174,9 @@
         "cardSaved": "कार्ड यशस्वीरित्या सेव्ह केले",
         "validationError": "प्रमाणीकरण त्रुटी",
         "failedToSaveCard": "कार्ड सेव्ह करण्यात अयशस्वी",
-        "failedToLoadCard": "कार्ड तपशील लोड करण्यात अयशस्वी"
+        "failedToLoadCard": "कार्ड तपशील लोड करण्यात अयशस्वी",
+        "cancel": "रद्द करा",
+        "saving": "सेव्ह करत आहे..."
     },
     "contact": {
         "title": "आमच्याशी संपर्क साधा",
@@ -194,13 +198,16 @@
         "subjectRequired": "विषय आवश्यक आहे",
         "messageRequired": "संदेश तपशील आवश्यक आहे",
         "emailRequired": "ईमेल आवश्यक आहे",
-        "emailInvalid": "ईमेल एक वैध ईमेल असणे आवश्यक आहे"
+        "emailInvalid": "ईमेल एक वैध ईमेल असणे आवश्यक आहे",
+        "message": "संदेश तपशील"
     },
     "howItWorks": {
         "title": "WikiDonate कसे वापरावे",
         "steps": "पायऱ्या",
         "pageTitle": "WikiDonate कसे कार्य करते",
-        "subtitle": "एक सहयोगी देणगी व्यासपीठ. काही मिनिटांत प्रारंभ करा आणि आपल्या कार्यासाठी समर्थन प्राप्त करण्यास प्रारंभ करा."
+        "subtitle": "एक सहयोगी देणगी व्यासपीठ. काही मिनिटांत प्रारंभ करा आणि आपल्या कार्यासाठी समर्थन प्राप्त करण्यास प्रारंभ करा.",
+        "heroTitle": "WikiDonate कसे कार्य करते",
+        "heroSubtitle": "एक सहयोगी देणगी व्यासपीठ. काही मिनिटांत प्रारंभ करा आणि आपल्या कार्यासाठी समर्थन प्राप्त करण्यास प्रारंभ करा."
     },
     "report": {
         "title": "माझ्या देणग्या",
@@ -227,7 +234,10 @@
         "article": "लेख",
         "action": "कृती",
         "failedToLoad": "देणगी अहवाल लोड करण्यात अयशस्वी",
-        "pageOf": "पान {current} / {last} (एकूण {total})"
+        "pageOf": "पान {current} / {last} (एकूण {total})",
+        "completedLabel": "पूर्ण झाले",
+        "pendingLabel": "प्रलंबित",
+        "failedLabel": "अयशस्वी"
     },
     "article": {
         "loading": "लेख लोड करत आहे",
@@ -275,7 +285,13 @@
         "articleSaved": "लेख यशस्वीरित्या जतन झाला!",
         "failedToSaveArticle": "लेख जतन करण्यात अयशस्वी",
         "savingError": "सेव्ह करताना एरर आली",
-        "newArticleTitle": "नवीन लेख"
+        "newArticleTitle": "नवीन लेख",
+        "newTitle": "नवीन लेख",
+        "titlePlaceholder": "लेखाचे शीर्षक प्रविष्ट करा",
+        "confirmSave": "तुमची खात्री आहे की तुम्ही हा लेख जतन करू इच्छिता?",
+        "savedSuccess": "लेख यशस्वीरित्या जतन झाला!",
+        "saveFailed": "लेख जतन करण्यात अयशस्वी",
+        "saveError": "सेव्ह करताना एरर आली"
     },
     "formula": {
         "name": "नाव",
@@ -345,7 +361,10 @@
         "safeMsg": "काळजी करू नका - तुमची पेमेंट माहिती सुरक्षित आहे.",
         "tryAgain": "तुम्ही तयार असाल तेव्हा तुम्ही पुन्हा प्रयत्न करू शकता.",
         "havingTrouble": "त्रास होत आहे?",
-        "contactSupport": "समर्थनाशी संपर्क साधा"
+        "contactSupport": "समर्थनाशी संपर्क साधा",
+        "thankYou": "तुमच्या उदार देणगीबद्दल धन्यवाद!",
+        "amountLabel": "रक्कम:",
+        "successful": "तुमचे पेमेंट यशस्वी झाले."
     },
     "admin": {
         "panel": "प्रशासन पॅनेल",
@@ -493,7 +512,9 @@
         "additionalDetails": "अतिरिक्त तपशील",
         "viewFormula": "सूत्र पहा",
         "close": "बंद करा",
-        "effectiveAtDonation": "देणगीच्या वेळी प्रभावी"
+        "effectiveAtDonation": "देणगीच्या वेळी प्रभावी",
+        "pay": "पैसे द्या",
+        "loadingHistory": "इतिहास लोड करत आहे..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."

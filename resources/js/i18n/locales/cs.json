@@ -153,7 +153,9 @@
         "failedToChangePassword": "Změna hesla se nezdařila",
         "changePasswordTitle": "Změnit heslo",
         "passwordPlaceholder": "Zadejte své heslo",
-        "confirmPasswordPlaceholder": "Potvrďte heslo"
+        "confirmPasswordPlaceholder": "Potvrďte heslo",
+        "loading": "Načítání předvoleb",
+        "saving": "Ukládání..."
     },
     "billing": {
         "title": "Fakturace",
@@ -172,7 +174,9 @@
         "cardSaved": "Karta byla úspěšně uložena",
         "validationError": "Chyba ověření",
         "failedToSaveCard": "Kartu se nepodařilo uložit",
-        "failedToLoadCard": "Podrobnosti o kartě se nepodařilo načíst"
+        "failedToLoadCard": "Podrobnosti o kartě se nepodařilo načíst",
+        "cancel": "Zrušit",
+        "saving": "Ukládání..."
     },
     "contact": {
         "title": "Kontaktujte nás",
@@ -194,13 +198,16 @@
         "subjectRequired": "Předmět je povinný",
         "messageRequired": "Podrobnosti zprávy jsou povinné",
         "emailRequired": "E-mail je povinný",
-        "emailInvalid": "E-mail musí být platný e-mail"
+        "emailInvalid": "E-mail musí být platný e-mail",
+        "message": "Podrobnosti zprávy"
     },
     "howItWorks": {
         "title": "Jak používat WikiDonate",
         "steps": "Kroky",
         "pageTitle": "Jak funguje WikiDonate",
-        "subtitle": "Platforma pro společné dárcovství. Začněte během několika minut a začněte dostávat podporu pro svou práci."
+        "subtitle": "Platforma pro společné dárcovství. Začněte během několika minut a začněte dostávat podporu pro svou práci.",
+        "heroTitle": "Jak funguje WikiDonate",
+        "heroSubtitle": "Platforma pro společné dárcovství. Začněte během několika minut a začněte dostávat podporu pro svou práci."
     },
     "report": {
         "title": "Moje dary",
@@ -227,7 +234,10 @@
         "article": "Článek",
         "action": "Akce",
         "failedToLoad": "Načtení zprávy o daru se nezdařilo",
-        "pageOf": "stránku {current} / {last} (celkem {total})"
+        "pageOf": "stránku {current} / {last} (celkem {total})",
+        "completedLabel": "Dokončeno",
+        "pendingLabel": "Čeká na vyřízení",
+        "failedLabel": "Nepodařilo se"
     },
     "article": {
         "loading": "Načítání článku",
@@ -275,7 +285,13 @@
         "articleSaved": "Článek byl úspěšně uložen!",
         "failedToSaveArticle": "Článek se nepodařilo uložit",
         "savingError": "Při ukládání došlo k chybě",
-        "newArticleTitle": "Nový článek"
+        "newArticleTitle": "Nový článek",
+        "newTitle": "Nový článek",
+        "titlePlaceholder": "Zadejte název článku",
+        "confirmSave": "Opravdu chcete tento článek uložit?",
+        "savedSuccess": "Článek byl úspěšně uložen!",
+        "saveFailed": "Článek se nepodařilo uložit",
+        "saveError": "Při ukládání došlo k chybě"
     },
     "formula": {
         "name": "Jméno",
@@ -345,7 +361,10 @@
         "safeMsg": "Nemějte obavy – vaše platební údaje jsou v bezpečí.",
         "tryAgain": "Můžete to zkusit znovu, kdykoli budete připraveni.",
         "havingTrouble": "Máte potíže?",
-        "contactSupport": "Kontaktujte podporu"
+        "contactSupport": "Kontaktujte podporu",
+        "thankYou": "Děkujeme za váš štědrý dar!",
+        "amountLabel": "Částka:",
+        "successful": "Vaše platba proběhla úspěšně."
     },
     "admin": {
         "panel": "Panel administrátora",
@@ -493,7 +512,9 @@
         "additionalDetails": "Další podrobnosti",
         "viewFormula": "Zobrazit vzorec",
         "close": "Zavřít",
-        "effectiveAtDonation": "Účinné v době darování"
+        "effectiveAtDonation": "Účinné v době darování",
+        "pay": "Zaplať",
+        "loadingHistory": "Načítání historie..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

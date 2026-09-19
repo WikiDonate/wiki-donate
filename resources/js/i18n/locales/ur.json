@@ -153,7 +153,9 @@
         "failedToChangePassword": "پاس ورڈ تبدیل کرنے میں ناکام",
         "changePasswordTitle": "پاس ورڈ تبدیل کریں۔",
         "passwordPlaceholder": "اپنا پاس ورڈ درج کریں۔",
-        "confirmPasswordPlaceholder": "پاس ورڈ کی تصدیق کریں۔"
+        "confirmPasswordPlaceholder": "پاس ورڈ کی تصدیق کریں۔",
+        "loading": "ترجیحات لوڈ ہو رہی ہیں۔",
+        "saving": "محفوظ کر رہا ہے..."
     },
     "billing": {
         "title": "بلنگ",
@@ -172,7 +174,9 @@
         "cardSaved": "کارڈ کامیابی سے محفوظ ہو گیا۔",
         "validationError": "توثیق کی خرابی۔",
         "failedToSaveCard": "کارڈ محفوظ کرنے میں ناکام",
-        "failedToLoadCard": "کارڈ کی تفصیلات لوڈ کرنے میں ناکام"
+        "failedToLoadCard": "کارڈ کی تفصیلات لوڈ کرنے میں ناکام",
+        "cancel": "منسوخ کریں۔",
+        "saving": "محفوظ کر رہا ہے..."
     },
     "contact": {
         "title": "ہم سے رابطہ کریں۔",
@@ -194,13 +198,16 @@
         "subjectRequired": "موضوع درکار ہے۔",
         "messageRequired": "پیغام کی تفصیلات درکار ہیں۔",
         "emailRequired": "ای میل درکار ہے۔",
-        "emailInvalid": "ای میل ایک درست ای میل ہونی چاہیے۔"
+        "emailInvalid": "ای میل ایک درست ای میل ہونی چاہیے۔",
+        "message": "پیغام کی تفصیلات"
     },
     "howItWorks": {
         "title": "WikiDonate کا استعمال کیسے کریں۔",
         "steps": "قدم",
         "pageTitle": "WikiDonate کیسے کام کرتا ہے۔",
-        "subtitle": "ایک تعاون پر مبنی عطیہ پلیٹ فارم۔ منٹوں میں شروع کریں اور اپنے کام کے لیے تعاون حاصل کرنا شروع کریں۔"
+        "subtitle": "ایک تعاون پر مبنی عطیہ پلیٹ فارم۔ منٹوں میں شروع کریں اور اپنے کام کے لیے تعاون حاصل کرنا شروع کریں۔",
+        "heroTitle": "WikiDonate کیسے کام کرتا ہے۔",
+        "heroSubtitle": "ایک تعاون پر مبنی عطیہ پلیٹ فارم۔ منٹوں میں شروع کریں اور اپنے کام کے لیے تعاون حاصل کرنا شروع کریں۔"
     },
     "report": {
         "title": "میرے عطیات",
@@ -227,7 +234,10 @@
         "article": "مضمون",
         "action": "ایکشن",
         "failedToLoad": "عطیہ کی رپورٹ لوڈ کرنے میں ناکام",
-        "pageOf": "صفحہ {current} / {last} (کل {total})"
+        "pageOf": "صفحہ {current} / {last} (کل {total})",
+        "completedLabel": "مکمل",
+        "pendingLabel": "زیر التواء",
+        "failedLabel": "ناکام"
     },
     "article": {
         "loading": "آرٹیکل لوڈ ہو رہا ہے۔",
@@ -275,7 +285,13 @@
         "articleSaved": "مضمون کامیابی کے ساتھ محفوظ ہو گیا!",
         "failedToSaveArticle": "مضمون محفوظ کرنے میں ناکام",
         "savingError": "محفوظ کرتے وقت ایک خرابی پیش آگئی",
-        "newArticleTitle": "نیا مضمون"
+        "newArticleTitle": "نیا مضمون",
+        "newTitle": "نیا مضمون",
+        "titlePlaceholder": "مضمون کا عنوان درج کریں۔",
+        "confirmSave": "کیا آپ واقعی اس مضمون کو محفوظ کرنا چاہتے ہیں؟",
+        "savedSuccess": "مضمون کامیابی کے ساتھ محفوظ ہو گیا!",
+        "saveFailed": "مضمون محفوظ کرنے میں ناکام",
+        "saveError": "محفوظ کرتے وقت ایک خرابی پیش آگئی"
     },
     "formula": {
         "name": "نام",
@@ -345,7 +361,10 @@
         "safeMsg": "پریشان نہ ہوں - آپ کی ادائیگی کی معلومات محفوظ ہے۔",
         "tryAgain": "جب بھی آپ تیار ہوں آپ دوبارہ کوشش کر سکتے ہیں۔",
         "havingTrouble": "پریشانی ہو رہی ہے؟",
-        "contactSupport": "سپورٹ سے رابطہ کریں۔"
+        "contactSupport": "سپورٹ سے رابطہ کریں۔",
+        "thankYou": "آپ کے فراخدلانہ عطیہ کے لئے آپ کا شکریہ!",
+        "amountLabel": "رقم:",
+        "successful": "آپ کی ادائیگی کامیاب ہو گئی۔"
     },
     "admin": {
         "panel": "ایڈمن پینل",
@@ -493,7 +512,9 @@
         "additionalDetails": "اضافی تفصیلات",
         "viewFormula": "فارمولا دیکھیں",
         "close": "بند",
-        "effectiveAtDonation": "عطیہ کے وقت مؤثر"
+        "effectiveAtDonation": "عطیہ کے وقت مؤثر",
+        "pay": "ادا کریں۔",
+        "loadingHistory": "تاریخ لوڈ ہو رہی ہے..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

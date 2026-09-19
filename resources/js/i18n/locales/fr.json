@@ -153,7 +153,9 @@
         "failedToChangePassword": "Échec de la modification du mot de passe",
         "changePasswordTitle": "Changer le mot de passe",
         "passwordPlaceholder": "Entrez votre mot de passe",
-        "confirmPasswordPlaceholder": "Confirmer le mot de passe"
+        "confirmPasswordPlaceholder": "Confirmer le mot de passe",
+        "loading": "Préférences de chargement",
+        "saving": "Sauvegarde..."
     },
     "billing": {
         "title": "Facturation",
@@ -172,7 +174,9 @@
         "cardSaved": "Carte enregistrée avec succès",
         "validationError": "Erreur de validation",
         "failedToSaveCard": "Échec de l'enregistrement de la carte",
-        "failedToLoadCard": "Échec du chargement des détails de la carte"
+        "failedToLoadCard": "Échec du chargement des détails de la carte",
+        "cancel": "Annuler",
+        "saving": "Sauvegarde..."
     },
     "contact": {
         "title": "Contactez-nous",
@@ -194,13 +198,16 @@
         "subjectRequired": "Le sujet est obligatoire",
         "messageRequired": "Les détails du message sont requis",
         "emailRequired": "L'e-mail est requis",
-        "emailInvalid": "L'e-mail doit être un e-mail valide"
+        "emailInvalid": "L'e-mail doit être un e-mail valide",
+        "message": "Détails du message"
     },
     "howItWorks": {
         "title": "Comment utiliser WikiDonate",
         "steps": "Étapes",
         "pageTitle": "Comment fonctionne WikiDonate",
-        "subtitle": "Une plateforme de dons collaboratifs. Commencez en quelques minutes et commencez à recevoir de l'aide pour votre travail."
+        "subtitle": "Une plateforme de dons collaboratifs. Commencez en quelques minutes et commencez à recevoir de l'aide pour votre travail.",
+        "heroTitle": "Comment fonctionne WikiDonate",
+        "heroSubtitle": "Une plateforme de dons collaboratifs. Commencez en quelques minutes et commencez à recevoir de l'aide pour votre travail."
     },
     "report": {
         "title": "Mes dons",
@@ -227,7 +234,10 @@
         "article": "Articles",
         "action": "Action",
         "failedToLoad": "Échec du chargement du rapport de don",
-        "pageOf": "Pages {current} / {last} (total {total})"
+        "pageOf": "Pages {current} / {last} (total {total})",
+        "completedLabel": "Terminé",
+        "pendingLabel": "En attente",
+        "failedLabel": "Échec"
     },
     "article": {
         "loading": "Chargement de l'article",
@@ -249,7 +259,7 @@
         "confirmDeletion": "Confirmer la suppression",
         "confirmDeleteMsg": "Êtes-vous sûr de vouloir supprimer cette formule de don ? Cette action ne peut pas être annulée.",
         "deleteFormulaConfirm": "Supprimer la formule",
-        "donationCompleted": "${amount} don réalisé avec succès via {method}!",
+        "donationCompleted": "${amount}don réalisé avec succès via{method}!",
         "formulaUpdated": "Formule de don mise à jour !",
         "formulaCreated": "Formule de don créée !",
         "formulaDeleted": "Formule de don supprimée !",
@@ -260,7 +270,7 @@
         "loadingArticles": "Chargement des articles",
         "by": "Par",
         "view": "Voir",
-        "viewArticle": "Voir {title}",
+        "viewArticle": "Voir{title}",
         "noArticles": "Vous n'avez pas encore créé d'articles.",
         "failedToLoadArticles": "Échec du chargement des articles",
         "loadArticlesError": "Une erreur s'est produite lors du chargement des articles",
@@ -275,7 +285,13 @@
         "articleSaved": "Article enregistré avec succès !",
         "failedToSaveArticle": "Échec de l'enregistrement de l'article",
         "savingError": "Une erreur s'est produite lors de l'enregistrement",
-        "newArticleTitle": "Nouvel article"
+        "newArticleTitle": "Nouvel article",
+        "newTitle": "Nouvel article",
+        "titlePlaceholder": "Entrez le titre de l'article",
+        "confirmSave": "Êtes-vous sûr de vouloir enregistrer cet article ?",
+        "savedSuccess": "Article enregistré avec succès !",
+        "saveFailed": "Échec de l'enregistrement de l'article",
+        "saveError": "Une erreur s'est produite lors de l'enregistrement"
     },
     "formula": {
         "name": "Nom",
@@ -345,7 +361,10 @@
         "safeMsg": "Ne vous inquiétez pas, vos informations de paiement sont en sécurité.",
         "tryAgain": "Vous pouvez réessayer chaque fois que vous êtes prêt.",
         "havingTrouble": "Vous avez des problèmes ?",
-        "contactSupport": "Contacter l'assistance"
+        "contactSupport": "Contacter l'assistance",
+        "thankYou": "Merci pour votre généreux don!",
+        "amountLabel": "Montant :",
+        "successful": "Votre paiement a réussi."
     },
     "admin": {
         "panel": "Panneau d'administration",
@@ -493,7 +512,9 @@
         "additionalDetails": "Détails supplémentaires",
         "viewFormula": "Voir la formule",
         "close": "Fermer",
-        "effectiveAtDonation": "En vigueur au moment du don"
+        "effectiveAtDonation": "En vigueur au moment du don",
+        "pay": "Payer",
+        "loadingHistory": "Chargement de l'historique..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tous droits réservés."

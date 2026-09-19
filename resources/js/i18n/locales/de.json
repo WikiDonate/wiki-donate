@@ -153,7 +153,9 @@
         "failedToChangePassword": "Passwort konnte nicht geändert werden",
         "changePasswordTitle": "Passwort ändern",
         "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
-        "confirmPasswordPlaceholder": "Passwort bestätigen"
+        "confirmPasswordPlaceholder": "Passwort bestätigen",
+        "loading": "Laden der Einstellungen",
+        "saving": "Sparen..."
     },
     "billing": {
         "title": "Abrechnung",
@@ -172,7 +174,9 @@
         "cardSaved": "Karte erfolgreich gespeichert",
         "validationError": "Validierungsfehler",
         "failedToSaveCard": "Karte konnte nicht gespeichert werden",
-        "failedToLoadCard": "Kartendetails konnten nicht geladen werden"
+        "failedToLoadCard": "Kartendetails konnten nicht geladen werden",
+        "cancel": "Abbrechen",
+        "saving": "Sparen..."
     },
     "contact": {
         "title": "Kontaktieren Sie uns",
@@ -194,13 +198,16 @@
         "subjectRequired": "Betreff ist erforderlich",
         "messageRequired": "Nachrichtendetails sind erforderlich",
         "emailRequired": "E-Mail ist erforderlich",
-        "emailInvalid": "E-Mail muss eine gültige E-Mail sein"
+        "emailInvalid": "E-Mail muss eine gültige E-Mail sein",
+        "message": "Nachrichtendetails"
     },
     "howItWorks": {
         "title": "So verwenden Sie WikiDonate",
         "steps": "Schritte",
         "pageTitle": "So funktioniert WikiDonate",
-        "subtitle": "Eine kollaborative Spendenplattform. Legen Sie in wenigen Minuten los und erhalten Sie Unterstützung für Ihre Arbeit."
+        "subtitle": "Eine kollaborative Spendenplattform. Legen Sie in wenigen Minuten los und erhalten Sie Unterstützung für Ihre Arbeit.",
+        "heroTitle": "So funktioniert WikiDonate",
+        "heroSubtitle": "Eine kollaborative Spendenplattform. Legen Sie in wenigen Minuten los und erhalten Sie Unterstützung für Ihre Arbeit."
     },
     "report": {
         "title": "Meine Spenden",
@@ -227,7 +234,10 @@
         "article": "Artikel",
         "action": "Aktion",
         "failedToLoad": "Der Spendenbericht konnte nicht geladen werden",
-        "pageOf": "Seite {current} / {last} (insgesamt {total})"
+        "pageOf": "Seite {current} / {last} (insgesamt {total})",
+        "completedLabel": "Abgeschlossen",
+        "pendingLabel": "Ausstehend",
+        "failedLabel": "Fehlgeschlagen"
     },
     "article": {
         "loading": "Artikel wird geladen",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikel erfolgreich gespeichert!",
         "failedToSaveArticle": "Artikel konnte nicht gespeichert werden",
         "savingError": "Beim Speichern ist ein Fehler aufgetreten",
-        "newArticleTitle": "Neuer Artikel"
+        "newArticleTitle": "Neuer Artikel",
+        "newTitle": "Neuer Artikel",
+        "titlePlaceholder": "Geben Sie den Artikeltitel ein",
+        "confirmSave": "Möchten Sie diesen Artikel wirklich speichern?",
+        "savedSuccess": "Artikel erfolgreich gespeichert!",
+        "saveFailed": "Artikel konnte nicht gespeichert werden",
+        "saveError": "Beim Speichern ist ein Fehler aufgetreten"
     },
     "formula": {
         "name": "Name",
@@ -345,7 +361,10 @@
         "safeMsg": "Machen Sie sich keine Sorgen – Ihre Zahlungsinformationen sind sicher.",
         "tryAgain": "Sie können es jederzeit erneut versuchen.",
         "havingTrouble": "Haben Sie Probleme?",
-        "contactSupport": "Kontaktieren Sie den Support"
+        "contactSupport": "Kontaktieren Sie den Support",
+        "thankYou": "Vielen Dank für Ihre großzügige Spende!",
+        "amountLabel": "Betrag:",
+        "successful": "Ihre Zahlung war erfolgreich."
     },
     "admin": {
         "panel": "Admin-Panel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Zusätzliche Details",
         "viewFormula": "Formel ansehen",
         "close": "Schließen",
-        "effectiveAtDonation": "Gültig zum Zeitpunkt der Spende"
+        "effectiveAtDonation": "Gültig zum Zeitpunkt der Spende",
+        "pay": "Bezahlen",
+        "loadingHistory": "Verlauf wird geladen..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle Rechte vorbehalten."

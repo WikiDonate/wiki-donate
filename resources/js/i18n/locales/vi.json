@@ -153,7 +153,9 @@
         "failedToChangePassword": "Không thể thay đổi mật khẩu",
         "changePasswordTitle": "Thay đổi mật khẩu",
         "passwordPlaceholder": "Nhập mật khẩu của bạn",
-        "confirmPasswordPlaceholder": "Xác nhận mật khẩu"
+        "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
+        "loading": "Đang tải tùy chọn",
+        "saving": "Đang lưu..."
     },
     "billing": {
         "title": "Thanh toán",
@@ -172,7 +174,9 @@
         "cardSaved": "Đã lưu thẻ thành công",
         "validationError": "Lỗi xác thực",
         "failedToSaveCard": "Không lưu được thẻ",
-        "failedToLoadCard": "Không thể tải chi tiết thẻ"
+        "failedToLoadCard": "Không thể tải chi tiết thẻ",
+        "cancel": "Hủy bỏ",
+        "saving": "Đang lưu..."
     },
     "contact": {
         "title": "Liên hệ với chúng tôi",
@@ -194,13 +198,16 @@
         "subjectRequired": "Chủ đề là bắt buộc",
         "messageRequired": "Thông tin chi tiết về tin nhắn là bắt buộc",
         "emailRequired": "Email là bắt buộc",
-        "emailInvalid": "Email phải là email hợp lệ"
+        "emailInvalid": "Email phải là email hợp lệ",
+        "message": "Chi tiết tin nhắn"
     },
     "howItWorks": {
         "title": "Cách sử dụng WikiDonate",
         "steps": "bước",
         "pageTitle": "WikiDonate hoạt động như thế nào",
-        "subtitle": "Một nền tảng quyên góp hợp tác. Bắt đầu sau vài phút và bắt đầu nhận được hỗ trợ cho công việc của bạn."
+        "subtitle": "Một nền tảng quyên góp hợp tác. Bắt đầu sau vài phút và bắt đầu nhận được hỗ trợ cho công việc của bạn.",
+        "heroTitle": "WikiDonate hoạt động như thế nào",
+        "heroSubtitle": "Một nền tảng quyên góp hợp tác. Bắt đầu sau vài phút và bắt đầu nhận được hỗ trợ cho công việc của bạn."
     },
     "report": {
         "title": "Đóng góp của tôi",
@@ -227,7 +234,10 @@
         "article": "Bài viết",
         "action": "hành động",
         "failedToLoad": "Không tải được báo cáo quyên góp",
-        "pageOf": "Trang {current} / {last} (tổng cộng {total})"
+        "pageOf": "Trang {current} / {last} (tổng cộng {total})",
+        "completedLabel": "Đã hoàn thành",
+        "pendingLabel": "Đang chờ xử lý",
+        "failedLabel": "thất bại"
     },
     "article": {
         "loading": "Đang tải bài viết",
@@ -275,7 +285,13 @@
         "articleSaved": "Bài viết đã được lưu thành công!",
         "failedToSaveArticle": "Không lưu được bài viết",
         "savingError": "Đã xảy ra lỗi khi lưu",
-        "newArticleTitle": "Bài viết mới"
+        "newArticleTitle": "Bài viết mới",
+        "newTitle": "Bài viết mới",
+        "titlePlaceholder": "Nhập tiêu đề bài viết",
+        "confirmSave": "Bạn có chắc chắn muốn lưu bài viết này?",
+        "savedSuccess": "Bài viết đã được lưu thành công!",
+        "saveFailed": "Không lưu được bài viết",
+        "saveError": "Đã xảy ra lỗi khi lưu"
     },
     "formula": {
         "name": "Tên",
@@ -345,7 +361,10 @@
         "safeMsg": "Đừng lo lắng — thông tin thanh toán của bạn được an toàn.",
         "tryAgain": "Bạn có thể thử lại bất cứ khi nào bạn sẵn sàng.",
         "havingTrouble": "Gặp rắc rối?",
-        "contactSupport": "Liên hệ hỗ trợ"
+        "contactSupport": "Liên hệ hỗ trợ",
+        "thankYou": "Cảm ơn sự đóng góp hào phóng của bạn!",
+        "amountLabel": "Số tiền:",
+        "successful": "Thanh toán của bạn đã thành công."
     },
     "admin": {
         "panel": "Bảng quản trị",
@@ -493,7 +512,9 @@
         "additionalDetails": "Chi tiết bổ sung",
         "viewFormula": "Xem công thức",
         "close": "Đóng",
-        "effectiveAtDonation": "Có hiệu lực tại thời điểm quyên góp"
+        "effectiveAtDonation": "Có hiệu lực tại thời điểm quyên góp",
+        "pay": "Trả tiền",
+        "loadingHistory": "Đang tải lịch sử..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

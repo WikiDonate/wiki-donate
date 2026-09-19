@@ -153,7 +153,9 @@
         "failedToChangePassword": "비밀번호를 변경하지 못했습니다.",
         "changePasswordTitle": "비밀번호 변경",
         "passwordPlaceholder": "비밀번호를 입력하세요",
-        "confirmPasswordPlaceholder": "비밀번호 확인"
+        "confirmPasswordPlaceholder": "비밀번호 확인",
+        "loading": "기본 설정 로드 중",
+        "saving": "저장 중..."
     },
     "billing": {
         "title": "청구",
@@ -172,7 +174,9 @@
         "cardSaved": "카드가 성공적으로 저장되었습니다",
         "validationError": "유효성 검사 오류",
         "failedToSaveCard": "카드를 저장하지 못했습니다.",
-        "failedToLoadCard": "카드 세부정보를 로드하지 못했습니다."
+        "failedToLoadCard": "카드 세부정보를 로드하지 못했습니다.",
+        "cancel": "취소",
+        "saving": "저장 중..."
     },
     "contact": {
         "title": "문의하기",
@@ -194,13 +198,16 @@
         "subjectRequired": "제목은 필수입니다",
         "messageRequired": "메시지 세부정보가 필요합니다.",
         "emailRequired": "이메일은 필수입니다",
-        "emailInvalid": "이메일은 유효한 이메일이어야 합니다."
+        "emailInvalid": "이메일은 유효한 이메일이어야 합니다.",
+        "message": "메시지 세부정보"
     },
     "howItWorks": {
         "title": "WikiDonate를 사용하는 방법",
         "steps": "단계",
         "pageTitle": "WikiDonate의 작동 방식",
-        "subtitle": "협업 기부 플랫폼입니다. 몇 분 안에 시작하고 작업에 대한 지원을 받아보세요."
+        "subtitle": "협업 기부 플랫폼입니다. 몇 분 안에 시작하고 작업에 대한 지원을 받아보세요.",
+        "heroTitle": "WikiDonate의 작동 방식",
+        "heroSubtitle": "협업 기부 플랫폼입니다. 몇 분 안에 시작하고 작업에 대한 지원을 받아보세요."
     },
     "report": {
         "title": "내 기부",
@@ -227,7 +234,10 @@
         "article": "기사",
         "action": "액션",
         "failedToLoad": "기부 보고서를 로드하지 못했습니다.",
-        "pageOf": "페이지 {current} / {last} (합계 {total})"
+        "pageOf": "페이지 {current} / {last} (합계 {total})",
+        "completedLabel": "완료됨",
+        "pendingLabel": "보류 중",
+        "failedLabel": "실패"
     },
     "article": {
         "loading": "기사 로드 중",
@@ -275,7 +285,13 @@
         "articleSaved": "기사가 저장되었습니다!",
         "failedToSaveArticle": "기사를 저장하지 못했습니다.",
         "savingError": "저장하는 중에 오류가 발생했습니다.",
-        "newArticleTitle": "새 기사"
+        "newArticleTitle": "새 기사",
+        "newTitle": "새 기사",
+        "titlePlaceholder": "기사 제목을 입력하세요",
+        "confirmSave": "이 기사를 저장하시겠습니까?",
+        "savedSuccess": "기사가 저장되었습니다!",
+        "saveFailed": "기사를 저장하지 못했습니다.",
+        "saveError": "저장하는 중에 오류가 발생했습니다."
     },
     "formula": {
         "name": "이름",
@@ -345,7 +361,10 @@
         "safeMsg": "걱정하지 마세요. 귀하의 결제 정보는 안전합니다.",
         "tryAgain": "준비가 되면 언제든지 다시 시도할 수 있습니다.",
         "havingTrouble": "문제가 있나요?",
-        "contactSupport": "지원팀에 문의"
+        "contactSupport": "지원팀에 문의",
+        "thankYou": "여러분의 아낌없는 기부에 감사드립니다!",
+        "amountLabel": "금액:",
+        "successful": "결제가 완료되었습니다."
     },
     "admin": {
         "panel": "관리자 패널",
@@ -493,7 +512,9 @@
         "additionalDetails": "추가 세부정보",
         "viewFormula": "수식 보기",
         "close": "닫기",
-        "effectiveAtDonation": "기부시 유효"
+        "effectiveAtDonation": "기부시 유효",
+        "pay": "지불",
+        "loadingHistory": "기록 로드 중..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

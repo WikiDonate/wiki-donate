@@ -153,7 +153,9 @@
         "failedToChangePassword": "Nem sikerült megváltoztatni a jelszót",
         "changePasswordTitle": "Jelszó módosítása",
         "passwordPlaceholder": "Adja meg jelszavát",
-        "confirmPasswordPlaceholder": "Erősítse meg a jelszót"
+        "confirmPasswordPlaceholder": "Erősítse meg a jelszót",
+        "loading": "Beállítások betöltése",
+        "saving": "Mentés..."
     },
     "billing": {
         "title": "Számlázás",
@@ -172,7 +174,9 @@
         "cardSaved": "A kártya sikeresen mentve",
         "validationError": "Érvényesítési hiba",
         "failedToSaveCard": "Nem sikerült menteni a kártyát",
-        "failedToLoadCard": "Nem sikerült betölteni a kártya adatait"
+        "failedToLoadCard": "Nem sikerült betölteni a kártya adatait",
+        "cancel": "Mégsem",
+        "saving": "Mentés..."
     },
     "contact": {
         "title": "Lépjen kapcsolatba velünk",
@@ -194,13 +198,16 @@
         "subjectRequired": "A tárgy kötelező",
         "messageRequired": "Az üzenet adatai megadása kötelező",
         "emailRequired": "E-mail megadása kötelező",
-        "emailInvalid": "Az e-mail-címnek érvényes e-mail-címnek kell lennie"
+        "emailInvalid": "Az e-mail-címnek érvényes e-mail-címnek kell lennie",
+        "message": "Üzenet részletei"
     },
     "howItWorks": {
         "title": "A WikiDonate használata",
         "steps": "Lépések",
         "pageTitle": "Hogyan működik a WikiDonate",
-        "subtitle": "Együttműködő adományozási platform. Kezdje el percek alatt, és kaphat támogatást a munkájához."
+        "subtitle": "Együttműködő adományozási platform. Kezdje el percek alatt, és kaphat támogatást a munkájához.",
+        "heroTitle": "Hogyan működik a WikiDonate",
+        "heroSubtitle": "Együttműködő adományozási platform. Kezdje el percek alatt, és kaphat támogatást a munkájához."
     },
     "report": {
         "title": "Adományaim",
@@ -227,7 +234,10 @@
         "article": "cikk",
         "action": "Akció",
         "failedToLoad": "Nem sikerült betölteni az adományozási jelentést",
-        "pageOf": "oldal {current} / {last} (összesen {total})"
+        "pageOf": "oldal {current} / {last} (összesen {total})",
+        "completedLabel": "Befejezve",
+        "pendingLabel": "Függőben",
+        "failedLabel": "Sikertelen"
     },
     "article": {
         "loading": "Cikk betöltése",
@@ -275,7 +285,13 @@
         "articleSaved": "A cikk sikeresen mentve!",
         "failedToSaveArticle": "Nem sikerült menteni a cikket",
         "savingError": "Hiba történt a mentés során",
-        "newArticleTitle": "Új cikk"
+        "newArticleTitle": "Új cikk",
+        "newTitle": "Új cikk",
+        "titlePlaceholder": "Írja be a cikk címét",
+        "confirmSave": "Biztosan menteni szeretné ezt a cikket?",
+        "savedSuccess": "A cikk sikeresen mentve!",
+        "saveFailed": "Nem sikerült menteni a cikket",
+        "saveError": "Hiba történt a mentés során"
     },
     "formula": {
         "name": "Név",
@@ -345,7 +361,10 @@
         "safeMsg": "Ne aggódjon – fizetési adatai biztonságban vannak.",
         "tryAgain": "Megpróbálhatja újra, amikor készen áll.",
         "havingTrouble": "Gondjai vannak?",
-        "contactSupport": "Lépjen kapcsolatba az ügyfélszolgálattal"
+        "contactSupport": "Lépjen kapcsolatba az ügyfélszolgálattal",
+        "thankYou": "Köszönjük nagylelkű adományát!",
+        "amountLabel": "Összeg:",
+        "successful": "Befizetése sikeres volt."
     },
     "admin": {
         "panel": "Felügyeleti panel",
@@ -493,7 +512,9 @@
         "additionalDetails": "További részletek",
         "viewFormula": "Képlet megtekintése",
         "close": "Bezárás",
-        "effectiveAtDonation": "Az adományozás időpontjában érvényes"
+        "effectiveAtDonation": "Az adományozás időpontjában érvényes",
+        "pay": "Fizessen",
+        "loadingHistory": "Előzmények betöltése..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

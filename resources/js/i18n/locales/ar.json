@@ -153,7 +153,9 @@
         "failedToChangePassword": "فشل في تغيير كلمة المرور",
         "changePasswordTitle": "تغيير كلمة المرور",
         "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
-        "confirmPasswordPlaceholder": "تأكيد كلمة المرور"
+        "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+        "loading": "تحميل التفضيلات",
+        "saving": "جارٍ الحفظ..."
     },
     "billing": {
         "title": "الفواتير",
@@ -172,7 +174,9 @@
         "cardSaved": "تم حفظ البطاقة بنجاح",
         "validationError": "خطأ في التحقق",
         "failedToSaveCard": "فشل حفظ البطاقة",
-        "failedToLoadCard": "فشل تحميل تفاصيل البطاقة"
+        "failedToLoadCard": "فشل تحميل تفاصيل البطاقة",
+        "cancel": "إلغاء",
+        "saving": "جارٍ الحفظ..."
     },
     "contact": {
         "title": "اتصل بنا",
@@ -194,13 +198,16 @@
         "subjectRequired": "الموضوع مطلوب",
         "messageRequired": "تفاصيل الرسالة مطلوبة",
         "emailRequired": "البريد الإلكتروني مطلوب",
-        "emailInvalid": "يجب أن يكون البريد الإلكتروني بريدًا إلكترونيًا صالحًا"
+        "emailInvalid": "يجب أن يكون البريد الإلكتروني بريدًا إلكترونيًا صالحًا",
+        "message": "تفاصيل الرسالة"
     },
     "howItWorks": {
         "title": "كيفية استخدام ويكي دونات",
         "steps": "خطوات",
         "pageTitle": "كيف يعمل ويكي دونات",
-        "subtitle": "منصة التبرع التعاوني. ابدأ في دقائق وابدأ في تلقي الدعم لعملك."
+        "subtitle": "منصة التبرع التعاوني. ابدأ في دقائق وابدأ في تلقي الدعم لعملك.",
+        "heroTitle": "كيف يعمل ويكي دونات",
+        "heroSubtitle": "منصة التبرع التعاوني. ابدأ في دقائق وابدأ في تلقي الدعم لعملك."
     },
     "report": {
         "title": "تبرعاتي",
@@ -227,7 +234,10 @@
         "article": "مقالة",
         "action": "العمل",
         "failedToLoad": "فشل تحميل تقرير التبرع",
-        "pageOf": "الصفحة {current} / {last} (المجموع {total})"
+        "pageOf": "الصفحة {current} / {last} (المجموع {total})",
+        "completedLabel": "مكتمل",
+        "pendingLabel": "في انتظار",
+        "failedLabel": "فشل"
     },
     "article": {
         "loading": "جارٍ تحميل المقالة",
@@ -275,7 +285,13 @@
         "articleSaved": "تم حفظ المقالة بنجاح!",
         "failedToSaveArticle": "فشل حفظ المقالة",
         "savingError": "حدث خطأ أثناء الحفظ",
-        "newArticleTitle": "مقالة جديدة"
+        "newArticleTitle": "مقالة جديدة",
+        "newTitle": "مقالة جديدة",
+        "titlePlaceholder": "أدخل عنوان المقال",
+        "confirmSave": "هل أنت متأكد أنك تريد حفظ هذه المقالة؟",
+        "savedSuccess": "تم حفظ المقالة بنجاح!",
+        "saveFailed": "فشل حفظ المقالة",
+        "saveError": "حدث خطأ أثناء الحفظ"
     },
     "formula": {
         "name": "الاسم",
@@ -345,7 +361,10 @@
         "safeMsg": "لا تقلق - معلومات الدفع الخاصة بك آمنة.",
         "tryAgain": "يمكنك المحاولة مرة أخرى عندما تكون مستعدًا.",
         "havingTrouble": "تواجه مشكلة؟",
-        "contactSupport": "اتصل بالدعم"
+        "contactSupport": "اتصل بالدعم",
+        "thankYou": "شكرا لتبرعك السخي!",
+        "amountLabel": "المبلغ:",
+        "successful": "الدفع الخاص بك كان ناجحا."
     },
     "admin": {
         "panel": "لوحة الإدارة",
@@ -493,7 +512,9 @@
         "additionalDetails": "تفاصيل إضافية",
         "viewFormula": "عرض الصيغة",
         "close": "إغلاق",
-        "effectiveAtDonation": "فعالة في وقت التبرع"
+        "effectiveAtDonation": "فعالة في وقت التبرع",
+        "pay": "ادفع",
+        "loadingHistory": "جارٍ تحميل السجل..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

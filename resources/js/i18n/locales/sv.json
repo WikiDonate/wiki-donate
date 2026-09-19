@@ -153,7 +153,9 @@
         "failedToChangePassword": "Det gick inte att byta lösenord",
         "changePasswordTitle": "Ändra lösenord",
         "passwordPlaceholder": "Ange ditt lösenord",
-        "confirmPasswordPlaceholder": "Bekräfta lösenord"
+        "confirmPasswordPlaceholder": "Bekräfta lösenord",
+        "loading": "Laddar inställningar",
+        "saving": "Sparar..."
     },
     "billing": {
         "title": "Fakturering",
@@ -172,7 +174,9 @@
         "cardSaved": "Kortet har sparats",
         "validationError": "Valideringsfel",
         "failedToSaveCard": "Det gick inte att spara kortet",
-        "failedToLoadCard": "Det gick inte att läsa in kortuppgifter"
+        "failedToLoadCard": "Det gick inte att läsa in kortuppgifter",
+        "cancel": "Avbryt",
+        "saving": "Sparar..."
     },
     "contact": {
         "title": "Kontakta oss",
@@ -194,13 +198,16 @@
         "subjectRequired": "Ämne krävs",
         "messageRequired": "Meddelandeinformation krävs",
         "emailRequired": "E-post krävs",
-        "emailInvalid": "E-post måste vara en giltig e-post"
+        "emailInvalid": "E-post måste vara en giltig e-post",
+        "message": "Meddelandedetaljer"
     },
     "howItWorks": {
         "title": "Hur man använder WikiDonate",
         "steps": "Steg",
         "pageTitle": "Hur WikiDonate fungerar",
-        "subtitle": "En donationsplattform för samarbete. Kom igång på några minuter och börja få support för ditt arbete."
+        "subtitle": "En donationsplattform för samarbete. Kom igång på några minuter och börja få support för ditt arbete.",
+        "heroTitle": "Hur WikiDonate fungerar",
+        "heroSubtitle": "En donationsplattform för samarbete. Kom igång på några minuter och börja få support för ditt arbete."
     },
     "report": {
         "title": "Mina donationer",
@@ -227,7 +234,10 @@
         "article": "Artikel",
         "action": "Åtgärd",
         "failedToLoad": "Det gick inte att läsa in donationsrapporten",
-        "pageOf": "Sida {current} / {last} (totalt {total})"
+        "pageOf": "Sida {current} / {last} (totalt {total})",
+        "completedLabel": "Avslutad",
+        "pendingLabel": "Väntar",
+        "failedLabel": "Misslyckades"
     },
     "article": {
         "loading": "Laddar artikel",
@@ -275,7 +285,13 @@
         "articleSaved": "Artikeln har sparats!",
         "failedToSaveArticle": "Det gick inte att spara artikeln",
         "savingError": "Ett fel uppstod när du sparade",
-        "newArticleTitle": "Ny artikel"
+        "newArticleTitle": "Ny artikel",
+        "newTitle": "Ny artikel",
+        "titlePlaceholder": "Ange artikeltitel",
+        "confirmSave": "Är du säker på att du vill spara den här artikeln?",
+        "savedSuccess": "Artikeln har sparats!",
+        "saveFailed": "Det gick inte att spara artikeln",
+        "saveError": "Ett fel uppstod när du sparade"
     },
     "formula": {
         "name": "Namn",
@@ -345,7 +361,10 @@
         "safeMsg": "Oroa dig inte – din betalningsinformation är säker.",
         "tryAgain": "Du kan försöka igen när du är redo.",
         "havingTrouble": "Har du problem?",
-        "contactSupport": "Kontakta supporten"
+        "contactSupport": "Kontakta supporten",
+        "thankYou": "Tack för din generösa donation!",
+        "amountLabel": "Belopp:",
+        "successful": "Din betalning lyckades."
     },
     "admin": {
         "panel": "Adminpanel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Ytterligare detaljer",
         "viewFormula": "Visa formel",
         "close": "Stäng",
-        "effectiveAtDonation": "Gäller vid tidpunkten för donation"
+        "effectiveAtDonation": "Gäller vid tidpunkten för donation",
+        "pay": "Betala",
+        "loadingHistory": "Laddar historik..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

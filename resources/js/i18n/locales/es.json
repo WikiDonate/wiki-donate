@@ -153,7 +153,9 @@
         "failedToChangePassword": "No se pudo cambiar la contraseña",
         "changePasswordTitle": "Cambiar contraseña",
         "passwordPlaceholder": "Introduce tu contraseña",
-        "confirmPasswordPlaceholder": "Confirmar contraseña"
+        "confirmPasswordPlaceholder": "Confirmar contraseña",
+        "loading": "Preferencias de carga",
+        "saving": "Guardando..."
     },
     "billing": {
         "title": "Facturación",
@@ -172,7 +174,9 @@
         "cardSaved": "Tarjeta guardada exitosamente",
         "validationError": "Error de validación",
         "failedToSaveCard": "No se pudo guardar la tarjeta",
-        "failedToLoadCard": "No se pudieron cargar los datos de la tarjeta"
+        "failedToLoadCard": "No se pudieron cargar los datos de la tarjeta",
+        "cancel": "Cancelar",
+        "saving": "Guardando..."
     },
     "contact": {
         "title": "Contáctenos",
@@ -194,13 +198,16 @@
         "subjectRequired": "Se requiere sujeto",
         "messageRequired": "Se requieren detalles del mensaje",
         "emailRequired": "Se requiere correo electrónico",
-        "emailInvalid": "El correo electrónico debe ser un correo electrónico válido."
+        "emailInvalid": "El correo electrónico debe ser un correo electrónico válido.",
+        "message": "Detalles del mensaje"
     },
     "howItWorks": {
         "title": "Cómo utilizar WikiDonate",
         "steps": "Pasos",
         "pageTitle": "Cómo funciona WikiDonate",
-        "subtitle": "Una plataforma de donación colaborativa. Comience en minutos y comience a recibir soporte para su trabajo."
+        "subtitle": "Una plataforma de donación colaborativa. Comience en minutos y comience a recibir soporte para su trabajo.",
+        "heroTitle": "Cómo funciona WikiDonate",
+        "heroSubtitle": "Una plataforma de donación colaborativa. Comience en minutos y comience a recibir soporte para su trabajo."
     },
     "report": {
         "title": "Mis donaciones",
@@ -227,7 +234,10 @@
         "article": "Artículo",
         "action": "acción",
         "failedToLoad": "No se pudo cargar el informe de donación",
-        "pageOf": "Página {current} / {last} (total {total})"
+        "pageOf": "Página {current} / {last} (total {total})",
+        "completedLabel": "Completado",
+        "pendingLabel": "Pendiente",
+        "failedLabel": "Fallido"
     },
     "article": {
         "loading": "Cargando artículo",
@@ -275,7 +285,13 @@
         "articleSaved": "¡Artículo guardado exitosamente!",
         "failedToSaveArticle": "No se pudo guardar el artículo",
         "savingError": "Ocurrió un error al guardar",
-        "newArticleTitle": "Nuevo artículo"
+        "newArticleTitle": "Nuevo artículo",
+        "newTitle": "Nuevo artículo",
+        "titlePlaceholder": "Introduzca el título del artículo",
+        "confirmSave": "¿Estás seguro de que quieres guardar este artículo?",
+        "savedSuccess": "¡Artículo guardado exitosamente!",
+        "saveFailed": "No se pudo guardar el artículo",
+        "saveError": "Ocurrió un error al guardar"
     },
     "formula": {
         "name": "Nombre",
@@ -345,7 +361,10 @@
         "safeMsg": "No se preocupe: su información de pago está segura.",
         "tryAgain": "Puedes volver a intentarlo cuando estés listo.",
         "havingTrouble": "¿Tienes problemas?",
-        "contactSupport": "Contactar con soporte"
+        "contactSupport": "Contactar con soporte",
+        "thankYou": "¡Gracias por tu generosa donación!",
+        "amountLabel": "Cantidad:",
+        "successful": "Su pago fue exitoso."
     },
     "admin": {
         "panel": "Panel de administración",
@@ -493,7 +512,9 @@
         "additionalDetails": "Detalles adicionales",
         "viewFormula": "Ver fórmula",
         "close": "Cerrar",
-        "effectiveAtDonation": "Efectivo en el momento de la donación."
+        "effectiveAtDonation": "Efectivo en el momento de la donación.",
+        "pay": "pagar",
+        "loadingHistory": "Cargando historial..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."

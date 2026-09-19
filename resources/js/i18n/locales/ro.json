@@ -153,7 +153,9 @@
         "failedToChangePassword": "Schimbarea parolei a eșuat",
         "changePasswordTitle": "Schimbați parola",
         "passwordPlaceholder": "Introduceți parola",
-        "confirmPasswordPlaceholder": "Confirmați parola"
+        "confirmPasswordPlaceholder": "Confirmați parola",
+        "loading": "Se încarcă preferințe",
+        "saving": "Se salvează..."
     },
     "billing": {
         "title": "Facturare",
@@ -172,7 +174,9 @@
         "cardSaved": "Cardul a fost salvat cu succes",
         "validationError": "Eroare de validare",
         "failedToSaveCard": "Cardul nu a putut fi salvat",
-        "failedToLoadCard": "Nu s-au încărcat detaliile cardului"
+        "failedToLoadCard": "Nu s-au încărcat detaliile cardului",
+        "cancel": "Anulează",
+        "saving": "Se salvează..."
     },
     "contact": {
         "title": "Contactați-ne",
@@ -194,13 +198,16 @@
         "subjectRequired": "Subiectul este obligatoriu",
         "messageRequired": "Detaliile mesajului sunt necesare",
         "emailRequired": "E-mailul este obligatoriu",
-        "emailInvalid": "E-mailul trebuie să fie un e-mail valid"
+        "emailInvalid": "E-mailul trebuie să fie un e-mail valid",
+        "message": "Detalii mesaj"
     },
     "howItWorks": {
         "title": "Cum să utilizați WikiDonate",
         "steps": "Pași",
         "pageTitle": "Cum funcționează WikiDonate",
-        "subtitle": "O platformă colaborativă de donații. Începeți în câteva minute și începeți să primiți asistență pentru munca dvs."
+        "subtitle": "O platformă colaborativă de donații. Începeți în câteva minute și începeți să primiți asistență pentru munca dvs.",
+        "heroTitle": "Cum funcționează WikiDonate",
+        "heroSubtitle": "O platformă colaborativă de donații. Începeți în câteva minute și începeți să primiți asistență pentru munca dvs."
     },
     "report": {
         "title": "Donațiile mele",
@@ -227,7 +234,10 @@
         "article": "Articolul",
         "action": "Acțiune",
         "failedToLoad": "Nu s-a încărcat raportul de donație",
-        "pageOf": "Pagina {current} / {last} (total {total})"
+        "pageOf": "Pagina {current} / {last} (total {total})",
+        "completedLabel": "Terminat",
+        "pendingLabel": "În așteptare",
+        "failedLabel": "A eșuat"
     },
     "article": {
         "loading": "Se încarcă articolul",
@@ -275,7 +285,13 @@
         "articleSaved": "Articol salvat cu succes!",
         "failedToSaveArticle": "Nu s-a putut salva articolul",
         "savingError": "A apărut o eroare la salvare",
-        "newArticleTitle": "articol nou"
+        "newArticleTitle": "articol nou",
+        "newTitle": "articol nou",
+        "titlePlaceholder": "Introduceți titlul articolului",
+        "confirmSave": "Sigur vrei să salvezi acest articol?",
+        "savedSuccess": "Articol salvat cu succes!",
+        "saveFailed": "Nu s-a putut salva articolul",
+        "saveError": "A apărut o eroare la salvare"
     },
     "formula": {
         "name": "Nume",
@@ -345,7 +361,10 @@
         "safeMsg": "Nu vă faceți griji - informațiile dvs. de plată sunt în siguranță.",
         "tryAgain": "Puteți încerca din nou ori de câte ori sunteți gata.",
         "havingTrouble": "Ai probleme?",
-        "contactSupport": "Contactați asistența"
+        "contactSupport": "Contactați asistența",
+        "thankYou": "Vă mulțumim pentru donația dumneavoastră generoasă!",
+        "amountLabel": "Suma:",
+        "successful": "Plata dvs. a avut succes."
     },
     "admin": {
         "panel": "Panoul de administrare",
@@ -493,7 +512,9 @@
         "additionalDetails": "Detalii suplimentare",
         "viewFormula": "Vizualizați formula",
         "close": "Închide",
-        "effectiveAtDonation": "În vigoare în momentul donării"
+        "effectiveAtDonation": "În vigoare în momentul donării",
+        "pay": "Plătiți",
+        "loadingHistory": "Se încarcă istoricul..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

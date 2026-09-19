@@ -153,7 +153,9 @@
         "failedToChangePassword": "पासवर्ड बदलने में विफल",
         "changePasswordTitle": "पासवर्ड बदलें",
         "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
-        "confirmPasswordPlaceholder": "पासवर्ड की पुष्टि करें"
+        "confirmPasswordPlaceholder": "पासवर्ड की पुष्टि करें",
+        "loading": "प्राथमिकताएँ लोड हो रही हैं",
+        "saving": "सहेजा जा रहा है..."
     },
     "billing": {
         "title": "बिलिंग",
@@ -172,7 +174,9 @@
         "cardSaved": "कार्ड सफलतापूर्वक सहेजा गया",
         "validationError": "सत्यापन त्रुटि",
         "failedToSaveCard": "कार्ड सहेजने में विफल",
-        "failedToLoadCard": "कार्ड विवरण लोड करने में विफल"
+        "failedToLoadCard": "कार्ड विवरण लोड करने में विफल",
+        "cancel": "रद्द करें",
+        "saving": "सहेजा जा रहा है..."
     },
     "contact": {
         "title": "हमसे संपर्क करें",
@@ -194,13 +198,16 @@
         "subjectRequired": "विषय आवश्यक है",
         "messageRequired": "संदेश विवरण आवश्यक है",
         "emailRequired": "ईमेल आवश्यक है",
-        "emailInvalid": "ईमेल एक वैध ईमेल होना चाहिए"
+        "emailInvalid": "ईमेल एक वैध ईमेल होना चाहिए",
+        "message": "संदेश विवरण"
     },
     "howItWorks": {
         "title": "विकिडोनेट का उपयोग कैसे करें",
         "steps": "कदम",
         "pageTitle": "विकिडोनेट कैसे काम करता है",
-        "subtitle": "एक सहयोगी दान मंच. मिनटों में आरंभ करें और अपने काम के लिए समर्थन प्राप्त करना शुरू करें।"
+        "subtitle": "एक सहयोगी दान मंच. मिनटों में आरंभ करें और अपने काम के लिए समर्थन प्राप्त करना शुरू करें।",
+        "heroTitle": "विकिडोनेट कैसे काम करता है",
+        "heroSubtitle": "एक सहयोगी दान मंच. मिनटों में आरंभ करें और अपने काम के लिए समर्थन प्राप्त करना शुरू करें।"
     },
     "report": {
         "title": "मेरा दान",
@@ -227,7 +234,10 @@
         "article": "आलेख",
         "action": "कार्रवाई",
         "failedToLoad": "दान रिपोर्ट लोड करने में विफल",
-        "pageOf": "पेज {current} / {last} (कुल {total})"
+        "pageOf": "पेज {current} / {last} (कुल {total})",
+        "completedLabel": "पूरा हुआ",
+        "pendingLabel": "लंबित",
+        "failedLabel": "असफल"
     },
     "article": {
         "loading": "आलेख लोड हो रहा है",
@@ -275,7 +285,13 @@
         "articleSaved": "आलेख सफलतापूर्वक सहेजा गया!",
         "failedToSaveArticle": "आलेख सहेजने में विफल",
         "savingError": "सहेजते समय कोई त्रुटि उत्पन्न हुई",
-        "newArticleTitle": "नया लेख"
+        "newArticleTitle": "नया लेख",
+        "newTitle": "नया लेख",
+        "titlePlaceholder": "लेख का शीर्षक दर्ज करें",
+        "confirmSave": "क्या आप वाकई इस लेख को सहेजना चाहते हैं?",
+        "savedSuccess": "आलेख सफलतापूर्वक सहेजा गया!",
+        "saveFailed": "आलेख सहेजने में विफल",
+        "saveError": "सहेजते समय कोई त्रुटि उत्पन्न हुई"
     },
     "formula": {
         "name": "नाम",
@@ -345,7 +361,10 @@
         "safeMsg": "चिंता न करें - आपकी भुगतान जानकारी सुरक्षित है।",
         "tryAgain": "जब भी आप तैयार हों आप पुनः प्रयास कर सकते हैं।",
         "havingTrouble": "परेशानी हो रही है?",
-        "contactSupport": "समर्थन से संपर्क करें"
+        "contactSupport": "समर्थन से संपर्क करें",
+        "thankYou": "आपके उदार दान के लिए धन्यवाद!",
+        "amountLabel": "राशि:",
+        "successful": "आपका भुगतान सफल रहा."
     },
     "admin": {
         "panel": "व्यवस्थापक पैनल",
@@ -493,7 +512,9 @@
         "additionalDetails": "अतिरिक्त विवरण",
         "viewFormula": "सूत्र देखें",
         "close": "बंद करें",
-        "effectiveAtDonation": "दान के समय प्रभावी"
+        "effectiveAtDonation": "दान के समय प्रभावी",
+        "pay": "भुगतान करें",
+        "loadingHistory": "इतिहास लोड हो रहा है..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्वाधिकार सुरक्षित।"

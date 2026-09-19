@@ -153,7 +153,9 @@
         "failedToChangePassword": "পাসওয়ার্ড পরিবর্তন করতে ব্যর্থ হয়েছে",
         "changePasswordTitle": "পাসওয়ার্ড পরিবর্তন করুন",
         "passwordPlaceholder": "আপনার পাসওয়ার্ড লিখুন",
-        "confirmPasswordPlaceholder": "পাসওয়ার্ড নিশ্চিত করুন"
+        "confirmPasswordPlaceholder": "পাসওয়ার্ড নিশ্চিত করুন",
+        "loading": "পছন্দগুলি লোড হচ্ছে৷",
+        "saving": "সংরক্ষণ করা হচ্ছে..."
     },
     "billing": {
         "title": "বিলিং",
@@ -172,7 +174,9 @@
         "cardSaved": "কার্ড সফলভাবে সংরক্ষণ করা হয়েছে৷",
         "validationError": "বৈধতা ত্রুটি",
         "failedToSaveCard": "কার্ড সংরক্ষণ করতে ব্যর্থ হয়েছে",
-        "failedToLoadCard": "কার্ডের বিবরণ লোড করা যায়নি"
+        "failedToLoadCard": "কার্ডের বিবরণ লোড করা যায়নি",
+        "cancel": "বাতিল করুন",
+        "saving": "সংরক্ষণ করা হচ্ছে..."
     },
     "contact": {
         "title": "আমাদের সাথে যোগাযোগ করুন",
@@ -194,13 +198,16 @@
         "subjectRequired": "বিষয় আবশ্যক",
         "messageRequired": "বার্তা বিবরণ প্রয়োজন",
         "emailRequired": "ইমেল প্রয়োজন",
-        "emailInvalid": "ইমেল একটি বৈধ ইমেল হতে হবে"
+        "emailInvalid": "ইমেল একটি বৈধ ইমেল হতে হবে",
+        "message": "বার্তা বিবরণ"
     },
     "howItWorks": {
         "title": "কিভাবে উইকিডোনেট ব্যবহার করবেন",
         "steps": "ধাপ",
         "pageTitle": "কিভাবে WikiDonate কাজ করে",
-        "subtitle": "একটি সহযোগী দান প্ল্যাটফর্ম। কয়েক মিনিটের মধ্যে শুরু করুন এবং আপনার কাজের জন্য সমর্থন পেতে শুরু করুন।"
+        "subtitle": "একটি সহযোগী দান প্ল্যাটফর্ম। কয়েক মিনিটের মধ্যে শুরু করুন এবং আপনার কাজের জন্য সমর্থন পেতে শুরু করুন।",
+        "heroTitle": "কিভাবে WikiDonate কাজ করে",
+        "heroSubtitle": "একটি সহযোগী দান প্ল্যাটফর্ম। কয়েক মিনিটের মধ্যে শুরু করুন এবং আপনার কাজের জন্য সমর্থন পেতে শুরু করুন।"
     },
     "report": {
         "title": "আমার অনুদান",
@@ -227,7 +234,10 @@
         "article": "প্রবন্ধ",
         "action": "অ্যাকশন",
         "failedToLoad": "দান রিপোর্ট লোড করতে ব্যর্থ হয়েছে",
-        "pageOf": "পাতা {current} / {last} (মোট {total})"
+        "pageOf": "পাতা {current} / {last} (মোট {total})",
+        "completedLabel": "সম্পন্ন",
+        "pendingLabel": "মুলতুবি",
+        "failedLabel": "ব্যর্থ হয়েছে"
     },
     "article": {
         "loading": "প্রবন্ধ লোড হচ্ছে",
@@ -275,7 +285,13 @@
         "articleSaved": "নিবন্ধ সফলভাবে সংরক্ষিত!",
         "failedToSaveArticle": "নিবন্ধ সংরক্ষণ করতে ব্যর্থ হয়েছে",
         "savingError": "সংরক্ষণ করার সময় একটি ত্রুটি ঘটেছে৷",
-        "newArticleTitle": "নতুন প্রবন্ধ"
+        "newArticleTitle": "নতুন প্রবন্ধ",
+        "newTitle": "নতুন প্রবন্ধ",
+        "titlePlaceholder": "নিবন্ধের শিরোনাম লিখুন",
+        "confirmSave": "আপনি কি এই নিবন্ধটি সংরক্ষণ করতে চান?",
+        "savedSuccess": "নিবন্ধ সফলভাবে সংরক্ষিত!",
+        "saveFailed": "নিবন্ধ সংরক্ষণ করতে ব্যর্থ হয়েছে",
+        "saveError": "সংরক্ষণ করার সময় একটি ত্রুটি ঘটেছে৷"
     },
     "formula": {
         "name": "নাম",
@@ -345,7 +361,10 @@
         "safeMsg": "চিন্তা করবেন না - আপনার পেমেন্ট তথ্য নিরাপদ।",
         "tryAgain": "আপনি যখনই প্রস্তুত হবেন আপনি আবার চেষ্টা করতে পারেন।",
         "havingTrouble": "সমস্যা হচ্ছে?",
-        "contactSupport": "সহায়তার সাথে যোগাযোগ করুন"
+        "contactSupport": "সহায়তার সাথে যোগাযোগ করুন",
+        "thankYou": "আপনার উদার অনুদানের জন্য আপনাকে ধন্যবাদ!",
+        "amountLabel": "পরিমাণ:",
+        "successful": "আপনার পেমেন্ট সফল হয়েছে."
     },
     "admin": {
         "panel": "অ্যাডমিন প্যানেল",
@@ -493,7 +512,9 @@
         "additionalDetails": "অতিরিক্ত বিবরণ",
         "viewFormula": "সূত্র দেখুন",
         "close": "বন্ধ",
-        "effectiveAtDonation": "দান করার সময় কার্যকর"
+        "effectiveAtDonation": "দান করার সময় কার্যকর",
+        "pay": "বেতন",
+        "loadingHistory": "ইতিহাস লোড হচ্ছে..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. সর্বস্বত্ব সংরক্ষিত"

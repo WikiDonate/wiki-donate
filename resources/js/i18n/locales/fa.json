@@ -153,7 +153,9 @@
         "failedToChangePassword": "تغییر رمز عبور انجام نشد",
         "changePasswordTitle": "رمز عبور را تغییر دهید",
         "passwordPlaceholder": "رمز عبور خود را وارد کنید",
-        "confirmPasswordPlaceholder": "رمز عبور را تایید کنید"
+        "confirmPasswordPlaceholder": "رمز عبور را تایید کنید",
+        "loading": "بارگیری تنظیمات برگزیده",
+        "saving": "در حال ذخیره..."
     },
     "billing": {
         "title": "صورتحساب",
@@ -172,7 +174,9 @@
         "cardSaved": "کارت با موفقیت ذخیره شد",
         "validationError": "خطای اعتبارسنجی",
         "failedToSaveCard": "کارت ذخیره نشد",
-        "failedToLoadCard": "جزئیات کارت بارگیری نشد"
+        "failedToLoadCard": "جزئیات کارت بارگیری نشد",
+        "cancel": "لغو کنید",
+        "saving": "در حال ذخیره..."
     },
     "contact": {
         "title": "تماس با ما",
@@ -194,13 +198,16 @@
         "subjectRequired": "موضوع مورد نیاز است",
         "messageRequired": "جزئیات پیام مورد نیاز است",
         "emailRequired": "ایمیل مورد نیاز است",
-        "emailInvalid": "ایمیل باید یک ایمیل معتبر باشد"
+        "emailInvalid": "ایمیل باید یک ایمیل معتبر باشد",
+        "message": "جزئیات پیام"
     },
     "howItWorks": {
         "title": "نحوه استفاده از WikiDonate",
         "steps": "مراحل",
         "pageTitle": "WikiDonate چگونه کار می کند",
-        "subtitle": "یک پلتفرم اهدای مشارکتی در عرض چند دقیقه شروع کنید و شروع به دریافت پشتیبانی برای کار خود کنید."
+        "subtitle": "یک پلتفرم اهدای مشارکتی در عرض چند دقیقه شروع کنید و شروع به دریافت پشتیبانی برای کار خود کنید.",
+        "heroTitle": "WikiDonate چگونه کار می کند",
+        "heroSubtitle": "یک پلتفرم اهدای مشارکتی در عرض چند دقیقه شروع کنید و شروع به دریافت پشتیبانی برای کار خود کنید."
     },
     "report": {
         "title": "کمک های مالی من",
@@ -227,7 +234,10 @@
         "article": "مقاله",
         "action": "اقدام",
         "failedToLoad": "گزارش کمک مالی بارگیری نشد",
-        "pageOf": "صفحه {current} / {last} (کل {total})"
+        "pageOf": "صفحه {current} / {last} (کل {total})",
+        "completedLabel": "تکمیل شد",
+        "pendingLabel": "در انتظار",
+        "failedLabel": "شکست خورد"
     },
     "article": {
         "loading": "در حال بارگذاری مقاله",
@@ -275,7 +285,13 @@
         "articleSaved": "مقاله با موفقیت ذخیره شد!",
         "failedToSaveArticle": "مقاله ذخیره نشد",
         "savingError": "هنگام ذخیره خطایی روی داد",
-        "newArticleTitle": "مقاله جدید"
+        "newArticleTitle": "مقاله جدید",
+        "newTitle": "مقاله جدید",
+        "titlePlaceholder": "عنوان مقاله را وارد کنید",
+        "confirmSave": "آیا مطمئن هستید که می خواهید این مقاله را ذخیره کنید؟",
+        "savedSuccess": "مقاله با موفقیت ذخیره شد!",
+        "saveFailed": "مقاله ذخیره نشد",
+        "saveError": "هنگام ذخیره خطایی روی داد"
     },
     "formula": {
         "name": "نام",
@@ -345,7 +361,10 @@
         "safeMsg": "نگران نباشید - اطلاعات پرداخت شما امن است.",
         "tryAgain": "هر زمان که آماده بودید می توانید دوباره امتحان کنید.",
         "havingTrouble": "مشکل دارید؟",
-        "contactSupport": "با پشتیبانی تماس بگیرید"
+        "contactSupport": "با پشتیبانی تماس بگیرید",
+        "thankYou": "از کمک سخاوتمندانه شما متشکرم!",
+        "amountLabel": "مقدار:",
+        "successful": "پرداخت شما با موفقیت انجام شد."
     },
     "admin": {
         "panel": "پنل مدیریت",
@@ -493,7 +512,9 @@
         "additionalDetails": "جزئیات اضافی",
         "viewFormula": "مشاهده فرمول",
         "close": "بستن",
-        "effectiveAtDonation": "در زمان اهدا موثر است"
+        "effectiveAtDonation": "در زمان اهدا موثر است",
+        "pay": "پرداخت کنید",
+        "loadingHistory": "در حال بارگیری تاریخچه..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

@@ -153,7 +153,9 @@
         "failedToChangePassword": "Kunne ikke ændre adgangskoden",
         "changePasswordTitle": "Skift adgangskode",
         "passwordPlaceholder": "Indtast din adgangskode",
-        "confirmPasswordPlaceholder": "Bekræft adgangskode"
+        "confirmPasswordPlaceholder": "Bekræft adgangskode",
+        "loading": "Indlæsningspræferencer",
+        "saving": "Gemmer..."
     },
     "billing": {
         "title": "Fakturering",
@@ -172,7 +174,9 @@
         "cardSaved": "Kortet blev gemt",
         "validationError": "Valideringsfejl",
         "failedToSaveCard": "Kortet kunne ikke gemmes",
-        "failedToLoadCard": "Kortoplysningerne kunne ikke indlæses"
+        "failedToLoadCard": "Kortoplysningerne kunne ikke indlæses",
+        "cancel": "Annuller",
+        "saving": "Gemmer..."
     },
     "contact": {
         "title": "Kontakt os",
@@ -194,13 +198,16 @@
         "subjectRequired": "Emne er påkrævet",
         "messageRequired": "Beskedoplysninger er påkrævet",
         "emailRequired": "E-mail er påkrævet",
-        "emailInvalid": "E-mail skal være en gyldig e-mail"
+        "emailInvalid": "E-mail skal være en gyldig e-mail",
+        "message": "Besked detaljer"
     },
     "howItWorks": {
         "title": "Sådan bruger du WikiDonate",
         "steps": "Trin",
         "pageTitle": "Sådan fungerer WikiDonate",
-        "subtitle": "En samarbejdsplatform for donationer. Kom i gang på få minutter, og begynd at modtage support til dit arbejde."
+        "subtitle": "En samarbejdsplatform for donationer. Kom i gang på få minutter, og begynd at modtage support til dit arbejde.",
+        "heroTitle": "Sådan fungerer WikiDonate",
+        "heroSubtitle": "En samarbejdsplatform for donationer. Kom i gang på få minutter, og begynd at modtage support til dit arbejde."
     },
     "report": {
         "title": "Mine donationer",
@@ -227,7 +234,10 @@
         "article": "Artikel",
         "action": "Handling",
         "failedToLoad": "Donationsrapporten kunne ikke indlæses",
-        "pageOf": "Side {current} / {last} (i alt {total})"
+        "pageOf": "Side {current} / {last} (i alt {total})",
+        "completedLabel": "Afsluttet",
+        "pendingLabel": "Afventer",
+        "failedLabel": "Mislykkedes"
     },
     "article": {
         "loading": "Indlæser artikel",
@@ -275,7 +285,13 @@
         "articleSaved": "Artiklen blev gemt!",
         "failedToSaveArticle": "Artiklen kunne ikke gemmes",
         "savingError": "Der opstod en fejl under lagring",
-        "newArticleTitle": "Ny artikel"
+        "newArticleTitle": "Ny artikel",
+        "newTitle": "Ny artikel",
+        "titlePlaceholder": "Indtast artiklens titel",
+        "confirmSave": "Er du sikker på, at du vil gemme denne artikel?",
+        "savedSuccess": "Artiklen blev gemt!",
+        "saveFailed": "Artiklen kunne ikke gemmes",
+        "saveError": "Der opstod en fejl under lagring"
     },
     "formula": {
         "name": "Navn",
@@ -345,7 +361,10 @@
         "safeMsg": "Bare rolig – dine betalingsoplysninger er sikre.",
         "tryAgain": "Du kan prøve igen, når du er klar.",
         "havingTrouble": "Har du problemer?",
-        "contactSupport": "Kontakt support"
+        "contactSupport": "Kontakt support",
+        "thankYou": "Tak for din generøse donation!",
+        "amountLabel": "Beløb:",
+        "successful": "Din betaling blev gennemført."
     },
     "admin": {
         "panel": "Admin panel",
@@ -493,7 +512,9 @@
         "additionalDetails": "Yderligere detaljer",
         "viewFormula": "Se formel",
         "close": "Luk",
-        "effectiveAtDonation": "Gælder på tidspunktet for donation"
+        "effectiveAtDonation": "Gælder på tidspunktet for donation",
+        "pay": "Betal",
+        "loadingHistory": "Indlæser historik..."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheder forbeholdes."

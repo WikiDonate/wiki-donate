@@ -6,28 +6,28 @@
         "searchPlaceholder": "搜索维基捐赠...",
         "searchPlaceholderHome": "搜索维基捐赠...",
         "cancel": "取消",
-        "save": "节省",
-        "saving": "保存...",
+        "save": "保存",
+        "saving": "正在保存...",
         "submit": "提交",
         "submitting": "正在提交...",
         "send": "发送",
         "sending": "正在发送...",
         "delete": "删除",
         "close": "关闭",
-        "view": "看法",
+        "view": "查看",
         "edit": "编辑",
         "apply": "申请",
         "reset": "重置",
         "copied": "复制了！",
         "backToHome": "返回首页",
         "backToArticle": "返回文章",
-        "allRightsReserved": "版权所有。",
+        "allRightsReserved": "保留所有权利。",
         "required": "Required",
         "page": "Page",
         "of": "/",
-        "total": "全部的",
+        "total": "合计",
         "you": "You",
-        "back": "后退",
+        "back": "返回",
         "update": "更新",
         "pay": "Pay"
     },
@@ -42,11 +42,11 @@
         "authenticating": "正在验证...",
         "login": "登录",
         "noAccount": "没有帐户？",
-        "createAccount": "创建账户",
+        "createAccount": "创建帐户",
         "loginFailed": "登录失败",
         "usernameRequired": "用户名是必需的",
         "passwordRequired": "需要密码",
-        "createTitle": "创建一个帐户",
+        "createTitle": "创建帐户",
         "createSubtitle": "加入我们的社区并开始您的旅程",
         "confirmPassword": "确认密码",
         "confirmPasswordPlaceholder": "确认密码",
@@ -54,7 +54,7 @@
         "emailPlaceholder": "输入您的电子邮件",
         "creating": "创造...",
         "alreadyHaveAccount": "已经有帐户？",
-        "signIn": "登入",
+        "signIn": "登录",
         "confirmPasswordRequired": "需要确认密码",
         "emailInvalid": "电子邮件必须是有效的电子邮件",
         "emailRequired": "电子邮件为必填项",
@@ -90,7 +90,7 @@
     "nav": {
         "mainPage": "主页",
         "adminPanel": "管理面板",
-        "createAccount": "创建账户",
+        "createAccount": "创建帐户",
         "login": "登录",
         "profileSettings": "配置文件设置",
         "myArticles": "我的文章",
@@ -111,12 +111,12 @@
     "profile": {
         "title": "个人资料详情",
         "yourInformation": "您的信息",
-        "fullName": "姓名",
+        "fullName": "全名",
         "fullNamePlaceholder": "输入全名",
-        "emailAddress": "电子邮件",
+        "emailAddress": "电子邮件地址",
         "phoneNumber": "电话号码",
         "phonePlaceholder": "电话号码",
-        "saving": "保存...",
+        "saving": "正在保存...",
         "fullNameRequired": "需要全名",
         "invalidEmail": "电子邮件无效",
         "phoneInvalid": "电话号码必须正好是 12 位数字",
@@ -153,7 +153,9 @@
         "failedToChangePassword": "更改密码失败",
         "changePasswordTitle": "更改密码",
         "passwordPlaceholder": "输入您的密码",
-        "confirmPasswordPlaceholder": "确认密码"
+        "confirmPasswordPlaceholder": "确认密码",
+        "loading": "加载首选项",
+        "saving": "正在保存..."
     },
     "billing": {
         "title": "计费",
@@ -172,7 +174,9 @@
         "cardSaved": "卡保存成功",
         "validationError": "验证错误",
         "failedToSaveCard": "保存卡失败",
-        "failedToLoadCard": "无法加载卡详细信息"
+        "failedToLoadCard": "无法加载卡详细信息",
+        "cancel": "取消",
+        "saving": "正在保存..."
     },
     "contact": {
         "title": "联系我们",
@@ -194,13 +198,16 @@
         "subjectRequired": "主题为必填项",
         "messageRequired": "留言详情为必填项",
         "emailRequired": "电子邮件为必填项",
-        "emailInvalid": "电子邮件必须是有效的电子邮件"
+        "emailInvalid": "电子邮件必须是有效的电子邮件",
+        "message": "留言详情"
     },
     "howItWorks": {
         "title": "如何使用维基捐赠",
         "steps": "步骤",
         "pageTitle": "维基捐赠如何运作",
-        "subtitle": "协作捐赠平台。只需几分钟即可开始并开始获得对您工作的支持。"
+        "subtitle": "协作捐赠平台。只需几分钟即可开始并开始获得对您工作的支持。",
+        "heroTitle": "维基捐赠如何运作",
+        "heroSubtitle": "协作捐赠平台。只需几分钟即可开始并开始获得对您工作的支持。"
     },
     "report": {
         "title": "我的捐款",
@@ -227,7 +234,10 @@
         "article": "文章",
         "action": "行动",
         "failedToLoad": "加载捐赠报告失败",
-        "pageOf": "页面 {current} / {last} （总计 {total}）"
+        "pageOf": "页面 {current} / {last} （总计 {total}）",
+        "completedLabel": "已完成",
+        "pendingLabel": "待定",
+        "failedLabel": "失败"
     },
     "article": {
         "loading": "加载文章",
@@ -249,7 +259,7 @@
         "confirmDeletion": "确认删除",
         "confirmDeleteMsg": "您确定要删除此捐赠公式吗？此操作无法撤消。",
         "deleteFormulaConfirm": "删除公式",
-        "donationCompleted": "${amount} 捐赠成功完成，通过 {method}！",
+        "donationCompleted": "${amount}捐赠成功完成，通过{method}！",
         "formulaUpdated": "捐赠公式更新！",
         "formulaCreated": "捐赠公式创建！",
         "formulaDeleted": "捐赠公式删除！",
@@ -258,9 +268,9 @@
         "unexpectedError": "意外错误",
         "myArticles": "我的文章",
         "loadingArticles": "加载文章",
-        "by": "由",
-        "view": "查看",
-        "viewArticle": "查看 {title}",
+        "by": "经过",
+        "view": "看法",
+        "viewArticle": "看法{title}",
         "noArticles": "您还没有创建任何文章。",
         "failedToLoadArticles": "文章加载失败",
         "loadArticlesError": "加载文章时发生错误",
@@ -275,7 +285,13 @@
         "articleSaved": "文章保存成功！",
         "failedToSaveArticle": "保存文章失败",
         "savingError": "保存时发生错误",
-        "newArticleTitle": "新文章"
+        "newArticleTitle": "新文章",
+        "newTitle": "新文章",
+        "titlePlaceholder": "输入文章标题",
+        "confirmSave": "您确定要保存这篇文章吗？",
+        "savedSuccess": "文章保存成功！",
+        "saveFailed": "保存文章失败",
+        "saveError": "保存时发生错误"
     },
     "formula": {
         "name": "名称",
@@ -288,7 +304,7 @@
         "totalAllocation": "总分配： {total}%",
         "mustEqual100": "必须等于 100%",
         "helper": "* 输入组织名称。总计必须等于 100%。",
-        "details": "详情",
+        "details": "细节",
         "detailsPlaceholder": "添加更多详细信息...",
         "nameRequired": "姓名为必填项",
         "nameTooLong": "名称不能超过 255 个字符。",
@@ -345,7 +361,10 @@
         "safeMsg": "不用担心——您的付款信息是安全的。",
         "tryAgain": "当你准备好时，你可以再试一次。",
         "havingTrouble": "有麻烦吗？",
-        "contactSupport": "联系支持人员"
+        "contactSupport": "联系支持人员",
+        "thankYou": "感谢您的慷慨捐赠！",
+        "amountLabel": "金额：",
+        "successful": "您的付款成功。"
     },
     "admin": {
         "panel": "管理面板",
@@ -493,7 +512,9 @@
         "additionalDetails": "其他细节",
         "viewFormula": "查看公式",
         "close": "关闭",
-        "effectiveAtDonation": "捐赠时生效"
+        "effectiveAtDonation": "捐赠时生效",
+        "pay": "支付",
+        "loadingHistory": "加载历史记录..."
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"
