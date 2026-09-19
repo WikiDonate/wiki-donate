@@ -4,7 +4,7 @@
         <!-- Gradient Header1 -->
         <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-4 px-6 text-center">
             <h2 class="font-bold text-lg sm:text-xl md:text-2xl text-white tracking-wide">
-                Welcome to WikiDonate
+                {{ t('main.welcome') }}
             </h2>
         </div>
 
@@ -17,7 +17,7 @@
                     class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition"
                 >
                     <font-awesome-icon :icon="['fas', 'book-open']" class="w-5 h-5" />
-                    How to Use WikiDonate
+                    {{ t('main.howToUse') }}
                 </NuxtLink>
                 <a
                     href="https://efy.koc.mybluehost.me/elementor-3694/"
@@ -25,7 +25,7 @@
                     class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-green-800 hover:bg-green-900 transition"
                 >
                     <font-awesome-icon :icon="['fas', 'file']" class="w-5 h-5" />
-                    Founding Document
+                    {{ t('main.foundingDocument') }}
                 </a>
                 <a
                     href="https://github.com/WikiDonate/wiki-donate"
@@ -33,7 +33,7 @@
                     class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-white font-semibold bg-gray-800 hover:bg-gray-900 transition"
                 >
                     <font-awesome-icon :icon="['fab', 'github']" class="w-5 h-5" />
-                    GitHub Repository
+                    {{ t('main.githubRepository') }}
                 </a>
             </div>
         </div>
@@ -41,6 +41,10 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
     useHead({
         title: 'Main Page',
     })

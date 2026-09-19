@@ -32,7 +32,7 @@
                 <div class="p-6 space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Full Name<span class="text-red-500">*</span></label
+                            >{{ t('profile.fullName') }}<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="name"
@@ -44,7 +44,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Email Address<span class="text-red-500">*</span></label
+                            >{{ t('profile.emailAddress') }}<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="email"
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Phone Number</label
+                            >{{ t('profile.phoneNumber') }}</label
                         >
                         <FormInput
                             v-model="phone"
@@ -85,12 +85,15 @@
 
 <script setup>
     import { onMounted, watch, ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
     import FormInput from '~/components/FormInput.vue'
     import FormSubmitButton from '~/components/FormSubmitButton.vue'
     import AlertMessage from '~/components/AlertMessage.vue'
     import { useUserStore } from '@/stores/userStore'
+
+    const { t } = useI18n()
 
     useHead({ title: 'Profile Details' })
     definePageMeta({ middleware: 'auth' })

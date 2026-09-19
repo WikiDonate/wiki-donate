@@ -39,11 +39,14 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+    import { setLocale } from '~/i18n'
+
     useHead({ title: 'WikiDonate - Discover Charities' })
 
     const router = useRouter()
     const route = useRoute()
-    const { setLanguage } = useGoogleTranslate()
+    const { t } = useI18n()
 
     const topLanguages = [
         { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -63,8 +66,8 @@
         { code: 'ko', name: '한국어', flag: '🇰🇷' },
     ]
 
-    const selectLanguage = (langCode) => {
-        setLanguage(langCode)
+    const selectLanguage = async (langCode) => {
+        await setLocale(langCode)
         router.push('/main')
     }
 

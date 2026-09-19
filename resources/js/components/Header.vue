@@ -79,7 +79,7 @@
                                         :icon="item.icon"
                                         class="mr-3 w-4 h-4 text-gray-400"
                                     />
-                                    {{ item.name }}
+                                    {{ menuLabel(item) }}
                                 </NuxtLink>
                             </div>
                         </transition>
@@ -102,7 +102,7 @@
                                     : 'text-gray-700 hover:bg-gray-100'
                             "
                         >
-                            {{ item.name }}
+                            {{ menuLabel(item) }}
                         </NuxtLink>
                     </div>
 
@@ -142,7 +142,7 @@
                                         :icon="item.icon"
                                         class="mr-3 w-4 h-4 text-gray-400"
                                     />
-                                    {{ item.name }}
+                                    {{ menuLabel(item) }}
                                 </NuxtLink>
                             </div>
                         </transition>
@@ -191,7 +191,7 @@
                                     :icon="item.icon"
                                     class="mr-3 w-4 h-4 text-gray-400"
                                 />
-                                {{ item.name }}
+                                {{ menuLabel(item) }}
                             </NuxtLink>
                         </div>
                     </transition>
@@ -207,10 +207,12 @@
 
 <script setup>
     import { onMounted, onUnmounted, ref, computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useRoute } from 'vue-router'
     import { authService } from '~/services/authService'
     import menuData from '~/static/menu.json'
 
+    const { t } = useI18n()
     const route = useRoute()
     const router = useRouter()
     const authStore = useAuthStore()
@@ -249,6 +251,20 @@
         if (item.name === 'Logout') return '#'
         return item.link
     }
+
+    const menuKeys = {
+        'Main Page': 'menu.mainPage',
+        'Admin Panel': 'menu.adminPanel',
+        'Create Account': 'menu.createAccount',
+        Login: 'menu.login',
+        'Profile Settings': 'menu.profileSettings',
+        'My Articles': 'menu.myArticles',
+        Preferences: 'menu.preferences',
+        'My Donations': 'menu.myDonations',
+        Logout: 'menu.logout',
+    }
+
+    const menuLabel = (item) => t(menuKeys[item.name] || item.name)
 
     const toggleDropdownMenu = (menuType) => {
         activeDropdown.value = activeDropdown.value === menuType ? null : menuType

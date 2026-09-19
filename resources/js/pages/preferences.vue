@@ -82,12 +82,12 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Password</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.password') }}</dt>
                             <dd>
                                 <span
                                     class="text-indigo-600 font-semibold cursor-pointer hover:underline"
                                     @click="openModal"
-                                    >Change Password</span
+                                    >{{ t('preferences.changePassword') }}</span
                                 >
                             </dd>
                         </div>
@@ -162,7 +162,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >New Password</label
+                            >{{ t('preferences.newPassword') }}</label
                         >
                         <FormInput
                             v-model="password"
@@ -175,7 +175,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Confirm Password</label
+                            >{{ t('preferences.confirmPassword') }}</label
                         >
                         <FormInput
                             v-model="confirmPassword"
@@ -212,8 +212,11 @@
 <script setup>
     import { useForm } from 'vee-validate'
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import * as yup from 'yup'
     import { userService } from '~/services/userService'
+
+    const { t } = useI18n()
 
     definePageMeta({
         middleware: 'auth',

@@ -153,12 +153,12 @@
                                     :icon="['fas', 'hand-holding-heart']"
                                     class="w-3.5 h-3.5 text-indigo-600"
                                 />
-                                Recent Donations
+                                {{ t('admin.recentDonations') }}
                             </h3>
                             <NuxtLink
                                 to="/admin/donations"
                                 class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-                                >View All</NuxtLink
+                                >{{ t('admin.viewAll') }}</NuxtLink
                             >
                         </div>
                         <AdminTable
@@ -246,6 +246,7 @@
 
 <script setup>
     import { ref, onMounted, computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
@@ -253,6 +254,7 @@
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
 
+    const { t } = useI18n()
     const { notifyError } = useToastify()
 
     const selectedDonation = ref(null)

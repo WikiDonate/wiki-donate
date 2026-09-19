@@ -7,8 +7,8 @@
                 <div
                     class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">Create an Account</h1>
-                    <p class="mt-2 text-sm">Join our community and start your journey</p>
+                    <h1 class="text-2xl md:text-3xl font-bold">{{ t('auth.createTitle') }}</h1>
+                    <p class="mt-2 text-sm">{{ t('auth.createSubtitle') }}</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -34,15 +34,13 @@
                             </div>
                         </div>
                         <h2 class="text-xl font-semibold text-gray-800 text-center">
-                            Check Your Email
+                            {{ t('auth.checkYourEmail') }}
                         </h2>
                         <p class="text-gray-600 text-sm text-center">
-                            We've sent a verification link to
-                            <strong>{{ registeredEmail }}</strong
-                            >. Please check your inbox and click the link to verify your account.
+                            {{ t('auth.verificationSent', { email: registeredEmail }) }}
                         </p>
                         <p class="text-gray-500 text-xs text-center">
-                            Didn't receive the email?
+                            {{ t('auth.didntReceive') }}
                             <button
                                 type="button"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
@@ -51,8 +49,8 @@
                             >
                                 {{
                                     resendCooldown > 0
-                                        ? `Resend in ${resendCooldown}s`
-                                        : 'Resend verification email'
+                                        ? t('auth.resendIn', { n: resendCooldown })
+                                        : t('auth.resendVerificationEmail')
                                 }}
                             </button>
                         </p>
@@ -61,7 +59,7 @@
                                 to="/login"
                                 class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
                             >
-                                Go to Login
+                                {{ t('auth.goToLogin') }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -101,13 +99,13 @@
                             for="confirmPassword"
                             class="block text-sm font-medium text-gray-700 mb-1"
                         >
-                            Confirm Password
+                            {{ t('auth.confirmPassword') }}
                             <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="confirmPassword"
                             type="password"
-                            placeholder="Confirm password"
+                            :placeholder="t('auth.confirmPasswordPlaceholder')"
                             v-bind="confirmPasswordProps"
                             :error-message="errors['confirmPassword']"
                         />
@@ -133,7 +131,7 @@
                         <!-- Submit Button -->
                         <div class="flex justify-center mt-4">
                             <FormSubmitButton
-                                :text="isLoading ? 'Creating...' : 'Create Account'"
+                                :text="isLoading ? t('auth.creating') : t('auth.createAccount')"
                                 type="submit"
                                 variant="primary"
                                 :disabled="isLoading"
@@ -142,12 +140,12 @@
 
                         <!-- Login Link -->
                         <div class="text-center text-sm text-gray-600 mt-6">
-                            Already have an account?
+                            {{ t('auth.alreadyHaveAccount') }}
                             <NuxtLink
                                 to="/login"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline ml-1"
                             >
-                                Sign in
+                                {{ t('auth.signIn') }}
                             </NuxtLink>
                         </div>
                     </form>
@@ -160,10 +158,13 @@
 <script setup>
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
+    import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'Create Account',
+        title: t('auth.createTitle'),
     })
 
     const showAlert = ref(false)
@@ -177,17 +178,17 @@
     const validationSchema = yup.object({
         username: yup
             .string()
-            .required('Username is required')
-            .min(3, 'Username must be at least 3 characters'),
+            .required(t('auth.usernameRequired'))
+            .min(3, t('auth.minChars', { n: 3 })),
         password: yup
             .string()
-            .required('Password is required')
-            .min(6, 'Password must be at least 6 characters'),
+            .required(t('auth.passwordRequired'))
+            .min(6, t('auth.minChars', { n: 6 })),
         confirmPassword: yup
             .string()
-            .required('Confirm Password is required')
-            .oneOf([yup.ref('password'), null], 'Passwords must match'),
-        email: yup.string().required('Email is required').email('Email must be a valid email'),
+            .required(t('auth.confirmPasswordRequired'))
+            .oneOf([yup.ref('password'), null], t('auth.passwordsMustMatch')),
+        email: yup.string().required(t('auth.emailRequired')).email(t('auth.emailInvalid')),
     })
 
     // Setup VeeValidate
@@ -222,18 +223,18 @@
             })
             if (response.success) {
                 alertVariant.value = 'success'
-                alertMessage.value = 'Verification email sent. Please check your inbox.'
+                alertMessage.value = t('auth.verificationEmailSent')
                 showAlert.value = true
                 startResendCooldown()
             } else {
                 alertVariant.value = 'error'
                 alertMessage.value =
-                    response.errors?.[0] || response.message || 'Failed to resend email.'
+                    response.errors?.[0] || response.message || t('auth.failedToResend')
                 showAlert.value = true
             }
         } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = error.errors?.[0] || error.message || 'Failed to resend email.'
+            alertMessage.value = error.errors?.[0] || error.message || t('auth.failedToResend')
             showAlert.value = true
         }
     }

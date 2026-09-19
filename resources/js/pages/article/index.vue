@@ -164,13 +164,13 @@
                     class="text-gray-400 text-3xl mb-3"
                 />
                 <p class="text-gray-500">
-                    No donation formulas created yet.
+                    {{ t('article.noFormulas') }}
                     <template v-if="authStore.isAuthenticated"
-                        >Be the first to create one!</template
+                        >{{ t('article.beFirst') }}</template
                     >
                     <template v-else>
                         <NuxtLink to="/login" class="text-indigo-600 font-semibold hover:underline"
-                            >Log in to create one!</NuxtLink
+                            >{{ t('article.logInToCreate') }}</NuxtLink
                         >
                     </template>
                 </p>
@@ -223,7 +223,10 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
+
+    const { t } = useI18n()
 
     const route = useRoute()
     const title = ref(decodeURIComponent(route.query.title))

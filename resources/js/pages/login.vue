@@ -7,8 +7,8 @@
                 <div
                     class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">Login to Your Account</h1>
-                    <p class="mt-2 text-sm">Welcome back! Please sign in to continue</p>
+                    <h1 class="text-2xl md:text-3xl font-bold">{{ t('auth.loginTitle') }}</h1>
+                    <p class="mt-2 text-sm">{{ t('auth.loginSubtitle') }}</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -29,7 +29,7 @@
                         <FormInput
                             v-model="username"
                             type="text"
-                            placeholder="Enter your username"
+                            :placeholder="t('auth.usernamePlaceholder')"
                             v-bind="usernameProps"
                             :error-message="errors['username']"
                         />
@@ -39,7 +39,7 @@
                         <FormInput
                             v-model="password"
                             type="password"
-                            placeholder="Enter your password"
+                            :placeholder="t('auth.passwordPlaceholder')"
                             v-bind="passwordProps"
                             :error-message="errors['password']"
                         />
@@ -49,14 +49,14 @@
                                 to="/forgot-password"
                                 class="text-sm font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
                             >
-                                Forgot Password?
+                                {{ t('auth.forgotPassword') }}
                             </NuxtLink>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="flex justify-center mt-4">
                             <FormSubmitButton
-                                :text="isLoading ? 'Authenticating...' : 'Login'"
+                                :text="isLoading ? t('auth.authenticating') : t('auth.login')"
                                 type="submit"
                                 variant="primary"
                                 :disabled="isLoading"
@@ -65,12 +65,12 @@
 
                         <!-- Sign Up Link -->
                         <div class="text-center text-sm text-gray-600 mt-6">
-                            Don't have an account?
+                            {{ t('auth.noAccount') }}
                             <NuxtLink
                                 to="/create-account"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline ml-1"
                             >
-                                Create Account
+                                {{ t('auth.createAccount') }}
                             </NuxtLink>
                         </div>
                     </form>
@@ -83,11 +83,14 @@
 <script setup>
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
+    import { useI18n } from 'vue-i18n'
     import { authService } from '~/services/authService'
     import { useAuthStore } from '~/stores/authStore'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'Login',
+        title: t('auth.loginTitle'),
     })
 
     const router = useRouter()
@@ -98,8 +101,8 @@
     const authStore = useAuthStore()
 
     const validationSchema = yup.object({
-        username: yup.string().required('Username is required'),
-        password: yup.string().required('Password is required'),
+        username: yup.string().required(t('auth.usernameRequired')),
+        password: yup.string().required(t('auth.passwordRequired')),
     })
 
     // Setup VeeValidate
@@ -135,7 +138,7 @@
             router.push('/main')
         } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = error.errors?.[0] || 'Login failed'
+            alertMessage.value = error.errors?.[0] || t('auth.loginFailed')
             showAlert.value = true
         } finally {
             isLoading.value = false

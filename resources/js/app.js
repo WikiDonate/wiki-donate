@@ -70,7 +70,7 @@ import {
 import { faGithub, faPaypal } from '@fortawesome/free-brands-svg-icons'
 
 import App from './App.vue'
-import { initGoogleTranslate } from './plugins/googleTranslate'
+import i18n, { loadInitialLocale } from './i18n'
 import router from './router'
 
 import 'vue-toast-notification/dist/theme-default.css'
@@ -150,7 +150,8 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(router)
 app.use(createHead())
+app.use(i18n)
+
+await loadInitialLocale()
 
 app.mount('#app')
-
-initGoogleTranslate()

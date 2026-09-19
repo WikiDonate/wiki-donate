@@ -7,8 +7,8 @@
                 <div
                     class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">Email Verification</h1>
-                    <p class="mt-2 text-sm">Verifying your email address</p>
+                    <h1 class="text-2xl md:text-3xl font-bold">{{ t('auth.emailVerification') }}</h1>
+                    <p class="mt-2 text-sm">{{ t('auth.emailVerificationSubtitle') }}</p>
                 </div>
 
                 <div class="p-6 sm:p-8 text-center">
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm">
-                            Please wait while we verify your email address...
+                            {{ t('auth.verifyingEmail') }}
                         </p>
                     </div>
 
@@ -50,17 +50,16 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">Email Verified!</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ t('auth.emailVerified') }}</h2>
                         <p class="text-gray-600 text-sm">
-                            Your email address has been successfully verified. You can now access
-                            all features of your account.
+                            {{ t('auth.emailVerifiedMsg') }}
                         </p>
                         <div class="pt-4">
                             <NuxtLink
                                 to="/login"
                                 class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
                             >
-                                Continue to Login
+                                {{ t('auth.continueToLogin') }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -86,11 +85,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">Verification Failed</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ t('auth.verificationFailed') }}</h2>
                         <p class="text-gray-600 text-sm">
                             {{
-                                errorMessage ||
-                                'The verification link is invalid or has expired. Please request a new one.'
+                                errorMessage || t('auth.verificationFailedMsg')
                             }}
                         </p>
                         <div class="pt-4 space-y-2">
@@ -98,7 +96,7 @@
                                 to="/login"
                                 class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
                             >
-                                Back to Login
+                                {{ t('auth.backToLogin') }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -109,7 +107,10 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
+
+    const { t } = useI18n()
 
     useHead({
         title: 'Verify Email',
@@ -130,7 +131,7 @@
             if (status === 'success') {
                 isSuccess.value = true
             } else {
-                errorMessage.value = message || 'Verification failed.'
+                errorMessage.value = message || t('auth.verificationFailedShort')
             }
             return
         }
@@ -140,7 +141,7 @@
 
         if (!id || !hash) {
             isLoading.value = false
-            errorMessage.value = 'Invalid verification link.'
+            errorMessage.value = t('auth.invalidVerificationLink')
             return
         }
 
@@ -150,10 +151,10 @@
             if (response.success) {
                 isSuccess.value = true
             } else {
-                errorMessage.value = response.message || 'Verification failed.'
+                errorMessage.value = response.message || t('auth.verificationFailedShort')
             }
         } catch (error) {
-            errorMessage.value = error.message || 'An error occurred during verification.'
+            errorMessage.value = error.message || t('auth.verificationError')
         } finally {
             isLoading.value = false
         }
