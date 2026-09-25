@@ -58,6 +58,7 @@
 
 <script setup>
     import { onBeforeUnmount, onMounted, ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useRouter } from 'vue-router'
     import { articleService } from '~/services/articleService'
 

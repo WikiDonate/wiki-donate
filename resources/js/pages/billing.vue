@@ -141,6 +141,7 @@
 
 <script setup>
     import { computed, nextTick, onMounted, ref, watch } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import AlertMessage from '~/components/AlertMessage.vue'
     import FormSubmitButton from '~/components/FormSubmitButton.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'

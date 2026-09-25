@@ -46,7 +46,7 @@
 <script setup>
     import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
     import { useI18n } from 'vue-i18n'
-    import { languageFlags, languageNames, setLocale, supportedLocales } from '~/i18n'
+    import { languageFlags, languageNames, rtlLanguages, setLocale, supportedLocales } from '~/i18n'
 
     const { locale, t } = useI18n()
     const isOpen = ref(false)
@@ -57,10 +57,7 @@
     const applyDocumentLanguage = (lang) => {
         if (typeof document === 'undefined') return
         document.documentElement.setAttribute('lang', lang)
-        document.documentElement.setAttribute(
-            'dir',
-            ['ar', 'ur', 'he', 'fa'].includes(lang) ? 'rtl' : 'ltr',
-        )
+        document.documentElement.setAttribute('dir', rtlLanguages.includes(lang) ? 'rtl' : 'ltr')
     }
 
     applyDocumentLanguage(locale.value)

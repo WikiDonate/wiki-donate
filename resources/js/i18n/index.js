@@ -195,9 +195,17 @@ function applyLocaleMeta(locale) {
     document.documentElement.setAttribute('dir', rtlLanguages.includes(locale) ? 'rtl' : 'ltr')
 }
 
-// Lazy-load the locale JSON from resources/js/i18n/locales/<code>.json
+// Lazy-load the locale JSON from resources/js/i18n/locales/<code>.json.
+// import.meta.glob gives Vite a static map so every supported locale becomes
+// a separate chunk and a missing file fails gracefully instead of at runtime.
+const localeModules = import.meta.glob('./locales/*.json')
+
+const loadedLocales = new Set()
+
 function loadLocaleMessages(locale) {
-    return import(`./locales/${locale}.json`)
+    const loader = localeModules[`./locales/${locale}.json`]
+    if (!loader) return Promise.reject(new Error(`[i18n] Unsupported locale: ${locale}`))
+    return loader()
 }
 
 const i18n = createI18n({
@@ -211,9 +219,10 @@ const i18n = createI18n({
 
 export async function setLocale(locale) {
     if (!supportedLocales.includes(locale)) return
-    if (!i18n.global.te('language.loading', locale)) {
+    if (!loadedLocales.has(locale)) {
         const messages = await loadLocaleMessages(locale)
         i18n.global.setLocaleMessage(locale, messages.default ?? messages)
+        loadedLocales.add(locale)
     }
     i18n.global.locale.value = locale
     persistLocale(locale)

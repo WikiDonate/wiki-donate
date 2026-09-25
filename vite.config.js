@@ -65,6 +65,7 @@ export default defineConfig({
             imports: [
                 'vue',
                 'vue-router',
+                'vue-i18n',
                 { from: '@vueuse/head', imports: ['useHead'] },
                 {
                     from: path.join(root, 'resources/js/shims.js'),

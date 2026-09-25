@@ -152,6 +152,12 @@ app.use(router)
 app.use(createHead())
 app.use(i18n)
 
-await loadInitialLocale()
+// A locale-file failure must never block the app from mounting —
+// fall back to the bundled default so the page always renders.
+try {
+    await loadInitialLocale()
+} catch (error) {
+    if (import.meta.env.DEV) console.error('[i18n] Failed to load initial locale:', error)
+}
 
 app.mount('#app')

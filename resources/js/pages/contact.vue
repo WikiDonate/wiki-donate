@@ -100,6 +100,7 @@
 
 <script setup>
     import { useForm } from 'vee-validate'
+    import { useI18n } from 'vue-i18n'
     import * as yup from 'yup'
     import api from '~/config/apiConfig'
 

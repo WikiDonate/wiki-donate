@@ -37,7 +37,7 @@
             <ul>
                 <li
                     v-for="suggestion in suggestions"
-                    :key="suggestion"
+                    :key="suggestion.slug || suggestion.title"
                     class="cursor-pointer px-5 py-3 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
                     @click="selectSuggestion(suggestion)"
                 >
@@ -56,6 +56,7 @@
 
 <script setup>
     import { onBeforeUnmount, onMounted, ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useRouter } from 'vue-router'
     import { articleService } from '~/services/articleService'
 

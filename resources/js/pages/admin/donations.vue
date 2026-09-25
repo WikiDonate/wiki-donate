@@ -125,6 +125,7 @@
 
 <script setup>
     import { ref, onMounted, watch } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'

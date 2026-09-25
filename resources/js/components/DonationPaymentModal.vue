@@ -157,6 +157,7 @@
 
 <script setup>
     import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { donateService } from '~/services/donateService'
 
     const { t } = useI18n()
