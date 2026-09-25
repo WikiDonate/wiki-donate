@@ -14,7 +14,6 @@
         "role": "Admin",
         "icon": ["fas", "shield-alt"]
     },
-
     {
         "name": "Create Account",
         "link": "/create-account",
@@ -45,6 +44,13 @@
         "icon": ["fas", "user-cog"]
     },
     {
+        "name": "My Donations",
+        "link": "/my-donates",
+        "type": "LogoutMenu",
+        "onLogin": "show",
+        "icon": ["fas", "hand-holding-heart"]
+    },
+    {
         "name": "My Articles",
         "link": "/article/my",
         "type": "LogoutMenu",
@@ -57,13 +63,6 @@
         "type": "LogoutMenu",
         "onLogin": "show",
         "icon": ["fas", "cog"]
-    },
-    {
-        "name": "My Donations",
-        "link": "/my-donates",
-        "type": "LogoutMenu",
-        "onLogin": "show",
-        "icon": ["fas", "hand-holding-heart"]
     },
     {
         "name": "Logout",

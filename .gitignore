@@ -64,7 +64,6 @@ SOUL.md
 TOOLS.md
 USER.md
 docs/*
-memory/*
-.agent-*
+memory/*.agent-*
 .agent-config.*
 agent-*.log

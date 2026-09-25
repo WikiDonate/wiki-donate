@@ -7,66 +7,74 @@
                 :card="true"
             />
 
-            <LoadingSpinner v-if="loading" :text="t('admin.loadingAllocations')" />
-            <template v-else>
-                <!-- Payable allocations -->
-                <AdminTable
-                    :columns="columns"
-                    :rows="allocations"
-                    :row-key="rowKey"
-                    :empty-text="t('admin.noAllocations')"
-                >
-                    <template #cell-organization="{ row }">
-                        <div>
-                            <span class="font-medium text-sm">{{ row.organization_name }}</span>
-                            <span class="block text-xs text-gray-400">
-                                {{ row.percentage }}% · {{ row.formula_name || t('admin.formula') }}
-                            </span>
-                            <span v-if="row.article" class="block text-xs text-gray-400">
-                                {{ row.article.title }}
-                            </span>
-                        </div>
-                    </template>
-                    <template #cell-amounts="{ row }">
-                        <div class="text-sm space-y-0.5">
+            <div class="px-4 sm:px-6 py-4">
+                <LoadingSpinner v-if="loading" text="Loading allocations..." />
+                <template v-else>
+                    <!-- Payable allocations -->
+                    <AdminTable
+                        :columns="columns"
+                        :rows="allocations"
+                        :row-key="rowKey"
+                        empty-text="No payable allocations yet"
+                    >
+                        <template #cell-organization="{ row }">
                             <div>
-                                {{ t('admin.owed') }}
-                                <span class="font-medium">{{ fmt(row.currency, row.owed) }}</span>
-                            </div>
-                            <div>
-                                {{ t('admin.paid') }}
-                                <span class="text-gray-500">{{ fmt(row.currency, row.paid) }}</span>
-                            </div>
-                            <div>
-                                {{ t('admin.balance') }}
-                                <span
-                                    class="font-semibold"
-                                    :class="row.balance > 0 ? 'text-green-600' : 'text-gray-400'"
-                                >
-                                    {{ fmt(row.currency, row.balance) }}
+                                <span class="font-medium text-sm">{{ row.organization_name }}</span>
+                                <span class="block text-xs text-gray-400">
+                                    {{ row.percentage }}% · {{ row.formula_name || 'Formula' }}
+                                </span>
+                                <span v-if="row.article" class="block text-xs text-gray-400">
+                                    {{ row.article.title }}
                                 </span>
                             </div>
-                        </div>
-                    </template>
-                    <template #cell-actions="{ row }">
-                        <div class="flex items-center gap-2">
-                            <button
-                                class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                :disabled="row.balance <= 0"
-                                @click="openPay(row)"
-                            >
-                                {{ t('admin.pay') }}
-                            </button>
-                            <button
-                                class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
-                                @click="openHistory(row)"
-                            >
-                                {{ t('admin.history') }}
-                            </button>
-                        </div>
-                    </template>
-                </AdminTable>
-            </template>
+                        </template>
+                        <template #cell-amounts="{ row }">
+                            <div class="text-sm space-y-0.5">
+                                <div>
+                                    Owed:
+                                    <span class="font-medium">{{
+                                        fmt(row.currency, row.owed)
+                                    }}</span>
+                                </div>
+                                <div>
+                                    Paid:
+                                    <span class="text-gray-500">{{
+                                        fmt(row.currency, row.paid)
+                                    }}</span>
+                                </div>
+                                <div>
+                                    Balance:
+                                    <span
+                                        class="font-semibold"
+                                        :class="
+                                            row.balance > 0 ? 'text-green-600' : 'text-gray-400'
+                                        "
+                                    >
+                                        {{ fmt(row.currency, row.balance) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </template>
+                        <template #cell-actions="{ row }">
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    :disabled="row.balance <= 0"
+                                    @click="openPay(row)"
+                                >
+                                    Pay
+                                </button>
+                                <button
+                                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+                                    @click="openHistory(row)"
+                                >
+                                    History
+                                </button>
+                            </div>
+                        </template>
+                    </AdminTable>
+                </template>
+            </div>
         </div>
 
         <!-- Pay modal -->
@@ -186,9 +194,9 @@
 </template>
 
 <script setup>
+    import { adminService } from '@/services/adminService'
     import { ref } from 'vue'
     import { useI18n } from 'vue-i18n'
-    import { adminService } from '@/services/adminService'
 
     const loading = ref(true)
     const allocations = ref([])
