@@ -1,8 +1,7 @@
 <template>
-    <GoogleTranslate />
     <RouterView />
 </template>
 
 <script setup>
-    import GoogleTranslate from '@/components/GoogleTranslate.vue'
+    // Google Translate widget removed — UI translation is handled by vue-i18n.
 </script>

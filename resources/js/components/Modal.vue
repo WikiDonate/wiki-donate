@@ -12,7 +12,9 @@
                 <div
                     class="flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t"
                 >
-                    <h3 class="text-2xl font-semibold">{{ title }}</h3>
+                    <h3 class="text-2xl font-semibold">
+                        {{ isKey(title) ? t(title) : title || t('modal.title') }}
+                    </h3>
                     <button
                         class="p-1 ml-auto bg-transparent border-0 text-gray-400 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:text-gray-600"
                         @click="$emit('update:modelValue', false)"
@@ -41,6 +43,11 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
+
     defineProps({
         modelValue: {
             type: Boolean,
@@ -48,7 +55,7 @@
         },
         title: {
             type: String,
-            default: 'Modal Title',
+            default: '',
         },
     })
 

@@ -123,6 +123,14 @@ class StripeController extends Controller
                 $metadata['formula'] = json_encode($request->input('formula'));
             }
 
+            if ($request->filled('formula_id')) {
+                $metadata['formula_id'] = $request->input('formula_id');
+            }
+
+            if ($request->filled('formula_uuid')) {
+                $metadata['formula_uuid'] = $request->input('formula_uuid');
+            }
+
             if ($request->filled('details')) {
                 $metadata['details'] = $request->input('details');
             }

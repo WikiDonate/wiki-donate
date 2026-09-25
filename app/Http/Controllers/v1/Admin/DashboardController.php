@@ -26,6 +26,11 @@ class DashboardController extends Controller
                 $source = $donation->paypal_order_id ? 'paypal' : 'stripe_checkout';
                 $formula = $donation->formula;
                 $article = $formula?->article;
+                $snapshot = $metadata['formula_snapshot'] ?? null;
+                $usesSnapshot = is_array($snapshot) && count($snapshot) > 0;
+
+                // Prefer the frozen snapshot's article link (see DonationReportController).
+                $snapshotUuid = $metadata['formula_uuid'] ?? null;
 
                 return [
                     'id' => $donation->id,
@@ -38,15 +43,16 @@ class DashboardController extends Controller
                     'email' => $donation->donor_email ?? $donation->user?->email,
                     'stripe_session_id' => $donation->stripe_session_id,
                     'paypal_order_id' => $donation->paypal_order_id,
-                    'formula_id' => $formula?->id,
-                    'formula' => $metadata['formula'] ?? $formula?->formula,
+                    'formula_id' => $metadata['formula_id'] ?? $formula?->id,
+                    'formula' => $snapshot ?? $metadata['formula'] ?? $formula?->formula,
+                    'formula_snapshot_used' => $usesSnapshot,
                     'details' => $metadata['details'] ?? $formula?->details ?? null,
                     'article' => $article ? [
                         'slug' => $article->slug,
                         'title' => $article->title,
                     ] : null,
-                    'formula_url' => $article && $formula
-                        ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                    'formula_url' => $article && ($snapshotUuid ?? $formula?->uuid)
+                        ? "/article?title={$article->slug}#formula-".($snapshotUuid ?? $formula->uuid)
                         : null,
                 ];
             });
@@ -135,6 +141,7 @@ class DashboardController extends Controller
                 'data' => $paginator->map(function ($donation) {
                     $formula = $donation->formula;
                     $article = $formula?->article;
+                    $snapshotUuid = $donation->metadata['formula_uuid'] ?? null;
 
                     return [
                         'id' => $donation->id,
@@ -150,15 +157,19 @@ class DashboardController extends Controller
                         'email' => $donation->donor_email ?? $donation->user?->email,
                         'stripe_session_id' => $donation->stripe_session_id,
                         'paypal_order_id' => $donation->paypal_order_id,
-                        'formula_id' => $formula?->id,
-                        'formula' => $donation->metadata['formula'] ?? $formula?->formula,
+                        'formula_id' => $donation->metadata['formula_id'] ?? $formula?->id,
+                        'formula' => $donation->metadata['formula_snapshot']
+                            ?? $donation->metadata['formula']
+                            ?? $formula?->formula,
+                        'formula_snapshot_used' => is_array($donation->metadata['formula_snapshot'] ?? null)
+                            && count($donation->metadata['formula_snapshot']) > 0,
                         'details' => $donation->metadata['details'] ?? $formula?->details ?? null,
                         'article' => $article ? [
                             'slug' => $article->slug,
                             'title' => $article->title,
                         ] : null,
-                        'formula_url' => $article && $formula
-                            ? "/article?title={$article->slug}#formula-{$formula->uuid}"
+                        'formula_url' => $article && ($snapshotUuid ?? $formula?->uuid)
+                            ? "/article?title={$article->slug}#formula-".($snapshotUuid ?? $formula->uuid)
                             : null,
                     ];
                 }),

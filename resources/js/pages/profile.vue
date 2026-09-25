@@ -4,7 +4,7 @@
         <h1
             class="text-3xl sm:text-4xl font-bold text-center bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 mb-8"
         >
-            Profile Details
+            {{ t('profile.title') }}
         </h1>
 
         <!-- Alert -->
@@ -18,7 +18,7 @@
 
         <!-- Loading -->
         <div v-if="userStore.isLoadingUser" class="text-center text-gray-600">
-            <LoadingSpinner text="Loading user details" />
+            <LoadingSpinner :text="t('profile.loading')" />
         </div>
 
         <form v-else class="space-y-8" @submit.prevent="onSubmit">
@@ -26,25 +26,28 @@
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <!-- Card Header -->
                 <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                    <h2 class="text-lg sm:text-xl font-semibold">Your Information</h2>
+                    <h2 class="text-lg sm:text-xl font-semibold">
+                        {{ t('profile.yourInformation') }}
+                    </h2>
                 </div>
                 <!-- Card Body -->
                 <div class="p-6 space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Full Name<span class="text-red-500">*</span></label
+                            >{{ t('profile.fullName') }}<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="name"
                             type="text"
-                            placeholder="Enter full name"
+                            :placeholder="t('profile.fullNamePlaceholder')"
                             v-bind="nameProps"
                             :error-message="errors.name"
                         />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Email Address<span class="text-red-500">*</span></label
+                            >{{ t('profile.emailAddress')
+                            }}<span class="text-red-500">*</span></label
                         >
                         <FormInput
                             v-model="email"
@@ -55,13 +58,13 @@
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Phone Number</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('profile.phoneNumber')
+                        }}</label>
                         <FormInput
                             v-model="phone"
                             type="text"
-                            placeholder="Phone number"
+                            :placeholder="t('profile.phonePlaceholder')"
                             v-bind="phoneProps"
                             :error-message="errors.phone"
                         />
@@ -85,6 +88,7 @@
 
 <script setup>
     import { onMounted, watch, ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
     import FormInput from '~/components/FormInput.vue'
@@ -92,7 +96,9 @@
     import AlertMessage from '~/components/AlertMessage.vue'
     import { useUserStore } from '@/stores/userStore'
 
-    useHead({ title: 'Profile Details' })
+    const { t } = useI18n()
+
+    useHead({ title: t('profile.title') })
     definePageMeta({ middleware: 'auth' })
 
     const userStore = useUserStore()
@@ -104,9 +110,9 @@
 
     // Validation schema
     const validationSchema = yup.object({
-        name: yup.string().required('Full name is required'),
-        email: yup.string().required('Email is required').email('Invalid email'),
-        phone: yup.string().matches(/^\d{12}$/, 'Phone number must be exactly 12 digits'),
+        name: yup.string().required(t('profile.fullNameRequired')),
+        email: yup.string().required(t('profile.emailRequired')).email(t('profile.emailInvalid')),
+        phone: yup.string().matches(/^\d{12}$/, t('profile.phoneInvalid')),
     })
 
     // Setup vee-validate form

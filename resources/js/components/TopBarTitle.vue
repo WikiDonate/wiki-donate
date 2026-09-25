@@ -6,7 +6,7 @@
         <h1
             class="font-bold text-lg sm:text-xl md:text-2xl text-center sm:text-left bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
         >
-            {{ pageTitle }}
+            {{ isKey(pageTitle) ? t(pageTitle) : pageTitle }}
         </h1>
 
         <!-- Right items -->
@@ -17,11 +17,16 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
+
     // Define props to accept dynamic content
     defineProps({
         pageTitle: {
             type: String,
-            default: 'Big Brother (UK TV series)', // default title if not provided
+            default: '',
         },
         rightSide: {
             type: String,

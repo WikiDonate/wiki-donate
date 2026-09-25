@@ -6,18 +6,23 @@
         :disabled="props.disabled"
         @click="$emit('submit')"
     >
-        {{ text }}
+        {{ isI18nKey(text) ? t(text) : text }}
     </button>
 </template>
 
 <script setup>
     import { computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
+    const isI18nKey = (text) => typeof text === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(text)
 
     // Define the props for the component
     const props = defineProps({
         text: {
             type: String,
-            default: 'Submit', // Default text for the button
+            default: 'common.submit', // Default text for the button (i18n key)
         },
         variant: {
             type: String,

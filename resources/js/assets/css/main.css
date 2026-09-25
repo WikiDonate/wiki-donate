@@ -19,3 +19,54 @@
         border-color: var(--color-gray-200, currentColor);
     }
 }
+
+/* RTL mirroring (ar / ur / he / fa) — Tailwind v4 flips flex direction and
+   space-x automatically, but these physical utilities need manual mirroring.
+   Unlayered on purpose so it wins over the utilities layer. */
+[dir='rtl'] .right-0 {
+    right: auto;
+    left: 0;
+}
+[dir='rtl'] .mr-3 {
+    margin-right: 0;
+    margin-left: 0.75rem;
+}
+[dir='rtl'] .pl-5 {
+    padding-left: 0;
+    padding-right: 1.25rem;
+}
+[dir='rtl'] .border-l {
+    border-left-width: 0;
+    border-right-width: 1px;
+}
+[dir='rtl'] .border-r {
+    border-right-width: 0;
+    border-left-width: 1px;
+}
+[dir='rtl'] .rounded-l-md {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+[dir='rtl'] .rounded-r-md {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+[dir='rtl'] .rounded-l-full {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+}
+[dir='rtl'] .rounded-r-full {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+}
+[dir='rtl'] input {
+    text-align: right;
+}

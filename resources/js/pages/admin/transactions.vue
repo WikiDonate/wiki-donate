@@ -2,8 +2,8 @@
     <main>
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
-                title="Transactions"
-                subtitle="Income and payouts at a glance"
+                :title="t('admin.transactions')"
+                :subtitle="t('admin.transactionsSubtitle')"
                 :card="true"
             >
                 <template #actions>
@@ -13,7 +13,7 @@
                         @click="exportCsv"
                     >
                         <font-awesome-icon :icon="['fas', 'file-invoice-dollar']" class="w-4 h-4" />
-                        Export CSV
+                        {{ t('admin.exportCsv') }}
                     </button>
                 </template>
             </AdminPageHeader>
@@ -25,25 +25,25 @@
                 <StatCard
                     icon="['fas', 'donate']"
                     icon-bg="green"
-                    label="Total Income"
+                    :label="t('admin.totalIncome')"
                     :value="formatAmount(summary.totalIncome)"
                 />
                 <StatCard
                     icon="['fas', 'credit-card']"
                     icon-bg="red"
-                    label="Total Payouts"
+                    :label="t('admin.totalPayouts')"
                     :value="formatAmount(summary.totalPayouts)"
                 />
                 <StatCard
                     icon="['fas', 'chart-line']"
                     icon-bg="amber"
-                    label="Remaining Payable"
+                    :label="t('admin.remainingPayable')"
                     :value="formatAmount(summary.remainingPayable)"
                 />
                 <StatCard
                     icon="['fas', 'coins']"
                     icon-bg="indigo"
-                    label="Net in Hand"
+                    :label="t('admin.netInHand')"
                     :value="formatAmount(summary.netInHand)"
                 />
             </div>
@@ -55,28 +55,28 @@
                         v-model="filterType"
                         class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     >
-                        <option value="">All Types</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
+                        <option value="">{{ t('admin.allTypes') }}</option>
+                        <option value="income">{{ t('admin.income') }}</option>
+                        <option value="expense">{{ t('admin.expense') }}</option>
                     </select>
                     <select
                         v-model="filterMethod"
                         class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     >
-                        <option value="">All Methods</option>
-                        <option value="stripe">Stripe</option>
-                        <option value="paypal">PayPal</option>
+                        <option value="">{{ t('admin.allMethods') }}</option>
+                        <option value="stripe">{{ t('admin.stripe') }}</option>
+                        <option value="paypal">{{ t('admin.paypal') }}</option>
                     </select>
                     <input
                         v-model="filterOrg"
                         type="text"
-                        placeholder="Organization..."
+                        :placeholder="t('admin.organizationPlaceholder')"
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     />
                     <input
                         v-model="filterArticle"
                         type="text"
-                        placeholder="Article slug..."
+                        :placeholder="t('admin.articleSlugPlaceholder')"
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     />
                     <input
@@ -89,11 +89,16 @@
                         type="date"
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     />
-                    <Button variant="primary" text="Apply" width="auto" @click="loadPage(1)" />
+                    <Button
+                        variant="primary"
+                        :text="t('common.apply')"
+                        width="auto"
+                        @click="loadPage(1)"
+                    />
                 </div>
             </div>
 
-            <LoadingSpinner v-if="loading" text="Loading transactions..." />
+            <LoadingSpinner v-if="loading" :text="t('admin.loadingTransactions')" />
             <template v-else>
                 <div class="px-4 sm:px-6 py-4">
                     <AdminTable :columns="columns" :rows="transactions" row-key="id">
@@ -109,7 +114,7 @@
                                     v-if="row.type === 'income' && row.article"
                                     class="text-xs text-gray-400"
                                 >
-                                    Article: {{ row.article.title }}
+                                    {{ t('admin.articleLabel', { title: row.article.title }) }}
                                 </p>
                                 <p v-if="row.type === 'expense'" class="text-xs text-gray-400">
                                     {{ row.context }}
@@ -119,7 +124,9 @@
                         <template #cell-type="{ row }">
                             <AdminBadge
                                 :variant="row.type === 'income' ? 'success' : 'danger'"
-                                :text="row.type === 'income' ? 'Income' : 'Expense'"
+                                :text="
+                                    row.type === 'income' ? t('admin.income') : t('admin.expense')
+                                "
                             />
                         </template>
                         <template #cell-amount="{ row }">
@@ -141,7 +148,11 @@
                             <template v-else>
                                 <AdminBadge
                                     :variant="row.payout_type === 'full' ? 'info' : 'amber'"
-                                    :text="row.payout_type === 'full' ? 'Full' : 'Partial'"
+                                    :text="
+                                        row.payout_type === 'full'
+                                            ? t('admin.full')
+                                            : t('admin.partial')
+                                    "
                                 />
                             </template>
                         </template>
@@ -154,7 +165,7 @@
                                 :to="`/article?title=${encodeURIComponent(row.article.slug)}`"
                                 class="text-indigo-600 hover:text-indigo-800 text-xs underline"
                             >
-                                View
+                                {{ t('common.view') }}
                             </RouterLink>
                             <span v-else class="text-xs text-gray-400">—</span>
                         </template>
@@ -165,8 +176,13 @@
                         class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                     >
                         <span class="text-sm text-gray-500 order-2 sm:order-1">
-                            Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
-                            total)
+                            {{
+                                t('report.pageOf', {
+                                    current: meta.currentPage,
+                                    last: meta.lastPage,
+                                    total: meta.total,
+                                })
+                            }}
                         </span>
                         <Pagination
                             :current-page="meta.currentPage"
@@ -182,6 +198,7 @@
 
 <script setup>
     import { ref, onMounted } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import api from '~/config/apiConfig'
     import { useToastify } from '~/composables/useToastify'
@@ -195,7 +212,9 @@
 
     const { notifyError } = useToastify()
 
-    useHead({ title: 'Admin - Transactions' })
+    const { t } = useI18n()
+
+    useHead({ title: t('admin.transactions') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const transactions = ref([])
@@ -212,13 +231,13 @@
     const toDate = ref('')
 
     const columns = [
-        { key: 'date', label: 'Date' },
-        { key: 'description', label: 'Description' },
-        { key: 'type', label: 'Type' },
-        { key: 'amount', label: 'Amount' },
-        { key: 'method', label: 'Method' },
-        { key: 'status', label: 'Status' },
-        { key: 'context', label: 'Context' },
+        { key: 'date', label: t('admin.date') },
+        { key: 'description', label: t('admin.description') },
+        { key: 'type', label: t('admin.type') },
+        { key: 'amount', label: t('admin.amount') },
+        { key: 'method', label: t('admin.method') },
+        { key: 'status', label: t('admin.status') },
+        { key: 'context', label: t('admin.context') },
     ]
 
     function formatAmount(value) {
@@ -253,7 +272,7 @@
                 summary.value = sumRes.data
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to load transactions')
+            notifyError(error.errors?.[0] || t('admin.failedToLoadTransactions'))
         } finally {
             loading.value = false
         }
@@ -282,7 +301,7 @@
             URL.revokeObjectURL(url)
         } catch (e) {
             const payload = e?.response?.data ?? e?.message
-            let message = 'Export failed'
+            let message = t('admin.exportFailed')
             if (payload instanceof Blob) {
                 try {
                     message = JSON.parse(await payload.text()).message || message

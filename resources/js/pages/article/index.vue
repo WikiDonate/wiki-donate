@@ -6,7 +6,7 @@
         <TopBarTitle :page-title="`${articleTitle || title}`" />
 
         <div v-if="loading" class="flex items-center justify-center py-12">
-            <LoadingSpinner text="Loading Article" />
+            <LoadingSpinner :text="t('article.loading')" />
         </div>
 
         <section v-else class="bg-white p-2 md:p-4 lg:p-6">
@@ -19,8 +19,8 @@
                         :icon="['fas', 'hand-holding-heart']"
                         class="text-indigo-600"
                     />
-                    <span class="hidden sm:inline">Community Donation Formulas</span>
-                    <span class="sm:hidden">Donation Formulas</span>
+                    <span class="hidden sm:inline">{{ t('article.communityFormulas') }}</span>
+                    <span class="sm:hidden">{{ t('article.donationFormulas') }}</span>
                 </h3>
                 <div class="space-y-3 md:space-y-4">
                     <div
@@ -48,13 +48,13 @@
                                 <span
                                     v-if="formula.is_edited"
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-red-600"
-                                    title="This formula was edited after donations were made"
+                                    title="article.editedTooltip"
                                 >
                                     <font-awesome-icon
                                         :icon="['fas', 'circle-exclamation']"
                                         class="w-3 h-3"
                                     />
-                                    Edited by user
+                                    {{ t('article.editedByUser') }}
                                 </span>
                                 <Button
                                     width="auto"
@@ -62,7 +62,7 @@
                                     @click="openDonateModal(formula)"
                                 >
                                     <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
-                                    <span>Donate</span>
+                                    <span>{{ t('article.donate') }}</span>
                                 </Button>
                             </div>
 
@@ -81,12 +81,12 @@
                                                 v-if="copiedUuid === formula.uuid"
                                                 class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-xl whitespace-nowrap z-50"
                                             >
-                                                Copied!
+                                                {{ t('common.copied') }}
                                             </div>
                                         </transition>
                                         <button
                                             class="text-indigo-400 hover:text-indigo-600 p-1"
-                                            title="Copy Formula URL"
+                                            title="article.copyUrl"
                                             @click="copyFormulaUrl(formula.uuid)"
                                         >
                                             <font-awesome-icon :icon="['fas', 'link']" />
@@ -98,14 +98,14 @@
                                     >
                                         <button
                                             class="text-indigo-600 hover:text-indigo-800 p-1"
-                                            title="Edit Formula"
+                                            title="article.editFormula"
                                             @click="openEditFormulaModal(formula)"
                                         >
                                             <font-awesome-icon :icon="['fas', 'edit']" />
                                         </button>
                                         <button
                                             class="text-red-500 hover:text-red-700 p-1"
-                                            title="Delete Formula"
+                                            title="article.deleteFormula"
                                             @click="handleDeleteFormula(formula.uuid)"
                                         >
                                             <font-awesome-icon :icon="['fas', 'trash-alt']" />
@@ -135,7 +135,7 @@
                                 <div
                                     class="flex justify-between items-center pt-2 font-bold text-gray-800"
                                 >
-                                    <span>Total</span>
+                                    <span>{{ t('article.total') }}</span>
                                     <span class="text-indigo-700">100%</span>
                                 </div>
                                 <!-- Details -->
@@ -143,7 +143,9 @@
                                     v-if="formula.details"
                                     class="mt-3 pt-2 border-t border-gray-100"
                                 >
-                                    <p class="text-xs text-gray-500 font-medium mb-1">Details:</p>
+                                    <p class="text-xs text-gray-500 font-medium mb-1">
+                                        {{ t('article.details') }}
+                                    </p>
                                     <p class="text-sm text-gray-700 italic">
                                         {{ formula.details }}
                                     </p>
@@ -164,13 +166,13 @@
                     class="text-gray-400 text-3xl mb-3"
                 />
                 <p class="text-gray-500">
-                    No donation formulas created yet.
-                    <template v-if="authStore.isAuthenticated"
-                        >Be the first to create one!</template
-                    >
+                    {{ t('article.noFormulas') }}
+                    <template v-if="authStore.isAuthenticated">{{ t('article.beFirst') }}</template>
                     <template v-else>
-                        <NuxtLink to="/login" class="text-indigo-600 font-semibold hover:underline"
-                            >Log in to create one!</NuxtLink
+                        <NuxtLink
+                            to="/login"
+                            class="text-indigo-600 font-semibold hover:underline"
+                            >{{ t('article.logInToCreate') }}</NuxtLink
                         >
                     </template>
                 </p>
@@ -186,7 +188,7 @@
                     @click="openCreateFormulaModal"
                 >
                     <font-awesome-icon :icon="['fas', 'plus-circle']" class="w-5 h-5" />
-                    <span>Create Donation Formula</span>
+                    <span>{{ t('article.createFormula') }}</span>
                 </button>
             </div>
         </section>
@@ -203,10 +205,10 @@
 
         <ConfirmModal
             v-model="showConfirmDelete"
-            title="Delete Donation Formula"
-            message-title="Confirm Deletion"
-            message="Are you sure you want to delete this donation formula? This action cannot be undone."
-            confirm-text="Delete Formula"
+            :title="t('article.deleteFormulaTitle')"
+            :message-title="t('article.confirmDeletion')"
+            :message="t('article.confirmDeleteMsg')"
+            :confirm-text="t('article.deleteFormulaConfirm')"
             :is-loading="submittingDelete"
             @confirm="handleConfirmDelete"
         />
@@ -223,14 +225,17 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
+
+    const { t } = useI18n()
 
     const route = useRoute()
     const title = ref(decodeURIComponent(route.query.title))
     const articleTitle = ref('')
 
     useHead(() => ({
-        title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : 'Article',
+        title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : t('article.title'),
     }))
 
     const articleStore = useArticleStore()
@@ -271,7 +276,7 @@
     const handlePaymentSuccess = ({ method, amount }) => {
         showPaymentModal.value = false
         selectedPaymentFormula.value = null
-        notifySuccess(`$${amount} donation via ${method} completed successfully!`)
+        notifySuccess(t('article.donationCompleted', { amount: `$${amount}`, method }))
     }
 
     const getUserFormulaIndex = (currentFormula) => {
@@ -329,15 +334,15 @@
                 showDonationModal.value = false
                 notifySuccess(
                     selectedFormula.value.uuid
-                        ? 'Donation formula updated!'
-                        : 'Donation formula created!',
+                        ? t('article.formulaUpdated')
+                        : t('article.formulaCreated'),
                 )
                 await loadDonationFormulas(articleStore.article.slug, response.data.uuid)
             } else {
-                throw new Error(response.message || 'Failed to save')
+                throw new Error(response.message || t('article.failedToSave'))
             }
         } catch (error) {
-            const message = error.message || error.errors?.[0] || 'Unexpected error'
+            const message = error.message || error.errors?.[0] || t('article.unexpectedError')
             if (message.includes('already exists')) {
                 formulaError.value = message
             }
@@ -361,13 +366,13 @@
             if (response.success) {
                 showConfirmDelete.value = false
                 formulaToDelete.value = null
-                notifySuccess('Donation formula deleted!')
+                notifySuccess(t('article.formulaDeleted'))
                 await loadDonationFormulas(articleStore.article.slug)
             } else {
-                throw new Error(response.message || 'Failed to delete')
+                throw new Error(response.message || t('article.failedToDelete'))
             }
         } catch (error) {
-            notifyError(error.message || 'Failed to delete')
+            notifyError(error.message || t('article.failedToDelete'))
         } finally {
             submittingDelete.value = false
         }

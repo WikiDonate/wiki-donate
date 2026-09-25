@@ -415,6 +415,11 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals('Monthly donation', $donation->metadata['details']);
         $this->assertArrayNotHasKey('formula', $donation->metadata);
 
+        // Formula snapshot frozen at capture time
+        $this->assertEquals($formula->formula, $donation->metadata['formula_snapshot']);
+        $this->assertEquals($formula->id, $donation->metadata['formula_id']);
+        $this->assertEquals($formula->uuid, $donation->metadata['formula_uuid']);
+
         // Pending order was deleted
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
     }
@@ -609,6 +614,11 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals('webhook@example.com', $donation->donor_email);
         $this->assertEquals($formula->id, $donation->donation_formula_id);
         $this->assertArrayNotHasKey('formula', $donation->metadata);
+
+        // Formula snapshot frozen at capture time (webhook path)
+        $this->assertEquals($formula->formula, $donation->metadata['formula_snapshot']);
+        $this->assertEquals($formula->id, $donation->metadata['formula_id']);
+        $this->assertEquals($formula->uuid, $donation->metadata['formula_uuid']);
 
         // Pending order was cleaned up
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());

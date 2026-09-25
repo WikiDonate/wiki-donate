@@ -1,13 +1,13 @@
 <template>
     <Modal
         :model-value="modelValue"
-        title="Donation Details"
+        :title="t('admin.donationDetails')"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div v-if="donation" class="space-y-6">
             <!-- Amount Summary -->
             <div class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-center">
-                <p class="text-indigo-100 text-sm font-medium mb-1">Total Amount</p>
+                <p class="text-indigo-100 text-sm font-medium mb-1">{{ t('admin.totalAmount') }}</p>
                 <p class="text-white text-3xl font-bold">
                     {{ donation.currency || 'USD' }}
                     {{ Number(donation.amount).toFixed(2) }}
@@ -24,25 +24,33 @@
             <!-- Info Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">Donor</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.donor')
+                    }}</span>
                     <p class="text-gray-800 font-medium text-sm mt-0.5">
                         {{ donation.user || '—' }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">Email</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.email')
+                    }}</span>
                     <p class="text-gray-800 text-sm mt-0.5 truncate">
                         {{ donation.email || '—' }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">Date</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.date')
+                    }}</span>
                     <p class="text-gray-800 text-sm mt-0.5">
                         {{ donation.date }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                    <span class="text-xs text-gray-500 uppercase tracking-wide">Payment ID</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                        t('admin.paymentId')
+                    }}</span>
                     <p class="text-gray-800 text-xs font-mono mt-0.5 truncate">
                         {{ donation.payment_id || donation.stripe_session_id || '—' }}
                     </p>
@@ -55,7 +63,9 @@
                 class="border border-gray-100 rounded-xl overflow-hidden"
             >
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                    <h4 class="text-sm font-semibold text-gray-700">Distribution Formula</h4>
+                    <h4 class="text-sm font-semibold text-gray-700">
+                        {{ t('admin.distributionFormula') }}
+                    </h4>
                 </div>
                 <div class="divide-y divide-gray-50">
                     <div
@@ -72,7 +82,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-800 truncate">
-                                {{ item.organization || item.name || 'Organization' }}
+                                {{ item.organization || item.name || t('formula.organization') }}
                             </p>
                             <div class="mt-1 w-full bg-gray-100 rounded-full h-1.5">
                                 <div
@@ -96,7 +106,9 @@
             <!-- Details -->
             <div v-if="donation.details" class="border border-gray-100 rounded-xl overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                    <h4 class="text-sm font-semibold text-gray-700">Additional Details</h4>
+                    <h4 class="text-sm font-semibold text-gray-700">
+                        {{ t('admin.additionalDetails') }}
+                    </h4>
                 </div>
                 <div class="px-4 py-3">
                     <p class="text-gray-600 text-sm">{{ donation.details }}</p>
@@ -113,13 +125,13 @@
                     @click="$emit('update:modelValue', false)"
                 >
                     <font-awesome-icon :icon="['fas', 'link']" class="w-3.5 h-3.5" />
-                    View Formula
+                    {{ t('admin.viewFormula') }}
                 </NuxtLink>
                 <button
                     class="ml-auto px-6 py-2 text-sm font-medium text-white bg-linear-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-colors"
                     @click="$emit('update:modelValue', false)"
                 >
-                    Close
+                    {{ t('admin.close') }}
                 </button>
             </div>
         </template>
@@ -127,6 +139,10 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
     defineProps({
         modelValue: {
             type: Boolean,

@@ -10,10 +10,10 @@
                 />
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide">
-                Payment Cancelled
+                {{ t('payment.cancelTitle') }}
             </h1>
             <p class="text-base text-gray-200 mt-2">
-                Your payment was not processed. No charges have been made.
+                {{ t('payment.cancelSubtitle') }}
             </p>
         </div>
 
@@ -25,9 +25,9 @@
                         class="w-8 h-8 text-gray-400 mb-3"
                     />
                     <p class="text-gray-700 font-medium mb-1">
-                        No worries — your payment information is safe.
+                        {{ t('payment.safeMsg') }}
                     </p>
-                    <p class="text-gray-500 text-sm">You can try again whenever you're ready.</p>
+                    <p class="text-gray-500 text-sm">{{ t('payment.tryAgain') }}</p>
                 </div>
 
                 <NuxtLink
@@ -39,9 +39,11 @@
                 </NuxtLink>
 
                 <p class="text-gray-400 text-xs">
-                    Having trouble?
-                    <NuxtLink to="/contact" class="text-indigo-600 hover:text-indigo-800 underline"
-                        >Contact support</NuxtLink
+                    {{ t('payment.havingTrouble') }}
+                    <NuxtLink
+                        to="/contact"
+                        class="text-indigo-600 hover:text-indigo-800 underline"
+                        >{{ t('payment.contactSupport') }}</NuxtLink
                     >
                 </p>
             </div>
@@ -50,7 +52,11 @@
 </template>
 
 <script setup>
-    useHead({ title: 'Payment Cancelled' })
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
+    useHead({ title: t('payment.cancelTitle') })
 
     definePageMeta({
         // No auth middleware — users returning from Stripe may not be authenticated
@@ -63,5 +69,7 @@
         return back && back.startsWith('/') ? back : '/'
     })
 
-    const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
+    const backLabel = computed(() =>
+        backUrl.value === '/' ? t('common.backToHome') : t('common.backToArticle'),
+    )
 </script>

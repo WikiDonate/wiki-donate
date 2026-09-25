@@ -2,8 +2,8 @@
     <main>
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <AdminPageHeader
-                title="All Donations"
-                subtitle="View and search all donation records"
+                :title="t('admin.allDonations')"
+                :subtitle="t('admin.allDonationsSubtitle')"
                 :card="true"
             />
 
@@ -18,7 +18,7 @@
                         <input
                             v-model="searchQuery"
                             type="text"
-                            placeholder="Search by donor, email, or payment ID..."
+                            :placeholder="t('admin.searchDonorPlaceholder')"
                             class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                         />
                     </div>
@@ -27,22 +27,22 @@
                             v-model="filterStatus"
                             class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
                         >
-                            <option value="">All Status</option>
-                            <option value="completed">Completed</option>
-                            <option value="expired">Expired</option>
-                            <option value="failed">Failed</option>
+                            <option value="">{{ t('admin.allStatus') }}</option>
+                            <option value="completed">{{ t('admin.completed') }}</option>
+                            <option value="expired">{{ t('admin.expired') }}</option>
+                            <option value="failed">{{ t('admin.failed') }}</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <LoadingSpinner v-if="loading" text="Loading donations..." />
+            <LoadingSpinner v-if="loading" :text="t('admin.loadingDonations')" />
             <template v-else>
                 <AdminTable
                     :columns="columns"
                     :rows="donations"
                     row-key="id"
-                    empty-text="No donations found"
+                    :empty-text="t('admin.noDonations')"
                 >
                     <template #cell-source>
                         <AdminBadge variant="info" text="Checkout" />
@@ -88,7 +88,7 @@
                             class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
                             @click="openDetail(row)"
                         >
-                            View
+                            {{ t('common.view') }}
                         </button>
                     </template>
                 </AdminTable>
@@ -98,8 +98,13 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
-                        total)
+                        {{
+                            t('report.pageOf', {
+                                current: meta.currentPage,
+                                last: meta.lastPage,
+                                total: meta.total,
+                            })
+                        }}
                     </span>
                     <Pagination
                         :current-page="meta.currentPage"
@@ -120,6 +125,7 @@
 
 <script setup>
     import { ref, onMounted, watch } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
@@ -136,7 +142,9 @@
         showDetail.value = true
     }
 
-    useHead({ title: 'Admin - Donations' })
+    const { t } = useI18n()
+
+    useHead({ title: t('admin.allDonations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const donations = ref([])
@@ -147,14 +155,14 @@
     let searchTimeout = null
 
     const columns = [
-        { key: 'date', label: 'Date' },
-        { key: 'donor', label: 'Donor' },
-        { key: 'source', label: 'Source' },
-        { key: 'amount', label: 'Amount' },
-        { key: 'status', label: 'Status' },
-        { key: 'paymentId', label: 'Payment ID' },
-        { key: 'article', label: 'Article' },
-        { key: 'action', label: 'Action' },
+        { key: 'date', label: t('admin.date') },
+        { key: 'donor', label: t('admin.donor') },
+        { key: 'source', label: t('admin.source') },
+        { key: 'amount', label: t('admin.amount') },
+        { key: 'status', label: t('admin.status') },
+        { key: 'paymentId', label: t('admin.paymentId') },
+        { key: 'article', label: t('admin.article') },
+        { key: 'action', label: t('admin.action') },
     ]
 
     function statusVariant(status) {
@@ -176,7 +184,7 @@
                 meta.value = res.meta
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to load donations')
+            notifyError(error.errors?.[0] || t('admin.failedToLoadDonations'))
         } finally {
             loading.value = false
         }

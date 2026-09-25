@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Models\DonationFormula;
 use App\Models\PayPalPendingOrder;
 use App\Services\PayPalClient;
 use Illuminate\Http\Client\RequestException;
@@ -210,6 +211,14 @@ class PayPalController extends Controller
 
                 $captureData = PayPalClient::extractCaptureData($captured);
 
+                $formulaSnapshot = null;
+                $formulaUuid = null;
+                $formula = $pending->donation_formula_id ? DonationFormula::find($pending->donation_formula_id) : null;
+                if ($formula) {
+                    $formulaSnapshot = $formula->formula;
+                    $formulaUuid = $formula->uuid;
+                }
+
                 $donation = Donation::create([
                     'paypal_order_id' => $orderId,
                     'user_id' => $pending->user_id,
@@ -224,6 +233,9 @@ class PayPalController extends Controller
                         'payer_id' => $captureData['payer_id'],
                         'source' => 'paypal',
                         'details' => $pending->details,
+                        'formula_snapshot' => $formulaSnapshot,
+                        'formula_id' => $pending->donation_formula_id,
+                        'formula_uuid' => $formulaUuid,
                     ],
                 ]);
 
@@ -289,6 +301,14 @@ class PayPalController extends Controller
                     $captureData = PayPalClient::extractCaptureData($order);
                     $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)->first();
 
+                    $formulaSnapshot = null;
+                    $formulaUuid = null;
+                    $formula = $pending?->donation_formula_id ? DonationFormula::find($pending->donation_formula_id) : null;
+                    if ($formula) {
+                        $formulaSnapshot = $formula->formula;
+                        $formulaUuid = $formula->uuid;
+                    }
+
                     $donation = Donation::create([
                         'paypal_order_id' => $orderId,
                         'user_id' => $pending?->user_id,
@@ -302,6 +322,9 @@ class PayPalController extends Controller
                             'payment_id' => $captureData['payment_id'],
                             'source' => 'paypal',
                             'details' => $pending?->details,
+                            'formula_snapshot' => $formulaSnapshot,
+                            'formula_id' => $pending?->donation_formula_id,
+                            'formula_uuid' => $formulaUuid,
                         ],
                     ]);
 

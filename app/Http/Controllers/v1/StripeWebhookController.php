@@ -146,10 +146,16 @@ class StripeWebhookController extends Controller
                     'source' => $sessionMetadata->source ?? 'wikidonate',
                     'formula' => $metaFormula,
                     'details' => $metaDetails,
+                    'formula_snapshot' => is_array($metaFormula) ? $metaFormula : null,
+                    'formula_id' => isset($sessionMetadata->formula_id) ? $sessionMetadata->formula_id : null,
+                    'formula_uuid' => isset($sessionMetadata->formula_uuid) ? $sessionMetadata->formula_uuid : null,
                 ],
             ]);
         } else {
-            // Update existing donation
+            // Duplicate delivery path: the donation already exists. Only the
+            // payment status is refreshed; metadata (including the formula
+            // snapshot) is intentionally left untouched so a re-delivery can
+            // never overwrite the snapshot frozen at the original completion.
             $donation->update([
                 'stripe_payment_intent_id' => $paymentIntentId,
                 'status' => 'completed',
