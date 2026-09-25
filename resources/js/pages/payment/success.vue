@@ -10,21 +10,23 @@
                 />
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide">
-                Payment Successful
+                {{ t('payment.successTitle') }}
             </h1>
-            <p class="text-base text-green-100 mt-2">Thank you for your generous donation!</p>
+            <p class="text-base text-green-100 mt-2">{{ t('payment.thankYou') }}</p>
         </div>
 
         <div class="p-6 sm:p-8 text-center space-y-6">
             <div v-if="loading" class="flex justify-center py-4">
-                <LoadingSpinner text="Verifying payment..." />
+                <LoadingSpinner :text="t('payment.verifyingPayment')" />
             </div>
 
             <template v-else>
                 <div v-if="sessionData" class="bg-green-50 border border-green-200 rounded-lg p-6">
-                    <p class="text-green-700 font-medium mb-1">Your donation has been processed.</p>
+                    <p class="text-green-700 font-medium mb-1">
+                        {{ t('payment.processedMsg') }}
+                    </p>
                     <p class="text-gray-600 text-sm">
-                        Amount:
+                        {{ t('payment.amountLabel') }}
                         <span class="font-bold"
                             >{{ formatAmount(sessionData.amount) }}
                             {{ sessionData.currency?.toUpperCase() }}</span
@@ -37,17 +39,15 @@
                     class="bg-amber-50 border border-amber-200 rounded-lg p-6"
                 >
                     <p class="text-amber-700 font-medium mb-1">
-                        Your payment was successful with PayPal, but we could not verify it
-                        automatically.
+                        {{ t('payment.paypalUnverifiedTitle') }}
                     </p>
                     <p class="text-gray-500 text-sm">
-                        Your donation will be finalized shortly. If you have concerns, please
-                        contact support.
+                        {{ t('payment.paypalUnverifiedMsg') }}
                     </p>
                 </div>
 
                 <div v-else class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                    <p class="text-gray-700 font-medium">Your payment was successful.</p>
+                    <p class="text-gray-700 font-medium">{{ t('payment.successful') }}</p>
                 </div>
 
                 <NuxtLink
@@ -63,14 +63,16 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
     import api from '~/config/apiConfig'
 
+    const { t } = useI18n()
     const route = useRoute()
     const sessionData = ref(null)
     const loading = ref(false)
     const paypalStatus = ref(null)
 
-    useHead({ title: 'Payment Successful' })
+    useHead({ title: t('payment.successTitle') })
 
     definePageMeta({
         // No auth middleware — users returning from Stripe/PayPal may not be authenticated
@@ -88,7 +90,9 @@
         return back && back.startsWith('/') ? back : '/'
     })
 
-    const backLabel = computed(() => (backUrl.value === '/' ? 'Back to Home' : 'Back to Article'))
+    const backLabel = computed(() =>
+        backUrl.value === '/' ? t('common.backToHome') : t('common.backToArticle'),
+    )
 
     onMounted(async () => {
         const sessionId = route.query.session_id

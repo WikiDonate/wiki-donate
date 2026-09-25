@@ -41,7 +41,7 @@
                     <span
                         class="font-bold text-lg bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
                     >
-                        Admin Panel
+                        {{ t('admin.panel') }}
                     </span>
                 </div>
 
@@ -58,6 +58,8 @@
 
 <script setup>
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
 
+    const { t } = useI18n()
     const mobileSidebarOpen = ref(false)
 </script>

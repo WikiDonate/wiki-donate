@@ -1,11 +1,15 @@
 <!-- eslint-disable vue/html-self-closing -->
 <template>
-    <nav v-if="totalPages > 1" class="flex items-center space-x-1" aria-label="Pagination">
+    <nav
+        v-if="totalPages > 1"
+        class="flex items-center space-x-1"
+        :aria-label="t('common.pagination')"
+    >
         <!-- Previous Button -->
         <button
             class="relative inline-flex items-center px-2 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             :disabled="currentPage === 1"
-            aria-label="Previous page"
+            :aria-label="t('common.previousPage')"
             @click="emitPage(currentPage - 1)"
         >
             <font-awesome-icon :icon="['fas', 'angle-left']" class="w-5 h-5" />
@@ -32,7 +36,7 @@
         <button
             class="relative inline-flex items-center px-2 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             :disabled="currentPage === totalPages"
-            aria-label="Next page"
+            :aria-label="t('common.nextPage')"
             @click="emitPage(currentPage + 1)"
         >
             <font-awesome-icon :icon="['fas', 'angle-right']" class="w-5 h-5" />
@@ -42,6 +46,9 @@
 
 <script setup>
     import { computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
 
     const props = defineProps({
         currentPage: { type: Number, required: true },

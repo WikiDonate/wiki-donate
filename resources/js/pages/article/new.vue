@@ -2,7 +2,7 @@
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="'Create New Article'" />
+        <TopBarTitle :page-title="t('article.newTitle')" />
 
         <!-- Alert message -->
         <div class="mt-2">
@@ -20,19 +20,19 @@
                 <!-- Title input -->
                 <div>
                     <label for="article-title" class="block text-sm font-medium text-gray-700 mb-2">
-                        Title
+                        {{ t('article.title') }}
                     </label>
                     <FormInput
                         id="article-title"
                         v-model="articleTitle"
-                        placeholder="Enter article title"
+                        :placeholder="t('article.titlePlaceholder')"
                     />
                 </div>
 
                 <!-- Save button -->
                 <div class="flex justify-end">
                     <Button
-                        text="Save"
+                        :text="t('article.save')"
                         variant="primary"
                         width="auto"
                         :disabled="!articleTitle.trim() || isSaving"
@@ -44,13 +44,13 @@
             <!-- Not authenticated message -->
             <div v-else class="text-center py-8">
                 <p class="text-gray-700 text-sm sm:text-base mb-4">
-                    Please login to create a new article.
+                    {{ t('article.pleaseLogin') }}
                 </p>
                 <NuxtLink
                     to="/login"
                     class="inline-block bg-linear-to-r from-indigo-600 to-purple-600 text-white font-bold py-2 px-6 rounded-md hover:from-indigo-500 hover:to-purple-500 transition-all"
                 >
-                    Login
+                    {{ t('article.login') }}
                 </NuxtLink>
             </div>
         </section>
@@ -58,11 +58,11 @@
         <!-- Confirmation Modal -->
         <ConfirmModal
             v-model="showConfirmModal"
-            title="Save Article"
-            message-title="Are you sure you want to save this article?"
+            :title="t('article.saveArticle')"
+            :message-title="t('article.confirmSave')"
             :message="`Title: ${articleTitle}`"
-            confirm-text="Save"
-            cancel-text="Cancel"
+            :confirm-text="t('article.save')"
+            :cancel-text="t('common.cancel')"
             :is-loading="isSaving"
             @confirm="handleSave"
         />
@@ -71,10 +71,13 @@
 
 <script setup>
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'New Article',
+        title: t('article.newArticleTitle'),
     })
 
     const route = useRoute()
@@ -102,7 +105,7 @@
 
             if (response.success) {
                 alertVariant.value = 'success'
-                alertMessage.value = response.message || 'Article saved successfully!'
+                alertMessage.value = response.message || t('article.savedSuccess')
                 showAlert.value = true
 
                 setTimeout(() => {
@@ -110,12 +113,12 @@
                 }, 1500)
             } else {
                 alertVariant.value = 'error'
-                alertMessage.value = response.errors?.[0] || 'Failed to save article'
+                alertMessage.value = response.errors?.[0] || t('article.saveFailed')
                 showAlert.value = true
             }
         } catch (error) {
             alertVariant.value = 'error'
-            alertMessage.value = error.errors?.[0] || 'An error occurred while saving'
+            alertMessage.value = error.errors?.[0] || t('article.saveError')
             showAlert.value = true
         } finally {
             isSaving.value = false

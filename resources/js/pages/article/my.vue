@@ -18,7 +18,7 @@
 
             <!-- loader -->
             <div v-if="loading" class="flex items-center justify-center py-12">
-                <LoadingSpinner text="Loading Articles" />
+                <LoadingSpinner :text="t('article.loadingArticles')" />
             </div>
 
             <!-- Articles list -->
@@ -65,10 +65,10 @@
                             <NuxtLink
                                 :to="`/article?title=${article.slug}`"
                                 class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-white font-semibold bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
-                                :aria-label="`View ${article.title}`"
+                                :aria-label="t('article.viewArticle', { title: article.title })"
                             >
                                 <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
-                                View
+                                {{ t('article.view') }}
                             </NuxtLink>
                         </div>
 
@@ -77,10 +77,10 @@
                             <NuxtLink
                                 :to="`/article?title=${article.slug}`"
                                 class="flex items-center justify-center gap-2 w-full px-3 py-1 rounded-full text-white font-semibold bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 hover:from-indigo-500 hover:to-purple-500"
-                                :aria-label="`View ${article.title}`"
+                                :aria-label="t('article.viewArticle', { title: article.title })"
                             >
                                 <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
-                                View
+                                {{ t('article.view') }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                         :icon="['fas', 'file-alt']"
                         class="w-12 h-12 text-gray-300 mb-4"
                     />
-                    <p class="text-base sm:text-lg">You have not created any articles yet.</p>
+                    <p class="text-base sm:text-lg">{{ t('article.noArticles') }}</p>
                 </div>
             </div>
             <!-- Pagination -->
@@ -112,6 +112,7 @@
 
 <script setup>
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
 
@@ -119,8 +120,10 @@
         middleware: 'auth',
     })
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'My Articles',
+        title: t('article.myArticles'),
     })
 
     const articleStore = useArticleStore()
@@ -161,12 +164,12 @@
                 currentPage.value = response.meta.currentPage
             } else {
                 articleStore.clearArticles()
-                showAlertMessage(response.message || 'Failed to load articles')
+                showAlertMessage(response.message || t('article.loadArticlesError'))
             }
         } catch (error) {
             if (import.meta.env.DEV) console.error('Error loading articles:', error)
             articleStore.clearArticles()
-            showAlertMessage(error.message || 'An error occurred while loading articles')
+            showAlertMessage(error.message || t('article.loadArticlesError'))
         } finally {
             loading.value = false
         }

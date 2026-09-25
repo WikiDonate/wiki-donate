@@ -9,7 +9,7 @@
             <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Search Wikidonate..."
+                :placeholder="t('search.placeholder')"
                 class="grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
                 @input="fetchSuggestions"
             />
@@ -37,7 +37,7 @@
             <ul>
                 <li
                     v-for="suggestion in suggestions"
-                    :key="suggestion"
+                    :key="suggestion.slug || suggestion.title"
                     class="cursor-pointer px-5 py-3 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
                     @click="selectSuggestion(suggestion)"
                 >
@@ -56,9 +56,11 @@
 
 <script setup>
     import { onBeforeUnmount, onMounted, ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useRouter } from 'vue-router'
     import { articleService } from '~/services/articleService'
 
+    const { t } = useI18n()
     const router = useRouter()
     const searchQuery = ref('')
     const suggestions = ref([])

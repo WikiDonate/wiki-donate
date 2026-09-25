@@ -1,7 +1,7 @@
 <template>
     <Modal
         :model-value="modelValue"
-        :title="title"
+        :title="t(title)"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="flex flex-col items-center text-center p-4">
@@ -12,22 +12,22 @@
                 />
             </div>
             <h4 class="text-xl font-bold text-gray-900 mb-2">
-                {{ messageTitle }}
+                {{ t(messageTitle) }}
             </h4>
-            <p class="text-gray-600">{{ message }}</p>
+            <p class="text-gray-600">{{ t(message) }}</p>
         </div>
 
         <template #footer>
             <Button
                 variant="secondary"
-                :text="cancelText"
+                :text="t(cancelText)"
                 width="auto"
                 class="px-6"
                 @click="$emit('update:modelValue', false)"
             />
             <Button
                 variant="primary"
-                :text="confirmText"
+                :text="t(confirmText)"
                 width="auto"
                 class="px-6 !bg-red-600 hover:!bg-red-700 border-none"
                 :disabled="isLoading"
@@ -38,6 +38,10 @@
 </template>
 
 <script setup>
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
     defineProps({
         modelValue: {
             type: Boolean,
@@ -45,23 +49,23 @@
         },
         title: {
             type: String,
-            default: 'Confirm Action',
+            default: 'confirmModal.title',
         },
         messageTitle: {
             type: String,
-            default: 'Are you sure?',
+            default: 'confirmModal.messageTitle',
         },
         message: {
             type: String,
-            default: 'This action cannot be undone.',
+            default: 'confirmModal.message',
         },
         confirmText: {
             type: String,
-            default: 'Delete',
+            default: 'confirmModal.confirm',
         },
         cancelText: {
             type: String,
-            default: 'Cancel',
+            default: 'confirmModal.cancel',
         },
         isLoading: {
             type: Boolean,

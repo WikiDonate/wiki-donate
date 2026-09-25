@@ -1,12 +1,17 @@
 <!-- eslint-disable vue/require-explicit-emits -->
 <template>
     <button :class="buttonClasses" :disabled="disabled" @click.stop="!disabled && $emit('click')">
-        <slot>{{ text }}</slot>
+        <slot>{{ isI18nKey(text) ? t(text) : text }}</slot>
     </button>
 </template>
 
 <script setup>
     import { computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
+
+    const isI18nKey = (text) => typeof text === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(text)
 
     defineEmits(['click'])
 
@@ -14,7 +19,7 @@
     const props = defineProps({
         text: {
             type: String,
-            default: 'Submit', // Default text for the button
+            default: 'common.submit', // Default text for the button (i18n key)
         },
         variant: {
             type: String,

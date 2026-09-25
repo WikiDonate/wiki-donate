@@ -25,7 +25,7 @@
                         "
                         @click="activeTab = 'profile'"
                     >
-                        User Profile
+                        {{ t('preferences.userProfile') }}
                     </button>
 
                     <!-- <button
@@ -47,24 +47,26 @@
                 <!-- User Profile Tab -->
                 <div v-if="activeTab === 'profile'">
                     <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
-                        Basic Information
+                        {{ t('preferences.basicInformation') }}
                     </h2>
 
                     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                         <div>
-                            <dt class="text-sm text-gray-500">Username</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.username') }}</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.username }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Email</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.email') }}</dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.email }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Member of Group</dt>
+                            <dt class="text-sm text-gray-500">
+                                {{ t('preferences.memberOfGroup') }}
+                            </dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.roles[0] }}
                             </dd>
@@ -76,18 +78,20 @@
                             <dd class="font-medium text-gray-800">0</dd>
                         </div> -->
                         <div>
-                            <dt class="text-sm text-gray-500">Registration Time</dt>
+                            <dt class="text-sm text-gray-500">
+                                {{ t('preferences.registrationTime') }}
+                            </dt>
                             <dd class="font-medium text-gray-800">
                                 {{ authStore.user.createdAt }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-sm text-gray-500">Password</dt>
+                            <dt class="text-sm text-gray-500">{{ t('preferences.password') }}</dt>
                             <dd>
                                 <span
                                     class="text-indigo-600 font-semibold cursor-pointer hover:underline"
                                     @click="openModal"
-                                    >Change Password</span
+                                    >{{ t('preferences.changePassword') }}</span
                                 >
                             </dd>
                         </div>
@@ -97,38 +101,52 @@
                 <!-- Notifications Tab -->
                 <div v-if="activeTab === 'notifications'">
                     <h2 class="font-semibold text-lg text-gray-900 mb-4 border-b pb-2">
-                        Notification Preferences
+                        {{ t('preferences.notificationPreferences') }}
                     </h2>
                     <!-- loader -->
                     <div v-if="loading" class="flex items-center justify-center py-12">
-                        <LoadingSpinner text="Loading Preferences" />
+                        <LoadingSpinner :text="t('preferences.loading')" />
                     </div>
 
                     <div v-else class="space-y-4">
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Edit to my talk page</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.editTalkPage') }}
+                            </span>
                             <Checkbox v-model="editTalkPage" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Edit to my user page</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.editUserPage') }}
+                            </span>
                             <Checkbox v-model="editUserPage" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Page review</span>
+                            <span class="text-gray-700 text-sm">{{
+                                t('preferences.pageReview')
+                            }}</span>
                             <Checkbox v-model="pageReview" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Email from other user</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.emailFromOther') }}
+                            </span>
                             <Checkbox v-model="emailFromOther" />
                         </div>
                         <div class="flex items-center justify-between border-b pb-2">
-                            <span class="text-gray-700 text-sm">Successful mention</span>
+                            <span class="text-gray-700 text-sm">
+                                {{ t('preferences.successfulMention') }}
+                            </span>
                             <Checkbox v-model="successfulMention" />
                         </div>
 
                         <div class="pt-4">
                             <FormSubmitButton
-                                :text="submittingNotifications ? 'Saving...' : 'Save Preferences'"
+                                :text="
+                                    submittingNotifications
+                                        ? t('preferences.saving')
+                                        : t('preferences.savePreferences')
+                                "
                                 :disabled="submittingNotifications"
                                 class="w-full sm:w-[160px]"
                                 @click="saveNotifications()"
@@ -148,7 +166,7 @@
                 <h3
                     class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
                 >
-                    Change Password
+                    {{ t('preferences.changePassword') }}
                 </h3>
 
                 <form @submit.prevent="submitChangePassword">
@@ -161,26 +179,26 @@
                     />
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >New Password</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('preferences.newPassword')
+                        }}</label>
                         <FormInput
                             v-model="password"
                             type="password"
-                            placeholder="Enter your password"
+                            :placeholder="t('preferences.passwordPlaceholder')"
                             v-bind="passwordProps"
                             :error-message="errors['password']"
                         />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            >Confirm Password</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                            t('preferences.confirmPassword')
+                        }}</label>
                         <FormInput
                             v-model="confirmPassword"
                             type="password"
-                            placeholder="Confirm password"
+                            :placeholder="t('preferences.confirmPasswordPlaceholder')"
                             v-bind="confirmPasswordProps"
                             :error-message="errors['confirmPassword']"
                         />
@@ -193,7 +211,7 @@
                             :disabled="submittingPassword"
                             @click="closeModal"
                         >
-                            Cancel
+                            {{ t('common.cancel') }}
                         </button>
                         <button
                             type="submit"
@@ -212,8 +230,11 @@
 <script setup>
     import { useForm } from 'vee-validate'
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import * as yup from 'yup'
     import { userService } from '~/services/userService'
+
+    const { t } = useI18n()
 
     definePageMeta({
         middleware: 'auth',
@@ -261,7 +282,7 @@
             })
 
             if (!response.success) {
-                throw new Error(response.errors?.[0] || 'Failed to save preferences')
+                throw new Error(response.errors?.[0] || t('preferences.failedToSavePreferences'))
             }
 
             alertVariant.value = 'success'
@@ -271,7 +292,8 @@
         } catch (error) {
             if (import.meta.env.DEV) console.error(error)
             alertVariant.value = 'error'
-            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            alertMessage.value =
+                error.errors[0] || error.message || t('preferences.unexpectedError')
             showAlert.value = true
         } finally {
             submittingNotifications.value = false
@@ -294,7 +316,8 @@
         } catch (error) {
             if (import.meta.env.DEV) console.error(error)
             alertVariant.value = 'error'
-            alertMessage.value = error.errors[0] || error.message || 'Unexpected error'
+            alertMessage.value =
+                error.errors[0] || error.message || t('preferences.unexpectedError')
             showAlert.value = true
         } finally {
             loading.value = false
@@ -305,12 +328,12 @@
     const validationSchema = yup.object({
         password: yup
             .string()
-            .required('Password is required')
+            .required(t('preferences.passwordRequired'))
             .min(6, 'Password must be at least 6 characters'),
         confirmPassword: yup
             .string()
-            .required('Confirm Password is required')
-            .oneOf([yup.ref('password'), null], 'Passwords must match'),
+            .required(t('preferences.confirmPasswordRequired'))
+            .oneOf([yup.ref('password'), null], t('preferences.passwordsMustMatch')),
     })
 
     // Setup VeeValidate
@@ -335,7 +358,7 @@
             })
 
             if (!response.success) {
-                throw new Error(response.errors?.[0] || 'Failed to change password')
+                throw new Error(response.errors?.[0] || t('preferences.failedToChangePassword'))
             }
 
             alertVariant.value = 'success'

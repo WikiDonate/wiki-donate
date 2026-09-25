@@ -7,8 +7,8 @@
                 <div
                     class="p-6 text-center bg-linear-to-r from-indigo-600 to-purple-600 text-white"
                 >
-                    <h1 class="text-2xl md:text-3xl font-bold">Password Recovery</h1>
-                    <p class="mt-2 text-sm">Enter your email to reset your password</p>
+                    <h1 class="text-2xl md:text-3xl font-bold">{{ t('auth.passwordRecovery') }}</h1>
+                    <p class="mt-2 text-sm">{{ t('auth.passwordRecoverySubtitle') }}</p>
                 </div>
 
                 <div class="p-3 sm:p-4 md:p-6">
@@ -24,12 +24,12 @@
                     <!-- Form -->
                     <form class="space-y-4" @submit.prevent="onSubmit">
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1"
-                            >Email <span class="text-red-500">*</span>
+                            >{{ t('auth.email') }} <span class="text-red-500">*</span>
                         </label>
                         <FormInput
                             v-model="email"
                             type="email"
-                            placeholder="Enter your email"
+                            :placeholder="t('auth.emailPlaceholder')"
                             v-bind="emailProps"
                             :error-message="errors['email']"
                         />
@@ -37,7 +37,7 @@
                         <!-- Submit Button -->
                         <div class="flex justify-center mt-4">
                             <FormSubmitButton
-                                :text="isLoading ? 'Sending...' : 'Send'"
+                                :text="isLoading ? t('common.sending') : t('common.send')"
                                 type="submit"
                                 variant="primary"
                                 :disabled="isLoading"
@@ -46,12 +46,12 @@
 
                         <!-- Back to Login Link -->
                         <div class="text-center text-sm text-gray-600 mt-6">
-                            Remember your password?
+                            {{ t('auth.rememberPassword') }}
                             <NuxtLink
                                 to="/login"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline ml-1"
                             >
-                                Back to Login
+                                {{ t('auth.backToLogin') }}
                             </NuxtLink>
                         </div>
                     </form>
@@ -64,10 +64,13 @@
 <script setup>
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
+    import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
 
+    const { t } = useI18n()
+
     useHead({
-        title: 'Forgot Password',
+        title: t('auth.passwordRecovery'),
     })
 
     const showAlert = ref(false)
@@ -76,7 +79,7 @@
     const isLoading = ref(false)
 
     const validationSchema = yup.object({
-        email: yup.string().required('Email is required').email('Email must be a valid email'),
+        email: yup.string().required(t('auth.emailRequired')).email(t('auth.emailInvalid')),
     })
 
     // Setup VeeValidate

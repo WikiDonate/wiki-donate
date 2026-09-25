@@ -1,11 +1,11 @@
 <template>
     <main class="w-full mx-auto max-w-5xl px-2 sm:px-4 lg:px-6 py-8">
-        <TopBarTitle :page-title="'My Donations'" />
+        <TopBarTitle :page-title="t('report.title')" />
 
         <!-- Filters -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
             <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                <h2 class="text-lg sm:text-xl font-semibold">Filters</h2>
+                <h2 class="text-lg sm:text-xl font-semibold">{{ t('report.filters') }}</h2>
             </div>
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row gap-3">
@@ -17,7 +17,7 @@
                         <input
                             v-model="searchQuery"
                             type="text"
-                            placeholder="Search by payment ID or email..."
+                            :placeholder="t('report.searchPlaceholder')"
                             class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                         />
                     </div>
@@ -25,11 +25,11 @@
                         v-model="filterStatus"
                         class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
                     >
-                        <option value="">All Status</option>
-                        <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
-                        <option value="failed">Failed</option>
-                        <option value="expired">Expired</option>
+                        <option value="">{{ t('report.allStatus') }}</option>
+                        <option value="completed">{{ t('report.completed') }}</option>
+                        <option value="pending">{{ t('report.pending') }}</option>
+                        <option value="failed">{{ t('report.failed') }}</option>
+                        <option value="expired">{{ t('report.expired') }}</option>
                     </select>
                     <div class="flex flex-col sm:flex-row gap-3">
                         <div class="flex-1 w-full sm:w-auto">
@@ -46,7 +46,12 @@
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                             />
                         </div>
-                        <Button variant="primary" text="Apply" width="auto" @click="loadPage(1)" />
+                        <Button
+                            variant="primary"
+                            :text="t('common.apply')"
+                            width="auto"
+                            @click="loadPage(1)"
+                        />
                     </div>
                 </div>
             </div>
@@ -58,35 +63,43 @@
                 <p class="text-3xl font-bold text-indigo-600 mb-1">
                     {{ formatAmount(summary.totalDonated) }}
                 </p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">Total Donated</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.totalDonated') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-green-600 mb-1">{{ summary.totalDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">Completed</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.completedLabel') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-amber-500 mb-1">{{ summary.pendingDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">Pending</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.pendingLabel') }}
+                </p>
             </div>
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 text-center">
                 <p class="text-3xl font-bold text-red-500 mb-1">{{ summary.failedDonations }}</p>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">Failed</p>
+                <p class="text-xs sm:text-sm text-gray-500 font-medium">
+                    {{ t('report.failedLabel') }}
+                </p>
             </div>
         </div>
 
         <!-- Donations Table -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                <h2 class="text-lg sm:text-xl font-semibold">Donation History</h2>
+                <h2 class="text-lg sm:text-xl font-semibold">{{ t('report.donationHistory') }}</h2>
             </div>
 
-            <LoadingSpinner v-if="loading" text="Loading your donations..." />
+            <LoadingSpinner v-if="loading" :text="t('report.loadingDonations')" />
             <template v-else>
                 <AdminTable
                     :columns="columns"
                     :rows="donations"
                     row-key="id"
-                    empty-text="No donations found"
+                    :empty-text="t('report.noDonations')"
                 >
                     <template #cell-date="{ row }">
                         <span class="text-gray-600 text-xs">{{ row.date }}</span>
@@ -128,7 +141,7 @@
                             class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
                             @click="openDetail(row)"
                         >
-                            View
+                            {{ t('common.view') }}
                         </button>
                     </template>
                 </AdminTable>
@@ -138,7 +151,13 @@
                     class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
                 >
                     <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }} total)
+                        {{
+                            t('report.pageOf', {
+                                current: meta.currentPage,
+                                last: meta.lastPage,
+                                total: meta.total,
+                            })
+                        }}
                     </span>
                     <Pagination
                         :current-page="meta.currentPage"
@@ -159,13 +178,16 @@
 
 <script setup>
     import { ref, onMounted, watch } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
     import { useToastify } from '~/composables/useToastify'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
     const { notifyError } = useToastify()
 
-    useHead({ title: 'My Donations' })
+    const { t } = useI18n()
+
+    useHead({ title: t('report.title') })
     definePageMeta({ middleware: 'auth' })
 
     const loading = ref(true)
@@ -188,13 +210,13 @@
     const showDetail = ref(false)
 
     const columns = [
-        { key: 'date', label: 'Date' },
-        { key: 'source', label: 'Source' },
-        { key: 'amount', label: 'Amount' },
-        { key: 'status', label: 'Status' },
-        { key: 'paymentId', label: 'Payment ID' },
-        { key: 'article', label: 'Article' },
-        { key: 'action', label: 'Action' },
+        { key: 'date', label: t('report.date') },
+        { key: 'source', label: t('report.source') },
+        { key: 'amount', label: t('report.amount') },
+        { key: 'status', label: t('report.status') },
+        { key: 'paymentId', label: t('report.paymentId') },
+        { key: 'article', label: t('report.article') },
+        { key: 'action', label: t('report.action') },
     ]
 
     const usdFormatter = new Intl.NumberFormat('en-US', {
@@ -238,7 +260,7 @@
                 meta.value = res.data.meta
             }
         } catch (error) {
-            notifyError(error.errors?.[0] || 'Failed to load donation report')
+            notifyError(error.errors?.[0] || t('report.failedToLoad'))
         } finally {
             loading.value = false
         }

@@ -49,7 +49,7 @@
         <span class="ml-3 break-all whitespace-pre-wrap w-full">{{ message }}</span>
 
         <button class="ml-auto text-gray-400 hover:text-gray-500" @click="closeAlert">
-            <span class="sr-only">Close</span>
+            <span class="sr-only">{{ t('common.close') }}</span>
             <svg
                 class="w-5 h-5"
                 fill="currentColor"
@@ -68,6 +68,9 @@
 
 <script setup>
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
+
+    const { t } = useI18n()
 
     const props = defineProps({
         variant: {

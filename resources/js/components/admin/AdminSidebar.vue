@@ -6,7 +6,7 @@
                 <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
                     <font-awesome-icon :icon="['fas', 'shield-alt']" class="w-4 h-4 text-white" />
                 </div>
-                <span class="font-bold text-lg text-white">Admin Panel</span>
+                <span class="font-bold text-lg text-white">{{ t('admin.panel') }}</span>
             </NuxtLink>
         </div>
 
@@ -29,7 +29,7 @@
                         class="w-4 h-4"
                         :class="isActive(item.link) ? 'text-indigo-600' : 'text-gray-400'"
                     />
-                    {{ item.name }}
+                    {{ t(item.name) }}
                 </NuxtLink>
 
                 <!-- Group item -->
@@ -51,7 +51,7 @@
                                         : 'text-gray-400'
                                 "
                             />
-                            {{ item.name }}
+                            {{ t(item.name) }}
                         </span>
                         <font-awesome-icon
                             :icon="[
@@ -82,7 +82,7 @@
                                 class="w-3.5 h-3.5"
                                 :class="isActive(child.link) ? 'text-indigo-600' : 'text-gray-400'"
                             />
-                            {{ child.name }}
+                            {{ t(child.name) }}
                         </NuxtLink>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                 class="flex items-center gap-2 px-3 py-2 text-sm text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
                 <font-awesome-icon :icon="['fas', 'arrow-left']" class="w-4 h-4" />
-                Back to Site
+                {{ t('admin.backToSite') }}
             </NuxtLink>
         </div>
     </aside>
@@ -104,48 +104,50 @@
 
 <script setup>
     import { ref } from 'vue'
+    import { useI18n } from 'vue-i18n'
     import { useRoute } from 'vue-router'
 
+    const { t } = useI18n()
     const route = useRoute()
 
     const navItems = [
         {
             type: 'link',
-            name: 'Dashboard',
+            name: 'menu.adminPanel',
             link: '/admin',
             icon: ['fas', 'chart-pie'],
         },
         {
             type: 'link',
-            name: 'Transactions',
+            name: 'admin.transactions',
             link: '/admin/transactions',
             icon: ['fas', 'file-invoice-dollar'],
         },
         {
             type: 'link',
-            name: 'Donations',
+            name: 'admin.donations',
             link: '/admin/donations',
             icon: ['fas', 'hand-holding-heart'],
         },
         {
             type: 'link',
-            name: 'Payouts',
+            name: 'admin.payouts',
             link: '/admin/payouts',
             icon: ['fas', 'money-check-dollar'],
         },
         {
             type: 'link',
-            name: 'Articles',
+            name: 'admin.articles',
             link: '/admin/articles',
             icon: ['fas', 'newspaper'],
         },
         {
             type: 'group',
-            name: 'Pages',
+            name: 'admin.pages',
             icon: ['fas', 'file-alt'],
             children: [
                 {
-                    name: 'How It Works',
+                    name: 'admin.howItWorks',
                     link: '/admin/how-it-works',
                     icon: ['fas', 'book-open'],
                 },
