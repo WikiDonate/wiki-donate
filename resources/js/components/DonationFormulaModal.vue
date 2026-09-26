@@ -36,72 +36,12 @@
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
                                 {{ t('formula.organization') }}
                             </label>
-                            <div>
-                                <FormInput
-                                    ref="orgInputRefs"
-                                    v-model="field.value.organization"
-                                    :placeholder="t('formula.organizationPlaceholder')"
-                                    @update:model-value="onOrgInput(index)"
-                                    @blur="closeOrgSuggestions"
-                                    @keydown.escape="closeOrgSuggestions"
-                                />
-                                <p
-                                    v-if="field.value.ein"
-                                    class="text-[11px] text-green-700 mt-1 font-medium"
-                                >
-                                    ✓ {{ t('formula.verifiedEin', { ein: field.value.ein }) }}
-                                </p>
-                                <Teleport to="body">
-                                    <ul
-                                        v-if="
-                                            openOrgIndex === index &&
-                                            (orgSearching || orgSuggestions.length > 0)
-                                        "
-                                        :style="orgDropdownStyle"
-                                        class="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[100] max-h-56 overflow-y-auto py-1"
-                                    >
-                                        <li
-                                            v-if="orgSearching"
-                                            class="px-3 py-2 text-sm text-gray-500 italic"
-                                        >
-                                            {{ t('formula.searchingCharities') }}
-                                        </li>
-                                        <li
-                                            v-for="suggestion in orgSuggestions"
-                                            :key="suggestion.ein || suggestion.name"
-                                            class="px-3 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 cursor-pointer transition-colors"
-                                            @mousedown.prevent="
-                                                selectOrgSuggestion(index, suggestion)
-                                            "
-                                        >
-                                            <span class="block font-medium">{{
-                                                suggestion.name
-                                            }}</span>
-                                            <span
-                                                v-if="suggestion.city || suggestion.state"
-                                                class="block text-xs text-gray-500"
-                                            >
-                                                {{
-                                                    [suggestion.city, suggestion.state]
-                                                        .filter(Boolean)
-                                                        .join(', ')
-                                                }}
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </Teleport>
-                                <p
-                                    v-if="
-                                        openOrgIndex === index &&
-                                        !orgSearching &&
-                                        orgSuggestions.length === 0 &&
-                                        String(field.value.organization || '').trim().length >= 2
-                                    "
-                                    class="text-[11px] text-gray-500 mt-1 italic"
-                                >
-                                    {{ t('formula.noCharityResults') }}
-                                </p>
-                            </div>
+                            <OrganizationSelect
+                                :model-value="field.value.organization"
+                                :placeholder="t('formula.organizationPlaceholder')"
+                                @update:model-value="field.value.organization = $event"
+                                @select="onOrgSelect(index, $event)"
+                            />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
@@ -227,13 +167,13 @@
 </template>
 
 <script setup>
-    import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { useI18n } from 'vue-i18n'
     import { useFieldArray, useForm } from 'vee-validate'
     import * as yup from 'yup'
     import FormTextarea from '~/components/FormTextarea.vue'
     import ConfirmModal from '~/components/ConfirmModal.vue'
-    import { charityService } from '~/services/charityService'
+    import OrganizationSelect from '~/components/OrganizationSelect.vue'
 
     const { t } = useI18n()
 
@@ -271,7 +211,10 @@
             .of(
                 yup.object({
                     organization: yup.string().required(t('formula.organizationRequired')),
-                    ein: yup.string().nullable().max(20),
+                    // Optional: set when a verified charity is selected from
+                    // autocomplete. Custom (free-text) values are allowed and
+                    // simply carry no EIN.
+                    ein: yup.string().nullable(),
                     percentage: yup
                         .number()
                         .typeError(t('formula.percentageNumber'))
@@ -304,41 +247,13 @@
     const showSaveConfirm = ref(false)
     const pendingSaveData = ref(null)
 
-    // Charity autocomplete state (shared: only one row dropdown open at a time)
-    const orgSuggestions = ref([])
-    const orgSearching = ref(false)
-    const openOrgIndex = ref(-1)
-    const orgDebounceTimer = ref(null)
-    const orgAbortController = ref(null)
-    // Last selected suggestion label per row — editing the text afterwards
-    // clears the EIN so a stale verified badge can never stick to new text.
-    const selectedOrgLabel = ref({})
-    // Refs to the per-row FormInput components, used to anchor the teleported
-    // dropdown under the active input.
-    const orgInputRefs = ref([])
-    const orgDropdownStyle = ref({})
-
-    // Position the teleported dropdown under the active row's input. Fixed
-    // positioning in body keeps it visible even though the rows live inside
-    // a max-height scroll container that would clip an absolute dropdown.
-    const positionOrgDropdown = () => {
-        const inputEl = orgInputRefs.value?.[openOrgIndex.value]?.$el?.querySelector('input')
-        if (!inputEl) return
-        const rect = inputEl.getBoundingClientRect()
-        orgDropdownStyle.value = {
-            top: `${rect.bottom + 4}px`,
-            left: `${rect.left}px`,
-            width: `${rect.width}px`,
+    // Organization selection is delegated to OrganizationSelect (dropdown-only,
+    // verified charities with valid EIN). Only the EIN write-back lives here.
+    const onOrgSelect = (index, suggestion) => {
+        const row = fields.value[index]?.value
+        if (row) {
+            row.ein = suggestion.ein ?? null
         }
-    }
-
-    const dismissOrgDropdown = () => {
-        openOrgIndex.value = -1
-        orgSuggestions.value = []
-    }
-
-    const handleOrgViewportChange = () => {
-        if (openOrgIndex.value !== -1) dismissOrgDropdown()
     }
 
     const normalizeFormulaRows = (rows) =>
@@ -434,88 +349,7 @@
 
     const removeRow = (index) => {
         remove(index)
-        delete selectedOrgLabel.value[index]
-        if (openOrgIndex.value === index) {
-            openOrgIndex.value = -1
-            orgSuggestions.value = []
-        }
     }
-
-    const closeOrgSuggestions = () => {
-        // Deferred so a suggestion mousedown registers before blur closes it
-        setTimeout(() => {
-            openOrgIndex.value = -1
-            orgSuggestions.value = []
-        }, 150)
-    }
-
-    const onOrgInput = (index) => {
-        const row = fields.value[index]?.value
-        if (!row) return
-
-        if (
-            selectedOrgLabel.value[index] !== undefined &&
-            row.organization !== selectedOrgLabel.value[index]
-        ) {
-            row.ein = null
-        }
-
-        openOrgIndex.value = index
-        clearTimeout(orgDebounceTimer.value)
-        nextTick(positionOrgDropdown)
-
-        const query = String(row.organization || '').trim()
-        if (query.length < 2) {
-            orgSuggestions.value = []
-            return
-        }
-
-        orgDebounceTimer.value = setTimeout(() => fetchOrgSuggestions(index, query), 300)
-    }
-
-    const fetchOrgSuggestions = async (index, query) => {
-        orgAbortController.value?.abort()
-        orgAbortController.value = new AbortController()
-        orgSearching.value = true
-
-        try {
-            const response = await charityService.searchCharities(
-                query,
-                orgAbortController.value.signal,
-            )
-            if (openOrgIndex.value === index) {
-                orgSuggestions.value = response.data ?? []
-            }
-        } catch {
-            // Aborted keystroke or upstream failure: free-text entry stays valid
-            if (openOrgIndex.value === index) orgSuggestions.value = []
-        } finally {
-            orgSearching.value = false
-        }
-    }
-
-    const selectOrgSuggestion = (index, suggestion) => {
-        const row = fields.value[index]?.value
-        if (row) {
-            row.organization = suggestion.name
-            row.ein = suggestion.ein ?? null
-        }
-        selectedOrgLabel.value[index] = suggestion.name
-        orgSuggestions.value = []
-        openOrgIndex.value = -1
-    }
-
-    onBeforeUnmount(() => {
-        clearTimeout(orgDebounceTimer.value)
-        orgAbortController.value?.abort()
-        window.removeEventListener('scroll', handleOrgViewportChange, true)
-        window.removeEventListener('resize', handleOrgViewportChange)
-    })
-
-    onMounted(() => {
-        window.addEventListener('scroll', handleOrgViewportChange, true)
-        window.addEventListener('resize', handleOrgViewportChange)
-    })
 
     const handleSave = handleSubmit((values) => {
         if (props.isSaving || localIsSaving.value) return

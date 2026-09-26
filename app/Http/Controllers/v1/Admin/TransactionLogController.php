@@ -31,6 +31,12 @@ class TransactionLogController extends Controller
                 $query->where('actor_id', (int) $request->input('actor_id'));
             }
 
+            // Category convenience filter (events are namespaced
+            // `<category>.<action>`, e.g. organization.verified).
+            if ($request->filled('category')) {
+                $query->where('event', 'like', $request->input('category').'.%');
+            }
+
             if ($request->filled('subject_type')) {
                 $query->where('subject_type', $request->input('subject_type'));
             }

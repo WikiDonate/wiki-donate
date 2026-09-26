@@ -29,7 +29,7 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
-    // US charity autocomplete (ProPublica/IRS identity data, cached server-side)
+    // Verified US-charity autocomplete (valid EIN only, cached server-side)
     Route::get('charities/search', [CharitySearchController::class, 'search'])
         ->middleware('throttle:30,1');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');

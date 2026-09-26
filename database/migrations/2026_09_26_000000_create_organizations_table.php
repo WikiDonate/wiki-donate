@@ -13,21 +13,19 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('name');
-            // IRS Employer Identification Number (XX-XXXXXXX). Stable dedupe
-            // key — names change, merge and collide; EINs don't. Nullable
-            // because free-text rows may reference small/unregistered orgs.
-            $table->string('ein', 20)->nullable()->unique();
-            $table->string('city', 100)->nullable();
-            $table->string('state', 10)->nullable();
-            // Receiving endpoint for PayPal Payouts. Collected and confirmed
-            // once per org by an admin before the first payout.
+            $table->string('normalized_name')->index();
+            $table->string('ein')->nullable()->unique();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable()->default('US');
             $table->string('paypal_email')->nullable();
-            $table->string('payout_status', 20)->default('unverified');
+            $table->string('payout_status')->default('unverified');
             $table->timestamp('verified_at')->nullable();
+            $table->foreignId('created_by_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
-
-            $table->index('name');
         });
     }
 

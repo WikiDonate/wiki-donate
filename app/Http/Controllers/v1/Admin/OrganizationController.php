@@ -33,8 +33,8 @@ class OrganizationController extends Controller
             $query->where('payout_status', $request->input('status'));
         }
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->input('search', $request->input('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('ein', 'like', "%{$search}%")
@@ -49,6 +49,107 @@ class OrganizationController extends Controller
             'success' => true,
             'message' => 'Organizations retrieved successfully',
             'data' => $query->latest('id')->paginate($perPage),
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Show a single organization.
+     */
+    public function show(Request $request, int $id): JsonResponse
+    {
+        $org = Organization::find($id);
+
+        if (! $org) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization not found',
+                'errors' => ['Organization not found'],
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Organization retrieved successfully',
+            'data' => $org,
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Update an organization (PayPal email and basic fields). Changing the
+     * PayPal email resets verification so the new destination is re-confirmed.
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $org = Organization::find($id);
+
+        if (! $org) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization not found',
+                'errors' => ['Organization not found'],
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'paypal_email' => 'nullable|email|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()->all(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $before = $org->only(['paypal_email', 'payout_status', 'verified_at']);
+        $paypalChanged = $request->has('paypal_email')
+            && mb_strtolower(trim((string) $request->input('paypal_email') ?? '')) !== mb_strtolower(trim((string) $org->paypal_email ?? ''));
+
+        $org->fill($request->only(['city', 'state', 'country']));
+        if ($request->has('paypal_email')) {
+            $org->paypal_email = $request->filled('paypal_email')
+                ? mb_strtolower(trim($request->input('paypal_email')))
+                : null;
+        }
+
+        if ($paypalChanged) {
+            $org->payout_status = 'unverified';
+            $org->verified_at = null;
+        }
+
+        $org->updated_by_id = $request->user()->id;
+        $org->save();
+
+        TransactionLog::record('organization.updated', [
+            'subject_type' => Organization::class,
+            'subject_id' => $org->id,
+            'actor_id' => $request->user()->id,
+            'actor_role' => 'Admin',
+            'message' => "Organization updated: {$org->name}",
+            'before' => $before,
+            'after' => $org->only(['paypal_email', 'payout_status', 'verified_at']),
+        ]);
+
+        if ($paypalChanged) {
+            TransactionLog::record('organization.verification_reset', [
+                'subject_type' => Organization::class,
+                'subject_id' => $org->id,
+                'actor_id' => $request->user()->id,
+                'actor_role' => 'Admin',
+                'message' => "Verification reset for {$org->name} after PayPal email change",
+                'before' => ['payout_status' => $before['payout_status'] ?? null],
+                'after' => ['payout_status' => 'unverified', 'verified_at' => null],
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Organization updated successfully',
+            'data' => $org->refresh(),
         ], Response::HTTP_OK);
     }
 

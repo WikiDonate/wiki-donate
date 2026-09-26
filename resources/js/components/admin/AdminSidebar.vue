@@ -142,6 +142,18 @@
             icon: ['fas', 'file-invoice-dollar'],
         },
         {
+            type: 'link',
+            name: 'admin.organizations',
+            link: '/admin/organizations',
+            icon: ['fas', 'building'],
+        },
+        {
+            type: 'link',
+            name: 'admin.transactionLogs',
+            link: '/admin/transaction-logs',
+            icon: ['fas', 'clipboard-list'],
+        },
+        {
             type: 'group',
             name: 'admin.pages',
             icon: ['fas', 'file-alt'],

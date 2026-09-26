@@ -25,6 +25,8 @@ Route::prefix('admin')
 
         // Organization registry (charity directory + payout destinations)
         Route::get('organizations', [OrganizationController::class, 'index']);
+        Route::get('organizations/{id}', [OrganizationController::class, 'show']);
+        Route::put('organizations/{id}', [OrganizationController::class, 'update']);
         Route::put('organizations/{id}/paypal-email', [OrganizationController::class, 'updatePaypalEmail']);
         Route::post('organizations/{id}/verify', [OrganizationController::class, 'verify']);
         Route::post('organizations/{id}/unverify', [OrganizationController::class, 'unverify']);

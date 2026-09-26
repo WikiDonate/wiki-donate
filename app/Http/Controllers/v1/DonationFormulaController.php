@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\DonationFormula;
 use App\Models\TransactionLog;
-use App\Services\OrganizationRegistryService;
+use App\Services\Organization\OrganizationRegistryService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,8 +92,8 @@ class DonationFormulaController extends Controller
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
-            'formula.*.ein' => 'nullable|string|max:20',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
             'formula.*.city' => 'nullable|string|max:100',
             'formula.*.state' => 'nullable|string|max:10',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
@@ -146,23 +146,18 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            // Upsert each formula row into the org registry and persist the
-            // matched organization_id back into the row. Free-text entries
-            // stay nullable-EIN and match on normalized name.
-            $registry = app(OrganizationRegistryService::class);
-            $rows = [];
-            foreach ($request->formula as $item) {
-                $item = $item + ['ein' => null, 'city' => null, 'state' => null];
-                $item['organization_id'] = $registry->upsertFromFormulaRow($item);
-                $rows[] = $item;
-            }
+            // Upsert organizations and persist organization_id back into rows.
+            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+                $request->formula,
+                Auth::id(),
+            );
 
             // Create new formula (not updateOrCreate anymore)
             $formula = DonationFormula::create([
                 'article_id' => $article->id,
                 'user_id' => Auth::id(),
                 'name' => $request->name,
-                'formula' => $rows,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
             ]);
 
@@ -175,7 +170,7 @@ class DonationFormulaController extends Controller
                 'after' => [
                     'name' => $formula->name,
                     'article_slug' => $article->slug,
-                    'organizations' => collect($rows)->map(fn ($r) => [
+                    'organizations' => collect($formulaRows)->map(fn ($r) => [
                         'organization_id' => $r['organization_id'],
                         'name' => $r['organization'],
                     ])->all(),
@@ -206,8 +201,8 @@ class DonationFormulaController extends Controller
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
-            'formula.*.ein' => 'nullable|string|max:20',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
             'formula.*.city' => 'nullable|string|max:100',
             'formula.*.state' => 'nullable|string|max:10',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
@@ -277,19 +272,16 @@ class DonationFormulaController extends Controller
             // for transparency in donation details.
             $hadCompletedDonation = $formula->hasCompletedDonation();
 
-            // Upsert orgs and persist back organization_id before saving.
-            $registry = app(OrganizationRegistryService::class);
-            $rows = [];
-            foreach ($request->formula as $item) {
-                $item = $item + ['ein' => null, 'city' => null, 'state' => null];
-                $item['organization_id'] = $registry->upsertFromFormulaRow($item);
-                $rows[] = $item;
-            }
+            // Upsert organizations and persist organization_id back into rows.
+            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+                $request->formula,
+                Auth::id(),
+            );
 
             $beforeFormula = $formula->formula;
             $formula->update([
                 'name' => $request->name,
-                'formula' => $rows,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
             ]);
 
@@ -302,7 +294,7 @@ class DonationFormulaController extends Controller
                 'before' => ['formula' => $beforeFormula],
                 'after' => [
                     'name' => $formula->name,
-                    'formula' => $rows,
+                    'formula' => $formulaRows,
                 ],
             ]);
 

@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Services\CharitySearchService;
+use App\Services\Charity\VerifiedCharitySearchService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CharitySearchController extends Controller
 {
     /**
-     * Autocomplete US tax-exempt organizations by keyword.
+     * Autocomplete verified US charities (valid EIN only) by keyword.
      *
-     * Identity lookup only (name + EIN + location). Free-text entry remains
-     * valid when there is no match, so an empty result is a normal outcome.
+     * Identity lookup for donation formulas. Only organizations carrying a
+     * valid EIN are returned, so every selectable row identifies a real,
+     * donatable charity.
      */
-    public function search(Request $request, CharitySearchService $service)
+    public function search(Request $request, VerifiedCharitySearchService $service)
     {
         $query = trim((string) $request->query('q', ''));
 

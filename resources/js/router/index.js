@@ -136,6 +136,16 @@ const routes = [
                 name: 'admin-payouts',
                 component: () => import('@/pages/admin/payouts.vue'),
             },
+            {
+                path: 'organizations',
+                name: 'admin-organizations',
+                component: () => import('@/pages/admin/organizations.vue'),
+            },
+            {
+                path: 'transaction-logs',
+                name: 'admin-transaction-logs',
+                component: () => import('@/pages/admin/transaction-logs.vue'),
+            },
         ],
     },
     {

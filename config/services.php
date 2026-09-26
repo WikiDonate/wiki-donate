@@ -47,4 +47,11 @@ return [
         'mode' => env('PAYPAL_MODE', 'sandbox'),
     ],
 
+    // Charity Navigator (rated US charities for formula autocomplete).
+    // Self-serve free keys. When absent, search degrades to ProPublica-only.
+    'charity_navigator' => [
+        'app_id' => env('CHARITY_NAV_APP_ID'),
+        'app_key' => env('CHARITY_NAV_APP_KEY'),
+    ],
+
 ];
