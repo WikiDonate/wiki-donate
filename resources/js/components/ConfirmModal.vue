@@ -1,7 +1,7 @@
 <template>
     <Modal
         :model-value="modelValue"
-        :title="t(title)"
+        :title="tx(title)"
         @update:model-value="$emit('update:modelValue', $event)"
     >
         <div class="flex flex-col items-center text-center p-4">
@@ -12,22 +12,22 @@
                 />
             </div>
             <h4 class="text-xl font-bold text-gray-900 mb-2">
-                {{ t(messageTitle) }}
+                {{ tx(messageTitle) }}
             </h4>
-            <p class="text-gray-600">{{ t(message) }}</p>
+            <p class="text-gray-600">{{ tx(message) }}</p>
         </div>
 
         <template #footer>
             <Button
                 variant="secondary"
-                :text="t(cancelText)"
+                :text="tx(cancelText)"
                 width="auto"
                 class="px-6"
                 @click="$emit('update:modelValue', false)"
             />
             <Button
                 variant="primary"
-                :text="t(confirmText)"
+                :text="tx(confirmText)"
                 width="auto"
                 class="px-6 !bg-red-600 hover:!bg-red-700 border-none"
                 :disabled="isLoading"
@@ -41,6 +41,13 @@
     import { useI18n } from 'vue-i18n'
 
     const { t } = useI18n()
+
+    // Callers pass either i18n keys ('confirmModal.title') or pre-resolved
+    // / interpolated strings (`Title: ${...}`). Only translate key-shaped
+    // values — re-translating a resolved string warns ("Not found ... key")
+    // and freezes the modal in the wrong language.
+    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
+    const tx = (v) => (isKey(v) ? t(v) : (v ?? ''))
 
     defineProps({
         modelValue: {
