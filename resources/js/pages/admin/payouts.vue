@@ -8,6 +8,18 @@
             />
 
             <div class="px-4 sm:px-6 py-4">
+                <div class="flex items-center justify-between mb-3">
+                    <span></span>
+                    <button
+                        class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        :disabled="syncing"
+                        @click="syncStatuses"
+                    >
+                        {{ syncing ? t('admin.syncing') : t('admin.syncStatuses') }}
+                    </button>
+                </div>
+                <p v-if="syncMessage" class="text-xs text-green-600 mb-2">{{ syncMessage }}</p>
+                <p v-if="syncError" class="text-xs text-red-600 mb-2">{{ syncError }}</p>
                 <LoadingSpinner v-if="loading" text="Loading allocations..." />
                 <template v-else>
                     <!-- Payable allocations -->
@@ -176,6 +188,20 @@
                             <div class="text-xs text-gray-400">
                                 {{ h.paid_at }} · by {{ h.actor?.username || '—' }}
                             </div>
+                            <div class="text-xs flex items-center gap-1.5 mt-0.5">
+                                <span
+                                    class="text-[10px] uppercase px-1.5 py-0.5 rounded"
+                                    :class="statusClass(h.status)"
+                                >
+                                    {{ statusLabel(h.status) }}
+                                </span>
+                                <span
+                                    v-if="h.status === 'failed' && h.failure_reason"
+                                    class="text-red-500"
+                                >
+                                    {{ h.failure_reason }}
+                                </span>
+                            </div>
                             <div v-if="h.note" class="text-xs text-gray-500">{{ h.note }}</div>
                         </div>
                     </li>
@@ -206,6 +232,10 @@
     const payNote = ref('')
     const payError = ref('')
     const paying = ref(false)
+
+    const syncing = ref(false)
+    const syncMessage = ref('')
+    const syncError = ref('')
 
     const historyTarget = ref(null)
     const history = ref([])
@@ -242,6 +272,36 @@
         payAmount.value = Number(row.balance)
         payNote.value = ''
         payError.value = ''
+    }
+
+    const statusLabel = (status) => {
+        if (status === 'paid') return t('admin.payoutStatusPaid')
+        if (status === 'pending') return t('admin.payoutStatusPending')
+        if (status === 'failed') return t('admin.payoutStatusFailed')
+        return status || '—'
+    }
+
+    const statusClass = (status) => {
+        if (status === 'paid') return 'bg-green-50 text-green-700'
+        if (status === 'pending') return 'bg-amber-50 text-amber-700'
+        if (status === 'failed') return 'bg-red-50 text-red-700'
+        return 'bg-gray-50 text-gray-600'
+    }
+
+    const syncStatuses = async () => {
+        syncError.value = ''
+        syncMessage.value = ''
+        syncing.value = true
+        try {
+            const res = await adminService.syncPayouts()
+            const count = (res.data ?? []).length
+            syncMessage.value = count > 0 ? `${count} payout(s) updated` : t('admin.noPayouts')
+            await fetchAllocations()
+        } catch (err) {
+            syncError.value = err.response?.data?.message || t('admin.failedToSync')
+        } finally {
+            syncing.value = false
+        }
     }
 
     const submitPay = async () => {

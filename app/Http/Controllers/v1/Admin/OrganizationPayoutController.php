@@ -82,6 +82,11 @@ class OrganizationPayoutController extends Controller
 
     /**
      * Create a payout (full or partial) against the live balance.
+     *
+     * The amount is reserved in the ledger, then the real transfer is
+     * submitted to the PayPal Payouts API. The returned row is paid when
+     * PayPal confirmed immediately, pending while the transfer clears, or
+     * failed when PayPal rejected it.
      */
     public function store(Request $request): JsonResponse
     {
@@ -114,7 +119,7 @@ class OrganizationPayoutController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Payout recorded successfully',
+                'message' => 'Payout submitted to PayPal',
                 'data' => $this->transform($payout->load('actor:id,uuid,username', 'formula:id,uuid,name')),
             ], Response::HTTP_CREATED);
         } catch (Exception $e) {
@@ -122,6 +127,27 @@ class OrganizationPayoutController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    /**
+     * Reconcile pending payout rows against the PayPal Payouts API.
+     */
+    public function sync(Request $request): JsonResponse
+    {
+        try {
+            $changed = $this->payouts->syncPending();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payout statuses synced',
+                'data' => $changed->map(fn ($p) => $this->transform($p->load('formula:id,uuid,name'))),
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -135,10 +161,16 @@ class OrganizationPayoutController extends Controller
                 ? ['id' => $payout->formula->id, 'uuid' => $payout->formula->uuid, 'name' => $payout->formula->name]
                 : null,
             'organization_name' => $payout->organization_name,
+            'organization_id' => $payout->organization_id,
+            'destination_paypal_email' => $payout->destination_paypal_email,
             'amount' => (float) $payout->amount,
             'currency' => $payout->currency,
             'type' => $payout->type,
             'status' => $payout->status,
+            'provider_status' => $payout->provider_status,
+            'failure_reason' => $payout->failure_reason,
+            'payout_batch_id' => $payout->payout_batch_id,
+            'payout_item_id' => $payout->payout_item_id,
             'paid_at' => $payout->paid_at?->format('Y-m-d H:i:s'),
             'note' => $payout->note,
             'actor' => $payout->relationLoaded('actor') && $payout->actor

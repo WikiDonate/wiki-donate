@@ -24,17 +24,33 @@ return new class extends Migration
             $table->foreignId('donation_formula_id')->constrained('donation_formulas')->onDelete('cascade');
             $table->string('organization_name');
             $table->string('organization_key');
+            // Resolved registry entry for this allocation (nullable for
+            // legacy rows created before the registry existed).
+            $table->foreignId('organization_id')->nullable()->constrained('organizations')->nullOnDelete();
+            // Frozen destination so history stays readable even if the org's
+            // PayPal email changes later. Ledger remains append-only.
+            $table->string('destination_paypal_email')->nullable();
             $table->decimal('amount', 12, 2);
             $table->string('currency', 3)->default('usd');
             $table->string('type')->nullable()->comment('full|partial');
-            $table->string('status')->nullable()->default('paid');
-            $table->timestamp('paid_at');
+            // paid | pending (transfer submitted to PayPal) | failed.
+            // Ledger stays append-only: failed rows are excluded from
+            // balance math so an admin can retry.
+            $table->string('status')->nullable()->default('pending');
+            // Null until the PayPal transfer actually completes.
+            $table->timestamp('paid_at')->nullable();
+            // Provider (PayPal Payouts) tracking fields.
+            $table->string('payout_batch_id')->nullable();
+            $table->string('payout_item_id')->nullable();
+            $table->string('provider_status')->nullable()->comment('PayPal item transaction_status');
+            $table->text('failure_reason')->nullable();
             $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
             $table->string('method')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
 
             $table->index(['donation_formula_id', 'organization_key']);
+            $table->index('payout_item_id');
         });
     }
 

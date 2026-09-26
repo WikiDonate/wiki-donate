@@ -17,13 +17,19 @@ class OrganizationPayout extends Model
     protected $fillable = [
         'uuid',
         'donation_formula_id',
+        'organization_id',
         'organization_name',
         'organization_key',
+        'destination_paypal_email',
         'amount',
         'currency',
         'type',
         'status',
         'paid_at',
+        'payout_batch_id',
+        'payout_item_id',
+        'provider_status',
+        'failure_reason',
         'actor_id',
         'method',
         'note',
@@ -42,11 +48,8 @@ class OrganizationPayout extends Model
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
-            if (empty($model->paid_at)) {
-                $model->paid_at = now();
-            }
             if (empty($model->status)) {
-                $model->status = 'paid';
+                $model->status = 'pending';
             }
         });
     }
@@ -54,6 +57,11 @@ class OrganizationPayout extends Model
     public function formula()
     {
         return $this->belongsTo(DonationFormula::class, 'donation_formula_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
     public function actor()

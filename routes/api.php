@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\PageController;
@@ -28,6 +29,9 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
+    // US charity autocomplete (ProPublica/IRS identity data, cached server-side)
+    Route::get('charities/search', [CharitySearchController::class, 'search'])
+        ->middleware('throttle:30,1');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
 
     // Donation Formula routes (public)

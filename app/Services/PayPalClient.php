@@ -167,6 +167,115 @@ class PayPalClient
     }
 
     /**
+     * Create a batch payout — a real money transfer from the merchant
+     * PayPal balance to each recipient's email via the Payouts API.
+     *
+     * Number of items is deliberately one per batch: each dashboard Pay
+     * action maps to exactly one ledger row, and $senderBatchId (the payout
+     * uuid) doubles as the PayPal-Request-Id for idempotency.
+     *
+     * @param  array  $items  [['recipient_email' => string, 'amount' => float,
+     *                        'currency' => string, 'note' => string,
+     *                        'sender_item_id' => string], ...]
+     * @return array PayPal batch header + links payload
+     *
+     * @throws RequestException
+     */
+    public function createBatchPayout(array $items, string $senderBatchId, string $emailSubject = '', string $emailMessage = ''): array
+    {
+        $token = $this->getAccessToken();
+
+        $payload = [
+            'sender_batch_header' => [
+                'sender_batch_id' => $senderBatchId,
+            ],
+            'items' => array_map(function (array $item, int $i) {
+                return [
+                    'recipient_type' => 'EMAIL',
+                    'receiver' => $item['recipient_email'],
+                    'amount' => [
+                        'value' => number_format((float) $item['amount'], 2, '.', ''),
+                        'currency' => strtoupper($item['currency']),
+                    ],
+                    'sender_item_id' => $item['sender_item_id'] ?? 'item_'.$i,
+                    'note' => mb_substr($item['note'] ?? '', 0, 127), // PayPal caps notes at 127 chars
+                ];
+            }, $items, array_keys($items)),
+        ];
+
+        if ($emailSubject !== '') {
+            $payload['sender_batch_header']['email_subject'] = mb_substr($emailSubject, 0, 255);
+        }
+        if ($emailMessage !== '') {
+            $payload['sender_batch_header']['email_message'] = mb_substr($emailMessage, 0, 1000);
+        }
+
+        $response = Http::withToken($token)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'PayPal-Request-Id' => $senderBatchId,
+            ])
+            ->post("{$this->baseUrl}/v1/payments/payouts", $payload);
+
+        $response->throw();
+
+        $result = $response->json();
+
+        Log::info('PayPal batch payout created', [
+            'payout_batch_id' => $result['batch_header']['payout_batch_id'] ?? null,
+            'batch_status' => $result['batch_header']['batch_status'] ?? null,
+            'sender_batch_id' => $senderBatchId,
+            'items' => count($items),
+        ]);
+
+        return $result;
+    }
+
+    /**
+     * Retrieve a payout batch including per-item transaction statuses.
+     *
+     * @throws RequestException
+     */
+    public function showBatchPayout(string $payoutBatchId): array
+    {
+        $token = $this->getAccessToken();
+
+        $response = Http::withToken($token)
+            ->get("{$this->baseUrl}/v1/payments/payouts/{$payoutBatchId}", ['fields' => 'items']);
+
+        $response->throw();
+
+        return $response->json();
+    }
+
+    /**
+     * Flatten a batch payload's per-item statuses, keyed by sender_item_id
+     * (which we set to the payout uuid when creating the batch).
+     */
+    public static function extractBatchItemStatuses(array $batch): array
+    {
+        $statuses = [];
+
+        foreach ($batch['items'] ?? [] as $item) {
+            $senderItemId = $item['sender_item_id'] ?? null;
+            if ($senderItemId === null) {
+                continue;
+            }
+
+            $error = $item['errors']['message'] ?? null
+                ?: ($item['errors']['description'] ?? null);
+
+            $statuses[$senderItemId] = [
+                'status' => $item['transaction_status'] ?? ($item['payout_item_status'] ?? 'PENDING'),
+                'payout_item_id' => $item['payout_item_id'] ?? null,
+                'error' => $error,
+            ];
+        }
+
+        return $statuses;
+    }
+
+    /**
      * Verify the signature of an incoming PayPal webhook.
      *
      * @param  array  $headers  Lowercase-keyed request headers
