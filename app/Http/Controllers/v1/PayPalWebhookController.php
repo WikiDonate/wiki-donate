@@ -5,7 +5,9 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\OrganizationPayout;
 use App\Models\PayPalPendingOrder;
+use App\Models\TransactionLog;
 use App\Services\PayPalClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -79,6 +81,8 @@ class PayPalWebhookController extends Controller
                 'PAYMENT.CAPTURE.COMPLETED' => $this->handleCaptureCompleted($event),
                 'PAYMENT.CAPTURE.DENIED' => $this->handleCaptureDenied($event),
                 'CHECKOUT.ORDER.CANCELLED' => $this->handleOrderCancelled($event),
+                'PAYOUTS.BATCH.PROCESSING.COMPLETED', 'PAYOUTS.BATCH.PROCESSING.DENIED', 'PAYOUTS.BATCH.PROCESSING.PENDING' => $this->handlePayoutBatchEvent($event),
+                'PAYOUTS.ITEM.COMPLETED', 'PAYOUTS.ITEM.SUCCEEDED', 'PAYOUTS.ITEM.DENIED', 'PAYOUTS.ITEM.FAILED', 'PAYOUTS.ITEM.BLOCKED', 'PAYOUTS.ITEM.RETURNED', 'PAYOUTS.ITEM.CANCELED', 'PAYOUTS.ITEM.HELD' => $this->handlePayoutItemEvent($event),
                 default => Log::info('Unhandled PayPal webhook event: '.$eventType),
             };
         } catch (\Throwable $e) {
@@ -99,6 +103,159 @@ class PayPalWebhookController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Webhook processed',
+        ]);
+    }
+
+    /**
+     * Handle PAYOUTS.BATCH.* events — a batch-level status update. The
+     * per-item truth lives on each payout item (PAYOUTS.ITEM.* webhooks or
+     * polling), so batch events only reconcile rows whose item id we hold.
+     */
+    protected function handlePayoutBatchEvent(array $event): void
+    {
+        $resource = $event['resource'] ?? [];
+        $batchId = $resource['payout_batch_id'] ?? null;
+        if (! $batchId) {
+            Log::warning('PayPal webhook: PAYOUTS.BATCH.* missing payout_batch_id');
+
+            return;
+        }
+
+        $batchStatus = strtoupper((string) ($resource['batch_status'] ?? ''));
+        Log::info('PayPal payout batch event', [
+            'payout_batch_id' => $batchId,
+            'batch_status' => $batchStatus,
+        ]);
+
+        $rows = OrganizationPayout::where('payout_batch_id', $batchId)->get();
+        foreach ($rows as $payout) {
+            // Batch-level DENIED is definitive: the batch never processed.
+            if ($batchStatus === 'DENIED') {
+                $this->markPayoutFailed($payout, 'PayPal denied the payout batch: '.mb_substr((string) ($resource['errors']['message'] ?? 'batch was denied'), 0, 1000));
+            }
+        }
+    }
+
+    /**
+     * Handle PAYOUTS.ITEM.* events — the authoritative per-item status.
+     * Idempotent: paid stays paid, failed rows are never re-flipped.
+     */
+    protected function handlePayoutItemEvent(array $event): void
+    {
+        $resource = $event['resource'] ?? [];
+        $itemId = $resource['payout_item_id'] ?? null;
+        $senderItemId = $resource['sender_item_id'] ?? null;
+
+        $payout = $itemId
+            ? OrganizationPayout::where('payout_item_id', $itemId)->first()
+            : ($senderItemId ? OrganizationPayout::where('uuid', $senderItemId)->first() : null);
+
+        if (! $payout) {
+            Log::warning('PayPal webhook: PAYOUTS.ITEM.* no matching ledger row', [
+                'payout_item_id' => $itemId,
+                'sender_item_id' => $senderItemId,
+            ]);
+
+            return;
+        }
+
+        $itemStatus = strtoupper((string) ($resource['transaction_status'] ?? $resource['payout_item_status'] ?? ''));
+        $eventType = strtoupper((string) ($event['event_type'] ?? ''));
+        $translation = [
+            'PAYOUTS.ITEM.COMPLETED' => 'SUCCESS',
+            'PAYOUTS.ITEM.SUCCEEDED' => 'SUCCESS',
+            'PAYOUTS.ITEM.DENIED' => 'DENIED',
+            'PAYOUTS.ITEM.FAILED' => 'FAILED',
+            'PAYOUTS.ITEM.BLOCKED' => 'BLOCKED',
+            'PAYOUTS.ITEM.RETURNED' => 'RETURNED',
+            'PAYOUTS.ITEM.CANCELED' => 'CANCELED',
+            'PAYOUTS.ITEM.HELD' => 'HELD',
+        ];
+        $effectiveStatus = $itemStatus ?: ($translation[$eventType] ?? 'PENDING');
+
+        // Idempotency: no-op on already-terminal rows.
+        if (in_array($payout->status, ['paid', 'failed'], true)) {
+            Log::info('PayPal webhook: payout already terminal, ignoring', [
+                'payout_id' => $payout->id,
+                'status' => $payout->status,
+            ]);
+
+            return;
+        }
+
+        if ($effectiveStatus === 'SUCCESS' || $effectiveStatus === 'COMPLETED') {
+            $payout->forceFill([
+                'status' => 'paid',
+                'paid_at' => now(),
+                'payout_item_id' => $payout->payout_item_id ?: ($itemId ?: null),
+                'provider_status' => $effectiveStatus,
+                'failure_reason' => null,
+            ])->save();
+
+            TransactionLog::record('payout.synced', [
+                'actor_id' => null,
+                'actor_role' => 'System (PayPal webhook)',
+                'subject_type' => OrganizationPayout::class,
+                'subject_id' => $payout->id,
+                'message' => sprintf(
+                    'PayPal webhook confirmed payout of %.2f %s to %s',
+                    $payout->amount,
+                    strtoupper($payout->currency),
+                    $payout->organization_name
+                ),
+                'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+            ]);
+
+            return;
+        }
+
+        if (in_array($effectiveStatus, ['FAILED', 'DENIED', 'BLOCKED', 'RETURNED', 'CANCELED'], true)) {
+            $reason = mb_substr((string) (
+                $resource['errors']['message']
+                ?? $resource['errors']['description']
+                ?? 'PayPal reported a failed payout item ('.$effectiveStatus.')'
+            ), 0, 1000);
+            $this->markPayoutFailed($payout, $reason);
+
+            return;
+        }
+
+        // HELD / PENDING / unknown: keep waiting, store provider status.
+        $payout->forceFill([
+            'provider_status' => $effectiveStatus,
+            'failure_reason' => null,
+        ])->save();
+    }
+
+    /**
+     * Flip a ledger row to failed (off-balance so an admin can retry) and
+     * record the failure in the transaction log. Idempotent.
+     */
+    protected function markPayoutFailed(OrganizationPayout $payout, string $reason): void
+    {
+        if ($payout->status === 'failed') {
+            return;
+        }
+
+        $payout->forceFill([
+            'status' => 'failed',
+            'provider_status' => 'FAILED',
+            'failure_reason' => $reason,
+        ])->save();
+
+        TransactionLog::record('payout.failed', [
+            'actor_id' => null,
+            'actor_role' => 'System (PayPal webhook)',
+            'subject_type' => OrganizationPayout::class,
+            'subject_id' => $payout->id,
+            'message' => sprintf(
+                'PayPal rejected payout of %.2f %s to %s — %s',
+                $payout->amount,
+                strtoupper($payout->currency),
+                $payout->organization_name,
+                $reason
+            ),
+            'after' => ['status' => 'failed', 'provider_status' => 'FAILED', 'failure_reason' => $reason],
         ]);
     }
 
@@ -206,6 +363,26 @@ class PayPalWebhookController extends Controller
         }
 
         Cache::store('file')->forget('dashboard');
+
+        // Report-friendly income transaction: single log for financial reports.
+        TransactionLog::record('donation.completed', [
+            'subject_type' => Donation::class,
+            'subject_id' => $donation->id,
+            'message' => sprintf(
+                'Donation of %.2f %s received via PayPal (%s)',
+                $donation->amount,
+                strtoupper($donation->currency ?? 'USD'),
+                $orderId
+            ),
+            'after' => [
+                'donation_id' => $donation->id,
+                'amount' => (float) $donation->amount,
+                'currency' => strtoupper($donation->currency ?? 'USD'),
+                'provider' => 'paypal',
+                'order_id' => $orderId,
+                'status' => 'completed',
+            ],
+        ]);
 
         Log::info('PayPal donation recorded via webhook', [
             'order_id' => $orderId,
