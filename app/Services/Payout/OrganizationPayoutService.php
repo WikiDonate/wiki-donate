@@ -123,7 +123,7 @@ class OrganizationPayoutService
 
         // Destination guard runs outside the main transaction so that
         // payout.blocked audit rows are not rolled back on failure.
-        $organization = $this->destinationGuard->resolve($formula, $orgName);
+        $organization = $this->destinationGuard->resolve($formula, $orgName, $actorId);
 
         $items = $this->normalizeItems($formula->formula);
         $match = collect($items)->first(fn ($i) => $i['key'] === $key);
@@ -132,7 +132,7 @@ class OrganizationPayoutService
         }
 
         $balance = $this->owedFor($formula, $key);
-        if ($balance->currency && $data['currency'] !== $balance->currency) {
+        if ($balance->currency && strtolower($data['currency']) !== strtolower($balance->currency)) {
             throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
         }
 
@@ -169,7 +169,7 @@ class OrganizationPayoutService
                 'organization_name' => $orgName,
                 'organization_key' => $key,
                 'amount' => $amount,
-                'currency' => $data['currency'],
+                'currency' => strtolower($data['currency']),
                 'type' => $amount >= $liveBalance->balance - 0.009 ? 'full' : 'partial',
                 'status' => 'paid',
                 'paid_at' => now(),

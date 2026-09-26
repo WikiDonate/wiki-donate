@@ -21,7 +21,7 @@ class OrganizationPayoutDestinationService
      *
      * @throws Exception when the destination is not verified or missing PayPal email.
      */
-    public function resolve(DonationFormula $formula, string $organizationName): Organization
+    public function resolve(DonationFormula $formula, string $organizationName, ?int $actorId = null): Organization
     {
         $organization = $this->lookup($formula, $organizationName);
 
@@ -30,13 +30,13 @@ class OrganizationPayoutDestinationService
         }
 
         if ($organization->payout_status !== 'verified') {
-            $this->block($organization, 'Organization is not verified for payouts.');
+            $this->block($organization, 'Organization is not verified for payouts.', $actorId);
 
             throw new Exception('Organization is not verified for payouts.');
         }
 
         if (empty($organization->paypal_email)) {
-            $this->block($organization, 'Organization does not have a PayPal receiving email.');
+            $this->block($organization, 'Organization does not have a PayPal receiving email.', $actorId);
 
             throw new Exception('Organization does not have a PayPal receiving email.');
         }
@@ -79,14 +79,14 @@ class OrganizationPayoutDestinationService
     /**
      * Record a blocked payout attempt.
      */
-    private function block(Organization $organization, string $reason): void
+    private function block(Organization $organization, string $reason, ?int $actorId = null): void
     {
         TransactionLog::record(
             'payout.blocked',
             $organization,
             before: $organization->only(['payout_status', 'paypal_email']),
             after: null,
-            actorId: auth()->id(),
+            actorId: $actorId ?? auth()->id(),
             note: $reason,
         );
     }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\v1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
 use App\Services\Payout\OrganizationPayoutService;
@@ -98,16 +97,10 @@ class OrganizationPayoutController extends Controller
         }
 
         try {
-            // Currency is defaulted from the formula's own donations.
-            $currency = $request->currency
-                ?: ((string) (Donation::query()
-                    ->where('donation_formula_id', $request->donation_formula_id)
-                    ->value('currency') ?: 'usd'));
-
             $payout = $this->payouts->createPayout(
                 [
                     ...$request->only(['donation_formula_id', 'organization_name', 'amount', 'note']),
-                    'currency' => $currency,
+                    'currency' => strtolower($request->input('currency')),
                 ],
                 $request->user()->id,
             );

@@ -9,11 +9,32 @@ use Illuminate\Support\Facades\DB;
 /**
  * Registry service for resolving and upserting organizations.
  *
- * Exposed as a thin, testable wrapper around the existing CharitySearchService
- * upsert behavior with structured transaction logging.
+ * Upserts organization records from donation formula rows, keyed by EIN
+ * or normalized name, and writes structured transaction logs.
  */
 class OrganizationRegistryService
 {
+    /**
+     * Upsert organizations from an array of donation formula rows.
+     *
+     * @param  array<int, array{organization: string, percentage: float|int, ein?: string|null, organization_id?: int|null}>  $rows
+     * @return array<int, array{organization: string, percentage: float|int, ein?: string|null, organization_id: int|null}>
+     */
+    public static function upsertFromFormulaRows(array $rows, ?int $actorId = null): array
+    {
+        return collect($rows)
+            ->map(function (array $row) use ($actorId) {
+                $organization = self::upsertFromFormulaRow($row, $actorId);
+
+                return [
+                    ...$row,
+                    'ein' => $organization->ein,
+                    'organization_id' => $organization->id,
+                ];
+            })
+            ->all();
+    }
+
     /**
      * Upsert a single organization from a formula row.
      *

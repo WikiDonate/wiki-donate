@@ -94,9 +94,4 @@ class Organization extends Model
     {
         return $this->belongsTo(User::class, 'updated_by_id');
     }
-
-    public function formulas()
-    {
-        return $this->hasMany(DonationFormula::class);
-    }
 }

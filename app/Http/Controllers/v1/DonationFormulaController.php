@@ -5,7 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\DonationFormula;
-use App\Services\Charity\CharitySearchService;
+use App\Services\Organization\OrganizationRegistryService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -144,8 +144,10 @@ class DonationFormulaController extends Controller
             }
 
             // Upsert organizations and persist organization_id back into rows.
-            $formulaRows = app(CharitySearchService::class)
-                ->upsertFromFormulaRows($request->formula, Auth::id());
+            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+                $request->formula,
+                Auth::id(),
+            );
 
             // Create new formula (not updateOrCreate anymore)
             $formula = DonationFormula::create([
@@ -250,8 +252,10 @@ class DonationFormulaController extends Controller
             $hadCompletedDonation = $formula->hasCompletedDonation();
 
             // Upsert organizations and persist organization_id back into rows.
-            $formulaRows = app(CharitySearchService::class)
-                ->upsertFromFormulaRows($request->formula, Auth::id());
+            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+                $request->formula,
+                Auth::id(),
+            );
 
             $formula->update([
                 'name' => $request->name,
