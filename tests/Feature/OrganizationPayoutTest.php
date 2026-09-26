@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -36,13 +37,27 @@ class OrganizationPayoutTest extends TestCase
             'is_active' => true,
         ]);
 
+        $charityA = Organization::create([
+            'name' => 'Charity A',
+            'paypal_email' => 'charity-a@example.com',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+        ]);
+
+        $charityB = Organization::create([
+            'name' => 'Charity B',
+            'paypal_email' => 'charity-b@example.com',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+        ]);
+
         $this->formula = DonationFormula::create([
             'article_id' => $this->article->id,
             'user_id' => $this->admin->id,
             'name' => 'Test Formula',
             'formula' => [
-                ['organization' => 'Charity A', 'organization_id' => null, 'percentage' => 60],
-                ['organization' => 'Charity B', 'organization_id' => null, 'percentage' => 40],
+                ['organization' => 'Charity A', 'organization_id' => $charityA->id, 'percentage' => 60],
+                ['organization' => 'Charity B', 'organization_id' => $charityB->id, 'percentage' => 40],
             ],
         ]);
     }

@@ -5,6 +5,7 @@ namespace App\Services\Payout;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
+use App\Models\TransactionLog;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,10 @@ use Illuminate\Support\Facades\DB;
  */
 class OrganizationPayoutService
 {
+    public function __construct(
+        private OrganizationPayoutDestinationService $destinationGuard,
+    ) {}
+
     /**
      * List every allocatable (formula_id + organization) pair with its
      * live owed / paid / balance amounts.
@@ -109,7 +114,7 @@ class OrganizationPayoutService
     public function createPayout(array $data, int $actorId): OrganizationPayout
     {
         return DB::transaction(function () use ($data, $actorId) {
-            $formula = $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
+            $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
             if (! $formula) {
                 throw new Exception('Donation formula not found.');
             }
@@ -128,6 +133,8 @@ class OrganizationPayoutService
                 throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
             }
 
+            $organization = $this->destinationGuard->resolve($formula, $orgName);
+
             $amount = round((float) $data['amount'], 2);
             if ($amount <= 0) {
                 throw new Exception('Payout amount must be greater than 0.');
@@ -140,7 +147,7 @@ class OrganizationPayoutService
                 ));
             }
 
-            return OrganizationPayout::create([
+            $payout = OrganizationPayout::create([
                 'donation_formula_id' => $formula->id,
                 'organization_name' => $orgName,
                 'organization_key' => $key,
@@ -152,6 +159,23 @@ class OrganizationPayoutService
                 'actor_id' => $actorId,
                 'note' => $data['note'] ?? null,
             ]);
+
+            TransactionLog::record(
+                'payout.created',
+                $payout,
+                before: [
+                    'balance_before' => $balance->balance,
+                    'currency' => $balance->currency,
+                ],
+                after: [
+                    'amount' => $amount,
+                    'destination_paypal_email' => $organization->paypal_email,
+                    'destination_organization_id' => $organization->id,
+                ],
+                actorId: $actorId,
+            );
+
+            return $payout;
         });
     }
 

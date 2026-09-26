@@ -3,8 +3,8 @@
 namespace App\Services\Charity;
 
 use App\Models\Organization;
+use App\Models\TransactionLog;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Upsert organizations from donation formula rows.
@@ -144,14 +144,12 @@ class CharitySearchService
      */
     private function audit(string $action, Organization $organization, ?array $before, ?int $actorId, ?array $after = null): void
     {
-        Log::channel('transaction')->info('organization_upsert', [
-            'action' => $action,
-            'organization_id' => $organization->id,
-            'organization_uuid' => $organization->uuid,
-            'actor_id' => $actorId,
-            'before' => $before,
-            'after' => $after ?? $organization->only(['name', 'normalized_name', 'ein']),
-            'timestamp' => now()->toDateTimeString(),
-        ]);
+        TransactionLog::record(
+            "organization_upsert.{$action}",
+            $organization,
+            before: $before,
+            after: $after ?? $organization->only(['name', 'normalized_name', 'ein']),
+            actorId: $actorId,
+        );
     }
 }
