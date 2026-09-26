@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\DonationFormula;
+use App\Services\Charity\CharitySearchService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +91,8 @@ class DonationFormulaController extends Controller
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
             'details' => 'nullable|string',
         ]);
@@ -141,12 +143,16 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            // Upsert organizations and persist organization_id back into rows.
+            $formulaRows = app(CharitySearchService::class)
+                ->upsertFromFormulaRows($request->formula, Auth::id());
+
             // Create new formula (not updateOrCreate anymore)
             $formula = DonationFormula::create([
                 'article_id' => $article->id,
                 'user_id' => Auth::id(),
                 'name' => $request->name,
-                'formula' => $request->formula,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
             ]);
 
@@ -174,7 +180,8 @@ class DonationFormulaController extends Controller
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
             'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
             'details' => 'nullable|string',
         ]);
@@ -242,9 +249,13 @@ class DonationFormulaController extends Controller
             // for transparency in donation details.
             $hadCompletedDonation = $formula->hasCompletedDonation();
 
+            // Upsert organizations and persist organization_id back into rows.
+            $formulaRows = app(CharitySearchService::class)
+                ->upsertFromFormulaRows($request->formula, Auth::id());
+
             $formula->update([
                 'name' => $request->name,
-                'formula' => $request->formula,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
             ]);
 
