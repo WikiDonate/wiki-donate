@@ -38,19 +38,7 @@ class CharitySearchService
                     ];
                 }
 
-                // If the caller supplied a valid organization_id, trust it.
-                if (! empty($providedId)) {
-                    $organization = Organization::find($providedId);
-                    if ($organization) {
-                        return [
-                            ...$row,
-                            'ein' => $ein,
-                            'organization_id' => $organization->id,
-                        ];
-                    }
-                }
-
-                $organization = $this->upsertOrganization($name, $ein, $actorId);
+                $organization = $this->upsertOrganization($name, $ein, $providedId, $actorId);
 
                 return [
                     ...$row,
@@ -63,13 +51,18 @@ class CharitySearchService
 
     /**
      * Upsert a single organization by EIN or normalized name.
+     *
+     * Matching priority:
+     *   1. EIN, when provided.
+     *   2. Normalized organization name.
+     *   3. Caller-supplied organization_id (validated, not created).
      */
-    public function upsertOrganization(string $name, ?string $ein = null, ?int $actorId = null): Organization
+    public function upsertOrganization(string $name, ?string $ein = null, ?int $providedId = null, ?int $actorId = null): Organization
     {
         $normalized = Organization::normalizeName($name);
         $cleanEin = $this->cleanEin($ein);
 
-        return DB::transaction(function () use ($name, $normalized, $cleanEin, $actorId) {
+        return DB::transaction(function () use ($name, $normalized, $cleanEin, $providedId, $actorId) {
             // 1. Try EIN match first.
             if (! empty($cleanEin)) {
                 $organization = Organization::where('ein', $cleanEin)->lockForUpdate()->first();
@@ -84,7 +77,16 @@ class CharitySearchService
                 return $this->updateOrganization($organization, $name, $cleanEin, $actorId);
             }
 
-            // 3. Create new organization.
+            // 3. If the caller supplied a valid organization_id, trust it when
+            //    no EIN/name match exists (e.g. linking to a preloaded org).
+            if (! empty($providedId)) {
+                $organization = Organization::where('id', $providedId)->lockForUpdate()->first();
+                if ($organization) {
+                    return $this->updateOrganization($organization, $name, $cleanEin, $actorId);
+                }
+            }
+
+            // 4. Create new organization.
             $organization = Organization::create([
                 'name' => $name,
                 'normalized_name' => $normalized,

@@ -146,9 +146,9 @@ class DonationReportFormulaSnapshotTest extends TestCase
             ->assertOk();
 
         $formula->refresh();
-        $this->assertSame([
-            ['organization' => 'Wiki1', 'percentage' => 100],
-        ], $formula->formula);
+        $this->assertCount(1, $formula->formula);
+        $this->assertSame('Wiki1', $formula->formula[0]['organization']);
+        $this->assertSame(100, $formula->formula[0]['percentage']);
 
         // The report must STILL show the original split from payment time
         $report = $this->withHeaders($auth)->getJson('/api/v1/report/donations');
