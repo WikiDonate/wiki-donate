@@ -113,37 +113,54 @@ class OrganizationPayoutService
      */
     public function createPayout(array $data, int $actorId): OrganizationPayout
     {
-        return DB::transaction(function () use ($data, $actorId) {
-            $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
-            if (! $formula) {
+        $formula = DonationFormula::whereKey($data['donation_formula_id'])->first();
+        if (! $formula) {
+            throw new Exception('Donation formula not found.');
+        }
+
+        $orgName = trim($data['organization_name']);
+        $key = OrganizationPayout::makeKey($orgName);
+
+        // Destination guard runs outside the main transaction so that
+        // payout.blocked audit rows are not rolled back on failure.
+        $organization = $this->destinationGuard->resolve($formula, $orgName);
+
+        $items = $this->normalizeItems($formula->formula);
+        $match = collect($items)->first(fn ($i) => $i['key'] === $key);
+        if (! $match) {
+            throw new Exception('Organization is not allocated in this formula (anymore).');
+        }
+
+        $balance = $this->owedFor($formula, $key);
+        if ($balance->currency && $data['currency'] !== $balance->currency) {
+            throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
+        }
+
+        $amount = round((float) $data['amount'], 2);
+        if ($amount <= 0) {
+            throw new Exception('Payout amount must be greater than 0.');
+        }
+        if ($amount > $balance->balance + 0.009) {
+            throw new Exception(sprintf(
+                'Payout of %.2f exceeds the live balance of %.2f.',
+                $amount,
+                $balance->balance
+            ));
+        }
+
+        return DB::transaction(function () use ($data, $actorId, $formula, $orgName, $key, $amount, $balance, $organization) {
+            // Re-fetch with lock inside the transaction to prevent overpay races.
+            $lockedFormula = DonationFormula::whereKey($formula->id)->lockForUpdate()->first();
+            if (! $lockedFormula) {
                 throw new Exception('Donation formula not found.');
             }
 
-            $orgName = trim($data['organization_name']);
-            $key = OrganizationPayout::makeKey($orgName);
-
-            $items = $this->normalizeItems($formula->formula);
-            $match = collect($items)->first(fn ($i) => $i['key'] === $key);
-            if (! $match) {
-                throw new Exception('Organization is not allocated in this formula (anymore).');
-            }
-
-            $balance = $this->owedFor($formula, $key);
-            if ($balance->currency && $data['currency'] !== $balance->currency) {
-                throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
-            }
-
-            $organization = $this->destinationGuard->resolve($formula, $orgName);
-
-            $amount = round((float) $data['amount'], 2);
-            if ($amount <= 0) {
-                throw new Exception('Payout amount must be greater than 0.');
-            }
-            if ($amount > $balance->balance + 0.009) {
+            $liveBalance = $this->owedFor($lockedFormula, $key);
+            if ($amount > $liveBalance->balance + 0.009) {
                 throw new Exception(sprintf(
                     'Payout of %.2f exceeds the live balance of %.2f.',
                     $amount,
-                    $balance->balance
+                    $liveBalance->balance
                 ));
             }
 
@@ -153,7 +170,7 @@ class OrganizationPayoutService
                 'organization_key' => $key,
                 'amount' => $amount,
                 'currency' => $data['currency'],
-                'type' => $amount >= $balance->balance - 0.009 ? 'full' : 'partial',
+                'type' => $amount >= $liveBalance->balance - 0.009 ? 'full' : 'partial',
                 'status' => 'paid',
                 'paid_at' => now(),
                 'actor_id' => $actorId,
