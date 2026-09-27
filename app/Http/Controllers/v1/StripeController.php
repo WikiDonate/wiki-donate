@@ -85,7 +85,7 @@ class StripeController extends Controller
     public function createCheckoutSession(Request $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:0.50',
+            'amount' => 'required|numeric|min:0.50|max:500000',
             'currency' => 'nullable|string|size:3',
             'success_url' => 'nullable|url',
             'cancel_url' => 'nullable|url',

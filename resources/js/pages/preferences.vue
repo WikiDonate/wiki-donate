@@ -329,7 +329,7 @@
         password: yup
             .string()
             .required(t('preferences.passwordRequired'))
-            .min(6, 'Password must be at least 6 characters'),
+            .min(8, t('preferences.minChars', { n: 8 })),
         confirmPassword: yup
             .string()
             .required(t('preferences.confirmPasswordRequired'))

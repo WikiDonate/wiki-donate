@@ -28,10 +28,7 @@
             </div>
 
             <template v-else>
-                <div
-                    v-if="confirmed"
-                    class="bg-green-50 border border-green-200 rounded-lg p-6"
-                >
+                <div v-if="confirmed" class="bg-green-50 border border-green-200 rounded-lg p-6">
                     <p class="text-green-700 font-medium mb-1">
                         {{ t('orgConfirm.success', { org: orgName }) }}
                     </p>

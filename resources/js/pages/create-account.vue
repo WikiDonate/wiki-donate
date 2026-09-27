@@ -183,7 +183,7 @@
         password: yup
             .string()
             .required(t('auth.passwordRequired'))
-            .min(6, t('auth.minChars', { n: 6 })),
+            .min(8, t('auth.minChars', { n: 8 })),
         confirmPassword: yup
             .string()
             .required(t('auth.confirmPasswordRequired'))

@@ -80,7 +80,8 @@
                     <input
                         v-model="amount"
                         type="number"
-                        min="1"
+                        min="0.5"
+                        max="500000"
                         step="0.01"
                         :placeholder="t('donate.enterAmount')"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
@@ -205,7 +206,10 @@
         return map[alertVariant.value] || ''
     })
 
-    const hasValidAmount = computed(() => Number(amount.value) > 0 && props.modelValue)
+    // Matches backend min (0.50) / max (500000) on both payment rails.
+    const hasValidAmount = computed(
+        () => Number(amount.value) >= 0.5 && Number(amount.value) <= 500000 && props.modelValue,
+    )
 
     const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || ''
 
