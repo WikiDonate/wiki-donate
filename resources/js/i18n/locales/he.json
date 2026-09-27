@@ -576,7 +576,8 @@
         "website": "אתר אינטרנט",
         "visitSite": "בקר באתר",
         "createdAt": "נוצר",
-        "verifiedAt": "מאומת"
+        "verifiedAt": "מאומת",
+        "unpaid": "ללא תשלום"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. כֹּל הַזְכוּיוֹת שְׁמוּרוֹת."

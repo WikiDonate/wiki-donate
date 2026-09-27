@@ -576,7 +576,8 @@
         "website": "موقع الكتروني",
         "visitSite": "زيارة الموقع",
         "createdAt": "تم إنشاؤها",
-        "verifiedAt": "تم التحقق منه"
+        "verifiedAt": "تم التحقق منه",
+        "unpaid": "غير مدفوعة الأجر"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

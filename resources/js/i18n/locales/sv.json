@@ -576,7 +576,8 @@
         "website": "Webbplats",
         "visitSite": "Besök webbplatsen",
         "createdAt": "Skapad",
-        "verifiedAt": "Verifierad"
+        "verifiedAt": "Verifierad",
+        "unpaid": "Obetald"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

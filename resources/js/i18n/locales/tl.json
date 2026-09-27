@@ -576,7 +576,8 @@
         "website": "Website",
         "visitSite": "Bisitahin ang site",
         "createdAt": "Nilikha",
-        "verifiedAt": "Na-verify"
+        "verifiedAt": "Na-verify",
+        "unpaid": "Walang bayad"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

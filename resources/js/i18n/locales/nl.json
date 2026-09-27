@@ -576,7 +576,8 @@
         "website": "Website",
         "visitSite": "Bezoek website",
         "createdAt": "Gemaakt",
-        "verifiedAt": "Geverifieerd"
+        "verifiedAt": "Geverifieerd",
+        "unpaid": "Onbetaald"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rechten voorbehouden."

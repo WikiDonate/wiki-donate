@@ -576,7 +576,8 @@
         "website": "వెబ్సైట్",
         "visitSite": "సైట్‌ని సందర్శించండి",
         "createdAt": "సృష్టించబడింది",
-        "verifiedAt": "ధృవీకరించబడింది"
+        "verifiedAt": "ధృవీకరించబడింది",
+        "unpaid": "చెల్లించని"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి."

@@ -65,7 +65,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch articles.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -93,7 +93,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch article.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -125,7 +125,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete article.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\UserFacingException;
 use App\Models\Organization;
 use App\Models\TransactionLog;
-use Exception;
 
 /**
  * Org registry upsert — keeps `organizations` in sync with the free-text
@@ -33,7 +33,7 @@ class OrganizationRegistryService
     {
         $name = trim((string) ($row['organization'] ?? ''));
         if ($name === '') {
-            throw new Exception('Organization name is required.');
+            throw new UserFacingException('Organization name is required.');
         }
 
         $ein = $this->normalizeEin($row['ein'] ?? null);

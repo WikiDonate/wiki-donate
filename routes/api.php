@@ -67,8 +67,10 @@ Route::prefix('v1')->group(function () {
         ->middleware('auth:sanctum');
     Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
 
-    // Stripe Webhook (public, no auth)
-    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+    // Stripe Webhook (public, no auth — verified by signature; throttled
+    // so attackers can't force expensive signature checks at will)
+    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
+        ->middleware('throttle:60,1');
 
     // PayPal Checkout (create + capture are callable without an authenticated
     // user so guest donations and the post-redirect success-page flow work)
@@ -77,8 +79,10 @@ Route::prefix('v1')->group(function () {
     Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
         ->middleware(['throttle:20,1', OptionalAuth::class]);
 
-    // PayPal Webhook (public, no auth)
-    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook']);
+    // PayPal Webhook (public, no auth — verified by signature; throttled
+    // so attackers can't force expensive verification calls at will)
+    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook'])
+        ->middleware('throttle:60,1');
 
     // Public page content
     Route::get('page-contents/{page}', [PageController::class, 'show']);

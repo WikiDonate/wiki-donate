@@ -576,7 +576,8 @@
         "website": "Site",
         "visitSite": "Visite o site",
         "createdAt": "Criado",
-        "verifiedAt": "Verificado"
+        "verifiedAt": "Verificado",
+        "unpaid": "Não pago"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Todos os direitos reservados."

@@ -576,7 +576,8 @@
         "website": "وب سایت",
         "visitSite": "به سایت مراجعه کنید",
         "createdAt": "ایجاد شد",
-        "verifiedAt": "تایید شده است"
+        "verifiedAt": "تایید شده است",
+        "unpaid": "پرداخت نشده"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

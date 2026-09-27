@@ -32,7 +32,7 @@ class OrganizationConfirmationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

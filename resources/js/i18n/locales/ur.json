@@ -576,7 +576,8 @@
         "website": "ویب سائٹ",
         "visitSite": "سائٹ ملاحظہ کریں۔",
         "createdAt": "بنایا",
-        "verifiedAt": "تصدیق شدہ"
+        "verifiedAt": "تصدیق شدہ",
+        "unpaid": "بلا معاوضہ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

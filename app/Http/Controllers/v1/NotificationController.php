@@ -116,7 +116,7 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -223,7 +223,7 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

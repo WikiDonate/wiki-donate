@@ -74,7 +74,7 @@ class StripeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Stripe API error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -99,6 +99,19 @@ class StripeController extends Controller
             $userId = auth()->check() ? auth()->id() : null;
 
             $frontendUrl = config('app.url');
+            // Open-redirect guard: Stripe redirects the donor's browser to
+            // these URLs, so only same-host destinations are accepted.
+            $allowedHost = (string) parse_url($frontendUrl, PHP_URL_HOST);
+            foreach (['success_url', 'cancel_url'] as $urlKey) {
+                $candidate = $request->input($urlKey);
+                if ($candidate && mb_strtolower((string) parse_url($candidate, PHP_URL_HOST)) !== mb_strtolower($allowedHost)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Validation error',
+                        'errors' => ["{$urlKey} must point to this application."],
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            }
             $successUrl = $request->input('success_url', $frontendUrl.'/payment/success?session_id={CHECKOUT_SESSION_ID}');
             $cancelUrl = $request->input('cancel_url', $frontendUrl.'/payment/cancel');
 
@@ -169,7 +182,7 @@ class StripeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Stripe API error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -199,7 +212,7 @@ class StripeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Stripe API errors',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -255,7 +268,7 @@ class StripeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Session not found',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], $statusCode);
         }
     }

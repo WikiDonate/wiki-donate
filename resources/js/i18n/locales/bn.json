@@ -576,7 +576,8 @@
         "website": "ওয়েবসাইট",
         "visitSite": "সাইট ভিজিট করুন",
         "createdAt": "তৈরি হয়েছে",
-        "verifiedAt": "যাচাই করা হয়েছে"
+        "verifiedAt": "যাচাই করা হয়েছে",
+        "unpaid": "অবৈতনিক"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. সর্বস্বত্ব সংরক্ষিত"

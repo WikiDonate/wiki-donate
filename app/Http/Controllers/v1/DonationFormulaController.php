@@ -47,7 +47,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -78,7 +78,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -254,7 +254,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -388,7 +388,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -431,7 +431,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

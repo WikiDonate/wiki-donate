@@ -2,6 +2,7 @@
 
 namespace App\Services\Payout;
 
+use App\Exceptions\UserFacingException;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
@@ -139,7 +140,7 @@ class OrganizationPayoutService
         $payout = DB::transaction(function () use ($data, $actorId) {
             $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
             if (! $formula) {
-                throw new Exception('Donation formula not found.');
+                throw new UserFacingException('Donation formula not found.');
             }
 
             $orgName = trim($data['organization_name']);
@@ -148,7 +149,7 @@ class OrganizationPayoutService
             $items = $this->normalizeItems($formula->formula);
             $match = collect($items)->first(fn ($i) => $i['key'] === $key);
             if (! $match) {
-                throw new Exception('Organization is not allocated in this formula (anymore).');
+                throw new UserFacingException('Organization is not allocated in this formula (anymore).');
             }
 
             // Re-check inside the lock — belt and braces against an org being
@@ -158,15 +159,15 @@ class OrganizationPayoutService
 
             $balance = $this->owedFor($formula, $key);
             if ($balance->currency && $data['currency'] !== strtoupper($balance->currency)) {
-                throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
+                throw new UserFacingException("Currency mismatch: allocation currency is {$balance->currency}.");
             }
 
             $amount = round((float) $data['amount'], 2);
             if ($amount <= 0) {
-                throw new Exception('Payout amount must be greater than 0.');
+                throw new UserFacingException('Payout amount must be greater than 0.');
             }
             if ($amount > $balance->balance + 0.009) {
-                throw new Exception(sprintf(
+                throw new UserFacingException(sprintf(
                     'Payout of %.2f exceeds the live balance of %.2f.',
                     $amount,
                     $balance->balance
@@ -269,7 +270,7 @@ class OrganizationPayoutService
                     'failure_reason' => mb_substr($reason, 0, 1000),
                 ])->save();
 
-                throw new Exception('PayPal rejected the payout: '.$reason);
+                throw new UserFacingException('PayPal rejected the payout: '.$reason);
             }
 
             // PENDING (normal: PayPal may take minutes to clear) — store the

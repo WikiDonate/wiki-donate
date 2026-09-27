@@ -576,7 +576,8 @@
         "website": "laman web",
         "visitSite": "Lawati tapak",
         "createdAt": "Dicipta",
-        "verifiedAt": "Disahkan"
+        "verifiedAt": "Disahkan",
+        "unpaid": "Tak bergaji"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

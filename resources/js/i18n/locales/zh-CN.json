@@ -576,7 +576,8 @@
         "website": "网站",
         "visitSite": "访问网站",
         "createdAt": "已创建",
-        "verifiedAt": "已验证"
+        "verifiedAt": "已验证",
+        "unpaid": "未付"
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"

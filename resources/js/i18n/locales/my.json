@@ -576,7 +576,8 @@
         "website": "ဝဘ်ဆိုဒ်",
         "visitSite": "ဆိုက်ကို ဝင်ကြည့်ပါ။",
         "createdAt": "ဖန်တီးခဲ့သည်။",
-        "verifiedAt": "စိစစ်ပြီး"
+        "verifiedAt": "စိစစ်ပြီး",
+        "unpaid": "အခကြေးငွေမယူရသေး"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

@@ -576,7 +576,8 @@
         "website": "網站",
         "visitSite": "造訪網站",
         "createdAt": "已創建",
-        "verifiedAt": "已驗證"
+        "verifiedAt": "已驗證",
+        "unpaid": "未付"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"

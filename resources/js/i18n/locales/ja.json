@@ -576,7 +576,8 @@
         "website": "ウェブサイト",
         "visitSite": "サイトにアクセス",
         "createdAt": "作成されました",
-        "verifiedAt": "確認済み"
+        "verifiedAt": "確認済み",
+        "unpaid": "未払い"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

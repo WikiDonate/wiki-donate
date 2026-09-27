@@ -54,7 +54,7 @@ class ContactController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

@@ -576,7 +576,8 @@
         "website": "เว็บไซต์",
         "visitSite": "เยี่ยมชมเว็บไซต์",
         "createdAt": "สร้างแล้ว",
-        "verifiedAt": "ตรวจสอบแล้ว"
+        "verifiedAt": "ตรวจสอบแล้ว",
+        "unpaid": "ค้างชำระ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org สงวนลิขสิทธิ์."

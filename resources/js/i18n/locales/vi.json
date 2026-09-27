@@ -576,7 +576,8 @@
         "website": "Trang web",
         "visitSite": "Truy cập trang web",
         "createdAt": "Đã tạo",
-        "verifiedAt": "Đã xác minh"
+        "verifiedAt": "Đã xác minh",
+        "unpaid": "Chưa thanh toán"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

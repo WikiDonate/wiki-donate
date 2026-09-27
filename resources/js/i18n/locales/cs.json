@@ -576,7 +576,8 @@
         "website": "webové stránky",
         "visitSite": "Navštivte web",
         "createdAt": "Vytvořeno",
-        "verifiedAt": "Ověřeno"
+        "verifiedAt": "Ověřeno",
+        "unpaid": "Nezaplaceno"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

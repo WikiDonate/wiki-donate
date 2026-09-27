@@ -2,6 +2,7 @@
 
 namespace App\Services\Organization;
 
+use App\Exceptions\UserFacingException;
 use App\Mail\OrganizationEmailConfirmationMail;
 use App\Models\Organization;
 use App\Models\TransactionLog;
@@ -67,12 +68,12 @@ class OrganizationEmailConfirmationService
         $organization = Organization::where('paypal_confirm_token', $token)->first();
 
         if (! $organization || empty($organization->paypal_email)) {
-            throw new Exception('This confirmation link is invalid.');
+            throw new UserFacingException('This confirmation link is invalid.');
         }
 
         $sentAt = $organization->paypal_confirm_sent_at;
         if (! $sentAt || $sentAt->lt(now()->subDays(self::TOKEN_TTL_DAYS))) {
-            throw new Exception('This confirmation link has expired. Please ask for a new one.');
+            throw new UserFacingException('This confirmation link has expired. Please ask for a new one.');
         }
 
         $organization->forceFill([

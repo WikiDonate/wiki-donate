@@ -2,6 +2,7 @@
 
 namespace App\Services\Payout;
 
+use App\Exceptions\UserFacingException;
 use App\Models\Organization;
 use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
@@ -60,7 +61,7 @@ class OrganizationPayoutDestinationService
                 'meta' => ['organization_name' => $organizationName, 'reason' => 'not_in_registry'],
             ]);
 
-            throw new \Exception('This organization has no verified payout destination yet. Verify it in the Organizations page first.');
+            throw new UserFacingException('This organization has no verified payout destination yet. Verify it in the Organizations page first.');
         }
 
         if (! filled($org->paypal_email)) {
@@ -73,7 +74,7 @@ class OrganizationPayoutDestinationService
                 'meta' => ['organization_id' => $org->id, 'reason' => 'missing_paypal_email'],
             ]);
 
-            throw new \Exception('This organization has no PayPal receiving email set. Set it in the Organizations page first.');
+            throw new UserFacingException('This organization has no PayPal receiving email set. Set it in the Organizations page first.');
         }
 
         if ($org->payout_status !== 'verified') {
@@ -86,7 +87,7 @@ class OrganizationPayoutDestinationService
                 'meta' => ['organization_id' => $org->id, 'reason' => 'not_verified'],
             ]);
 
-            throw new \Exception('This organization is not verified yet. Verify it in the Organizations page before paying out.');
+            throw new UserFacingException('This organization is not verified yet. Verify it in the Organizations page before paying out.');
         }
 
         return $org;

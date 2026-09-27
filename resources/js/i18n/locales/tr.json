@@ -576,7 +576,8 @@
         "website": "Web sitesi",
         "visitSite": "Siteyi ziyaret edin",
         "createdAt": "Oluşturuldu",
-        "verifiedAt": "Doğrulandı"
+        "verifiedAt": "Doğrulandı",
+        "unpaid": "ödenmemiş"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."

@@ -576,7 +576,8 @@
         "website": "वेबसाइट",
         "visitSite": "साइटला भेट द्या",
         "createdAt": "तयार केले",
-        "verifiedAt": "सत्यापित"
+        "verifiedAt": "सत्यापित",
+        "unpaid": "न भरलेले"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."

@@ -576,7 +576,8 @@
         "website": "웹사이트",
         "visitSite": "사이트 방문",
         "createdAt": "생성됨",
-        "verifiedAt": "확인됨"
+        "verifiedAt": "확인됨",
+        "unpaid": "미지급"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

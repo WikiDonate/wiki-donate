@@ -576,7 +576,8 @@
         "website": "Nettsted",
         "visitSite": "Besøk nettstedet",
         "createdAt": "Opprettet",
-        "verifiedAt": "Verifisert"
+        "verifiedAt": "Verifisert",
+        "unpaid": "Ubetalt"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

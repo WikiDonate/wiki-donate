@@ -576,7 +576,8 @@
         "website": "Tovuti",
         "visitSite": "Tembelea tovuti",
         "createdAt": "Imeundwa",
-        "verifiedAt": "Imethibitishwa"
+        "verifiedAt": "Imethibitishwa",
+        "unpaid": "Haijalipwa"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

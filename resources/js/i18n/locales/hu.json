@@ -576,7 +576,8 @@
         "website": "Weboldal",
         "visitSite": "Látogassa meg a webhelyet",
         "createdAt": "Létrehozva",
-        "verifiedAt": "Ellenőrzött"
+        "verifiedAt": "Ellenőrzött",
+        "unpaid": "Kifizetetlen"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

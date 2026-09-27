@@ -576,7 +576,8 @@
         "website": "Site-ul web",
         "visitSite": "Vizitați site-ul",
         "createdAt": "Creat",
-        "verifiedAt": "Verificat"
+        "verifiedAt": "Verificat",
+        "unpaid": "Neplătit"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

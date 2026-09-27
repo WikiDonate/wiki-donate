@@ -576,7 +576,8 @@
         "website": "Verkkosivusto",
         "visitSite": "Vieraile sivustolla",
         "createdAt": "Luotu",
-        "verifiedAt": "Vahvistettu"
+        "verifiedAt": "Vahvistettu",
+        "unpaid": "Palkaton"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Kaikki oikeudet pidätetään."

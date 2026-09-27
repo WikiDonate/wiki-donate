@@ -576,7 +576,8 @@
         "website": "ድር ጣቢያ",
         "visitSite": "ጣቢያን ጎብኝ",
         "createdAt": "ተፈጠረ",
-        "verifiedAt": "የተረጋገጠ"
+        "verifiedAt": "የተረጋገጠ",
+        "unpaid": "ያልተከፈለ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

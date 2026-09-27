@@ -576,7 +576,8 @@
         "website": "គេហទំព័រ",
         "visitSite": "ទស្សនាគេហទំព័រ",
         "createdAt": "បានបង្កើត",
-        "verifiedAt": "ផ្ទៀងផ្ទាត់"
+        "verifiedAt": "ផ្ទៀងផ្ទាត់",
+        "unpaid": "មិនទាន់បង់ប្រាក់"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

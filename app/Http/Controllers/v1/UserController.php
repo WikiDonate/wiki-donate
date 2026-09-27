@@ -10,6 +10,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -141,7 +142,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -207,7 +208,8 @@ class UserController extends Controller
         try {
             // Validate input fields
             $validator = Validator::make($request->all(), [
-                'newPassword' => 'required|min:8',
+                'currentPassword' => 'required',
+                'newPassword' => 'required|min:8|different:currentPassword',
                 'confirmPassword' => 'required|same:newPassword', // Ensure confirm password matches new password
             ]);
 
@@ -230,9 +232,23 @@ class UserController extends Controller
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
+            // Re-authenticate: prove ownership of the current password so a
+            // stolen token alone cannot silently take over the account.
+            if (! Hash::check($request->currentPassword, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error',
+                    'errors' => ['Current password is incorrect.'],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             // Update to new password
             $user->password = $request->newPassword;
             $user->save();
+
+            // Rotate tokens: all other sessions are logged out.
+            $currentToken = $user->currentAccessToken();
+            $user->tokens()->where('id', '!=', $currentToken?->id)->delete();
 
             return response()->json([
                 'success' => true,
@@ -244,7 +260,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -276,7 +292,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Server Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -310,7 +326,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -385,7 +401,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -423,7 +439,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

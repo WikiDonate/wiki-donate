@@ -576,7 +576,8 @@
         "website": "Веб-сайт",
         "visitSite": "Відвідайте сайт",
         "createdAt": "Створено",
-        "verifiedAt": "Перевірено"
+        "verifiedAt": "Перевірено",
+        "unpaid": "Неоплачений"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Всі права захищені."
