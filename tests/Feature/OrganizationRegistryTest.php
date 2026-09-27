@@ -68,7 +68,7 @@ class OrganizationRegistryTest extends TestCase
                 'article_slug' => $article->slug,
                 'name' => 'My Formula',
                 'formula' => [
-                    ['organization' => 'American Red Cross', 'ein' => '530196605', 'percentage' => 60],
+                    ['organization' => 'American Red Cross', 'ein' => '530196605', 'website' => 'redcross.org', 'percentage' => 60],
                     ['organization' => 'Local Free-Text Org', 'ein' => null, 'percentage' => 40],
                 ],
             ]);
@@ -81,6 +81,8 @@ class OrganizationRegistryTest extends TestCase
         $redCross = Organization::where('ein', '530196605')->first();
         $this->assertNotNull($redCross);
         $this->assertEquals('American Red Cross', $redCross->name);
+        $this->assertEquals('https://redcross.org', $redCross->website);
+        $this->assertEquals('https://redcross.org', $rows[0]['website'] ?? null);
 
         // organization_id persisted back into the formula row
         $this->assertEquals($redCross->id, $rows[0]['organization_id']);

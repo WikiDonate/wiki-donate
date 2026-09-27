@@ -98,6 +98,11 @@ const routes = [
                 name: 'payment-cancel',
                 component: () => import('@/pages/payment/cancel.vue'),
             },
+            {
+                path: 'organization/confirm-email',
+                name: 'organization-confirm-email',
+                component: () => import('@/pages/organization/confirm-email.vue'),
+            },
         ],
     },
     {

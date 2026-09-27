@@ -253,6 +253,7 @@
         const row = fields.value[index]?.value
         if (row) {
             row.ein = suggestion.ein ?? null
+            row.website = suggestion.website ?? null
         }
     }
 
@@ -260,6 +261,7 @@
         (rows ?? []).map((row) => ({
             organization: row.organization ?? '',
             ein: row.ein ?? null,
+            website: row.website ?? null,
             percentage: row.percentage ?? 0,
         }))
 
@@ -357,6 +359,7 @@
         const sanitizedRows = values.formula.map((row) => ({
             organization: String(row.organization).trim(),
             ein: row.ein ? String(row.ein).trim() : null,
+            website: row.website ? String(row.website).trim().slice(0, 500) : null,
             percentage: parseFloat(row.percentage),
         }))
 

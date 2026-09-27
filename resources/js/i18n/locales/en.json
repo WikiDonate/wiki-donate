@@ -565,7 +565,15 @@
         "subject": "Subject",
         "actor": "Actor",
         "changes": "Changes",
-        "note": "Note"
+        "note": "Note",
+        "syncStatuses": "Sync statuses",
+        "syncing": "Syncing...",
+        "failedToSync": "Failed to sync payout statuses",
+        "payoutStatusPaid": "Paid",
+        "payoutStatusPending": "Pending",
+        "payoutStatusFailed": "Failed",
+        "website": "Website",
+        "visitSite": "Visit site"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. All rights reserved."
@@ -606,5 +614,13 @@
         "searching": "Searching wikidonate...",
         "noResults": "No search results found",
         "placeholder": "Search articles..."
+    },
+    "orgConfirm": {
+        "title": "Email Confirmation",
+        "verifying": "Confirming your email...",
+        "success": "Payout email confirmed for {org}.",
+        "successHint": "This address will now receive donation payouts. Thank you!",
+        "failed": "Confirmation failed.",
+        "missingToken": "No confirmation token was provided in this link."
     }
 }

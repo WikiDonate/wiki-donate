@@ -5,6 +5,7 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
+use App\Http\Controllers\v1\OrganizationConfirmationController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalController;
 use App\Http\Controllers\v1\PayPalWebhookController;
@@ -33,6 +34,10 @@ Route::prefix('v1')->group(function () {
     Route::get('charities/search', [CharitySearchController::class, 'search'])
         ->middleware('throttle:30,1');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
+
+    // Organization PayPal-email confirmation (public: recipient is not a user)
+    Route::post('organizations/confirm-email', [OrganizationConfirmationController::class, 'confirm'])
+        ->middleware('throttle:10,1');
 
     // Donation Formula routes (public)
     Route::get('donation-formulas/article/{slug}', [

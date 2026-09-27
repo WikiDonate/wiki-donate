@@ -18,15 +18,19 @@ class Organization extends Model
         'city',
         'state',
         'country',
+        'website',
         'paypal_email',
         'payout_status',
         'verified_at',
+        'paypal_confirm_token',
+        'paypal_confirm_sent_at',
         'created_by_id',
         'updated_by_id',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'paypal_confirm_sent_at' => 'datetime',
     ];
 
     /**

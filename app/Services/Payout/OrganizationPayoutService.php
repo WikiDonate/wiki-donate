@@ -117,6 +117,9 @@ class OrganizationPayoutService
     {
         $orgName = trim($data['organization_name']);
         $key = OrganizationPayout::makeKey($orgName);
+        // Normalize once at the boundary: donations store mixed case
+        // (Stripe `usd`, PayPal `USD`) and callers send either form.
+        $data['currency'] = strtoupper(trim((string) ($data['currency'] ?? '')));
 
         // Resolve the formula's row outside the transaction (read-only) so we
         // can run the destination guard — and persist its audit log — even
@@ -154,7 +157,7 @@ class OrganizationPayoutService
                 ->guardPayoutDestination($match['organization_id'] ?? null, $orgName, $actorId);
 
             $balance = $this->owedFor($formula, $key);
-            if ($balance->currency && $data['currency'] !== $balance->currency) {
+            if ($balance->currency && $data['currency'] !== strtoupper($balance->currency)) {
                 throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
             }
 
@@ -468,8 +471,10 @@ class OrganizationPayoutService
 
     private function currencyFor(DonationFormula $formula): string
     {
-        return (string) (Donation::query()
+        // Canonical uppercase: donations store mixed case depending on the
+        // gateway (Stripe `usd`, PayPal `USD`).
+        return strtoupper((string) (Donation::query()
             ->where('donation_formula_id', $formula->id)
-            ->value('currency') ?: 'usd');
+            ->value('currency') ?: 'usd'));
     }
 }

@@ -53,6 +53,19 @@
                                 }}
                             </span>
                         </template>
+                        <template #cell-website="{ row }">
+                            <a
+                                v-if="row.website"
+                                :href="row.website"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline"
+                                :title="row.website"
+                            >
+                                {{ t('admin.visitSite') }}
+                            </a>
+                            <span v-else class="text-sm text-gray-400">—</span>
+                        </template>
                         <template #cell-paypal_email="{ row }">
                             <span class="text-sm text-gray-600">{{ row.paypal_email || '—' }}</span>
                         </template>
@@ -216,6 +229,7 @@
     const columns = [
         { key: 'name', label: t('admin.organizationName') },
         { key: 'location', label: t('admin.location') },
+        { key: 'website', label: t('admin.website') },
         { key: 'paypal_email', label: t('admin.paypalEmail') },
         { key: 'status', label: t('admin.status') },
         { key: 'actions', label: '', tdClass: 'text-right', thClass: 'text-right' },

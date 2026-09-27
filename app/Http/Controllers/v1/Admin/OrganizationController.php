@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OrganizationVerificationMail;
 use App\Models\Organization;
 use App\Models\TransactionLog;
+use App\Services\Organization\OrganizationEmailConfirmationService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -146,6 +147,12 @@ class OrganizationController extends Controller
             ]);
         }
 
+        // New destination: mail a confirmation link so the address is proven
+        // before anyone can verify against it.
+        if ($paypalChanged && ! empty($org->paypal_email)) {
+            app(OrganizationEmailConfirmationService::class)->send($org, $request->user()->id);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Organization updated successfully',
@@ -230,6 +237,13 @@ class OrganizationController extends Controller
         }
 
         $org->refresh();
+
+        // New destination: mail a confirmation link so the address is proven
+        // before anyone can verify against it.
+        if (! empty($newEmail)) {
+            app(OrganizationEmailConfirmationService::class)->send($org, $request->user()->id);
+            $org->refresh();
+        }
 
         return response()->json([
             'success' => true,

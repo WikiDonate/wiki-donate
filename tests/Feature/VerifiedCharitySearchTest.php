@@ -12,7 +12,7 @@ class VerifiedCharitySearchTest extends TestCase
     {
         return [
             ['charityName' => 'Low Rated Org', 'ein' => '11-1111111', 'city' => 'Austin', 'state' => 'TX', 'currentRating' => ['stars' => 2]],
-            ['charityName' => 'Top Rated Org', 'ein' => '22-2222222', 'city' => 'Boston', 'state' => 'MA', 'currentRating' => ['stars' => 4]],
+            ['charityName' => 'Top Rated Org', 'ein' => '22-2222222', 'city' => 'Boston', 'state' => 'MA', 'currentRating' => ['stars' => 4], 'website' => 'toprated.example'],
             ['charityName' => 'No Ein Org', 'city' => 'Nowhere', 'state' => 'ZZ'],
             ['charityName' => '', 'ein' => '33-3333333'],
         ];
@@ -44,6 +44,7 @@ class VerifiedCharitySearchTest extends TestCase
         $this->assertSame('222222222', $data[0]['ein']);
         $this->assertEquals(4, $data[0]['rating']);
         $this->assertSame('charity_navigator', $data[0]['source']);
+        $this->assertSame('https://toprated.example', $data[0]['website']);
         $this->assertSame('Low Rated Org', $data[1]['name']);
     }
 

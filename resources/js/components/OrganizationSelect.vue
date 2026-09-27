@@ -71,6 +71,16 @@
                             >
                                 {{ [suggestion.city, suggestion.state].filter(Boolean).join(', ') }}
                             </span>
+                            <a
+                                v-if="suggestion.website"
+                                :href="suggestion.website"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="block text-xs text-indigo-600 hover:text-indigo-800 hover:underline truncate"
+                                @mousedown.stop
+                            >
+                                {{ suggestion.website }}
+                            </a>
                         </li>
                     </template>
                 </ul>

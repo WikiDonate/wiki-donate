@@ -128,6 +128,7 @@ class VerifiedCharitySearchService
                 'ein' => $ein,
                 'city' => $org['city'] ?? null,
                 'state' => $org['state'] ?? null,
+                'website' => $this->cleanWebsite($org['website'] ?? $org['charityWebsite'] ?? null),
                 'rating' => $this->extractRating($org),
                 'source' => 'charity_navigator',
             ];
@@ -196,6 +197,7 @@ class VerifiedCharitySearchService
                     'ein' => $ein,
                     'city' => $org['city'] ?? null,
                     'state' => $org['state'] ?? null,
+                    'website' => $this->cleanWebsite($org['website'] ?? null),
                     'rating' => null,
                     'source' => 'propublica',
                 ];
@@ -211,6 +213,29 @@ class VerifiedCharitySearchService
 
             return [];
         }
+    }
+
+    /**
+     * Normalize a directory-provided website to an absolute HTTPS URL.
+     * Returns null for anything that is not plausibly a URL.
+     */
+    private function cleanWebsite(mixed $website): ?string
+    {
+        $website = trim((string) ($website ?? ''));
+
+        if ($website === '' || str_contains($website, ' ')) {
+            return null;
+        }
+
+        if (! preg_match('#^https?://#i', $website)) {
+            $website = 'https://'.$website;
+        }
+
+        if (filter_var($website, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        return mb_substr($website, 0, 500);
     }
 
     /**
