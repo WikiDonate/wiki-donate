@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "טוען…",
+        "loading": "טוען...",
         "searching": "מחפש את wikidonate...",
         "noResults": "לא נמצאו תוצאות חיפוש",
         "searchPlaceholder": "חפש ב-wikidonate...",
@@ -22,7 +22,7 @@
         "backToHome": "חזרה לבית",
         "backToArticle": "חזרה למאמר",
         "allRightsReserved": "כל הזכויות שמורות.",
-        "required": "נדרש",
+        "required": "חובה",
         "page": "עמוד",
         "of": "/",
         "total": "סך הכל",
@@ -30,15 +30,16 @@
         "back": "חזרה",
         "update": "עדכון",
         "pay": "שלם",
-        "pagination": "עימוד דפים",
-        "previousPage": "עמוד קודם",
-        "nextPage": "עמוד הבא"
+        "pagination": "עימוד",
+        "previousPage": "העמוד הקודם",
+        "nextPage": "העמוד הבא",
+        "clear": "ברור"
     },
     "auth": {
         "loginTitle": "היכנס לחשבון שלך",
         "loginSubtitle": "ברוך שובך! אנא היכנס כדי להמשיך",
         "username": "שם משתמש",
-        "password": "סיסמה",
+        "password": "***",
         "usernamePlaceholder": "הזן את שם המשתמש שלך",
         "passwordPlaceholder": "הזן את הסיסמה שלך",
         "forgotPassword": "שכחת סיסמא?",
@@ -124,9 +125,9 @@
         "invalidEmail": "אימייל לא חוקי",
         "phoneInvalid": "מספר הטלפון חייב להיות בן 12 ספרות בדיוק",
         "loadingUser": "טוען פרטי משתמש",
+        "emailInvalid": "אימייל לא חוקי",
         "loading": "טוען פרטי משתמש",
-        "emailRequired": "נדרש אימייל",
-        "emailInvalid": "אימייל לא חוקי"
+        "emailRequired": "נדרש אימייל"
     },
     "preferences": {
         "title": "העדפות",
@@ -136,7 +137,7 @@
         "email": "דוא\"ל",
         "memberOfGroup": "חבר בקבוצה",
         "registrationTime": "זמן רישום",
-        "password": "סיסמה",
+        "password": "***",
         "changePassword": "שנה סיסמה",
         "newPassword": "סיסמה חדשה",
         "confirmPassword": "אשר את הסיסמה",
@@ -162,7 +163,7 @@
         "confirmPasswordPlaceholder": "אשר את הסיסמה",
         "loading": "טעינה העדפות",
         "saving": "שומר...",
-        "confirmPasswordRequired": "נדרש אישור סיסמה"
+        "confirmPasswordRequired": "אשר נדרשת סיסמה"
     },
     "billing": {
         "title": "חיוב",
@@ -174,7 +175,7 @@
         "expires": "פג תוקף {month}/{year}",
         "edit": "ערוך",
         "loadingPaymentForm": "טוען טופס תשלום...",
-        "cardNumber": "מספר כרטיס",
+        "cardNumber": "***",
         "expiryDate": "תאריך תפוגה",
         "cvc": "CVC",
         "saveCard": "שמור כרטיס",
@@ -220,7 +221,7 @@
         "title": "התרומות שלי",
         "filters": "מסננים",
         "searchPlaceholder": "חפש לפי מזהה תשלום או אימייל...",
-        "allStatus": "כל הסטטוסים",
+        "allStatus": "הכל סטטוס",
         "completed": "הושלם",
         "pending": "בהמתנה",
         "failed": "נכשל",
@@ -301,38 +302,40 @@
         "saveError": "אירעה שגיאה במהלך השמירה"
     },
     "formula": {
-        "name": "שם",
-        "namePlaceholder": "הזן שם עבור נוסחה זו",
-        "organization": "ארגון",
-        "percentage": "אחוז (%)",
-        "deleteRow": "מחק שורה",
+        "addAtLeastOne": "הוסף לפחות ארגון צדקה אחד",
         "addCharity": "הוסף צדקה",
-        "organizationPlaceholder": "שם הארגון",
-        "totalAllocation": "סה\"כ הקצאה: {total}%",
-        "mustEqual100": "חייב להיות 100%",
-        "helper": "* הזן שמות ארגונים. סך הכל חייב להיות 100%.",
+        "cancel": "בטל",
+        "confirmYourAction": "אשר את הפעולה שלך",
+        "createTitle": "צור נוסחת תרומה",
+        "deleteRow": "מחק שורה",
         "details": "פרטים",
         "detailsPlaceholder": "הוסף פרטים נוספים...",
+        "editTitle": "ערוך נוסחת תרומה",
+        "helper": "* הזן שמות ארגונים. סך הכל חייב להיות 100%.",
+        "mustEqual100": "חייב להיות 100%",
+        "name": "שם",
+        "namePlaceholder": "הזן שם עבור נוסחה זו",
         "nameRequired": "נדרש שם",
         "nameTooLong": "השם לא יכול לעלות על 255 תווים.",
-        "addAtLeastOne": "הוסף לפחות ארגון צדקה אחד",
+        "noCharityResults": "לא נמצאה ארגון צדקה",
+        "organization": "ארגון",
+        "organizationPlaceholder": "שם הארגון",
         "organizationRequired": "נדרש ארגון",
+        "percentage": "אחוז (%)",
+        "percentageMax": "האחוז לא יעלה על 100",
+        "percentageMin": "האחוז חייב להיות גדול מ-0",
         "percentageNumber": "האחוז חייב להיות מספר",
         "percentageRequired": "נדרש אחוז",
-        "percentageMin": "האחוז חייב להיות גדול מ-0",
-        "percentageMax": "האחוז לא יעלה על 100",
-        "totalMustEqual100": "ההקצאה הכוללת חייבת להיות 100%",
-        "createTitle": "צור נוסחת תרומה",
-        "editTitle": "ערוך נוסחת תרומה",
-        "saveConfirmTitle": "נוסחת שמור תרומה",
-        "updateConfirmTitle": "עדכון נוסחת התרומה",
-        "confirmYourAction": "אשר את הפעולה שלך",
-        "updateConfirmMsg": "האם אתה בטוח שברצונך לעדכן את נוסחת התרומה הזו?",
-        "saveConfirmMsg": "האם אתה בטוח שברצונך לשמור את נוסחת התרומה הזו?",
-        "update": "עדכון",
         "save": "שמור",
+        "saveConfirmMsg": "האם אתה בטוח שברצונך לשמור את נוסחת התרומה הזו?",
+        "saveConfirmTitle": "נוסחת שמור תרומה",
         "saving": "שומר...",
-        "cancel": "בטל"
+        "searchingCharities": "מחפש ארגוני צדקה מאומתים בארה\"ב...",
+        "totalAllocation": "סה\"כ הקצאה: {total}%",
+        "totalMustEqual100": "ההקצאה הכוללת חייבת להיות 100%",
+        "update": "עדכון",
+        "updateConfirmMsg": "האם אתה בטוח שברצונך לעדכן את נוסחת התרומה הזו?",
+        "updateConfirmTitle": "עדכון נוסחת התרומה"
     },
     "donate": {
         "title": "תרומה באמצעות פורמולה",
@@ -408,7 +411,7 @@
         "allDonations": "כל התרומות",
         "allDonationsSubtitle": "הצג וחפש בכל רשומות התרומות",
         "searchDonorPlaceholder": "חפש לפי תורם, אימייל או מזהה תשלום...",
-        "allStatus": "כל הסטטוסים",
+        "allStatus": "הכל סטטוס",
         "completed": "הושלם",
         "expired": "פג תוקף",
         "failed": "נכשל",
@@ -563,7 +566,17 @@
         "subject": "נושא",
         "actor": "שחקן",
         "changes": "שינויים",
-        "note": "הערה"
+        "note": "הערה",
+        "syncStatuses": "סנכרון סטטוסים",
+        "syncing": "מסנכרן...",
+        "failedToSync": "סנכרון סטטוסי תשלום נכשל",
+        "payoutStatusPaid": "בתשלום",
+        "payoutStatusPending": "בהמתנה",
+        "payoutStatusFailed": "נכשל",
+        "website": "אתר אינטרנט",
+        "visitSite": "בקר באתר",
+        "createdAt": "נוצר",
+        "verifiedAt": "מאומת"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. כֹּל הַזְכוּיוֹת שְׁמוּרוֹת."
@@ -583,7 +596,7 @@
         "title": "כותרת מודאלית"
     },
     "language": {
-        "loading": "טוען…",
+        "loading": "טוען...",
         "select": "בחר שפה"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "מחפש את wikidonate...",
         "noResults": "לא נמצאו תוצאות חיפוש",
         "placeholder": "חפש מאמרים..."
+    },
+    "orgConfirm": {
+        "title": "אישור דוא\"ל",
+        "verifying": "מאשר את האימייל שלך...",
+        "success": "אימייל תשלום אושר עבור {org}.",
+        "successHint": "כתובת זו תקבל כעת תשלומי תרומות. תודה לך!",
+        "failed": "האישור נכשל.",
+        "missingToken": "לא סופק אסימון אישור בקישור הזה."
     }
 }

@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "በመጫን ላይ…",
+        "loading": "በመጫን ላይ...",
         "searching": "wikidonate በመፈለግ ላይ...",
         "noResults": "ምንም የፍለጋ ውጤቶች አልተገኙም።",
         "searchPlaceholder": "wikidonate ፈልግ...",
@@ -26,19 +26,20 @@
         "page": "ገጽ",
         "of": "/",
         "total": "ጠቅላላ",
-        "you": "እርስዎ",
+        "you": "አንተ",
         "back": "ተመለስ",
         "update": "አዘምን",
-        "pay": "ክፍያ",
-        "pagination": "ገጽ መቁጠሪያ",
-        "previousPage": "ቀዳሚ ገጽ",
-        "nextPage": "ቀጣይ ገጽ"
+        "pay": "ይክፈሉ።",
+        "pagination": "ፔጅኒሽን",
+        "previousPage": "ያለፈው ገጽ",
+        "nextPage": "ቀጣይ ገጽ",
+        "clear": "ግልጽ"
     },
     "auth": {
         "loginTitle": "ወደ መለያዎ ይግቡ",
         "loginSubtitle": "እንኳን ደህና መጣችሁ! ለመቀጠል እባክዎ ይግቡ",
         "username": "የተጠቃሚ ስም",
-        "password": "የይለፍ ቃል",
+        "password": "***",
         "usernamePlaceholder": "የተጠቃሚ ስምህን አስገባ",
         "passwordPlaceholder": "የይለፍ ቃልዎን ያስገቡ",
         "forgotPassword": "የይለፍ ቃል ረሱ?",
@@ -124,9 +125,9 @@
         "invalidEmail": "ልክ ያልሆነ ኢሜይል",
         "phoneInvalid": "ስልክ ቁጥር በትክክል 12 አሃዞች መሆን አለበት።",
         "loadingUser": "የተጠቃሚ ዝርዝሮችን በመጫን ላይ",
-        "loading": "የተጠቃሚ ዝርዝሮች በመጫን ላይ",
-        "emailRequired": "ኢሜይል ያስፈልጋል",
-        "emailInvalid": "ልክ ያልሆነ ኢሜይል"
+        "emailInvalid": "ልክ ያልሆነ ኢሜይል",
+        "loading": "የተጠቃሚ ዝርዝሮችን በመጫን ላይ",
+        "emailRequired": "ኢሜል ያስፈልጋል"
     },
     "preferences": {
         "title": "ምርጫዎች",
@@ -136,7 +137,7 @@
         "email": "ኢሜይል",
         "memberOfGroup": "የቡድን አባል",
         "registrationTime": "የምዝገባ ጊዜ",
-        "password": "የይለፍ ቃል",
+        "password": "***",
         "changePassword": "የይለፍ ቃል ቀይር",
         "newPassword": "አዲስ የይለፍ ቃል",
         "confirmPassword": "የይለፍ ቃል ያረጋግጡ",
@@ -162,7 +163,7 @@
         "confirmPasswordPlaceholder": "የይለፍ ቃል ያረጋግጡ",
         "loading": "ምርጫዎችን በመጫን ላይ",
         "saving": "በማስቀመጥ ላይ...",
-        "confirmPasswordRequired": "የይለፍ ቃል ማረጋገጥ ያስፈልጋል"
+        "confirmPasswordRequired": "የይለፍ ቃል አረጋግጥ ያስፈልጋል"
     },
     "billing": {
         "title": "የሂሳብ አከፋፈል",
@@ -174,9 +175,9 @@
         "expires": "ጊዜው ያበቃል {month}/{year}",
         "edit": "አርትዕ",
         "loadingPaymentForm": "የክፍያ ቅጽ በመጫን ላይ...",
-        "cardNumber": "የካርድ ቁጥር",
+        "cardNumber": "***",
         "expiryDate": "የሚያበቃበት ቀን",
-        "cvc": "CVC",
+        "cvc": "ሲቪሲ",
         "saveCard": "ካርድ አስቀምጥ",
         "cardSaved": "ካርድ በተሳካ ሁኔታ ተቀምጧል",
         "validationError": "የማረጋገጫ ስህተት",
@@ -237,7 +238,7 @@
         "source": "ምንጭ",
         "amount": "መጠን",
         "status": "ሁኔታ",
-        "paymentId": "የክፍያ መለያ",
+        "paymentId": "የክፍያ መታወቂያ",
         "article": "አንቀጽ",
         "action": "ድርጊት",
         "failedToLoad": "የልገሳ ሪፖርት መጫን አልተሳካም።",
@@ -301,38 +302,40 @@
         "saveError": "በማስቀመጥ ላይ ስህተት ተከስቷል።"
     },
     "formula": {
-        "name": "ስም",
-        "namePlaceholder": "ለዚህ ቀመር ስም ያስገቡ",
-        "organization": "ድርጅት",
-        "percentage": "መቶኛ (%)",
-        "deleteRow": "ረድፍ ሰርዝ",
+        "addAtLeastOne": "ቢያንስ አንድ የበጎ አድራጎት ድርጅት ይጨምሩ",
         "addCharity": "በጎ አድራጎት ጨምር",
-        "organizationPlaceholder": "የድርጅት ስም",
-        "totalAllocation": "አጠቃላይ ምደባ፡- {total}%",
-        "mustEqual100": "100% እኩል መሆን አለበት",
-        "helper": "* የድርጅት ስሞችን ያስገቡ። ጠቅላላ 100% እኩል መሆን አለበት.",
+        "cancel": "ሰርዝ",
+        "confirmYourAction": "ድርጊትህን አረጋግጥ",
+        "createTitle": "የልገሳ ቀመር ይፍጠሩ",
+        "deleteRow": "ረድፍ ሰርዝ",
         "details": "ዝርዝሮች",
         "detailsPlaceholder": "ተጨማሪ ዝርዝሮችን ያክሉ...",
+        "editTitle": "የልገሳ ቀመርን ያርትዑ",
+        "helper": "* የድርጅት ስሞችን ያስገቡ። ጠቅላላ 100% እኩል መሆን አለበት.",
+        "mustEqual100": "100% እኩል መሆን አለበት",
+        "name": "ስም",
+        "namePlaceholder": "ለዚህ ቀመር ስም ያስገቡ",
         "nameRequired": "ስም ያስፈልጋል",
         "nameTooLong": "ስም ከ255 ቁምፊዎች መብለጥ አይችልም።",
-        "addAtLeastOne": "ቢያንስ አንድ የበጎ አድራጎት ድርጅት ይጨምሩ",
+        "noCharityResults": "ምንም የበጎ አድራጎት ድርጅት አልተገኘም።",
+        "organization": "ድርጅት",
+        "organizationPlaceholder": "የድርጅት ስም",
         "organizationRequired": "ድርጅት ያስፈልጋል",
+        "percentage": "መቶኛ (%)",
+        "percentageMax": "መቶኛ ከ100 መብለጥ አይችልም።",
+        "percentageMin": "መቶኛ ከ0 በላይ መሆን አለበት።",
         "percentageNumber": "መቶኛ ቁጥር መሆን አለበት።",
         "percentageRequired": "መቶኛ ያስፈልጋል",
-        "percentageMin": "መቶኛ ከ0 በላይ መሆን አለበት።",
-        "percentageMax": "መቶኛ ከ100 መብለጥ አይችልም።",
-        "totalMustEqual100": "አጠቃላይ ምደባ 100% እኩል መሆን አለበት",
-        "createTitle": "የልገሳ ቀመር ይፍጠሩ",
-        "editTitle": "የልገሳ ቀመርን ያርትዑ",
-        "saveConfirmTitle": "የልገሳ ቀመር ይቆጥቡ",
-        "updateConfirmTitle": "የልገሳ ቀመር ያዘምኑ",
-        "confirmYourAction": "ድርጊትህን አረጋግጥ",
-        "updateConfirmMsg": "እርግጠኛ ነዎት ይህን የልገሳ ቀመር ማዘመን ይፈልጋሉ?",
-        "saveConfirmMsg": "እርግጠኛ ነዎት ይህን የልገሳ ቀመር ማስቀመጥ ይፈልጋሉ?",
-        "update": "አዘምን",
         "save": "አስቀምጥ",
+        "saveConfirmMsg": "እርግጠኛ ነዎት ይህን የልገሳ ቀመር ማስቀመጥ ይፈልጋሉ?",
+        "saveConfirmTitle": "የልገሳ ቀመር ይቆጥቡ",
         "saving": "በማስቀመጥ ላይ...",
-        "cancel": "ሰርዝ"
+        "searchingCharities": "የተረጋገጡ የአሜሪካ በጎ አድራጎት ድርጅቶችን በመፈለግ ላይ...",
+        "totalAllocation": "አጠቃላይ ምደባ፡- {total}%",
+        "totalMustEqual100": "አጠቃላይ ምደባ 100% እኩል መሆን አለበት",
+        "update": "አዘምን",
+        "updateConfirmMsg": "እርግጠኛ ነዎት ይህን የልገሳ ቀመር ማዘመን ይፈልጋሉ?",
+        "updateConfirmTitle": "የልገሳ ቀመር ያዘምኑ"
     },
     "donate": {
         "title": "በቀመር ይለግሱ",
@@ -415,7 +418,7 @@
         "pending": "በመጠባበቅ ላይ",
         "loadingDonations": "ልገሳዎችን በመጫን ላይ...",
         "noDonations": "ምንም ልገሳ አልተገኙም።",
-        "paymentId": "የክፍያ መለያ",
+        "paymentId": "የክፍያ መታወቂያ",
         "failedToLoadDonations": "ልገሳዎችን መጫን አልተሳካም።",
         "articles": "መጣጥፎች",
         "articlesSubtitle": "በመድረክ ላይ ያሉትን ሁሉንም መጣጥፎች አስተዳድር",
@@ -523,7 +526,7 @@
         "pay": "ይክፈሉ።",
         "loadingHistory": "ታሪክን በመጫን ላይ...",
         "noData": "ምንም ውሂብ የለም",
-        "failedToLoadPayouts": "የክፍያ ድርሻዎችን መጫን አልተሳካም",
+        "failedToLoadPayouts": "የክፍያ ምደባዎችን መጫን አልተሳካም።",
         "organizations": "ድርጅቶች",
         "organizationsSubtitle": "የተመዘገቡ የበጎ አድራጎት ድርጅቶችን እና የክፍያ ማረጋገጫቸውን ያስተዳድሩ",
         "transactionLogs": "የግብይት ምዝግብ ማስታወሻዎች",
@@ -563,7 +566,17 @@
         "subject": "ርዕሰ ጉዳይ",
         "actor": "ተዋናይ",
         "changes": "ለውጦች",
-        "note": "ማስታወሻ"
+        "note": "ማስታወሻ",
+        "syncStatuses": "የማመሳሰል ሁኔታዎች",
+        "syncing": "በማመሳሰል ላይ...",
+        "failedToSync": "የክፍያ ሁኔታዎችን ማመሳሰል አልተሳካም።",
+        "payoutStatusPaid": "የተከፈለ",
+        "payoutStatusPending": "በመጠባበቅ ላይ",
+        "payoutStatusFailed": "አልተሳካም።",
+        "website": "ድር ጣቢያ",
+        "visitSite": "ጣቢያን ጎብኝ",
+        "createdAt": "ተፈጠረ",
+        "verifiedAt": "የተረጋገጠ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"
@@ -583,7 +596,7 @@
         "title": "የሞዳል ርዕስ"
     },
     "language": {
-        "loading": "በመጫን ላይ…",
+        "loading": "በመጫን ላይ...",
         "select": "ቋንቋ ይምረጡ"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "wikidonate በመፈለግ ላይ...",
         "noResults": "ምንም የፍለጋ ውጤቶች አልተገኙም።",
         "placeholder": "ጽሑፎችን ፈልግ..."
+    },
+    "orgConfirm": {
+        "title": "የኢሜል ማረጋገጫ",
+        "verifying": "ኢሜልዎን በማረጋገጥ ላይ...",
+        "success": "የክፍያ ኢሜይል ተረጋግጧል {org}.",
+        "successHint": "ይህ አድራሻ አሁን የልገሳ ክፍያዎችን ይቀበላል። አመሰግናለሁ!",
+        "failed": "ማረጋገጥ አልተሳካም።",
+        "missingToken": "በዚህ ማገናኛ ውስጥ ምንም ማረጋገጫ አልቀረበም።"
     }
 }

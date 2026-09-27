@@ -44,7 +44,7 @@
                         t('admin.date')
                     }}</span>
                     <p class="text-gray-800 text-sm mt-0.5">
-                        {{ donation.date }}
+                        {{ formatDateUTC(donation.date_raw || donation.date) }}
                     </p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
@@ -140,6 +140,7 @@
 
 <script setup>
     import { useI18n } from 'vue-i18n'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
 
     const { t } = useI18n()
 

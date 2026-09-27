@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Models\TransactionLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -416,5 +417,12 @@ class OrganizationPayoutTest extends TestCase
         // Failed money never moved: balance is fully available again.
         $allocations = collect($this->asAdmin()->getJson('/api/v1/admin/payouts/allocations')->json('data'));
         $this->assertEquals(60.0, $allocations->firstWhere('organization_name', 'Charity A')['balance']);
+
+        // The rejection is still audited with the PayPal-response status.
+        $this->assertDatabaseHas('transaction_logs', ['event' => 'payout.created']);
+        $log = TransactionLog::where('event', 'payout.created')->latest('id')->first();
+        $this->assertEquals('failed', $log->after['status']);
+        $this->assertNotEmpty($log->after['provider_status']);
+        $this->assertNotEmpty($log->after['failure_reason']);
     }
 }

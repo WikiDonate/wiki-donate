@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Yükleniyor…",
+        "loading": "Yükleniyor...",
         "searching": "Wikidonate aranıyor...",
         "noResults": "Arama sonucu bulunamadı",
         "searchPlaceholder": "Wikidonate'te ara...",
@@ -26,19 +26,20 @@
         "page": "Sayfa",
         "of": "/",
         "total": "Toplam",
-        "you": "Sen",
+        "you": "sen",
         "back": "Geri",
         "update": "Güncelleme",
-        "pay": "Öde",
+        "pay": "Ödeme",
         "pagination": "Sayfalandırma",
         "previousPage": "Önceki sayfa",
-        "nextPage": "Sonraki sayfa"
+        "nextPage": "Sonraki sayfa",
+        "clear": "Temizle"
     },
     "auth": {
         "loginTitle": "Hesabınıza Giriş Yapın",
         "loginSubtitle": "Tekrar hoş geldiniz! Devam etmek için lütfen oturum açın",
         "username": "Kullanıcı adı",
-        "password": "Şifre",
+        "password": "***",
         "usernamePlaceholder": "Kullanıcı adınızı girin",
         "passwordPlaceholder": "Şifrenizi girin",
         "forgotPassword": "Şifrenizi mi unuttunuz?",
@@ -126,7 +127,7 @@
         "loadingUser": "Kullanıcı ayrıntıları yükleniyor",
         "emailInvalid": "Geçersiz e-posta",
         "loading": "Kullanıcı ayrıntıları yükleniyor",
-        "emailRequired": "E-posta gereklidir"
+        "emailRequired": "E-posta gerekli"
     },
     "preferences": {
         "title": "Tercihler",
@@ -136,7 +137,7 @@
         "email": "E-posta",
         "memberOfGroup": "Grup Üyesi",
         "registrationTime": "Kayıt Zamanı",
-        "password": "Şifre",
+        "password": "***",
         "changePassword": "Şifreyi Değiştir",
         "newPassword": "Yeni Şifre",
         "confirmPassword": "Şifreyi Onayla",
@@ -174,7 +175,7 @@
         "expires": "Süresi doluyor {month}/{year}",
         "edit": "Düzenle",
         "loadingPaymentForm": "Ödeme formu yükleniyor...",
-        "cardNumber": "Kart numarası",
+        "cardNumber": "***",
         "expiryDate": "Son Kullanma Tarihi",
         "cvc": "CVC",
         "saveCard": "Kartı Kaydet",
@@ -301,38 +302,40 @@
         "saveError": "Kaydedilirken bir hata oluştu"
     },
     "formula": {
-        "name": "İsim",
-        "namePlaceholder": "Bu formül için bir ad girin",
-        "organization": "Organizasyon",
-        "percentage": "Yüzde (%)",
-        "deleteRow": "Satırı Sil",
+        "addAtLeastOne": "En az bir hayır kurumu ekleyin",
         "addCharity": "Hayırseverlik Ekle",
-        "organizationPlaceholder": "Kuruluş adı",
-        "totalAllocation": "Toplam tahsis: {total}%",
-        "mustEqual100": "%100'e eşit olmalı",
-        "helper": "* Kuruluş adlarını girin. Toplam %100'e eşit olmalıdır.",
+        "cancel": "İptal",
+        "confirmYourAction": "İşleminizi onaylayın",
+        "createTitle": "Bağış Formülü Oluştur",
+        "deleteRow": "Satırı Sil",
         "details": "Detaylar",
         "detailsPlaceholder": "Ek ayrıntılar ekleyin...",
+        "editTitle": "Bağış Formülünü Düzenle",
+        "helper": "* Kuruluş adlarını girin. Toplam %100'e eşit olmalıdır.",
+        "mustEqual100": "%100'e eşit olmalı",
+        "name": "İsim",
+        "namePlaceholder": "Bu formül için bir ad girin",
         "nameRequired": "Ad gerekli",
         "nameTooLong": "Ad 255 karakteri aşamaz.",
-        "addAtLeastOne": "En az bir hayır kurumu ekleyin",
+        "noCharityResults": "Hayır kurumu bulunamadı",
+        "organization": "Organizasyon",
+        "organizationPlaceholder": "Kuruluş adı",
         "organizationRequired": "Organizasyon gerekli",
+        "percentage": "Yüzde (%)",
+        "percentageMax": "Yüzde 100'ü geçemez",
+        "percentageMin": "Yüzde 0'dan büyük olmalıdır",
         "percentageNumber": "Yüzde bir sayı olmalıdır",
         "percentageRequired": "Yüzde gerekli",
-        "percentageMin": "Yüzde 0'dan büyük olmalıdır",
-        "percentageMax": "Yüzde 100'ü geçemez",
-        "totalMustEqual100": "Toplam tahsis %100'e eşit olmalıdır",
-        "createTitle": "Bağış Formülü Oluştur",
-        "editTitle": "Bağış Formülünü Düzenle",
-        "saveConfirmTitle": "Bağış Formülünü Kaydet",
-        "updateConfirmTitle": "Bağış Formülünü Güncelle",
-        "confirmYourAction": "İşleminizi onaylayın",
-        "updateConfirmMsg": "Bu bağış formülünü güncellemek istediğinizden emin misiniz?",
-        "saveConfirmMsg": "Bu bağış formülünü kaydetmek istediğinizden emin misiniz?",
-        "update": "Güncelleme",
         "save": "Kaydet",
+        "saveConfirmMsg": "Bu bağış formülünü kaydetmek istediğinizden emin misiniz?",
+        "saveConfirmTitle": "Bağış Formülünü Kaydet",
         "saving": "Kaydediliyor...",
-        "cancel": "İptal"
+        "searchingCharities": "Doğrulanmış ABD hayır kurumları aranıyor...",
+        "totalAllocation": "Toplam tahsis: {total}%",
+        "totalMustEqual100": "Toplam tahsis %100'e eşit olmalıdır",
+        "update": "Güncelleme",
+        "updateConfirmMsg": "Bu bağış formülünü güncellemek istediğinizden emin misiniz?",
+        "updateConfirmTitle": "Bağış Formülünü Güncelle"
     },
     "donate": {
         "title": "Formül aracılığıyla bağış yapın",
@@ -563,7 +566,17 @@
         "subject": "Konu",
         "actor": "Aktör",
         "changes": "Değişiklikler",
-        "note": "Not"
+        "note": "Not",
+        "syncStatuses": "Durumları senkronize et",
+        "syncing": "Senkronize ediliyor...",
+        "failedToSync": "Ödeme durumları senkronize edilemedi",
+        "payoutStatusPaid": "Ücretli",
+        "payoutStatusPending": "Beklemede",
+        "payoutStatusFailed": "Başarısız",
+        "website": "Web sitesi",
+        "visitSite": "Siteyi ziyaret edin",
+        "createdAt": "Oluşturuldu",
+        "verifiedAt": "Doğrulandı"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."
@@ -583,7 +596,7 @@
         "title": "Kalıcı Başlık"
     },
     "language": {
-        "loading": "Yükleniyor…",
+        "loading": "Yükleniyor...",
         "select": "Dil seçin"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Wikidonate aranıyor...",
         "noResults": "Arama sonucu bulunamadı",
         "placeholder": "Makalelerde ara..."
+    },
+    "orgConfirm": {
+        "title": "E-posta Onayı",
+        "verifying": "E-postanız onaylanıyor...",
+        "success": "Ödeme e-postası onaylandı {org}.",
+        "successHint": "Bu adres artık bağış ödemelerini alacak. Teşekkür ederim!",
+        "failed": "Onay başarısız oldu.",
+        "missingToken": "Bu bağlantıda onay belirteci sağlanmadı."
     }
 }

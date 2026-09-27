@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "読み込み中…",
+        "loading": "読み込み中...",
         "searching": "ウィキ寄付を検索中...",
         "noResults": "検索結果が見つかりませんでした",
         "searchPlaceholder": "ウィキ寄付を検索...",
@@ -32,13 +32,14 @@
         "pay": "支払う",
         "pagination": "ページネーション",
         "previousPage": "前のページへ",
-        "nextPage": "次のページ"
+        "nextPage": "次のページ",
+        "clear": "クリア"
     },
     "auth": {
         "loginTitle": "アカウントにログイン",
         "loginSubtitle": "おかえりなさい！続行するにはサインインしてください",
         "username": "ユーザー名",
-        "password": "パスワード",
+        "password": "***",
         "usernamePlaceholder": "ユーザー名を入力してください",
         "passwordPlaceholder": "パスワードを入力してください",
         "forgotPassword": "パスワードをお忘れですか?",
@@ -126,7 +127,7 @@
         "loadingUser": "ユーザーの詳細をロードしています",
         "emailInvalid": "無効な電子メール",
         "loading": "ユーザーの詳細をロードしています",
-        "emailRequired": "メールアドレスが必要です"
+        "emailRequired": "メールアドレスは必須です"
     },
     "preferences": {
         "title": "設定",
@@ -136,7 +137,7 @@
         "email": "電子メール",
         "memberOfGroup": "グループのメンバー",
         "registrationTime": "登録時間",
-        "password": "パスワード",
+        "password": "***",
         "changePassword": "パスワードの変更",
         "newPassword": "新しいパスワード",
         "confirmPassword": "パスワードの確認",
@@ -174,7 +175,7 @@
         "expires": "有効期限が切れます {month}/{year}",
         "edit": "編集",
         "loadingPaymentForm": "支払いフォームを読み込んでいます...",
-        "cardNumber": "カード番号",
+        "cardNumber": "***",
         "expiryDate": "有効期限",
         "cvc": "CVC",
         "saveCard": "セーブカード",
@@ -301,38 +302,40 @@
         "saveError": "保存中にエラーが発生しました"
     },
     "formula": {
-        "name": "名前",
-        "namePlaceholder": "この数式の名前を入力してください",
-        "organization": "組織",
-        "percentage": "パーセンテージ (%)",
-        "deleteRow": "行の削除",
+        "addAtLeastOne": "少なくとも 1 つの慈善団体を追加してください",
         "addCharity": "チャリティーを追加",
-        "organizationPlaceholder": "組織名",
-        "totalAllocation": "合計割り当て: {total}%",
-        "mustEqual100": "100% に等しくなければなりません",
-        "helper": "※組織名を入力してください。合計は 100% に等しくなければなりません。",
+        "cancel": "キャンセル",
+        "confirmYourAction": "自分の行動を確認する",
+        "createTitle": "寄付フォーミュラの作成",
+        "deleteRow": "行の削除",
         "details": "詳細",
         "detailsPlaceholder": "詳細を追加...",
+        "editTitle": "寄付の式を編集する",
+        "helper": "※組織名を入力してください。合計は 100% に等しくなければなりません。",
+        "mustEqual100": "100% に等しくなければなりません",
+        "name": "名前",
+        "namePlaceholder": "この数式の名前を入力してください",
         "nameRequired": "名前は必須です",
         "nameTooLong": "名前は 255 文字を超えることはできません。",
-        "addAtLeastOne": "少なくとも 1 つの慈善団体を追加してください",
+        "noCharityResults": "慈善団体が見つかりませんでした",
+        "organization": "組織",
+        "organizationPlaceholder": "組織名",
         "organizationRequired": "組織化が必要です",
+        "percentage": "パーセンテージ (%)",
+        "percentageMax": "パーセンテージは 100 を超えることはできません",
+        "percentageMin": "パーセンテージは 0 より大きくなければなりません",
         "percentageNumber": "パーセンテージは数値でなければなりません",
         "percentageRequired": "パーセンテージは必須です",
-        "percentageMin": "パーセンテージは 0 より大きくなければなりません",
-        "percentageMax": "パーセンテージは 100 を超えることはできません",
-        "totalMustEqual100": "合計割り当ては 100% に等しくなければなりません",
-        "createTitle": "寄付フォーミュラの作成",
-        "editTitle": "寄付の式を編集する",
-        "saveConfirmTitle": "寄付の計算式を保存する",
-        "updateConfirmTitle": "寄付の計算式を更新",
-        "confirmYourAction": "自分の行動を確認する",
-        "updateConfirmMsg": "この寄付の式を更新してもよろしいですか?",
-        "saveConfirmMsg": "この寄付式を保存してもよろしいですか?",
-        "update": "アップデート",
         "save": "保存",
+        "saveConfirmMsg": "この寄付式を保存してもよろしいですか?",
+        "saveConfirmTitle": "寄付の計算式を保存する",
         "saving": "保存中...",
-        "cancel": "キャンセル"
+        "searchingCharities": "米国の認証済み慈善団体を検索しています...",
+        "totalAllocation": "合計割り当て: {total}%",
+        "totalMustEqual100": "合計割り当ては 100% に等しくなければなりません",
+        "update": "アップデート",
+        "updateConfirmMsg": "この寄付の式を更新してもよろしいですか?",
+        "updateConfirmTitle": "寄付の計算式を更新"
     },
     "donate": {
         "title": "フォーミュラ経由で寄付する",
@@ -563,7 +566,17 @@
         "subject": "件名",
         "actor": "俳優",
         "changes": "変更点",
-        "note": "注記"
+        "note": "注記",
+        "syncStatuses": "同期ステータス",
+        "syncing": "同期中...",
+        "failedToSync": "支払いステータスの同期に失敗しました",
+        "payoutStatusPaid": "有料",
+        "payoutStatusPending": "保留中",
+        "payoutStatusFailed": "失敗しました",
+        "website": "ウェブサイト",
+        "visitSite": "サイトにアクセス",
+        "createdAt": "作成されました",
+        "verifiedAt": "確認済み"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"
@@ -583,7 +596,7 @@
         "title": "モーダルタイトル"
     },
     "language": {
-        "loading": "読み込み中…",
+        "loading": "読み込み中...",
         "select": "言語を選択してください"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "ウィキ寄付を検索中...",
         "noResults": "検索結果が見つかりませんでした",
         "placeholder": "記事を検索..."
+    },
+    "orgConfirm": {
+        "title": "メール確認",
+        "verifying": "メールを確認しています...",
+        "success": "支払いメールが確認されました {org}。",
+        "successHint": "このアドレスは寄付金の支払いを受け取ることになります。ありがとう！",
+        "failed": "確認に失敗しました。",
+        "missingToken": "このリンクには確認トークンが提供されていませんでした。"
     }
 }

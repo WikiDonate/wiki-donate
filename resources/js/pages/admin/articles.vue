@@ -69,7 +69,7 @@
                         />
                     </template>
                     <template #cell-updatedAt="{ row }">
-                        <span class="text-gray-500">{{ row.updatedAt }}</span>
+                        <span class="text-gray-500">{{ formatDateUTC(row.updatedAt) }}</span>
                     </template>
                     <template #cell-actions="{ row }">
                         <div class="flex items-center justify-end gap-1">
@@ -127,6 +127,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
 
     const { notifySuccess, notifyError } = useToastify()
 

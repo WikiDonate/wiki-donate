@@ -29,7 +29,7 @@ class VerifiedCharitySearchService
 
     private const CACHE_TTL_SECONDS = 3600;
 
-    private const RESULT_LIMIT = 8;
+    private const RESULT_LIMIT = 10;
 
     /**
      * @return array<int, array{name: string, ein: string, city: string|null, state: string|null, rating: float|null, source: string}>

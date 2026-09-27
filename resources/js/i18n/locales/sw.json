@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Inapakia…",
+        "loading": "Inapakia...",
         "searching": "Inatafuta wikidonate...",
         "noResults": "Hakuna matokeo ya utafutaji yaliyopatikana",
         "searchPlaceholder": "Tafuta wikidonate...",
@@ -30,15 +30,16 @@
         "back": "Nyuma",
         "update": "Sasisha",
         "pay": "Lipa",
-        "pagination": "Upangaji wa kurasa",
+        "pagination": "Pagination",
         "previousPage": "Ukurasa uliotangulia",
-        "nextPage": "Ukurasa unaofuata"
+        "nextPage": "Ukurasa unaofuata",
+        "clear": "Wazi"
     },
     "auth": {
         "loginTitle": "Ingia kwa Akaunti Yako",
         "loginSubtitle": "Karibu tena! Tafadhali ingia ili kuendelea",
         "username": "Jina la mtumiaji",
-        "password": "Nenosiri",
+        "password": "***",
         "usernamePlaceholder": "Weka jina lako la mtumiaji",
         "passwordPlaceholder": "Weka nenosiri lako",
         "forgotPassword": "Umesahau Nenosiri?",
@@ -124,9 +125,9 @@
         "invalidEmail": "Barua pepe si sahihi",
         "phoneInvalid": "Nambari ya simu lazima iwe tarakimu 12 haswa",
         "loadingUser": "Inapakia maelezo ya mtumiaji",
+        "emailInvalid": "Barua pepe si sahihi",
         "loading": "Inapakia maelezo ya mtumiaji",
-        "emailRequired": "Barua pepe inahitajika",
-        "emailInvalid": "Barua pepe batili"
+        "emailRequired": "Barua pepe inahitajika"
     },
     "preferences": {
         "title": "Mapendeleo",
@@ -136,7 +137,7 @@
         "email": "Barua pepe",
         "memberOfGroup": "Mwanachama wa Kikundi",
         "registrationTime": "Muda wa Usajili",
-        "password": "Nenosiri",
+        "password": "***",
         "changePassword": "Badilisha Nenosiri",
         "newPassword": "Nenosiri Mpya",
         "confirmPassword": "Thibitisha Nenosiri",
@@ -162,7 +163,7 @@
         "confirmPasswordPlaceholder": "Thibitisha nenosiri",
         "loading": "Inapakia Mapendeleo",
         "saving": "Inahifadhi...",
-        "confirmPasswordRequired": "Uthibitisho wa nenosiri unahitajika"
+        "confirmPasswordRequired": "Thibitisha Nenosiri linahitajika"
     },
     "billing": {
         "title": "Bili",
@@ -174,7 +175,7 @@
         "expires": "Muda wake unaisha {month}/{year}",
         "edit": "Hariri",
         "loadingPaymentForm": "Inapakia fomu ya malipo...",
-        "cardNumber": "Nambari ya kadi",
+        "cardNumber": "***",
         "expiryDate": "Tarehe ya kumalizika muda wake",
         "cvc": "CVC",
         "saveCard": "Hifadhi Kadi",
@@ -220,7 +221,7 @@
         "title": "Michango Yangu",
         "filters": "Vichujio",
         "searchPlaceholder": "Tafuta kwa kitambulisho cha malipo au barua pepe...",
-        "allStatus": "Hali zote",
+        "allStatus": "Hali Yote",
         "completed": "Imekamilika",
         "pending": "Inasubiri",
         "failed": "Imeshindwa",
@@ -301,38 +302,40 @@
         "saveError": "Hitilafu imetokea wakati wa kuhifadhi"
     },
     "formula": {
-        "name": "Jina",
-        "namePlaceholder": "Weka jina la fomula hii",
-        "organization": "Shirika",
-        "percentage": "Asilimia (%)",
-        "deleteRow": "Futa Safu",
+        "addAtLeastOne": "Ongeza angalau hisani moja",
         "addCharity": "Ongeza Hisani",
-        "organizationPlaceholder": "Jina la shirika",
-        "totalAllocation": "Jumla ya mgao: {total}%",
-        "mustEqual100": "Lazima iwe sawa na 100%",
-        "helper": "* Ingiza majina ya shirika. Jumla lazima iwe sawa na 100%.",
+        "cancel": "Ghairi",
+        "confirmYourAction": "Thibitisha kitendo chako",
+        "createTitle": "Tengeneza Mfumo wa Uchangiaji",
+        "deleteRow": "Futa Safu",
         "details": "Maelezo",
         "detailsPlaceholder": "Ongeza maelezo ya ziada...",
+        "editTitle": "Badilisha Mfumo wa Uchangiaji",
+        "helper": "* Ingiza majina ya shirika. Jumla lazima iwe sawa na 100%.",
+        "mustEqual100": "Lazima iwe sawa na 100%",
+        "name": "Jina",
+        "namePlaceholder": "Weka jina la fomula hii",
         "nameRequired": "Jina linahitajika",
         "nameTooLong": "Jina haliwezi kuzidi vibambo 255.",
-        "addAtLeastOne": "Ongeza angalau hisani moja",
+        "noCharityResults": "Hakuna hisani iliyopatikana",
+        "organization": "Shirika",
+        "organizationPlaceholder": "Jina la shirika",
         "organizationRequired": "Shirika linahitajika",
+        "percentage": "Asilimia (%)",
+        "percentageMax": "Asilimia haiwezi kuzidi 100",
+        "percentageMin": "Asilimia lazima iwe kubwa kuliko 0",
         "percentageNumber": "Asilimia lazima iwe nambari",
         "percentageRequired": "Asilimia inahitajika",
-        "percentageMin": "Asilimia lazima iwe kubwa kuliko 0",
-        "percentageMax": "Asilimia haiwezi kuzidi 100",
-        "totalMustEqual100": "Jumla ya mgao lazima iwe sawa na 100%",
-        "createTitle": "Tengeneza Mfumo wa Uchangiaji",
-        "editTitle": "Badilisha Mfumo wa Uchangiaji",
-        "saveConfirmTitle": "Hifadhi Mfumo wa Uchangiaji",
-        "updateConfirmTitle": "Sasisha Mfumo wa Uchangiaji",
-        "confirmYourAction": "Thibitisha kitendo chako",
-        "updateConfirmMsg": "Je, una uhakika ungependa kusasisha fomula hii ya mchango?",
-        "saveConfirmMsg": "Je, una uhakika ungependa kuhifadhi fomula hii ya mchango?",
-        "update": "Sasisha",
         "save": "Hifadhi",
+        "saveConfirmMsg": "Je, una uhakika ungependa kuhifadhi fomula hii ya mchango?",
+        "saveConfirmTitle": "Hifadhi Mfumo wa Uchangiaji",
         "saving": "Inahifadhi...",
-        "cancel": "Ghairi"
+        "searchingCharities": "Inatafuta mashirika ya misaada yaliyothibitishwa ya Marekani...",
+        "totalAllocation": "Jumla ya mgao: {total}%",
+        "totalMustEqual100": "Jumla ya mgao lazima iwe sawa na 100%",
+        "update": "Sasisha",
+        "updateConfirmMsg": "Je, una uhakika ungependa kusasisha fomula hii ya mchango?",
+        "updateConfirmTitle": "Sasisha Mfumo wa Uchangiaji"
     },
     "donate": {
         "title": "Changia kupitia Mfumo",
@@ -408,7 +411,7 @@
         "allDonations": "Michango Yote",
         "allDonationsSubtitle": "Tazama na utafute rekodi zote za michango",
         "searchDonorPlaceholder": "Tafuta kwa kutumia mfadhili, barua pepe au kitambulisho cha malipo...",
-        "allStatus": "Hali zote",
+        "allStatus": "Hali Yote",
         "completed": "Imekamilika",
         "expired": "Muda wake umeisha",
         "failed": "Imeshindwa",
@@ -563,7 +566,17 @@
         "subject": "Somo",
         "actor": "Mwigizaji",
         "changes": "Mabadiliko",
-        "note": "Kumbuka"
+        "note": "Kumbuka",
+        "syncStatuses": "Sawazisha hali",
+        "syncing": "Inasawazisha...",
+        "failedToSync": "Imeshindwa kusawazisha hali za malipo",
+        "payoutStatusPaid": "Imelipwa",
+        "payoutStatusPending": "Inasubiri",
+        "payoutStatusFailed": "Imeshindwa",
+        "website": "Tovuti",
+        "visitSite": "Tembelea tovuti",
+        "createdAt": "Imeundwa",
+        "verifiedAt": "Imethibitishwa"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."
@@ -583,7 +596,7 @@
         "title": "Kichwa cha Modal"
     },
     "language": {
-        "loading": "Inapakia…",
+        "loading": "Inapakia...",
         "select": "Chagua lugha"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Inatafuta wikidonate...",
         "noResults": "Hakuna matokeo ya utafutaji yaliyopatikana",
         "placeholder": "Tafuta makala..."
+    },
+    "orgConfirm": {
+        "title": "Uthibitishaji wa Barua pepe",
+        "verifying": "Inathibitisha barua pepe yako...",
+        "success": "Barua pepe ya malipo imethibitishwa {org}.",
+        "successHint": "Anwani hii sasa itapokea malipo ya michango. Asante!",
+        "failed": "Imeshindwa kuthibitisha.",
+        "missingToken": "Hakuna tokeni ya uthibitishaji iliyotolewa katika kiungo hiki."
     }
 }

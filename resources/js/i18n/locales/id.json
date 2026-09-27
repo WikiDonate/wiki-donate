@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Memuat…",
+        "loading": "Memuat...",
         "searching": "Mencari wikidonate...",
         "noResults": "Tidak ada hasil pencarian yang ditemukan",
         "searchPlaceholder": "Telusuri wikidonasi...",
@@ -22,23 +22,24 @@
         "backToHome": "Kembali ke Rumah",
         "backToArticle": "Kembali ke Artikel",
         "allRightsReserved": "Semua hak dilindungi undang-undang.",
-        "required": "Wajib",
+        "required": "Diperlukan",
         "page": "Halaman",
         "of": "/",
         "total": "Jumlah",
-        "you": "Anda",
+        "you": "kamu",
         "back": "Kembali",
         "update": "Pembaruan",
         "pay": "Bayar",
         "pagination": "Paginasi",
         "previousPage": "Halaman sebelumnya",
-        "nextPage": "Halaman berikutnya"
+        "nextPage": "Halaman selanjutnya",
+        "clear": "Jelas"
     },
     "auth": {
         "loginTitle": "Masuk ke Akun Anda",
         "loginSubtitle": "Selamat datang kembali! Silakan masuk untuk melanjutkan",
         "username": "Nama pengguna",
-        "password": "Kata sandi",
+        "password": "***",
         "usernamePlaceholder": "Masukkan nama pengguna Anda",
         "passwordPlaceholder": "Masukkan kata sandi Anda",
         "forgotPassword": "Lupa Kata Sandi?",
@@ -126,7 +127,7 @@
         "loadingUser": "Memuat detail pengguna",
         "emailInvalid": "Email tidak valid",
         "loading": "Memuat detail pengguna",
-        "emailRequired": "Email wajib diisi"
+        "emailRequired": "Email diperlukan"
     },
     "preferences": {
         "title": "Preferensi",
@@ -136,7 +137,7 @@
         "email": "Surel",
         "memberOfGroup": "Anggota Grup",
         "registrationTime": "Waktu Pendaftaran",
-        "password": "Kata sandi",
+        "password": "***",
         "changePassword": "Ubah Kata Sandi",
         "newPassword": "Kata Sandi Baru",
         "confirmPassword": "Konfirmasi Kata Sandi",
@@ -174,7 +175,7 @@
         "expires": "Kedaluwarsa {month}/{year}",
         "edit": "Sunting",
         "loadingPaymentForm": "Memuat formulir pembayaran...",
-        "cardNumber": "Nomor kartu",
+        "cardNumber": "***",
         "expiryDate": "Tanggal Kedaluwarsa",
         "cvc": "CVC",
         "saveCard": "Simpan Kartu",
@@ -301,38 +302,40 @@
         "saveError": "Terjadi kesalahan saat menyimpan"
     },
     "formula": {
-        "name": "Nama",
-        "namePlaceholder": "Masukkan nama untuk rumus ini",
-        "organization": "Organisasi",
-        "percentage": "Persentase (%)",
-        "deleteRow": "Hapus Baris",
+        "addAtLeastOne": "Tambahkan setidaknya satu badan amal",
         "addCharity": "Tambahkan Amal",
-        "organizationPlaceholder": "Nama organisasi",
-        "totalAllocation": "Jumlah alokasi: {total}%",
-        "mustEqual100": "Harus sama dengan 100%",
-        "helper": "* Masukkan nama organisasi. Total harus sama dengan 100%.",
+        "cancel": "Batalkan",
+        "confirmYourAction": "Konfirmasikan tindakan Anda",
+        "createTitle": "Buat Formula Donasi",
+        "deleteRow": "Hapus Baris",
         "details": "Detail",
         "detailsPlaceholder": "Tambahkan detail tambahan...",
+        "editTitle": "Edit Rumus Donasi",
+        "helper": "* Masukkan nama organisasi. Total harus sama dengan 100%.",
+        "mustEqual100": "Harus sama dengan 100%",
+        "name": "Nama",
+        "namePlaceholder": "Masukkan nama untuk rumus ini",
         "nameRequired": "Nama wajib diisi",
         "nameTooLong": "Nama tidak boleh melebihi 255 karakter.",
-        "addAtLeastOne": "Tambahkan setidaknya satu badan amal",
+        "noCharityResults": "Tidak ada badan amal yang ditemukan",
+        "organization": "Organisasi",
+        "organizationPlaceholder": "Nama organisasi",
         "organizationRequired": "Organisasi diperlukan",
+        "percentage": "Persentase (%)",
+        "percentageMax": "Persentase tidak boleh melebihi 100",
+        "percentageMin": "Persentase harus lebih besar dari 0",
         "percentageNumber": "Persentase harus berupa angka",
         "percentageRequired": "Persentase wajib diisi",
-        "percentageMin": "Persentase harus lebih besar dari 0",
-        "percentageMax": "Persentase tidak boleh melebihi 100",
-        "totalMustEqual100": "Total alokasi harus sama dengan 100%",
-        "createTitle": "Buat Formula Donasi",
-        "editTitle": "Edit Rumus Donasi",
-        "saveConfirmTitle": "Simpan Formula Donasi",
-        "updateConfirmTitle": "Perbarui Formula Donasi",
-        "confirmYourAction": "Konfirmasikan tindakan Anda",
-        "updateConfirmMsg": "Apakah Anda yakin ingin memperbarui formula donasi ini?",
-        "saveConfirmMsg": "Apakah Anda yakin ingin menyimpan formula donasi ini?",
-        "update": "Pembaruan",
         "save": "Simpan",
+        "saveConfirmMsg": "Apakah Anda yakin ingin menyimpan formula donasi ini?",
+        "saveConfirmTitle": "Simpan Formula Donasi",
         "saving": "Menyimpan...",
-        "cancel": "Batalkan"
+        "searchingCharities": "Menelusuri badan amal AS yang terverifikasi...",
+        "totalAllocation": "Jumlah alokasi: {total}%",
+        "totalMustEqual100": "Total alokasi harus sama dengan 100%",
+        "update": "Pembaruan",
+        "updateConfirmMsg": "Apakah Anda yakin ingin memperbarui formula donasi ini?",
+        "updateConfirmTitle": "Perbarui Formula Donasi"
     },
     "donate": {
         "title": "Donasi melalui Formula",
@@ -563,7 +566,17 @@
         "subject": "Subyek",
         "actor": "Aktor",
         "changes": "Perubahan",
-        "note": "Catatan"
+        "note": "Catatan",
+        "syncStatuses": "Sinkronkan status",
+        "syncing": "Menyinkronkan...",
+        "failedToSync": "Gagal menyinkronkan status pembayaran",
+        "payoutStatusPaid": "Dibayar",
+        "payoutStatusPending": "Tertunda",
+        "payoutStatusFailed": "Gagal",
+        "website": "Situs web",
+        "visitSite": "Kunjungi situs",
+        "createdAt": "Dibuat",
+        "verifiedAt": "Terverifikasi"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak dilindungi undang-undang."
@@ -583,7 +596,7 @@
         "title": "Judul Modal"
     },
     "language": {
-        "loading": "Memuat…",
+        "loading": "Memuat...",
         "select": "Pilih bahasa"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Mencari wikidonate...",
         "noResults": "Tidak ada hasil pencarian yang ditemukan",
         "placeholder": "Cari artikel..."
+    },
+    "orgConfirm": {
+        "title": "Konfirmasi Email",
+        "verifying": "Mengonfirmasi email Anda...",
+        "success": "Email pembayaran dikonfirmasi {org}.",
+        "successHint": "Alamat ini sekarang akan menerima pembayaran donasi. Terima kasih!",
+        "failed": "Konfirmasi gagal.",
+        "missingToken": "Tidak ada token konfirmasi yang diberikan di tautan ini."
     }
 }

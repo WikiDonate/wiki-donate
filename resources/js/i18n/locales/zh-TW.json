@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "載入中…",
+        "loading": "正在加載...",
         "searching": "正在搜尋維基捐贈...",
         "noResults": "沒有找到搜尋結果",
         "searchPlaceholder": "搜尋維基捐贈...",
@@ -23,22 +23,23 @@
         "backToArticle": "回文章",
         "allRightsReserved": "保留所有權利。",
         "required": "必填",
-        "page": "頁",
+        "page": "頁面",
         "of": "/",
         "total": "合計",
-        "you": "您",
+        "you": "你",
         "back": "返回",
         "update": "更新",
-        "pay": "付款",
+        "pay": "支付",
         "pagination": "分頁",
         "previousPage": "上一頁",
-        "nextPage": "下一頁"
+        "nextPage": "下一頁",
+        "clear": "清除"
     },
     "auth": {
         "loginTitle": "登入您的帳戶",
         "loginSubtitle": "歡迎回來！請登入以繼續",
         "username": "使用者名稱",
-        "password": "密碼",
+        "password": "***",
         "usernamePlaceholder": "輸入您的用戶名",
         "passwordPlaceholder": "輸入您的密碼",
         "forgotPassword": "忘記密碼？",
@@ -125,8 +126,8 @@
         "phoneInvalid": "電話號碼必須剛好是 12 位數字",
         "loadingUser": "正在加載用戶詳細信息",
         "emailInvalid": "電子郵件無效",
-        "loading": "正在載入使用者詳細資料",
-        "emailRequired": "電子郵件為必填"
+        "loading": "正在加載用戶詳細信息",
+        "emailRequired": "電子郵件為必填項"
     },
     "preferences": {
         "title": "偏好設定",
@@ -136,7 +137,7 @@
         "email": "電子郵件",
         "memberOfGroup": "集團成員",
         "registrationTime": "報名時間",
-        "password": "密碼",
+        "password": "***",
         "changePassword": "更改密碼",
         "newPassword": "新密碼",
         "confirmPassword": "確認密碼",
@@ -174,9 +175,9 @@
         "expires": "過期{month}/{year}",
         "edit": "編輯",
         "loadingPaymentForm": "正在載入付款表格...",
-        "cardNumber": "卡號",
+        "cardNumber": "***",
         "expiryDate": "到期日",
-        "cvc": "CVC",
+        "cvc": "中央VC",
         "saveCard": "儲存卡",
         "cardSaved": "卡保存成功",
         "validationError": "驗證錯誤",
@@ -301,38 +302,40 @@
         "saveError": "儲存時發生錯誤"
     },
     "formula": {
-        "name": "名稱",
-        "namePlaceholder": "輸入此公式的名稱",
-        "organization": "組織機構",
-        "percentage": "百分比(%)",
-        "deleteRow": "刪除行",
+        "addAtLeastOne": "增加至少一個慈善機構",
         "addCharity": "添加慈善事業",
-        "organizationPlaceholder": "組織名稱",
-        "totalAllocation": "總分配：{total}%",
-        "mustEqual100": "必須等於 100%",
-        "helper": "* 輸入組織名稱。總計必須等於 100%。",
+        "cancel": "取消",
+        "confirmYourAction": "確認您的行動",
+        "createTitle": "建立捐贈公式",
+        "deleteRow": "刪除行",
         "details": "細節",
         "detailsPlaceholder": "添加更多詳細資訊...",
+        "editTitle": "編輯捐贈公式",
+        "helper": "* 輸入組織名稱。總計必須等於 100%。",
+        "mustEqual100": "必須等於 100%",
+        "name": "名稱",
+        "namePlaceholder": "輸入此公式的名稱",
         "nameRequired": "姓名為必填項",
         "nameTooLong": "名稱不能超過 255 個字元。",
-        "addAtLeastOne": "增加至少一個慈善機構",
+        "noCharityResults": "沒有找到慈善機構",
+        "organization": "組織機構",
+        "organizationPlaceholder": "組織名稱",
         "organizationRequired": "需要組織",
+        "percentage": "百分比(%)",
+        "percentageMax": "百分比不能超過100",
+        "percentageMin": "百分比必須大於 0",
         "percentageNumber": "百分比必須是數字",
         "percentageRequired": "百分比為必填項",
-        "percentageMin": "百分比必須大於 0",
-        "percentageMax": "百分比不能超過100",
-        "totalMustEqual100": "總分配必須等於 100%",
-        "createTitle": "建立捐贈公式",
-        "editTitle": "編輯捐贈公式",
-        "saveConfirmTitle": "保存捐贈公式",
-        "updateConfirmTitle": "更新捐款公式",
-        "confirmYourAction": "確認您的行動",
-        "updateConfirmMsg": "您確定要更新此捐款公式嗎？",
-        "saveConfirmMsg": "您確定要儲存此捐款公式嗎？",
-        "update": "更新",
         "save": "儲存",
+        "saveConfirmMsg": "您確定要儲存此捐款公式嗎？",
+        "saveConfirmTitle": "保存捐贈公式",
         "saving": "正在儲存...",
-        "cancel": "取消"
+        "searchingCharities": "搜尋經過驗證的美國慈善機構...",
+        "totalAllocation": "總分配：{total}%",
+        "totalMustEqual100": "總分配必須等於 100%",
+        "update": "更新",
+        "updateConfirmMsg": "您確定要更新此捐款公式嗎？",
+        "updateConfirmTitle": "更新捐款公式"
     },
     "donate": {
         "title": "透過公式捐贈",
@@ -563,7 +566,17 @@
         "subject": "主題",
         "actor": "演員",
         "changes": "變化",
-        "note": "注意事項"
+        "note": "注意事項",
+        "syncStatuses": "同步狀態",
+        "syncing": "正在同步...",
+        "failedToSync": "無法同步付款狀態",
+        "payoutStatusPaid": "付費",
+        "payoutStatusPending": "待定",
+        "payoutStatusFailed": "失敗",
+        "website": "網站",
+        "visitSite": "造訪網站",
+        "createdAt": "已創建",
+        "verifiedAt": "已驗證"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"
@@ -583,7 +596,7 @@
         "title": "模態標題"
     },
     "language": {
-        "loading": "載入中…",
+        "loading": "正在加載...",
         "select": "選擇語言"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "正在搜尋維基捐贈...",
         "noResults": "沒有找到搜尋結果",
         "placeholder": "搜尋文章..."
+    },
+    "orgConfirm": {
+        "title": "電子郵件確認",
+        "verifying": "正在確認您的電子郵件...",
+        "success": "付款電子郵件已確認{org}。",
+        "successHint": "該地址現在將收到捐款。謝謝你！",
+        "failed": "確認失敗。",
+        "missingToken": "此連結中未提供確認令牌。"
     }
 }

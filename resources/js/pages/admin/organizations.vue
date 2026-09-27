@@ -79,6 +79,16 @@
                                 "
                             />
                         </template>
+                        <template #cell-created_at="{ row }">
+                            <span class="text-xs text-gray-500">{{
+                                formatDateUTC(row.created_at) || '—'
+                            }}</span>
+                        </template>
+                        <template #cell-verified_at="{ row }">
+                            <span class="text-xs text-gray-500">{{
+                                formatDateUTC(row.verified_at) || '—'
+                            }}</span>
+                        </template>
                         <template #cell-actions="{ row }">
                             <div class="flex items-center gap-2 justify-end">
                                 <button
@@ -206,6 +216,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import AdminBadge from '~/components/admin/AdminBadge.vue'
@@ -232,6 +243,8 @@
         { key: 'website', label: t('admin.website') },
         { key: 'paypal_email', label: t('admin.paypalEmail') },
         { key: 'status', label: t('admin.status') },
+        { key: 'created_at', label: t('admin.createdAt') },
+        { key: 'verified_at', label: t('admin.verifiedAt') },
         { key: 'actions', label: '', tdClass: 'text-right', thClass: 'text-right' },
     ]
 

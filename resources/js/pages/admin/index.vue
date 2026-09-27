@@ -179,7 +179,9 @@
                                 />
                             </template>
                             <template #cell-date="{ row }"
-                                ><span class="text-gray-500 text-xs">{{ row.date }}</span></template
+                                ><span class="text-gray-500 text-xs">{{
+                                    formatDateUTC(row.date_raw || row.date)
+                                }}</span></template
                             >
                             <template #cell-article="{ row }">
                                 <template v-if="row.article">
@@ -249,6 +251,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
     import StatCard from '~/components/admin/StatCard.vue'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'

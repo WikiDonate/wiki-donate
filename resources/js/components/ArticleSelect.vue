@@ -1,13 +1,13 @@
 <template>
     <div ref="rootRef" class="relative">
-        <!-- Writable combobox input: type to filter, pick from the dropdown -->
+        <!-- Writable combobox input: type to filter local articles, pick one -->
         <input
             ref="textInputRef"
             v-model="text"
             type="text"
             :placeholder="placeholder"
             autocomplete="off"
-            class="w-full px-3 py-2 pr-16 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none transition-colors"
+            class="w-full px-3 py-2 pr-16 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none transition-colors"
             @input="onTextInput"
             @focus="openDropdown"
             @keydown.escape="dismiss"
@@ -47,18 +47,18 @@
             >
                 <ul class="max-h-[400px] overflow-y-auto py-1">
                     <li v-if="searching" class="px-3 py-2 text-sm text-gray-500 italic">
-                        {{ searchingText }}
+                        {{ t('common.searching') }}
                     </li>
                     <li
                         v-else-if="suggestions.length === 0"
                         class="px-3 py-2 text-sm text-gray-500 italic"
                     >
-                        {{ noResultsText }}
+                        {{ t('common.noResults') }}
                     </li>
                     <template v-else>
                         <li
                             v-for="(suggestion, suggestionIndex) in suggestions"
-                            :key="suggestion.ein"
+                            :key="suggestion.slug"
                             class="px-3 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 cursor-pointer transition-colors"
                             :class="{
                                 'bg-indigo-50 text-indigo-700':
@@ -67,32 +67,8 @@
                             @mousedown.prevent="selectSuggestion(suggestion)"
                             @mousemove="highlightedIndex = suggestionIndex"
                         >
-                            <span class="flex items-center justify-between gap-2">
-                                <span class="block font-medium">{{ suggestion.name }}</span>
-                                <span
-                                    v-if="suggestion.rating !== null"
-                                    class="shrink-0 text-xs font-semibold text-amber-500"
-                                    :title="`Rating: ${suggestion.rating}`"
-                                >
-                                    ★ {{ suggestion.rating }}
-                                </span>
-                            </span>
-                            <span
-                                v-if="suggestion.city || suggestion.state"
-                                class="block text-xs text-gray-500"
-                            >
-                                {{ [suggestion.city, suggestion.state].filter(Boolean).join(', ') }}
-                            </span>
-                            <a
-                                v-if="suggestion.website"
-                                :href="suggestion.website"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="block text-xs text-indigo-600 hover:text-indigo-800 hover:underline truncate"
-                                @mousedown.stop
-                            >
-                                {{ suggestion.website }}
-                            </a>
+                            <span class="block font-medium">{{ suggestion.title }}</span>
+                            <span class="block text-xs text-gray-500">{{ suggestion.slug }}</span>
                         </li>
                     </template>
                 </ul>
@@ -102,15 +78,18 @@
 </template>
 
 <script setup>
-    import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+    import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
     import { useI18n } from 'vue-i18n'
-    import { adminService } from '~/services/adminService'
-    import { charityService } from '~/services/charityService'
+    import { articleService } from '~/services/articleService'
 
     const { t } = useI18n()
 
     const props = defineProps({
         modelValue: {
+            type: String,
+            default: '',
+        },
+        displayTitle: {
             type: String,
             default: '',
         },
@@ -122,18 +101,9 @@
             type: Boolean,
             default: false,
         },
-        /**
-         * Data source: `directory` (verified charities API — formula modal)
-         * or `local` (admin organization registry — dashboard filters,
-         * includes legacy free-text rows).
-         */
-        source: {
-            type: String,
-            default: 'directory',
-        },
     })
 
-    const emit = defineEmits(['select', 'clear', 'update:modelValue'])
+    const emit = defineEmits(['select', 'clear', 'update:modelValue', 'update:displayTitle'])
 
     const rootRef = ref(null)
     const dropdownRef = ref(null)
@@ -142,19 +112,20 @@
     const suggestions = ref([])
     const searching = ref(false)
     const highlightedIndex = ref(-1)
-    // Last selected suggestion name — text diverging from it clears the EIN.
-    const selectedName = ref(props.modelValue || '')
+    // Display text: the selected title, or free-typed filter text.
+    const text = ref(props.displayTitle || props.modelValue || '')
     const dropdownStyle = ref({})
     const debounceTimer = ref(null)
     const abortController = ref(null)
 
-    const text = computed({
-        get: () => props.modelValue ?? '',
-        set: (value) => emit('update:modelValue', value),
-    })
-
-    const searchingText = t('formula.searchingCharities')
-    const noResultsText = t('formula.noCharityResults')
+    watch(
+        () => [props.displayTitle, props.modelValue],
+        ([title, slug]) => {
+            if (document.activeElement !== textInputRef.value) {
+                text.value = title || slug || ''
+            }
+        },
+    )
 
     const positionDropdown = () => {
         const inputEl = textInputRef.value
@@ -197,11 +168,9 @@
     }
 
     const onTextInput = () => {
-        // Text no longer matches a verified selection — drop its EIN so a
-        // stale verified identity can never stick to edited text.
-        if (text.value !== selectedName.value) {
-            emit('select', { name: text.value, ein: null, website: null })
-        }
+        // Free text filters by slug substring; it clears any prior selection.
+        emit('update:modelValue', text.value)
+        emit('update:displayTitle', text.value)
         openDropdown()
         clearTimeout(debounceTimer.value)
         debounceTimer.value = setTimeout(() => fetchSuggestions(text.value.trim()), 300)
@@ -213,13 +182,17 @@
         searching.value = true
         highlightedIndex.value = -1
 
+        // Backend requires a non-empty query — don't fire on empty open.
+        if (!query || query.length < 2) {
+            suggestions.value = []
+            searching.value = false
+            return
+        }
+
         try {
-            const rows =
-                props.source === 'local'
-                    ? await fetchLocalOrganizations(query, abortController.value.signal)
-                    : await fetchDirectoryCharities(query, abortController.value.signal)
+            const response = await articleService.searchArticles(query)
             if (isOpen.value) {
-                suggestions.value = rows.slice(0, 10)
+                suggestions.value = (response.data ?? []).slice(0, 10)
             }
         } catch {
             if (isOpen.value) suggestions.value = []
@@ -228,33 +201,11 @@
         }
     }
 
-    const fetchDirectoryCharities = async (query, signal) => {
-        const response = await charityService.searchCharities(query, signal)
-
-        return response.data ?? []
-    }
-
-    const fetchLocalOrganizations = async (query, signal) => {
-        const response = await adminService.getOrganizations(
-            { search: query, per_page: 10 },
-            signal,
-        )
-        const rows = response.data?.data ?? response.data ?? []
-
-        return rows.map((org) => ({
-            name: org.name,
-            ein: org.ein ?? null,
-            city: org.city ?? null,
-            state: org.state ?? null,
-            website: org.website ?? null,
-            rating: null,
-        }))
-    }
-
     const selectSuggestion = (suggestion) => {
         if (!suggestion) return
-        selectedName.value = suggestion.name
-        emit('update:modelValue', suggestion.name)
+        text.value = suggestion.title
+        emit('update:modelValue', suggestion.slug)
+        emit('update:displayTitle', suggestion.title)
         emit('select', suggestion)
         dismiss()
         textInputRef.value?.blur()
@@ -286,9 +237,9 @@
     }
 
     const clearSelection = () => {
-        selectedName.value = ''
+        text.value = ''
         emit('update:modelValue', '')
-        emit('select', { name: '', ein: null, website: null })
+        emit('update:displayTitle', '')
         emit('clear')
         dismiss()
         textInputRef.value?.focus()
@@ -298,9 +249,6 @@
         if (isOpen.value) dismiss()
     }
 
-    // Outside click: the dropdown lives in body via Teleport, so both the
-    // trigger root and the dropdown panel must contain the click to stay open.
-    // Mousedown (not click) so a suggestion mousedown-select still wins.
     const handleOutsideMousedown = (event) => {
         if (!isOpen.value) return
         const target = event.target

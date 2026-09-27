@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "लोड होत आहे…",
+        "loading": "लोड करत आहे...",
         "searching": "विकिडोनेट शोधत आहे...",
         "noResults": "कोणतेही शोध परिणाम आढळले नाहीत",
         "searchPlaceholder": "विकिडोनेट शोधा...",
@@ -22,23 +22,24 @@
         "backToHome": "घरी परत",
         "backToArticle": "लेखाकडे परत",
         "allRightsReserved": "सर्व हक्क राखीव.",
-        "required": "आवश्यक",
-        "page": "पृष्ठ",
+        "required": "आवश्यक आहे",
+        "page": "पान",
         "of": "/",
         "total": "एकूण",
-        "you": "तुम्ही",
+        "you": "आपण",
         "back": "मागे",
         "update": "अपडेट करा",
         "pay": "पैसे द्या",
         "pagination": "पृष्ठांकन",
         "previousPage": "मागील पृष्ठ",
-        "nextPage": "पुढील पृष्ठ"
+        "nextPage": "पुढील पान",
+        "clear": "साफ"
     },
     "auth": {
         "loginTitle": "तुमच्या खात्यात लॉगिन करा",
         "loginSubtitle": "परत स्वागत आहे! कृपया सुरू ठेवण्यासाठी साइन इन करा",
         "username": "वापरकर्तानाव",
-        "password": "पासवर्ड",
+        "password": "***",
         "usernamePlaceholder": "तुमचे वापरकर्तानाव एंटर करा",
         "passwordPlaceholder": "तुमचा पासवर्ड टाका",
         "forgotPassword": "पासवर्ड विसरलात?",
@@ -124,9 +125,9 @@
         "invalidEmail": "अवैध ईमेल",
         "phoneInvalid": "फोन नंबर 12 अंकी असणे आवश्यक आहे",
         "loadingUser": "वापरकर्ता तपशील लोड करत आहे",
-        "loading": "वापरकर्ता तपशील लोड होत आहेत",
-        "emailRequired": "ईमेल आवश्यक आहे",
-        "emailInvalid": "अवैध ईमेल"
+        "emailInvalid": "अवैध ईमेल",
+        "loading": "वापरकर्ता तपशील लोड करत आहे",
+        "emailRequired": "ईमेल आवश्यक आहे"
     },
     "preferences": {
         "title": "प्राधान्ये",
@@ -136,7 +137,7 @@
         "email": "ईमेल",
         "memberOfGroup": "ग्रुपचे सदस्य",
         "registrationTime": "नोंदणीची वेळ",
-        "password": "पासवर्ड",
+        "password": "***",
         "changePassword": "पासवर्ड बदला",
         "newPassword": "नवीन पासवर्ड",
         "confirmPassword": "पासवर्डची पुष्टी करा",
@@ -162,7 +163,7 @@
         "confirmPasswordPlaceholder": "पासवर्डची पुष्टी करा",
         "loading": "प्राधान्ये लोड करत आहे",
         "saving": "सेव्ह करत आहे...",
-        "confirmPasswordRequired": "पासवर्डची पुष्टी आवश्यक आहे"
+        "confirmPasswordRequired": "पासवर्ड आवश्यक असल्याची पुष्टी करा"
     },
     "billing": {
         "title": "बिलिंग",
@@ -174,7 +175,7 @@
         "expires": "कालबाह्य होते {month}/{year}",
         "edit": "संपादित करा",
         "loadingPaymentForm": "पेमेंट फॉर्म लोड करत आहे...",
-        "cardNumber": "कार्ड क्रमांक",
+        "cardNumber": "***",
         "expiryDate": "कालबाह्यता तारीख",
         "cvc": "CVC",
         "saveCard": "कार्ड सेव्ह करा",
@@ -301,38 +302,40 @@
         "saveError": "सेव्ह करताना एरर आली"
     },
     "formula": {
-        "name": "नाव",
-        "namePlaceholder": "या सूत्रासाठी नाव प्रविष्ट करा",
-        "organization": "संघटना",
-        "percentage": "टक्केवारी (%)",
-        "deleteRow": "पंक्ती हटवा",
+        "addAtLeastOne": "किमान एक धर्मादाय जोडा",
         "addCharity": "धर्मादाय जोडा",
-        "organizationPlaceholder": "संस्थेचे नाव",
-        "totalAllocation": "एकूण वाटप: {total}%",
-        "mustEqual100": "१००% समान असणे आवश्यक आहे",
-        "helper": "* संस्थेची नावे प्रविष्ट करा. एकूण 100% समान असणे आवश्यक आहे.",
+        "cancel": "रद्द करा",
+        "confirmYourAction": "तुमच्या कृतीची पुष्टी करा",
+        "createTitle": "देणगी फॉर्म्युला तयार करा",
+        "deleteRow": "पंक्ती हटवा",
         "details": "तपशील",
         "detailsPlaceholder": "अतिरिक्त तपशील जोडा...",
+        "editTitle": "देणगी सूत्र संपादित करा",
+        "helper": "* संस्थेची नावे प्रविष्ट करा. एकूण 100% समान असणे आवश्यक आहे.",
+        "mustEqual100": "१००% समान असणे आवश्यक आहे",
+        "name": "नाव",
+        "namePlaceholder": "या सूत्रासाठी नाव प्रविष्ट करा",
         "nameRequired": "नाव आवश्यक आहे",
         "nameTooLong": "नाव 255 वर्णांपेक्षा जास्त असू शकत नाही.",
-        "addAtLeastOne": "किमान एक धर्मादाय जोडा",
+        "noCharityResults": "धर्मादाय आढळले नाही",
+        "organization": "संघटना",
+        "organizationPlaceholder": "संस्थेचे नाव",
         "organizationRequired": "संघटना आवश्यक आहे",
+        "percentage": "टक्केवारी (%)",
+        "percentageMax": "टक्केवारी 100 पेक्षा जास्त असू शकत नाही",
+        "percentageMin": "टक्केवारी 0 पेक्षा जास्त असणे आवश्यक आहे",
         "percentageNumber": "टक्केवारी ही संख्या असणे आवश्यक आहे",
         "percentageRequired": "टक्केवारी आवश्यक आहे",
-        "percentageMin": "टक्केवारी 0 पेक्षा जास्त असणे आवश्यक आहे",
-        "percentageMax": "टक्केवारी 100 पेक्षा जास्त असू शकत नाही",
-        "totalMustEqual100": "एकूण वाटप 100% सारखे असणे आवश्यक आहे",
-        "createTitle": "देणगी फॉर्म्युला तयार करा",
-        "editTitle": "देणगी सूत्र संपादित करा",
-        "saveConfirmTitle": "देणगी फॉर्म्युला जतन करा",
-        "updateConfirmTitle": "देणगी फॉर्म्युला अद्यतनित करा",
-        "confirmYourAction": "तुमच्या कृतीची पुष्टी करा",
-        "updateConfirmMsg": "तुमची खात्री आहे की तुम्ही हे देणगी सूत्र अपडेट करू इच्छिता?",
-        "saveConfirmMsg": "तुमची खात्री आहे की तुम्ही हे देणगी सूत्र जतन करू इच्छिता?",
-        "update": "अपडेट करा",
         "save": "जतन करा",
+        "saveConfirmMsg": "तुमची खात्री आहे की तुम्ही हे देणगी सूत्र जतन करू इच्छिता?",
+        "saveConfirmTitle": "देणगी फॉर्म्युला जतन करा",
         "saving": "सेव्ह करत आहे...",
-        "cancel": "रद्द करा"
+        "searchingCharities": "सत्यापित यूएस धर्मादाय संस्था शोधत आहे...",
+        "totalAllocation": "एकूण वाटप: {total}%",
+        "totalMustEqual100": "एकूण वाटप 100% सारखे असणे आवश्यक आहे",
+        "update": "अपडेट करा",
+        "updateConfirmMsg": "तुमची खात्री आहे की तुम्ही हे देणगी सूत्र अपडेट करू इच्छिता?",
+        "updateConfirmTitle": "देणगी फॉर्म्युला अद्यतनित करा"
     },
     "donate": {
         "title": "फॉर्म्युलाद्वारे देणगी द्या",
@@ -523,7 +526,7 @@
         "pay": "पैसे द्या",
         "loadingHistory": "इतिहास लोड करत आहे...",
         "noData": "डेटा नाही",
-        "failedToLoadPayouts": "पेमेंट वाटप लोड करण्यात अयशस्वी",
+        "failedToLoadPayouts": "पेआउट वाटप लोड करण्यात अयशस्वी",
         "organizations": "संघटना",
         "organizationsSubtitle": "नोंदणीकृत धर्मादाय संस्था आणि त्यांचे पेआउट सत्यापन व्यवस्थापित करा",
         "transactionLogs": "व्यवहार नोंदी",
@@ -563,7 +566,17 @@
         "subject": "विषय",
         "actor": "अभिनेता",
         "changes": "बदल",
-        "note": "नोंद"
+        "note": "नोंद",
+        "syncStatuses": "स्थिती समक्रमित करा",
+        "syncing": "सिंक करत आहे...",
+        "failedToSync": "पेआउट स्थिती समक्रमित करण्यात अयशस्वी",
+        "payoutStatusPaid": "पैसे दिले",
+        "payoutStatusPending": "प्रलंबित",
+        "payoutStatusFailed": "अयशस्वी",
+        "website": "वेबसाइट",
+        "visitSite": "साइटला भेट द्या",
+        "createdAt": "तयार केले",
+        "verifiedAt": "सत्यापित"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."
@@ -583,7 +596,7 @@
         "title": "मॉडेल शीर्षक"
     },
     "language": {
-        "loading": "लोड होत आहे…",
+        "loading": "लोड करत आहे...",
         "select": "भाषा निवडा"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "विकिडोनेट शोधत आहे...",
         "noResults": "कोणतेही शोध परिणाम आढळले नाहीत",
         "placeholder": "लेख शोधा..."
+    },
+    "orgConfirm": {
+        "title": "ईमेल पुष्टीकरण",
+        "verifying": "तुमच्या ईमेलची पुष्टी करत आहे...",
+        "success": "साठी पेआउट ईमेल पुष्टी केली {org}.",
+        "successHint": "या पत्त्यावर आता देणगीचे पैसे मिळतील. धन्यवाद!",
+        "failed": "पुष्टीकरण अयशस्वी.",
+        "missingToken": "या लिंकवर कोणतेही पुष्टीकरण टोकन दिलेले नाही."
     }
 }

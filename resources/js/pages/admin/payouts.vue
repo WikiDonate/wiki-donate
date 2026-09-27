@@ -186,7 +186,8 @@
                                 </span>
                             </div>
                             <div class="text-xs text-gray-400">
-                                {{ h.paid_at }} · by {{ h.actor?.username || '—' }}
+                                {{ formatDateUTC(h.paid_at) || t('admin.unpaid') }} · by
+                                {{ h.actor?.username || '—' }}
                             </div>
                             <div class="text-xs flex items-center gap-1.5 mt-0.5">
                                 <span
@@ -221,6 +222,7 @@
 
 <script setup>
     import { adminService } from '@/services/adminService'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import { ref } from 'vue'
     import { useI18n } from 'vue-i18n'
 

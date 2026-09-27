@@ -23,25 +23,25 @@
                 class="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 sm:px-6 py-4 border-b border-gray-100"
             >
                 <StatCard
-                    icon="['fas', 'donate']"
+                    :icon="['fas', 'donate']"
                     icon-bg="green"
                     :label="t('admin.totalIncome')"
                     :value="formatAmount(summary.totalIncome)"
                 />
                 <StatCard
-                    icon="['fas', 'credit-card']"
+                    :icon="['fas', 'credit-card']"
                     icon-bg="red"
                     :label="t('admin.totalPayouts')"
                     :value="formatAmount(summary.totalPayouts)"
                 />
                 <StatCard
-                    icon="['fas', 'chart-line']"
+                    :icon="['fas', 'chart-line']"
                     icon-bg="amber"
                     :label="t('admin.remainingPayable')"
                     :value="formatAmount(summary.remainingPayable)"
                 />
                 <StatCard
-                    icon="['fas', 'coins']"
+                    :icon="['fas', 'coins']"
                     icon-bg="indigo"
                     :label="t('admin.netInHand')"
                     :value="formatAmount(summary.netInHand)"
@@ -67,17 +67,25 @@
                         <option value="stripe">{{ t('admin.stripe') }}</option>
                         <option value="paypal">{{ t('admin.paypal') }}</option>
                     </select>
-                    <input
-                        v-model="filterOrg"
-                        type="text"
+                    <OrganizationSelect
+                        :model-value="filterOrg"
                         :placeholder="t('admin.organizationPlaceholder')"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        :clearable="true"
+                        source="local"
+                        class="flex-1 min-w-[200px]"
+                        @update:model-value="filterOrg = $event"
+                        @clear="loadPage(1)"
                     />
-                    <input
-                        v-model="filterArticle"
-                        type="text"
+                    <ArticleSelect
+                        :model-value="filterArticle"
+                        :display-title="filterArticleTitle"
                         :placeholder="t('admin.articleSlugPlaceholder')"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        :clearable="true"
+                        class="flex-1 min-w-[200px]"
+                        @update:model-value="filterArticle = $event"
+                        @update:display-title="filterArticleTitle = $event"
+                        @select="loadPage(1)"
+                        @clear="clearArticleFilter"
                     />
                     <input
                         v-model="fromDate"
@@ -103,7 +111,9 @@
                 <div class="px-4 sm:px-6 py-4">
                     <AdminTable :columns="columns" :rows="transactions" row-key="id">
                         <template #cell-date="{ row }">
-                            <span class="text-gray-500 text-xs">{{ row.date }}</span>
+                            <span class="text-gray-500 text-xs">{{
+                                formatDateUTC(row.date_raw || row.date)
+                            }}</span>
                         </template>
                         <template #cell-description="{ row }">
                             <div>
@@ -202,6 +212,7 @@
     import { adminService } from '~/services/adminService'
     import api from '~/config/apiConfig'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import AdminBadge from '~/components/admin/AdminBadge.vue'
@@ -227,6 +238,12 @@
     const filterMethod = ref('')
     const filterOrg = ref('')
     const filterArticle = ref('')
+    const filterArticleTitle = ref('')
+
+    const clearArticleFilter = () => {
+        filterArticleTitle.value = ''
+        loadPage(1)
+    }
     const fromDate = ref('')
     const toDate = ref('')
 

@@ -32,7 +32,8 @@
         "pay": "Pay",
         "pagination": "Pagination",
         "previousPage": "Previous page",
-        "nextPage": "Next page"
+        "nextPage": "Next page",
+        "clear": "Clear"
     },
     "auth": {
         "loginTitle": "Login to Your Account",
@@ -573,7 +574,9 @@
         "payoutStatusPending": "Pending",
         "payoutStatusFailed": "Failed",
         "website": "Website",
-        "visitSite": "Visit site"
+        "visitSite": "Visit site",
+        "createdAt": "Created",
+        "verifiedAt": "Verified"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. All rights reserved."

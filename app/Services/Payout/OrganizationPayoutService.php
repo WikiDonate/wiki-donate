@@ -201,10 +201,13 @@ class OrganizationPayoutService
 
         // Phase 2 — outside the DB lock: submit the real PayPal transfer.
         // A provider failure marks the row failed (off the balance) instead
-        // of rolling back and losing the audit trail.
-        $this->submitToPayPal($payout, $amount, $type);
-
-        $this->recordLog($payout, $amount, $type, $actorId);
+        // of rolling back and losing the audit trail. The log records the
+        // PayPal-response status in every outcome — including rejections.
+        try {
+            $this->submitToPayPal($payout, $amount, $type);
+        } finally {
+            $this->recordLog($payout->refresh(), $amount, $type, $actorId);
+        }
 
         return $payout->refresh();
     }
@@ -400,6 +403,8 @@ class OrganizationPayoutService
                 'destination_paypal_email' => $payout->destination_paypal_email,
                 'payout_batch_id' => $payout->payout_batch_id,
                 'payout_item_id' => $payout->payout_item_id,
+                'provider_status' => $payout->provider_status,
+                'failure_reason' => $payout->failure_reason,
             ],
         ]);
     }

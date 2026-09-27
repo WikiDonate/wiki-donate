@@ -53,7 +53,9 @@
                 <div class="px-4 sm:px-6 py-4">
                     <AdminTable :columns="columns" :rows="logs" row-key="id">
                         <template #cell-created_at="{ row }">
-                            <span class="text-gray-500 text-xs">{{ row.created_at }}</span>
+                            <span class="text-gray-500 text-xs">{{
+                                formatDateUTC(row.created_at)
+                            }}</span>
                         </template>
                         <template #cell-event="{ row }">
                             <div>
@@ -120,6 +122,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'

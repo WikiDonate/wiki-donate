@@ -62,7 +62,9 @@
                         <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
                     </template>
                     <template #cell-date="{ row }"
-                        ><span class="text-gray-500 text-xs">{{ row.date }}</span></template
+                        ><span class="text-gray-500 text-xs">{{
+                            formatDateUTC(row.date_raw || row.date)
+                        }}</span></template
                     >
                     <template #cell-paymentId="{ row }">
                         <span class="text-xs text-gray-400 font-mono">{{
@@ -128,6 +130,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
     const { notifyError } = useToastify()

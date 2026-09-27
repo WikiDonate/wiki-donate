@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Caricamento…",
+        "loading": "Caricamento...",
         "searching": "Ricerca su Wikidonate...",
         "noResults": "Nessun risultato di ricerca trovato",
         "searchPlaceholder": "Cerca su Wikidonate...",
@@ -32,13 +32,14 @@
         "pay": "Paga",
         "pagination": "Impaginazione",
         "previousPage": "Pagina precedente",
-        "nextPage": "Pagina successiva"
+        "nextPage": "Pagina successiva",
+        "clear": "Chiaro"
     },
     "auth": {
         "loginTitle": "Accedi al tuo account",
         "loginSubtitle": "Bentornato! Accedi per continuare",
         "username": "Nome utente",
-        "password": "Password",
+        "password": "***",
         "usernamePlaceholder": "Inserisci il tuo nome utente",
         "passwordPlaceholder": "Inserisci la tua password",
         "forgotPassword": "Password dimenticata?",
@@ -125,8 +126,8 @@
         "phoneInvalid": "Il numero di telefono deve contenere esattamente 12 cifre",
         "loadingUser": "Caricamento dettagli utente",
         "emailInvalid": "E-mail non valida",
-        "loading": "Caricamento dei dettagli utente",
-        "emailRequired": "Email obbligatoria"
+        "loading": "Caricamento dettagli utente",
+        "emailRequired": "L'e-mail è obbligatoria"
     },
     "preferences": {
         "title": "Preferenze",
@@ -136,7 +137,7 @@
         "email": "E-mail",
         "memberOfGroup": "Membro del gruppo",
         "registrationTime": "Orario di registrazione",
-        "password": "Password",
+        "password": "***",
         "changePassword": "Cambia password",
         "newPassword": "Nuova parola d'ordine",
         "confirmPassword": "Conferma password",
@@ -174,7 +175,7 @@
         "expires": "Scade {month}/{year}",
         "edit": "Modifica",
         "loadingPaymentForm": "Caricamento modulo di pagamento...",
-        "cardNumber": "Numero carta",
+        "cardNumber": "***",
         "expiryDate": "Data di scadenza",
         "cvc": "CVC",
         "saveCard": "Salva carta",
@@ -301,38 +302,40 @@
         "saveError": "Si è verificato un errore durante il salvataggio"
     },
     "formula": {
-        "name": "Nome",
-        "namePlaceholder": "Inserisci un nome per questa formula",
-        "organization": "Organizzazione",
-        "percentage": "Percentuale (%)",
-        "deleteRow": "Elimina riga",
+        "addAtLeastOne": "Aggiungi almeno un ente di beneficenza",
         "addCharity": "Aggiungi Carità",
-        "organizationPlaceholder": "Nome dell'organizzazione",
-        "totalAllocation": "Dotazione totale: {total}%",
-        "mustEqual100": "Deve essere pari al 100%",
-        "helper": "* Inserisci i nomi delle organizzazioni. Il totale deve essere pari al 100%.",
+        "cancel": "Annulla",
+        "confirmYourAction": "Conferma la tua azione",
+        "createTitle": "Crea formula di donazione",
+        "deleteRow": "Elimina riga",
         "details": "Dettagli",
         "detailsPlaceholder": "Aggiungi ulteriori dettagli...",
+        "editTitle": "Modifica formula di donazione",
+        "helper": "* Inserisci i nomi delle organizzazioni. Il totale deve essere pari al 100%.",
+        "mustEqual100": "Deve essere pari al 100%",
+        "name": "Nome",
+        "namePlaceholder": "Inserisci un nome per questa formula",
         "nameRequired": "Il nome è obbligatorio",
         "nameTooLong": "Il nome non può superare i 255 caratteri.",
-        "addAtLeastOne": "Aggiungi almeno un ente di beneficenza",
+        "noCharityResults": "Nessun ente di beneficenza trovato",
+        "organization": "Organizzazione",
+        "organizationPlaceholder": "Nome dell'organizzazione",
         "organizationRequired": "È necessaria l'organizzazione",
+        "percentage": "Percentuale (%)",
+        "percentageMax": "La percentuale non può superare 100",
+        "percentageMin": "La percentuale deve essere maggiore di 0",
         "percentageNumber": "La percentuale deve essere un numero",
         "percentageRequired": "La percentuale è obbligatoria",
-        "percentageMin": "La percentuale deve essere maggiore di 0",
-        "percentageMax": "La percentuale non può superare 100",
-        "totalMustEqual100": "L'allocazione totale deve essere pari al 100%",
-        "createTitle": "Crea formula di donazione",
-        "editTitle": "Modifica formula di donazione",
-        "saveConfirmTitle": "Salva formula di donazione",
-        "updateConfirmTitle": "Aggiorna la formula di donazione",
-        "confirmYourAction": "Conferma la tua azione",
-        "updateConfirmMsg": "Sei sicuro di voler aggiornare questa formula di donazione?",
-        "saveConfirmMsg": "Sei sicuro di voler salvare questa formula di donazione?",
-        "update": "Aggiorna",
         "save": "Salva",
+        "saveConfirmMsg": "Sei sicuro di voler salvare questa formula di donazione?",
+        "saveConfirmTitle": "Salva formula di donazione",
         "saving": "Salvataggio...",
-        "cancel": "Annulla"
+        "searchingCharities": "Ricerca di enti di beneficenza statunitensi verificati...",
+        "totalAllocation": "Dotazione totale: {total}%",
+        "totalMustEqual100": "L'allocazione totale deve essere pari al 100%",
+        "update": "Aggiorna",
+        "updateConfirmMsg": "Sei sicuro di voler aggiornare questa formula di donazione?",
+        "updateConfirmTitle": "Aggiorna la formula di donazione"
     },
     "donate": {
         "title": "Dona tramite Formula",
@@ -482,7 +485,7 @@
         "history": "Storia",
         "payTitle": "Paga {org}",
         "liveBalance": "Saldo in tempo reale:",
-        "formulaLabel": "Formula:{name}",
+        "formulaLabel": "Formula: {name}",
         "amountLabel": "Importo ({currency})",
         "noteLabel": "Nota (riferimento banca/bKash)",
         "recordPayout": "Registra il pagamento",
@@ -563,7 +566,17 @@
         "subject": "Oggetto",
         "actor": "Attore",
         "changes": "Cambiamenti",
-        "note": "Nota"
+        "note": "Nota",
+        "syncStatuses": "Sincronizza gli stati",
+        "syncing": "Sincronizzazione...",
+        "failedToSync": "Impossibile sincronizzare gli stati dei pagamenti",
+        "payoutStatusPaid": "Pagato",
+        "payoutStatusPending": "In sospeso",
+        "payoutStatusFailed": "Fallito",
+        "website": "Sito web",
+        "visitSite": "Visita il sito",
+        "createdAt": "Creato",
+        "verifiedAt": "Verificato"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tutti i diritti riservati."
@@ -583,7 +596,7 @@
         "title": "Titolo modale"
     },
     "language": {
-        "loading": "Caricamento…",
+        "loading": "Caricamento...",
         "select": "Seleziona la lingua"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Ricerca su Wikidonate...",
         "noResults": "Nessun risultato di ricerca trovato",
         "placeholder": "Cerca articoli..."
+    },
+    "orgConfirm": {
+        "title": "Conferma e-mail",
+        "verifying": "Confermando la tua email...",
+        "success": "Email di pagamento confermata per {org}.",
+        "successHint": "Questo indirizzo ora riceverà i pagamenti delle donazioni. Grazie!",
+        "failed": "Conferma fallita.",
+        "missingToken": "Nessun token di conferma è stato fornito in questo collegamento."
     }
 }

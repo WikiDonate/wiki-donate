@@ -30,7 +30,7 @@ const getTransactions = (params) => api.get('/admin/transactions', { params })
 const getTransactionSummary = (params) => api.get('/admin/transactions/summary', { params })
 
 // Organization registry
-const getOrganizations = (params) => api.get('/admin/organizations', { params })
+const getOrganizations = (params, signal) => api.get('/admin/organizations', { params, signal })
 
 const getOrganization = (id) => api.get(`/admin/organizations/${id}`)
 

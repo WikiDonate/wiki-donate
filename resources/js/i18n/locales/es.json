@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Cargando…",
+        "loading": "Cargando...",
         "searching": "Buscando en wikidonato...",
         "noResults": "No se encontraron resultados de búsqueda",
         "searchPlaceholder": "Buscar en wikidonato...",
@@ -22,23 +22,24 @@
         "backToHome": "Volver a Inicio",
         "backToArticle": "Volver al artículo",
         "allRightsReserved": "Todos los derechos reservados.",
-        "required": "Obligatorio",
+        "required": "Requerido",
         "page": "Página",
         "of": "/",
         "total": "totales",
-        "you": "Tú",
+        "you": "tu",
         "back": "Atrás",
         "update": "Actualizar",
-        "pay": "Pagar",
+        "pay": "pagar",
         "pagination": "Paginación",
         "previousPage": "Pagina anterior",
-        "nextPage": "Página siguiente"
+        "nextPage": "Página siguiente",
+        "clear": "Borrar"
     },
     "auth": {
         "loginTitle": "Inicie sesión en su cuenta",
         "loginSubtitle": "¡Bienvenidos de nuevo! Por favor inicia sesión para continuar",
         "username": "Nombre de usuario",
-        "password": "Contraseña",
+        "password": "***",
         "usernamePlaceholder": "Ingrese su nombre de usuario",
         "passwordPlaceholder": "Introduce tu contraseña",
         "forgotPassword": "¿Olvidaste tu contraseña?",
@@ -126,7 +127,7 @@
         "loadingUser": "Cargando datos de usuario",
         "emailInvalid": "Correo electrónico no válido",
         "loading": "Cargando datos de usuario",
-        "emailRequired": "El correo electrónico es obligatorio"
+        "emailRequired": "Se requiere correo electrónico"
     },
     "preferences": {
         "title": "Preferencias",
@@ -136,7 +137,7 @@
         "email": "Correo electrónico",
         "memberOfGroup": "Miembro del grupo",
         "registrationTime": "Hora de registro",
-        "password": "Contraseña",
+        "password": "***",
         "changePassword": "Cambiar contraseña",
         "newPassword": "Nueva contraseña",
         "confirmPassword": "Confirmar contraseña",
@@ -174,7 +175,7 @@
         "expires": "Vence {month}/{year}",
         "edit": "Editar",
         "loadingPaymentForm": "Cargando formulario de pago...",
-        "cardNumber": "Número de tarjeta",
+        "cardNumber": "***",
         "expiryDate": "Fecha de vencimiento",
         "cvc": "CVC",
         "saveCard": "Guardar tarjeta",
@@ -220,7 +221,7 @@
         "title": "Mis donaciones",
         "filters": "Filtros",
         "searchPlaceholder": "Buscar por ID de pago o correo electrónico...",
-        "allStatus": "Todos los estados",
+        "allStatus": "Todo el estado",
         "completed": "Completado",
         "pending": "Pendiente",
         "failed": "Fallido",
@@ -301,38 +302,40 @@
         "saveError": "Ocurrió un error al guardar"
     },
     "formula": {
-        "name": "Nombre",
-        "namePlaceholder": "Introduzca un nombre para esta fórmula",
-        "organization": "Organización",
-        "percentage": "Porcentaje (%)",
-        "deleteRow": "Eliminar fila",
+        "addAtLeastOne": "Añade al menos una organización benéfica",
         "addCharity": "Añadir caridad",
-        "organizationPlaceholder": "Nombre de la organización",
-        "totalAllocation": "Asignación total: {total}%",
-        "mustEqual100": "Debe ser igual al 100%",
-        "helper": "* Ingrese los nombres de las organizaciones. El total debe ser igual al 100%.",
+        "cancel": "Cancelar",
+        "confirmYourAction": "Confirma tu acción",
+        "createTitle": "Crear fórmula de donación",
+        "deleteRow": "Eliminar fila",
         "details": "Detalles",
         "detailsPlaceholder": "Añadir detalles adicionales...",
+        "editTitle": "Editar fórmula de donación",
+        "helper": "* Ingrese los nombres de las organizaciones. El total debe ser igual al 100%.",
+        "mustEqual100": "Debe ser igual al 100%",
+        "name": "Nombre",
+        "namePlaceholder": "Introduzca un nombre para esta fórmula",
         "nameRequired": "El nombre es obligatorio",
         "nameTooLong": "El nombre no puede exceder los 255 caracteres.",
-        "addAtLeastOne": "Añade al menos una organización benéfica",
+        "noCharityResults": "No se encontró ninguna organización benéfica",
+        "organization": "Organización",
+        "organizationPlaceholder": "Nombre de la organización",
         "organizationRequired": "Se requiere organización",
+        "percentage": "Porcentaje (%)",
+        "percentageMax": "El porcentaje no puede exceder 100",
+        "percentageMin": "El porcentaje debe ser mayor que 0",
         "percentageNumber": "El porcentaje debe ser un número.",
         "percentageRequired": "Se requiere porcentaje",
-        "percentageMin": "El porcentaje debe ser mayor que 0",
-        "percentageMax": "El porcentaje no puede exceder 100",
-        "totalMustEqual100": "La asignación total debe ser igual al 100 %.",
-        "createTitle": "Crear fórmula de donación",
-        "editTitle": "Editar fórmula de donación",
-        "saveConfirmTitle": "Guardar fórmula de donación",
-        "updateConfirmTitle": "Actualizar fórmula de donación",
-        "confirmYourAction": "Confirma tu acción",
-        "updateConfirmMsg": "¿Estás seguro de que quieres actualizar esta fórmula de donación?",
-        "saveConfirmMsg": "¿Estás seguro de que quieres guardar esta fórmula de donación?",
-        "update": "Actualizar",
         "save": "Guardar",
+        "saveConfirmMsg": "¿Estás seguro de que quieres guardar esta fórmula de donación?",
+        "saveConfirmTitle": "Guardar fórmula de donación",
         "saving": "Guardando...",
-        "cancel": "Cancelar"
+        "searchingCharities": "Buscando organizaciones benéficas estadounidenses verificadas...",
+        "totalAllocation": "Asignación total: {total}%",
+        "totalMustEqual100": "La asignación total debe ser igual al 100 %.",
+        "update": "Actualizar",
+        "updateConfirmMsg": "¿Estás seguro de que quieres actualizar esta fórmula de donación?",
+        "updateConfirmTitle": "Actualizar fórmula de donación"
     },
     "donate": {
         "title": "Donar mediante Fórmula",
@@ -408,7 +411,7 @@
         "allDonations": "Todas las donaciones",
         "allDonationsSubtitle": "Ver y buscar todos los registros de donaciones",
         "searchDonorPlaceholder": "Busque por donante, correo electrónico o ID de pago...",
-        "allStatus": "Todos los estados",
+        "allStatus": "Todo el estado",
         "completed": "Completado",
         "expired": "Caducado",
         "failed": "Fallido",
@@ -563,7 +566,17 @@
         "subject": "Asunto",
         "actor": "Actor",
         "changes": "Cambios",
-        "note": "Nota"
+        "note": "Nota",
+        "syncStatuses": "Estados de sincronización",
+        "syncing": "Sincronizando...",
+        "failedToSync": "No se pudieron sincronizar los estados de pago",
+        "payoutStatusPaid": "Pagado",
+        "payoutStatusPending": "Pendiente",
+        "payoutStatusFailed": "Fallido",
+        "website": "Sitio web",
+        "visitSite": "Visitar sitio",
+        "createdAt": "Creado",
+        "verifiedAt": "Verificado"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."
@@ -583,7 +596,7 @@
         "title": "Título modal"
     },
     "language": {
-        "loading": "Cargando…",
+        "loading": "Cargando...",
         "select": "Seleccionar idioma"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Buscando en wikidonato...",
         "noResults": "No se encontraron resultados de búsqueda",
         "placeholder": "Buscar artículos..."
+    },
+    "orgConfirm": {
+        "title": "Confirmación por correo electrónico",
+        "verifying": "Confirmando tu correo electrónico...",
+        "success": "Correo electrónico de pago confirmado para {org}.",
+        "successHint": "Esta dirección ahora recibirá pagos de donaciones. ¡Gracias!",
+        "failed": "La confirmación falló.",
+        "missingToken": "No se proporcionó ningún token de confirmación en este enlace."
     }
 }

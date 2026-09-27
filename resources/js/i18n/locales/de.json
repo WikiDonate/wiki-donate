@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Wird geladen…",
+        "loading": "Laden...",
         "searching": "Wikidonate wird durchsucht...",
         "noResults": "Keine Suchergebnisse gefunden",
         "searchPlaceholder": "Wikidonate durchsuchen...",
@@ -26,19 +26,20 @@
         "page": "Seite",
         "of": "/",
         "total": "Insgesamt",
-        "you": "Sie",
+        "you": "Du",
         "back": "Zurück",
         "update": "Aktualisieren",
         "pay": "Bezahlen",
         "pagination": "Paginierung",
         "previousPage": "Vorherige Seite",
-        "nextPage": "Nächste Seite"
+        "nextPage": "Nächste Seite",
+        "clear": "Klar"
     },
     "auth": {
         "loginTitle": "Melden Sie sich bei Ihrem Konto an",
         "loginSubtitle": "Willkommen zurück! Bitte melden Sie sich an, um fortzufahren",
         "username": "Benutzername",
-        "password": "Passwort",
+        "password": "***",
         "usernamePlaceholder": "Geben Sie Ihren Benutzernamen ein",
         "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
         "forgotPassword": "Passwort vergessen?",
@@ -136,7 +137,7 @@
         "email": "E-Mail",
         "memberOfGroup": "Mitglied der Gruppe",
         "registrationTime": "Anmeldezeit",
-        "password": "Passwort",
+        "password": "***",
         "changePassword": "Passwort ändern",
         "newPassword": "Neues Passwort",
         "confirmPassword": "Passwort bestätigen",
@@ -174,7 +175,7 @@
         "expires": "Läuft ab {month}/{year}",
         "edit": "Bearbeiten",
         "loadingPaymentForm": "Zahlungsformular wird geladen...",
-        "cardNumber": "Kartennummer",
+        "cardNumber": "***",
         "expiryDate": "Ablaufdatum",
         "cvc": "CVC",
         "saveCard": "Karte speichern",
@@ -301,38 +302,40 @@
         "saveError": "Beim Speichern ist ein Fehler aufgetreten"
     },
     "formula": {
-        "name": "Name",
-        "namePlaceholder": "Geben Sie einen Namen für diese Formel ein",
-        "organization": "Organisation",
-        "percentage": "Prozentsatz (%)",
-        "deleteRow": "Zeile löschen",
+        "addAtLeastOne": "Fügen Sie mindestens eine Wohltätigkeitsorganisation hinzu",
         "addCharity": "Fügen Sie Wohltätigkeit hinzu",
-        "organizationPlaceholder": "Name der Organisation",
-        "totalAllocation": "Gesamtzuteilung: {total}%",
-        "mustEqual100": "Muss 100 % betragen",
-        "helper": "* Geben Sie Organisationsnamen ein. Die Summe muss 100 % betragen.",
+        "cancel": "Abbrechen",
+        "confirmYourAction": "Bestätigen Sie Ihre Aktion",
+        "createTitle": "Erstellen Sie eine Spendenformel",
+        "deleteRow": "Zeile löschen",
         "details": "Einzelheiten",
         "detailsPlaceholder": "Weitere Details hinzufügen...",
+        "editTitle": "Spendenformel bearbeiten",
+        "helper": "* Geben Sie Organisationsnamen ein. Die Summe muss 100 % betragen.",
+        "mustEqual100": "Muss 100 % betragen",
+        "name": "Name",
+        "namePlaceholder": "Geben Sie einen Namen für diese Formel ein",
         "nameRequired": "Name ist erforderlich",
         "nameTooLong": "Der Name darf 255 Zeichen nicht überschreiten.",
-        "addAtLeastOne": "Fügen Sie mindestens eine Wohltätigkeitsorganisation hinzu",
+        "noCharityResults": "Keine Wohltätigkeitsorganisation gefunden",
+        "organization": "Organisation",
+        "organizationPlaceholder": "Name der Organisation",
         "organizationRequired": "Organisation ist gefragt",
+        "percentage": "Prozentsatz (%)",
+        "percentageMax": "Der Prozentsatz darf 100 nicht überschreiten",
+        "percentageMin": "Der Prozentsatz muss größer als 0 sein",
         "percentageNumber": "Der Prozentsatz muss eine Zahl sein",
         "percentageRequired": "Prozentsatz ist erforderlich",
-        "percentageMin": "Der Prozentsatz muss größer als 0 sein",
-        "percentageMax": "Der Prozentsatz darf 100 nicht überschreiten",
-        "totalMustEqual100": "Die Gesamtzuteilung muss 100 % betragen.",
-        "createTitle": "Erstellen Sie eine Spendenformel",
-        "editTitle": "Spendenformel bearbeiten",
-        "saveConfirmTitle": "Spendenformel speichern",
-        "updateConfirmTitle": "Spendenformel aktualisieren",
-        "confirmYourAction": "Bestätigen Sie Ihre Aktion",
-        "updateConfirmMsg": "Sind Sie sicher, dass Sie diese Spendenformel aktualisieren möchten?",
-        "saveConfirmMsg": "Möchten Sie diese Spendenformel wirklich speichern?",
-        "update": "Aktualisieren",
         "save": "Speichern",
+        "saveConfirmMsg": "Möchten Sie diese Spendenformel wirklich speichern?",
+        "saveConfirmTitle": "Spendenformel speichern",
         "saving": "Sparen...",
-        "cancel": "Abbrechen"
+        "searchingCharities": "Suche nach verifizierten US-Wohltätigkeitsorganisationen...",
+        "totalAllocation": "Gesamtzuteilung: {total}%",
+        "totalMustEqual100": "Die Gesamtzuteilung muss 100 % betragen.",
+        "update": "Aktualisieren",
+        "updateConfirmMsg": "Sind Sie sicher, dass Sie diese Spendenformel aktualisieren möchten?",
+        "updateConfirmTitle": "Spendenformel aktualisieren"
     },
     "donate": {
         "title": "Spenden Sie über die Formel",
@@ -423,7 +426,7 @@
         "allTypes": "Alle Typen",
         "articleType": "Artikel",
         "userPage": "Benutzerseite",
-        "allAccess": "Voller Zugriff",
+        "allAccess": "All Access",
         "public": "Öffentlich",
         "private": "Privat",
         "loadingArticles": "Artikel werden geladen...",
@@ -563,7 +566,17 @@
         "subject": "Betreff",
         "actor": "Schauspieler",
         "changes": "Änderungen",
-        "note": "Hinweis"
+        "note": "Hinweis",
+        "syncStatuses": "Status synchronisieren",
+        "syncing": "Synchronisierung...",
+        "failedToSync": "Der Auszahlungsstatus konnte nicht synchronisiert werden",
+        "payoutStatusPaid": "Bezahlt",
+        "payoutStatusPending": "Ausstehend",
+        "payoutStatusFailed": "Fehlgeschlagen",
+        "website": "Website",
+        "visitSite": "Besuchen Sie die Website",
+        "createdAt": "Erstellt",
+        "verifiedAt": "Verifiziert"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle Rechte vorbehalten."
@@ -583,7 +596,7 @@
         "title": "Modaler Titel"
     },
     "language": {
-        "loading": "Wird geladen…",
+        "loading": "Laden...",
         "select": "Sprache auswählen"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Wikidonate wird durchsucht...",
         "noResults": "Keine Suchergebnisse gefunden",
         "placeholder": "Artikel durchsuchen..."
+    },
+    "orgConfirm": {
+        "title": "E-Mail-Bestätigung",
+        "verifying": "Bestätigung Ihrer E-Mail...",
+        "success": "Auszahlungs-E-Mail bestätigt für {org}.",
+        "successHint": "Diese Adresse erhält nun Spendenauszahlungen. Danke schön!",
+        "failed": "Die Bestätigung ist fehlgeschlagen.",
+        "missingToken": "In diesem Link wurde kein Bestätigungstoken bereitgestellt."
     }
 }

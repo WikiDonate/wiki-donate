@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "Carregando…",
+        "loading": "Carregando...",
         "searching": "Pesquisando no Wikidonate...",
         "noResults": "Nenhum resultado de pesquisa encontrado",
         "searchPlaceholder": "Pesquisar Wikidonate...",
@@ -32,13 +32,14 @@
         "pay": "Pagar",
         "pagination": "Paginação",
         "previousPage": "Página anterior",
-        "nextPage": "Próxima página"
+        "nextPage": "Próxima página",
+        "clear": "Limpar"
     },
     "auth": {
         "loginTitle": "Faça login na sua conta",
         "loginSubtitle": "Bem-vindo de volta! Faça login para continuar",
         "username": "Nome de usuário",
-        "password": "Senha",
+        "password": "***",
         "usernamePlaceholder": "Digite seu nome de usuário",
         "passwordPlaceholder": "Digite sua senha",
         "forgotPassword": "Esqueceu a senha?",
@@ -136,7 +137,7 @@
         "email": "E-mail",
         "memberOfGroup": "Membro do Grupo",
         "registrationTime": "Hora de registro",
-        "password": "Senha",
+        "password": "***",
         "changePassword": "Alterar senha",
         "newPassword": "Nova senha",
         "confirmPassword": "Confirmar senha",
@@ -174,7 +175,7 @@
         "expires": "Expira {month}/{year}",
         "edit": "Editar",
         "loadingPaymentForm": "Carregando formulário de pagamento...",
-        "cardNumber": "Número do cartão",
+        "cardNumber": "***",
         "expiryDate": "Data de validade",
         "cvc": "CVC",
         "saveCard": "Salvar cartão",
@@ -237,7 +238,7 @@
         "source": "Fonte",
         "amount": "Quantidade",
         "status": "Estado",
-        "paymentId": "ID do pagamento",
+        "paymentId": "ID de pagamento",
         "article": "Artigo",
         "action": "Ação",
         "failedToLoad": "Falha ao carregar o relatório de doações",
@@ -301,38 +302,40 @@
         "saveError": "Ocorreu um erro ao salvar"
     },
     "formula": {
-        "name": "Nome",
-        "namePlaceholder": "Insira um nome para esta fórmula",
-        "organization": "Organização",
-        "percentage": "Porcentagem (%)",
-        "deleteRow": "Excluir linha",
+        "addAtLeastOne": "Adicione pelo menos uma instituição de caridade",
         "addCharity": "Adicionar instituição de caridade",
-        "organizationPlaceholder": "Nome da organização",
-        "totalAllocation": "Alocação total: {total}%",
-        "mustEqual100": "Deve ser igual a 100%",
-        "helper": "* Insira os nomes das organizações. O total deve ser igual a 100%.",
+        "cancel": "Cancelar",
+        "confirmYourAction": "Confirme sua ação",
+        "createTitle": "Criar fórmula de doação",
+        "deleteRow": "Excluir linha",
         "details": "Detalhes",
         "detailsPlaceholder": "Adicione detalhes adicionais...",
+        "editTitle": "Editar fórmula de doação",
+        "helper": "* Insira os nomes das organizações. O total deve ser igual a 100%.",
+        "mustEqual100": "Deve ser igual a 100%",
+        "name": "Nome",
+        "namePlaceholder": "Insira um nome para esta fórmula",
         "nameRequired": "O nome é obrigatório",
         "nameTooLong": "O nome não pode exceder 255 caracteres.",
-        "addAtLeastOne": "Adicione pelo menos uma instituição de caridade",
+        "noCharityResults": "Nenhuma instituição de caridade encontrada",
+        "organization": "Organização",
+        "organizationPlaceholder": "Nome da organização",
         "organizationRequired": "É necessária organização",
+        "percentage": "Porcentagem (%)",
+        "percentageMax": "A porcentagem não pode exceder 100",
+        "percentageMin": "A porcentagem precisa ser maior que 0",
         "percentageNumber": "A porcentagem precisa ser um número",
         "percentageRequired": "A porcentagem é obrigatória",
-        "percentageMin": "A porcentagem precisa ser maior que 0",
-        "percentageMax": "A porcentagem não pode exceder 100",
-        "totalMustEqual100": "A alocação total deve ser igual a 100%",
-        "createTitle": "Criar fórmula de doação",
-        "editTitle": "Editar fórmula de doação",
-        "saveConfirmTitle": "Salve a fórmula de doação",
-        "updateConfirmTitle": "Atualizar fórmula de doação",
-        "confirmYourAction": "Confirme sua ação",
-        "updateConfirmMsg": "Tem certeza de que deseja atualizar esta fórmula de doação?",
-        "saveConfirmMsg": "Tem certeza de que deseja salvar esta fórmula de doação?",
-        "update": "Atualizar",
         "save": "Salvar",
+        "saveConfirmMsg": "Tem certeza de que deseja salvar esta fórmula de doação?",
+        "saveConfirmTitle": "Salve a fórmula de doação",
         "saving": "Salvando...",
-        "cancel": "Cancelar"
+        "searchingCharities": "Pesquisando instituições de caridade verificadas nos EUA...",
+        "totalAllocation": "Alocação total: {total}%",
+        "totalMustEqual100": "A alocação total deve ser igual a 100%",
+        "update": "Atualizar",
+        "updateConfirmMsg": "Tem certeza de que deseja atualizar esta fórmula de doação?",
+        "updateConfirmTitle": "Atualizar fórmula de doação"
     },
     "donate": {
         "title": "Doe via Fórmula",
@@ -415,7 +418,7 @@
         "pending": "Pendente",
         "loadingDonations": "Carregando doações...",
         "noDonations": "Nenhuma doação encontrada",
-        "paymentId": "ID do pagamento",
+        "paymentId": "ID de pagamento",
         "failedToLoadDonations": "Falha ao carregar doações",
         "articles": "Artigos",
         "articlesSubtitle": "Gerencie todos os artigos da plataforma",
@@ -563,7 +566,17 @@
         "subject": "Assunto",
         "actor": "Ator",
         "changes": "Mudanças",
-        "note": "Nota"
+        "note": "Nota",
+        "syncStatuses": "Status de sincronização",
+        "syncing": "Sincronizando...",
+        "failedToSync": "Falha ao sincronizar status de pagamento",
+        "payoutStatusPaid": "Pago",
+        "payoutStatusPending": "Pendente",
+        "payoutStatusFailed": "Falha",
+        "website": "Site",
+        "visitSite": "Visite o site",
+        "createdAt": "Criado",
+        "verifiedAt": "Verificado"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Todos os direitos reservados."
@@ -583,7 +596,7 @@
         "title": "Título Modal"
     },
     "language": {
-        "loading": "Carregando…",
+        "loading": "Carregando...",
         "select": "Selecione o idioma"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Pesquisando no Wikidonate...",
         "noResults": "Nenhum resultado de pesquisa encontrado",
         "placeholder": "Pesquisar artigos..."
+    },
+    "orgConfirm": {
+        "title": "Confirmação por e-mail",
+        "verifying": "Confirmando seu e-mail...",
+        "success": "E-mail de pagamento confirmado para {org}.",
+        "successHint": "Este endereço agora receberá pagamentos de doações. Obrigado!",
+        "failed": "Falha na confirmação.",
+        "missingToken": "Nenhum token de confirmação foi fornecido neste link."
     }
 }

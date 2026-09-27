@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "로딩 중…",
+        "loading": "로드 중...",
         "searching": "Wikidonate 검색 중...",
         "noResults": "검색결과가 없습니다",
         "searchPlaceholder": "위키 기부 검색...",
@@ -29,16 +29,17 @@
         "you": "당신",
         "back": "뒤로",
         "update": "업데이트",
-        "pay": "결제",
+        "pay": "지불",
         "pagination": "페이지 매김",
         "previousPage": "이전 페이지",
-        "nextPage": "다음 페이지"
+        "nextPage": "다음 페이지",
+        "clear": "지우기"
     },
     "auth": {
         "loginTitle": "귀하의 계정에 로그인하십시오",
         "loginSubtitle": "돌아온 것을 환영합니다! 계속하려면 로그인하세요.",
         "username": "사용자 이름",
-        "password": "비밀번호",
+        "password": "***",
         "usernamePlaceholder": "사용자 이름을 입력하세요",
         "passwordPlaceholder": "비밀번호를 입력하세요",
         "forgotPassword": "비밀번호를 잊으셨나요?",
@@ -125,8 +126,8 @@
         "phoneInvalid": "전화번호는 정확히 12자리여야 합니다.",
         "loadingUser": "사용자 세부정보 로드 중",
         "emailInvalid": "잘못된 이메일",
-        "loading": "사용자 세부 정보를 불러오는 중",
-        "emailRequired": "이메일이 필요합니다"
+        "loading": "사용자 세부정보 로드 중",
+        "emailRequired": "이메일은 필수입니다"
     },
     "preferences": {
         "title": "환경설정",
@@ -136,7 +137,7 @@
         "email": "이메일",
         "memberOfGroup": "그룹 회원",
         "registrationTime": "등록시간",
-        "password": "비밀번호",
+        "password": "***",
         "changePassword": "비밀번호 변경",
         "newPassword": "새 비밀번호",
         "confirmPassword": "비밀번호 확인",
@@ -174,7 +175,7 @@
         "expires": "만료 {month}/{year}",
         "edit": "편집",
         "loadingPaymentForm": "결제 양식 로드 중...",
-        "cardNumber": "카드 번호",
+        "cardNumber": "***",
         "expiryDate": "만료 날짜",
         "cvc": "CVC",
         "saveCard": "카드 저장",
@@ -301,38 +302,40 @@
         "saveError": "저장하는 중에 오류가 발생했습니다."
     },
     "formula": {
-        "name": "이름",
-        "namePlaceholder": "이 수식의 이름을 입력하세요.",
-        "organization": "조직",
-        "percentage": "백분율(%)",
-        "deleteRow": "행 삭제",
+        "addAtLeastOne": "자선단체를 하나 이상 추가하세요.",
         "addCharity": "자선 단체 추가",
-        "organizationPlaceholder": "조직 이름",
-        "totalAllocation": "총 할당량: {total}%",
-        "mustEqual100": "100%와 같아야 합니다.",
-        "helper": "* 기관명을 입력하세요. 합계는 100%여야 합니다.",
+        "cancel": "취소",
+        "confirmYourAction": "조치를 확인하세요",
+        "createTitle": "기부 공식 만들기",
+        "deleteRow": "행 삭제",
         "details": "세부",
         "detailsPlaceholder": "추가 세부정보 추가...",
+        "editTitle": "기부 공식 편집",
+        "helper": "* 기관명을 입력하세요. 합계는 100%여야 합니다.",
+        "mustEqual100": "100%와 같아야 합니다.",
+        "name": "이름",
+        "namePlaceholder": "이 수식의 이름을 입력하세요.",
         "nameRequired": "이름은 필수입니다",
         "nameTooLong": "이름은 255자를 초과할 수 없습니다.",
-        "addAtLeastOne": "자선단체를 하나 이상 추가하세요.",
+        "noCharityResults": "자선단체를 찾을 수 없습니다.",
+        "organization": "조직",
+        "organizationPlaceholder": "조직 이름",
         "organizationRequired": "조직은 필수 항목입니다.",
+        "percentage": "백분율(%)",
+        "percentageMax": "백분율은 100을 초과할 수 없습니다.",
+        "percentageMin": "백분율은 0보다 커야 합니다.",
         "percentageNumber": "백분율은 숫자여야 합니다.",
         "percentageRequired": "비율은 필수 항목입니다.",
-        "percentageMin": "백분율은 0보다 커야 합니다.",
-        "percentageMax": "백분율은 100을 초과할 수 없습니다.",
-        "totalMustEqual100": "총 할당량은 100%여야 합니다.",
-        "createTitle": "기부 공식 만들기",
-        "editTitle": "기부 공식 편집",
-        "saveConfirmTitle": "기부 공식 저장",
-        "updateConfirmTitle": "기부 공식 업데이트",
-        "confirmYourAction": "조치를 확인하세요",
-        "updateConfirmMsg": "이 기부 공식을 업데이트하시겠습니까?",
-        "saveConfirmMsg": "이 기부 공식을 저장하시겠습니까?",
-        "update": "업데이트",
         "save": "저장",
+        "saveConfirmMsg": "이 기부 공식을 저장하시겠습니까?",
+        "saveConfirmTitle": "기부 공식 저장",
         "saving": "저장 중...",
-        "cancel": "취소"
+        "searchingCharities": "검증된 미국 자선단체 검색 중...",
+        "totalAllocation": "총 할당량: {total}%",
+        "totalMustEqual100": "총 할당량은 100%여야 합니다.",
+        "update": "업데이트",
+        "updateConfirmMsg": "이 기부 공식을 업데이트하시겠습니까?",
+        "updateConfirmTitle": "기부 공식 업데이트"
     },
     "donate": {
         "title": "공식을 통해 기부",
@@ -563,7 +566,17 @@
         "subject": "주제",
         "actor": "배우",
         "changes": "변경 사항",
-        "note": "참고"
+        "note": "참고",
+        "syncStatuses": "동기화 상태",
+        "syncing": "동기화 중...",
+        "failedToSync": "지급 상태를 동기화하지 못했습니다.",
+        "payoutStatusPaid": "유료",
+        "payoutStatusPending": "보류 중",
+        "payoutStatusFailed": "실패",
+        "website": "웹사이트",
+        "visitSite": "사이트 방문",
+        "createdAt": "생성됨",
+        "verifiedAt": "확인됨"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."
@@ -583,7 +596,7 @@
         "title": "모달 제목"
     },
     "language": {
-        "loading": "로딩 중…",
+        "loading": "로드 중...",
         "select": "언어 선택"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "Wikidonate 검색 중...",
         "noResults": "검색결과가 없습니다",
         "placeholder": "기사 검색..."
+    },
+    "orgConfirm": {
+        "title": "이메일 확인",
+        "verifying": "이메일 확인 중...",
+        "success": "지급 이메일이 확인되었습니다. {org}.",
+        "successHint": "이제 이 주소로 기부금이 지급됩니다. 감사합니다!",
+        "failed": "확인에 실패했습니다.",
+        "missingToken": "이 링크에는 확인 토큰이 제공되지 않았습니다."
     }
 }

@@ -1,6 +1,6 @@
 {
     "common": {
-        "loading": "در حال بارگیری…",
+        "loading": "در حال بارگیری...",
         "searching": "جستجوی ویکی دان...",
         "noResults": "هیچ نتیجه جستجویی یافت نشد",
         "searchPlaceholder": "جستجوی ویکی دان...",
@@ -22,23 +22,24 @@
         "backToHome": "بازگشت به خانه",
         "backToArticle": "بازگشت به مقاله",
         "allRightsReserved": "تمامی حقوق محفوظ است.",
-        "required": "الزامی",
+        "required": "مورد نیاز",
         "page": "صفحه",
         "of": "/",
         "total": "مجموع",
         "you": "شما",
         "back": "برگشت",
         "update": "به روز رسانی",
-        "pay": "پرداخت",
-        "pagination": "صفحه‌بندی",
+        "pay": "پرداخت کنید",
+        "pagination": "صفحه بندی",
         "previousPage": "صفحه قبلی",
-        "nextPage": "صفحه بعدی"
+        "nextPage": "صفحه بعدی",
+        "clear": "پاک کردن"
     },
     "auth": {
         "loginTitle": "وارد حساب کاربری خود شوید",
         "loginSubtitle": "خوش آمدید! لطفا برای ادامه وارد شوید",
         "username": "نام کاربری",
-        "password": "رمز عبور",
+        "password": "***",
         "usernamePlaceholder": "نام کاربری خود را وارد کنید",
         "passwordPlaceholder": "رمز عبور خود را وارد کنید",
         "forgotPassword": "رمز عبور را فراموش کرده اید؟",
@@ -124,9 +125,9 @@
         "invalidEmail": "ایمیل نامعتبر",
         "phoneInvalid": "شماره تلفن باید دقیقا 12 رقمی باشد",
         "loadingUser": "در حال بارگیری جزئیات کاربر",
+        "emailInvalid": "ایمیل نامعتبر",
         "loading": "در حال بارگیری جزئیات کاربر",
-        "emailRequired": "ایمیل الزامی است",
-        "emailInvalid": "ایمیل نامعتبر"
+        "emailRequired": "ایمیل مورد نیاز است"
     },
     "preferences": {
         "title": "ترجیحات",
@@ -136,7 +137,7 @@
         "email": "ایمیل",
         "memberOfGroup": "عضو گروه",
         "registrationTime": "زمان ثبت نام",
-        "password": "رمز عبور",
+        "password": "***",
         "changePassword": "رمز عبور را تغییر دهید",
         "newPassword": "رمز عبور جدید",
         "confirmPassword": "رمز عبور را تایید کنید",
@@ -162,7 +163,7 @@
         "confirmPasswordPlaceholder": "رمز عبور را تایید کنید",
         "loading": "بارگیری تنظیمات برگزیده",
         "saving": "در حال ذخیره...",
-        "confirmPasswordRequired": "تأیید رمز عبور الزامی است"
+        "confirmPasswordRequired": "تایید رمز عبور لازم است"
     },
     "billing": {
         "title": "صورتحساب",
@@ -174,7 +175,7 @@
         "expires": "منقضی می شود {month}/{year}",
         "edit": "ویرایش کنید",
         "loadingPaymentForm": "در حال بارگیری فرم پرداخت...",
-        "cardNumber": "شماره کارت",
+        "cardNumber": "***",
         "expiryDate": "تاریخ انقضا",
         "cvc": "CVC",
         "saveCard": "ذخیره کارت",
@@ -220,7 +221,7 @@
         "title": "کمک های مالی من",
         "filters": "فیلترها",
         "searchPlaceholder": "جستجو با شناسه پرداخت یا ایمیل...",
-        "allStatus": "همه وضعیت‌ها",
+        "allStatus": "همه وضعیت",
         "completed": "تکمیل شد",
         "pending": "در انتظار",
         "failed": "شکست خورد",
@@ -301,38 +302,40 @@
         "saveError": "هنگام ذخیره خطایی روی داد"
     },
     "formula": {
-        "name": "نام",
-        "namePlaceholder": "یک نام برای این فرمول وارد کنید",
-        "organization": "سازمان",
-        "percentage": "درصد (%)",
-        "deleteRow": "حذف ردیف",
+        "addAtLeastOne": "حداقل یک موسسه خیریه اضافه کنید",
         "addCharity": "خیریه را اضافه کنید",
-        "organizationPlaceholder": "نام سازمان",
-        "totalAllocation": "کل تخصیص: {total}%",
-        "mustEqual100": "باید برابر 100٪",
-        "helper": "* نام سازمان را وارد کنید. کل باید 100٪ باشد.",
+        "cancel": "لغو کنید",
+        "confirmYourAction": "اقدام خود را تایید کنید",
+        "createTitle": "فرمول اهدا را ایجاد کنید",
+        "deleteRow": "حذف ردیف",
         "details": "جزئیات",
         "detailsPlaceholder": "افزودن جزئیات بیشتر...",
+        "editTitle": "فرمول اهدا را ویرایش کنید",
+        "helper": "* نام سازمان را وارد کنید. کل باید 100٪ باشد.",
+        "mustEqual100": "باید برابر 100٪",
+        "name": "نام",
+        "namePlaceholder": "یک نام برای این فرمول وارد کنید",
         "nameRequired": "نام الزامی است",
         "nameTooLong": "نام نباید بیش از 255 کاراکتر باشد.",
-        "addAtLeastOne": "حداقل یک موسسه خیریه اضافه کنید",
+        "noCharityResults": "خیریه ای پیدا نشد",
+        "organization": "سازمان",
+        "organizationPlaceholder": "نام سازمان",
         "organizationRequired": "سازماندهی لازم است",
+        "percentage": "درصد (%)",
+        "percentageMax": "درصد نمی تواند از 100 تجاوز کند",
+        "percentageMin": "درصد باید بیشتر از 0 باشد",
         "percentageNumber": "درصد باید یک عدد باشد",
         "percentageRequired": "درصد لازم است",
-        "percentageMin": "درصد باید بیشتر از 0 باشد",
-        "percentageMax": "درصد نمی تواند از 100 تجاوز کند",
-        "totalMustEqual100": "کل تخصیص باید 100٪ باشد",
-        "createTitle": "فرمول اهدا را ایجاد کنید",
-        "editTitle": "فرمول اهدا را ویرایش کنید",
-        "saveConfirmTitle": "ذخیره فرمول کمک مالی",
-        "updateConfirmTitle": "به روز رسانی فرمول اهدا",
-        "confirmYourAction": "اقدام خود را تایید کنید",
-        "updateConfirmMsg": "آیا مطمئن هستید که می خواهید این فرمول کمک مالی را به روز کنید؟",
-        "saveConfirmMsg": "آیا مطمئن هستید که می خواهید این فرمول کمک مالی را ذخیره کنید؟",
-        "update": "به روز رسانی",
         "save": "ذخیره کنید",
+        "saveConfirmMsg": "آیا مطمئن هستید که می خواهید این فرمول کمک مالی را ذخیره کنید؟",
+        "saveConfirmTitle": "ذخیره فرمول کمک مالی",
         "saving": "در حال ذخیره...",
-        "cancel": "لغو کنید"
+        "searchingCharities": "جستجوی مؤسسات خیریه تأیید شده ایالات متحده...",
+        "totalAllocation": "کل تخصیص: {total}%",
+        "totalMustEqual100": "کل تخصیص باید 100٪ باشد",
+        "update": "به روز رسانی",
+        "updateConfirmMsg": "آیا مطمئن هستید که می خواهید این فرمول کمک مالی را به روز کنید؟",
+        "updateConfirmTitle": "به روز رسانی فرمول اهدا"
     },
     "donate": {
         "title": "کمک مالی از طریق فرمول",
@@ -408,7 +411,7 @@
         "allDonations": "همه کمک های مالی",
         "allDonationsSubtitle": "مشاهده و جستجوی همه سوابق کمک مالی",
         "searchDonorPlaceholder": "جستجو بر اساس اهداکننده، ایمیل، یا شناسه پرداخت...",
-        "allStatus": "همه وضعیت‌ها",
+        "allStatus": "همه وضعیت",
         "completed": "تکمیل شد",
         "expired": "منقضی شده است",
         "failed": "شکست خورد",
@@ -522,8 +525,8 @@
         "effectiveAtDonation": "در زمان اهدا موثر است",
         "pay": "پرداخت کنید",
         "loadingHistory": "در حال بارگیری تاریخچه...",
-        "noData": "داده‌ای وجود ندارد",
-        "failedToLoadPayouts": "بارگیری تخصیص‌های پرداخت ناموفق بود",
+        "noData": "داده ای وجود ندارد",
+        "failedToLoadPayouts": "بارگیری تخصیص پرداخت انجام نشد",
         "organizations": "سازمان ها",
         "organizationsSubtitle": "سازمان های خیریه ثبت شده و تأیید پرداخت آنها را مدیریت کنید",
         "transactionLogs": "گزارش معاملات",
@@ -563,7 +566,17 @@
         "subject": "موضوع",
         "actor": "بازیگر",
         "changes": "تغییرات",
-        "note": "توجه داشته باشید"
+        "note": "توجه داشته باشید",
+        "syncStatuses": "همگام سازی وضعیت ها",
+        "syncing": "در حال همگام سازی...",
+        "failedToSync": "همگام‌سازی وضعیت‌های پرداخت انجام نشد",
+        "payoutStatusPaid": "پرداخت شده است",
+        "payoutStatusPending": "در انتظار",
+        "payoutStatusFailed": "شکست خورد",
+        "website": "وب سایت",
+        "visitSite": "به سایت مراجعه کنید",
+        "createdAt": "ایجاد شد",
+        "verifiedAt": "تایید شده است"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."
@@ -583,7 +596,7 @@
         "title": "عنوان مدال"
     },
     "language": {
-        "loading": "در حال بارگیری…",
+        "loading": "در حال بارگیری...",
         "select": "زبان را انتخاب کنید"
     },
     "menu": {
@@ -604,5 +617,13 @@
         "searching": "جستجوی ویکی دان...",
         "noResults": "هیچ نتیجه جستجویی یافت نشد",
         "placeholder": "جستجو در مقالات..."
+    },
+    "orgConfirm": {
+        "title": "تایید ایمیل",
+        "verifying": "در حال تایید ایمیل شما...",
+        "success": "ایمیل پرداخت برای تایید شد {org}.",
+        "successHint": "این آدرس اکنون پرداخت های کمک مالی را دریافت می کند. متشکرم",
+        "failed": "تأیید ناموفق بود.",
+        "missingToken": "هیچ نشانه تاییدی در این لینک ارائه نشده است."
     }
 }

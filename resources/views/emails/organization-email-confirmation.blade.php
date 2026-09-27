@@ -1,35 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Confirm your PayPal email</title>
-    </head>
-    <body style="margin: 0; padding: 24px; background-color: #f9fafb; font-family: Arial, Helvetica, sans-serif; color: #1f2937;">
-        <div style="max-width: 560px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb;">
-            <h1 style="margin: 0 0 16px; font-size: 22px; color: #4338ca;">
-                Confirm payouts for {{ $organization->name }}
-            </h1>
-            <p style="font-size: 15px; line-height: 1.6; margin: 0 0 12px;">
-                Wiki Donate wants to send donation payouts for
-                <strong>{{ $organization->name }}</strong>
-                @if ($organization->ein)
-                    (EIN {{ $organization->ein }})
-                @endif
-                to this PayPal address:
-                <strong>{{ $organization->paypal_email }}</strong>
-            </p>
-            <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
-                Please confirm that this address belongs to the organization and
-                can receive payouts:
-            </p>
-            <p style="margin: 0 0 20px;">
-                <a href="{{ $confirmUrl }}" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: bold; padding: 12px 28px; border-radius: 8px;">
-                    Confirm PayPal email
-                </a>
-            </p>
-            <p style="font-size: 13px; line-height: 1.6; margin: 0; color: #6b7280;">
-                This link expires in 7 days. If you did not expect this message, please ignore it — no payouts will be sent.
-            </p>
-        </div>
-    </body>
+<html>
+<head>
+    <title>Confirm your PayPal email - Wiki Donate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        /* Reset */
+        body { margin: 0; padding: 0; background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+        table { border-collapse: collapse; }
+        a { text-decoration: none; }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f5;">
+    <!-- Main container -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f5; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <!-- Email card -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 500px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;">
+                    <!-- Header with gradient -->
+                    <tr>
+                        <td style="padding: 32px 24px; text-align: center; background-color: #6366f1; background: linear-gradient(135deg, #4f46e5, #9333ea);">
+                            <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #ffffff;">Confirm payouts for {{ $organization->name }}</h1>
+                            <p style="margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.9);">One click to enable donation payouts</p>
+                        </td>
+                    </tr>
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 32px 24px;">
+                            <p style="margin: 0 0 16px 0; font-size: 16px; color: #374151; line-height: 1.5;">Wiki Donate wants to send donation payouts for <strong>{{ $organization->name }}</strong>@if ($organization->ein) (EIN {{ $organization->ein }})@endif to this PayPal address: <strong>{{ $organization->paypal_email }}</strong></p>
+                            <p style="margin: 0 0 16px 0; font-size: 16px; color: #374151; line-height: 1.5;">Please confirm that this address belongs to the organization and can receive payouts:</p>
+                            <!-- Button -->
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="padding: 8px 0 24px 0;">
+                                        <a href="{{ $confirmUrl }}" style="display: inline-block; background-color: #6366f1; background: linear-gradient(135deg, #4f46e5, #9333ea); color: #ffffff; font-weight: 600; font-size: 16px; padding: 14px 28px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);">Confirm PayPal email</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- Fallback link -->
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280;">If the button doesn't work, copy and paste this link into your browser:</p>
+                            <p style="margin: 0 0 24px 0; font-size: 14px; color: #4f46e5; word-break: break-all;">{{ $confirmUrl }}</p>
+                            <!-- Expiry notice -->
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280;">This link will expire in 7 days.</p>
+                            <p style="margin: 0; font-size: 14px; color: #6b7280;">If you did not expect this message, please ignore it — no payouts will be sent.</p>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 0 24px 32px 24px;">
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0 0 16px 0;">
+                            <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center;">- The Wiki Donate Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
 </html>
