@@ -47,6 +47,19 @@ return new class extends Migration
             });
         }
 
+        // Fresh installs (2026_09_15 without FK + 2026_09_26 deferred FK)
+        // already have the FK, but ensure it exists for any path where the
+        // column exists without its constraint. Idempotent via try/catch.
+        if (Schema::hasTable('organizations') && Schema::hasColumn('organization_payouts', 'organization_id')) {
+            try {
+                Schema::table('organization_payouts', function (Blueprint $table) {
+                    $table->foreign('organization_id')->references('id')->on('organizations')->nullOnDelete();
+                });
+            } catch (Throwable $e) {
+                // FK already exists — safe to ignore.
+            }
+        }
+
         // Legacy tables defined paid_at as NOT NULL without a default, which
         // rejects pending rows (paid only when PayPal confirms). Raw ALTER:
         // doctrine/dbal is not installed so change() is unavailable. MySQL
@@ -69,7 +82,11 @@ return new class extends Migration
 
         Schema::table('organization_payouts', function (Blueprint $table) {
             // Drop FK before its column (MySQL refuses otherwise).
-            $table->dropForeign(['organization_id']);
+            try {
+                $table->dropForeign(['organization_id']);
+            } catch (Throwable $e) {
+                // No FK present — safe to ignore on rollback.
+            }
             foreach (['failure_reason', 'provider_status', 'payout_item_id', 'payout_batch_id', 'destination_paypal_email', 'organization_id'] as $column) {
                 if (Schema::hasColumn('organization_payouts', $column)) {
                     $table->dropColumn($column);

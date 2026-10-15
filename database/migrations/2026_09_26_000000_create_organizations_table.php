@@ -27,6 +27,19 @@ return new class extends Migration
             $table->foreignId('updated_by_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
+
+        // Fresh installs create organization_payouts (2026_09_15) before this
+        // table exists, so the registry FK is deferred until now. Wrap in
+        // try/catch to stay idempotent on databases that already have it.
+        if (Schema::hasTable('organization_payouts') && Schema::hasColumn('organization_payouts', 'organization_id')) {
+            try {
+                Schema::table('organization_payouts', function (Blueprint $table) {
+                    $table->foreign('organization_id')->references('id')->on('organizations')->nullOnDelete();
+                });
+            } catch (Throwable $e) {
+                // FK already exists — safe to ignore.
+            }
+        }
     }
 
     /**

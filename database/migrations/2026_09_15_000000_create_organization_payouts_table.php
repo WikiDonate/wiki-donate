@@ -26,7 +26,12 @@ return new class extends Migration
             $table->string('organization_key');
             // Resolved registry entry for this allocation (nullable for
             // legacy rows created before the registry existed).
-            $table->foreignId('organization_id')->nullable()->constrained('organizations')->nullOnDelete();
+            // NOTE: no ->constrained() here — the `organizations` table is
+            // created by a later migration (2026_09_26), and MySQL requires
+            // the referenced table to exist. The FK is added conditionally
+            // below on incremental runs and in the organizations migration
+            // for fresh databases.
+            $table->foreignId('organization_id')->nullable();
             // Frozen destination so history stays readable even if the org's
             // PayPal email changes later. Ledger remains append-only.
             $table->string('destination_paypal_email')->nullable();
@@ -52,6 +57,15 @@ return new class extends Migration
             $table->index(['donation_formula_id', 'organization_key']);
             $table->index('payout_item_id');
         });
+
+        // Add the registry FK only when the referenced table already exists
+        // (incremental migrate path). Fresh installs add it after the
+        // organizations table is created — see 2026_09_26 migration.
+        if (Schema::hasTable('organizations')) {
+            Schema::table('organization_payouts', function (Blueprint $table) {
+                $table->foreign('organization_id')->references('id')->on('organizations')->nullOnDelete();
+            });
+        }
     }
 
     /**
