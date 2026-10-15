@@ -2,6 +2,7 @@
 
 namespace App\Services\Charity;
 
+use App\Models\Organization;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -9,17 +10,21 @@ use Illuminate\Support\Facades\Log;
 /**
  * Verified US-charity autocomplete for donation formulas.
  *
- * Only organizations with a valid EIN are ever returned — EIN-less rows
- * cannot be selected, so every saved formula row identifies a real,
- * donatable US charity.
+ * External directory results (Charity Navigator / ProPublica) are EIN-only
+ * so every selectable row identifies a real, donatable US charity. Local
+ * registry orgs with payout_status=verified are merged first — including
+ * admin-verified custom names without an EIN — so a verification immediately
+ * makes the org selectable in the formula dropdown.
  *
  * Primary: Charity Navigator (rated charities first = popular, established
  * orgs). Requires free self-serve keys; when absent, or on any upstream
  * failure, degrades to the ProPublica Nonprofit Explorer (IRS data, no key).
  *
- * Results are cached for one hour per normalized query, and only non-empty
- * results are cached so a failed call can never poison a query. Never
- * throws: worst case is an empty list with free-text entry as fallback.
+ * Only external results are cached (one hour per normalized query); local
+ * registry hits are always fresh so verification shows up immediately, and
+ * only non-empty external results are cached so a failed call can never
+ * poison a query. Never throws: worst case is an empty list with free-text
+ * entry as fallback.
  */
 class VerifiedCharitySearchService
 {
@@ -32,7 +37,7 @@ class VerifiedCharitySearchService
     private const RESULT_LIMIT = 10;
 
     /**
-     * @return array<int, array{name: string, ein: string, city: string|null, state: string|null, rating: float|null, source: string}>
+     * @return array<int, array{name: string, ein: string|null, city: string|null, state: string|null, rating: float|null, source: string}>
      */
     public function search(string $query): array
     {
@@ -42,7 +47,76 @@ class VerifiedCharitySearchService
             return [];
         }
 
-        $cacheKey = 'verified_charity_search:'.md5(mb_strtolower($query));
+        $external = $this->cachedExternalSearch($query);
+        $local = $this->searchLocalRegistry($query);
+
+        if (empty($local)) {
+            return $external;
+        }
+
+        // Local verified orgs first; skip external dupes (same EIN or name).
+        $seenEin = [];
+        $seenName = [];
+        foreach ($local as $row) {
+            if (! empty($row['ein'])) {
+                $seenEin[$row['ein']] = true;
+            }
+            $seenName[Organization::normalizeName($row['name'])] = true;
+        }
+
+        $merged = $local;
+        foreach ($external as $row) {
+            $ein = $row['ein'] ?? null;
+            $nameKey = Organization::normalizeName($row['name'] ?? '');
+            if (($ein && isset($seenEin[$ein])) || isset($seenName[$nameKey])) {
+                continue;
+            }
+            $merged[] = $row;
+            if (count($merged) >= self::RESULT_LIMIT) {
+                break;
+            }
+        }
+
+        return array_slice($merged, 0, self::RESULT_LIMIT);
+    }
+
+    /**
+     * Admin-verified local orgs matching the query — always fresh (never
+     * cached) so a verification is selectable immediately.
+     */
+    private function searchLocalRegistry(string $query): array
+    {
+        try {
+            $orgs = Organization::query()
+                ->where('payout_status', 'verified')
+                ->where(function ($q) use ($query) {
+                    $q->where('name', 'like', '%'.$query.'%')
+                        ->orWhere('ein', 'like', '%'.$query.'%');
+                })
+                ->orderBy('name')
+                ->limit(self::RESULT_LIMIT)
+                ->get();
+        } catch (\Throwable $e) {
+            Log::warning('Local organization search failed: '.$e->getMessage(), ['query' => $query]);
+
+            return [];
+        }
+
+        return $orgs->map(fn (Organization $org) => [
+            'name' => $org->name,
+            'ein' => $org->ein,
+            'city' => $org->city,
+            'state' => $org->state,
+            'website' => $org->website,
+            'rating' => null,
+            'source' => 'local',
+            'verified' => true,
+        ])->all();
+    }
+
+    private function cachedExternalSearch(string $query): array
+    {
+        $cacheKey = 'verified_charity_search:external:'.md5(mb_strtolower($query));
 
         $cached = Cache::get($cacheKey);
         if (is_array($cached)) {

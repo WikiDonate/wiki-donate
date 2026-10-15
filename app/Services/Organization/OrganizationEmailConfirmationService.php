@@ -97,7 +97,7 @@ class OrganizationEmailConfirmationService
 
     public function confirmUrl(Organization $organization): string
     {
-        $base = rtrim((string) config('app.frontend_url', config('app.url')), '/');
+        $base = rtrim((string) (config('app.frontend_url') ?: config('app.url')), '/');
 
         return $base.'/organization/confirm-email?token='.$organization->paypal_confirm_token;
     }

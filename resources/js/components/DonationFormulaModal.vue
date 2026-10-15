@@ -42,6 +42,9 @@
                                 @update:model-value="field.value.organization = $event"
                                 @select="onOrgSelect(index, $event)"
                             />
+                            <div v-if="field.value.ein" class="mt-1.5 flex items-center gap-2">
+                                <OrganizationStatusBadge :verified="true" />
+                            </div>
                         </div>
                         <div class="col-span-10 sm:col-span-4">
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
@@ -161,6 +164,7 @@
         :message-title="t('formula.confirmYourAction')"
         :message="props.isEdit ? t('formula.updateConfirmMsg') : t('formula.saveConfirmMsg')"
         :confirm-text="props.isEdit ? t('formula.update') : t('formula.save')"
+        :cancel-text="t('formula.cancel')"
         :is-loading="localIsSaving || props.isSaving"
         @confirm="confirmSave"
     />
@@ -174,6 +178,7 @@
     import FormTextarea from '~/components/FormTextarea.vue'
     import ConfirmModal from '~/components/ConfirmModal.vue'
     import OrganizationSelect from '~/components/OrganizationSelect.vue'
+    import OrganizationStatusBadge from '~/components/OrganizationStatusBadge.vue'
 
     const { t } = useI18n()
 

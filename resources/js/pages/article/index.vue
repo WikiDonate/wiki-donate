@@ -124,10 +124,18 @@
                                 <div
                                     v-for="(item, i) in formula.formula"
                                     :key="i"
-                                    class="flex justify-between items-center text-sm border-b border-gray-50 pb-2"
+                                    class="flex justify-between items-center gap-2 text-sm border-b border-gray-50 pb-2"
                                 >
-                                    <span class="text-gray-700">{{ item.organization }}</span>
-                                    <span class="font-semibold text-indigo-600"
+                                    <span class="flex items-center gap-2 min-w-0">
+                                        <span class="text-gray-700 truncate">{{
+                                            item.organization
+                                        }}</span>
+                                        <OrganizationStatusBadge
+                                            :status="item.payout_status"
+                                            :verified="item.is_verified ?? !!item.ein"
+                                        />
+                                    </span>
+                                    <span class="font-semibold text-indigo-600 shrink-0"
                                         >{{ item.percentage }}%</span
                                     >
                                 </div>

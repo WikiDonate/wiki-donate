@@ -71,7 +71,7 @@
                         </template>
                         <template #cell-status="{ row }">
                             <AdminBadge
-                                :variant="row.payout_status === 'verified' ? 'success' : 'amber'"
+                                :variant="row.payout_status === 'verified' ? 'success' : 'danger'"
                                 :text="
                                     row.payout_status === 'verified'
                                         ? t('admin.verified')

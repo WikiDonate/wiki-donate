@@ -4,6 +4,7 @@ namespace App\Services\Organization;
 
 use App\Models\Organization;
 use App\Models\TransactionLog;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -22,9 +23,27 @@ class OrganizationRegistryService
      */
     public static function upsertFromFormulaRows(array $rows, ?int $actorId = null): array
     {
-        return collect($rows)
-            ->map(function (array $row) use ($actorId) {
+        return self::upsertFromFormulaRowsWithReport($rows, $actorId)['rows'];
+    }
+
+    /**
+     * Same as upsertFromFormulaRows but also reports newly created orgs so
+     * callers can notify the creator/admins about custom (unverified) names.
+     *
+     * @param  array<int, array{organization: string, percentage: float|int, ein?: string|null, organization_id?: int|null}>  $rows
+     * @return array{rows: array<int, array>, created: Collection<int, Organization>}
+     */
+    public static function upsertFromFormulaRowsWithReport(array $rows, ?int $actorId = null): array
+    {
+        $created = collect();
+
+        $mapped = collect($rows)
+            ->map(function (array $row) use ($actorId, $created) {
                 $organization = self::upsertFromFormulaRow($row, $actorId);
+
+                if ($organization->wasRecentlyCreated) {
+                    $created->push($organization);
+                }
 
                 TransactionLog::record('organization.upserted', [
                     'subject_type' => Organization::class,
@@ -43,9 +62,13 @@ class OrganizationRegistryService
                     'ein' => $organization->ein,
                     'website' => $organization->website,
                     'organization_id' => $organization->id,
+                    'payout_status' => $organization->payout_status ?: 'unverified',
+                    'is_verified' => $organization->isVerified(),
                 ];
             })
             ->all();
+
+        return ['rows' => $mapped, 'created' => $created->unique('id')->values()];
     }
 
     /**
@@ -90,6 +113,7 @@ class OrganizationRegistryService
                 'normalized_name' => $normalized,
                 'ein' => $ein,
                 'website' => $website,
+                'payout_status' => 'unverified',
                 'created_by_id' => $actorId,
                 'updated_by_id' => $actorId,
             ]);

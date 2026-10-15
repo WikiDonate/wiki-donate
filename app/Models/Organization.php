@@ -110,4 +110,13 @@ class Organization extends Model
     {
         return $this->payout_status === 'verified' && filled($this->paypal_email);
     }
+
+    /**
+     * Whether the registry considers this org verified.
+     * Custom (free-text) orgs stay unverified until an admin verifies them.
+     */
+    public function isVerified(): bool
+    {
+        return $this->payout_status === 'verified' && $this->verified_at !== null;
+    }
 }

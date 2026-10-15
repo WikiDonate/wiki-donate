@@ -335,7 +335,12 @@
         "totalMustEqual100": "Total allocation must equal 100%",
         "update": "Update",
         "updateConfirmMsg": "Are you sure you want to update this donation formula?",
-        "updateConfirmTitle": "Update Donation Formula"
+        "updateConfirmTitle": "Update Donation Formula",
+        "verified": "Verified",
+        "verifiedHint": "This organization is verified for payouts",
+        "needsVerification": "Needs verification",
+        "needsVerificationHint": "Custom organization — pending admin verification",
+        "customOrgHint": "Custom name — you and the admin will be emailed for verification."
     },
     "donate": {
         "title": "Donate via Formula",

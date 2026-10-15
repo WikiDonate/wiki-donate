@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\TransactionLog;
+use App\Services\Organization\CustomOrganizationNotifier;
 use App\Services\Organization\OrganizationRegistryService;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,6 +17,42 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DonationFormulaController extends Controller
 {
+    /**
+     * Attach live verification status to formula rows so the SPA can render
+     * green (verified) / red (needs verification) badges without an extra
+     * lookup. Backfills rows saved before payout_status was persisted.
+     */
+    private function enrichWithVerification(DonationFormula $formula): DonationFormula
+    {
+        $rows = $formula->formula ?? [];
+        if (! is_array($rows) || $rows === []) {
+            return $formula;
+        }
+
+        $ids = collect($rows)->pluck('organization_id')->filter()->unique()->values();
+        $orgs = $ids->isEmpty()
+            ? collect()
+            : Organization::whereIn('id', $ids)->get()->keyBy('id');
+
+        $formula->formula = collect($rows)->map(function ($row) use ($orgs) {
+            $org = isset($row['organization_id']) ? $orgs->get($row['organization_id']) : null;
+            // Live registry is source of truth: an admin verify/unverify after
+            // the formula was saved must reflect immediately, not the stored
+            // snapshot from creation time.
+            if ($org) {
+                $row['payout_status'] = $org->payout_status ?: 'unverified';
+                $row['is_verified'] = $org->isVerified();
+            } else {
+                $row['payout_status'] = $row['payout_status'] ?: 'unverified';
+                $row['is_verified'] = $row['is_verified'] ?? $row['payout_status'] === 'verified';
+            }
+
+            return $row;
+        })->all();
+
+        return $formula;
+    }
+
     /**
      * Display a listing of donation formulas for a specified article.
      */
@@ -35,7 +72,8 @@ class DonationFormulaController extends Controller
             // Return all formulas for this article
             $formulas = DonationFormula::with('user:id,username')
                 ->where('article_id', $article->id)
-                ->get();
+                ->get()
+                ->each(fn ($f) => $this->enrichWithVerification($f));
 
             return response()->json([
                 'success' => true,
@@ -67,6 +105,8 @@ class DonationFormulaController extends Controller
                     'errors' => ['Donation formula not found'],
                 ], Response::HTTP_NOT_FOUND);
             }
+
+            $this->enrichWithVerification($formula);
 
             return response()->json([
                 'success' => true,
@@ -214,10 +254,11 @@ class DonationFormulaController extends Controller
             }
 
             // Upsert organizations and persist organization_id back into rows.
-            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+            $report = OrganizationRegistryService::upsertFromFormulaRowsWithReport(
                 $request->formula,
                 Auth::id(),
             );
+            $formulaRows = $report['rows'];
 
             // Create new formula (not updateOrCreate anymore)
             $formula = DonationFormula::create([
@@ -227,6 +268,8 @@ class DonationFormulaController extends Controller
                 'formula' => $formulaRows,
                 'details' => $request->details ?? null,
             ]);
+
+            CustomOrganizationNotifier::notifyIfNeeded($report['created'], $formula, $formula->user ?? Auth::user());
 
             TransactionLog::record('formula.created', [
                 'subject_type' => DonationFormula::class,
@@ -345,10 +388,11 @@ class DonationFormulaController extends Controller
             $hadCompletedDonation = $formula->hasCompletedDonation();
 
             // Upsert organizations and persist organization_id back into rows.
-            $formulaRows = OrganizationRegistryService::upsertFromFormulaRows(
+            $report = OrganizationRegistryService::upsertFromFormulaRowsWithReport(
                 $request->formula,
                 Auth::id(),
             );
+            $formulaRows = $report['rows'];
 
             $beforeFormula = $formula->formula;
             $formula->update([
@@ -377,6 +421,8 @@ class DonationFormulaController extends Controller
                 ])->save();
                 $formula->refresh();
             }
+
+            CustomOrganizationNotifier::notifyIfNeeded($report['created'], $formula, Auth::user());
 
             return response()->json([
                 'success' => true,

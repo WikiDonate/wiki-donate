@@ -40,14 +40,13 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
 
-    const { t } = useI18n()
+    const { t, te } = useI18n()
 
     // Callers pass either i18n keys ('confirmModal.title') or pre-resolved
-    // / interpolated strings (`Title: ${...}`). Only translate key-shaped
-    // values — re-translating a resolved string warns ("Not found ... key")
-    // and freezes the modal in the wrong language.
-    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
-    const tx = (v) => (isKey(v) ? t(v) : (v ?? ''))
+    // / interpolated strings (`Title: ${...}`). Only translate values that
+    // are existing i18n keys — re-translating a resolved string warns
+    // ("Not found ... key") and freezes the modal in the wrong language.
+    const tx = (v) => (typeof v === 'string' && v && te(v) ? t(v) : (v ?? ''))
 
     defineProps({
         modelValue: {
