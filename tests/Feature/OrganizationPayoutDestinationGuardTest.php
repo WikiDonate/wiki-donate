@@ -8,6 +8,7 @@ use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -57,6 +58,34 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
         $token = $this->admin->createToken('test')->plainTextToken;
 
         return $this->withHeader('Authorization', "Bearer {$token}");
+    }
+
+    /**
+     * Hermetic PayPal stub: success-path tests must not depend on real
+     * sandbox credentials (absent in CI), otherwise a provider rejection
+     * correctly surfaces as 422 instead of the asserted 201.
+     */
+    private function fakePayPalSuccess(): void
+    {
+        Http::fake([
+            '*/v1/oauth2/token' => Http::response([
+                'access_token' => 'fake-token',
+                'expires_in' => 3600,
+                'token_type' => 'Bearer',
+            ]),
+            '*/v1/payments/payouts' => Http::response([
+                'batch_header' => [
+                    'payout_batch_id' => 'BATCH-SUCCESS',
+                    'batch_status' => 'PENDING',
+                ],
+                'items' => [[
+                    'payout_item_id' => 'ITEM-SUCCESS',
+                    'sender_item_id' => 'dummy',
+                    'transaction_status' => 'SUCCESS',
+                    'errors' => null,
+                ]],
+            ]),
+        ]);
     }
 
     public function test_payout_blocked_when_organization_not_registered(): void
@@ -136,6 +165,8 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
 
     public function test_payout_succeeds_when_verified_and_paypal_email_present(): void
     {
+        $this->fakePayPalSuccess();
+
         $organization = Organization::create([
             'name' => 'Guard Charity',
             'normalized_name' => Organization::normalizeName('Guard Charity'),
@@ -167,6 +198,8 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
 
     public function test_payout_lookup_falls_back_to_name_when_organization_id_missing(): void
     {
+        $this->fakePayPalSuccess();
+
         $organization = Organization::create([
             'name' => 'Guard Charity',
             'normalized_name' => Organization::normalizeName('Guard Charity'),
