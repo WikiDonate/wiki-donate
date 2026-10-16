@@ -487,7 +487,7 @@
         "liveBalance": "లైవ్ బ్యాలెన్స్:",
         "formulaLabel": "ఫార్ములా: {name}",
         "amountLabel": "మొత్తం ({currency})",
-        "noteLabel": "గమనిక (బ్యాంక్ / bKash ref)",
+        "noteLabel": "గమనిక",
         "recordPayout": "రికార్డ్ చెల్లింపు",
         "paying": "చెల్లిస్తోంది...",
         "payoutHistory": "చెల్లింపు చరిత్ర - {org}",

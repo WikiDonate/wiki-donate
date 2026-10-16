@@ -487,7 +487,7 @@
         "liveBalance": "Salio hai:",
         "formulaLabel": "Mfumo: {name}",
         "amountLabel": "Kiasi ({currency})",
-        "noteLabel": "Kumbuka (benki / bKash ref)",
+        "noteLabel": "Kumbuka",
         "recordPayout": "Rekodi Malipo",
         "paying": "Inalipa...",
         "payoutHistory": "Historia ya Malipo - {org}",

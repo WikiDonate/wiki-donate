@@ -487,7 +487,7 @@
         "liveBalance": "நேரடி இருப்பு:",
         "formulaLabel": "சூத்திரம்: {name}",
         "amountLabel": "தொகை ({currency})",
-        "noteLabel": "குறிப்பு (வங்கி / bKash ref)",
+        "noteLabel": "குறிப்பு",
         "recordPayout": "பதிவு செலுத்துதல்",
         "paying": "செலுத்துகிறது…",
         "payoutHistory": "பணம் செலுத்துதல் வரலாறு - {org}",

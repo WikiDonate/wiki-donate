@@ -9,12 +9,11 @@
 
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input
+                    <AdminSearchInput
                         v-model="query"
-                        type="text"
                         :placeholder="t('admin.searchOrganizationsPlaceholder')"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                        @keyup.enter="loadPage(1)"
+                        @enter="loadPage(1)"
+                        @clear="loadPage(1)"
                     />
                     <select
                         v-model="statusFilter"
@@ -140,23 +139,35 @@
         </div>
 
         <!-- Edit modal -->
-        <div
-            v-if="editTarget"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-            @click.self="editTarget = null"
+        <!-- Edit modal -->
+        <AdminModal
+            :model-value="!!editTarget"
+            :title="t('admin.editOrganization')"
+            @close="editTarget = null"
         >
-            <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
-                <h3 class="text-lg font-bold text-gray-800">{{ t('admin.editOrganization') }}</h3>
+            <template v-if="editTarget">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         {{ t('admin.paypalEmailLabel') }}
+                        <span class="text-red-500">*</span>
                     </label>
                     <input
                         v-model="editPaypalEmail"
+                        v-bind="editPaypalEmailProps"
                         type="email"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        :class="[
+                            'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                            orgFieldErrors.paypal_email
+                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                : 'border-gray-300',
+                        ]"
                     />
-                    <p class="text-xs text-gray-500 mt-1">{{ t('admin.paypalEmailHint') }}</p>
+                    <p v-if="orgFieldErrors.paypal_email" class="text-xs text-red-600 mt-1">
+                        {{ orgFieldErrors.paypal_email }}
+                    </p>
+                    <p v-else class="text-xs text-gray-500 mt-1">
+                        {{ t('admin.paypalEmailHint') }}
+                    </p>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -165,9 +176,18 @@
                         </label>
                         <input
                             v-model="editCity"
+                            v-bind="editCityProps"
                             type="text"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.city
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
                         />
+                        <p v-if="orgFieldErrors.city" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.city }}
+                        </p>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
@@ -175,9 +195,18 @@
                         </label>
                         <input
                             v-model="editState"
+                            v-bind="editStateProps"
                             type="text"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.state
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
                         />
+                        <p v-if="orgFieldErrors.state" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.state }}
+                        </p>
                     </div>
                 </div>
                 <div>
@@ -186,46 +215,85 @@
                     </label>
                     <input
                         v-model="editCountry"
+                        v-bind="editCountryProps"
                         type="text"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        :class="[
+                            'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                            orgFieldErrors.country
+                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                : 'border-gray-300',
+                        ]"
                     />
+                    <p v-if="orgFieldErrors.country" class="text-xs text-red-600 mt-1">
+                        {{ orgFieldErrors.country }}
+                    </p>
                 </div>
                 <p v-if="editError" class="text-xs text-red-600">{{ editError }}</p>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button
-                        class="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
-                        @click="editTarget = null"
-                    >
-                        {{ t('common.cancel') }}
-                    </button>
-                    <button
-                        class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40"
-                        :disabled="saving"
-                        @click="saveEdit"
-                    >
-                        {{ saving ? t('common.saving') : t('common.save') }}
-                    </button>
-                </div>
-            </div>
-        </div>
+            </template>
+            <template #footer>
+                <button
+                    class="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+                    @click="editTarget = null"
+                >
+                    {{ t('common.cancel') }}
+                </button>
+                <button
+                    class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40"
+                    :disabled="saving"
+                    @click="saveEdit"
+                >
+                    {{ saving ? t('common.saving') : t('common.save') }}
+                </button>
+            </template>
+        </AdminModal>
     </main>
 </template>
 
 <script setup>
     import { ref, onMounted } from 'vue'
     import { useI18n } from 'vue-i18n'
+    import { useForm } from 'vee-validate'
+    import * as yup from 'yup'
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import AdminBadge from '~/components/admin/AdminBadge.vue'
+    import AdminModal from '~/components/admin/AdminModal.vue'
+    import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'
     import Pagination from '~/components/Pagination.vue'
     import Button from '~/components/Button.vue'
 
     const { notifySuccess, notifyError } = useToastify()
     const { t } = useI18n()
+
+    // vee-validate + yup, same stack as the rest of the app. Mirrors the
+    // backend rules in Admin\OrganizationController::update.
+    const orgSchema = yup.object({
+        paypal_email: yup
+            .string()
+            .transform((v) => (v === '' ? null : v))
+            .required(t('admin.paypalEmailRequired'))
+            .email(t('auth.emailInvalid'))
+            .max(255, t('admin.fieldTooLong')),
+        city: yup.string().nullable().max(255, t('admin.fieldTooLong')),
+        state: yup.string().nullable().max(255, t('admin.fieldTooLong')),
+        country: yup.string().nullable().max(255, t('admin.fieldTooLong')),
+    })
+
+    const {
+        handleSubmit: handleOrgSubmit,
+        defineField: defineOrgField,
+        errors: orgFieldErrors,
+        resetForm: resetOrgForm,
+    } = useForm({ validationSchema: orgSchema })
+
+    const [editPaypalEmail, editPaypalEmailProps] = defineOrgField('paypal_email')
+    const [editCity, editCityProps] = defineOrgField('city')
+    const [editState, editStateProps] = defineOrgField('state')
+    const [editCountry, editCountryProps] = defineOrgField('country')
 
     useHead({ title: t('admin.organizations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -249,10 +317,6 @@
     ]
 
     const editTarget = ref(null)
-    const editPaypalEmail = ref('')
-    const editCity = ref('')
-    const editState = ref('')
-    const editCountry = ref('')
     const saving = ref(false)
     const editError = ref('')
 
@@ -277,22 +341,26 @@
 
     const openEdit = (row) => {
         editTarget.value = row
-        editPaypalEmail.value = row.paypal_email || ''
-        editCity.value = row.city || ''
-        editState.value = row.state || ''
-        editCountry.value = row.country || ''
+        resetOrgForm({
+            values: {
+                paypal_email: row.paypal_email || '',
+                city: row.city || '',
+                state: row.state || '',
+                country: row.country || '',
+            },
+        })
         editError.value = ''
     }
 
-    const saveEdit = async () => {
+    const saveEdit = handleOrgSubmit(async (values) => {
         saving.value = true
         editError.value = ''
         try {
             const res = await adminService.updateOrganization(editTarget.value.id, {
-                paypal_email: editPaypalEmail.value || null,
-                city: editCity.value || null,
-                state: editState.value || null,
-                country: editCountry.value || null,
+                paypal_email: values.paypal_email || null,
+                city: values.city || null,
+                state: values.state || null,
+                country: values.country || null,
             })
             if (res.success) {
                 notifySuccess(t('admin.organizationUpdated'))
@@ -307,7 +375,7 @@
         } finally {
             saving.value = false
         }
-    }
+    })
 
     const verify = async (row) => {
         try {

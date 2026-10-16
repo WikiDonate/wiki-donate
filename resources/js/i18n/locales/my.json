@@ -487,7 +487,7 @@
         "liveBalance": "တိုက်ရိုက်လက်ကျန်-",
         "formulaLabel": "ဖော်မြူလာ- {name}",
         "amountLabel": "ပမာဏ ({currency})",
-        "noteLabel": "မှတ်ချက် (ဘဏ်/ bKash ref)",
+        "noteLabel": "မှတ်ချက်",
         "recordPayout": "ငွေပေးချေမှုမှတ်တမ်း",
         "paying": "ပေးဆောင်နေသည်...",
         "payoutHistory": "ပေးချေမှုမှတ်တမ်း— {org}",

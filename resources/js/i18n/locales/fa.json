@@ -487,7 +487,7 @@
         "liveBalance": "تعادل زنده:",
         "formulaLabel": "فرمول: {name}",
         "amountLabel": "مقدار ({currency})",
-        "noteLabel": "یادداشت (بانک / bKash ref)",
+        "noteLabel": "یادداشت",
         "recordPayout": "ثبت پرداخت",
         "paying": "در حال پرداخت…",
         "payoutHistory": "تاریخچه پرداخت - {org}",

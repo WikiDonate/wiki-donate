@@ -487,7 +487,7 @@
         "liveBalance": "Solde en direct :",
         "formulaLabel": "Formule : {name}",
         "amountLabel": "Montant ({currency})",
-        "noteLabel": "Note (réf banque/bKash)",
+        "noteLabel": "Note",
         "recordPayout": "Enregistrer le paiement",
         "paying": "Payer…",
         "payoutHistory": "Historique des paiements — {org}",

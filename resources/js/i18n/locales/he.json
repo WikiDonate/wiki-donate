@@ -487,7 +487,7 @@
         "liveBalance": "מאזן חי:",
         "formulaLabel": "נוסחה: {name}",
         "amountLabel": "כמות ({currency})",
-        "noteLabel": "הערה (בנק / bKash ref)",
+        "noteLabel": "הערה",
         "recordPayout": "שיא תשלום",
         "paying": "משלם...",
         "payoutHistory": "היסטוריית תשלומים - {org}",

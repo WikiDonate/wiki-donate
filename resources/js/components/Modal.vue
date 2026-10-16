@@ -45,8 +45,8 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
 
-    const { t } = useI18n()
-    const isKey = (v) => typeof v === 'string' && /^[a-z]+\.[a-zA-Z.]+$/.test(v)
+    const { t, te } = useI18n()
+    const isKey = (v) => typeof v === 'string' && v !== '' && te(v)
 
     defineProps({
         modelValue: {

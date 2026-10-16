@@ -254,7 +254,7 @@ class OrganizationPayoutTest extends TestCase
             'organization_name' => 'Charity A',
             'amount' => 40,
             'currency' => 'usd',
-            'note' => 'bKash ref 123',
+            'note' => 'Bank ref 123',
         ]);
 
         $response->assertCreated();

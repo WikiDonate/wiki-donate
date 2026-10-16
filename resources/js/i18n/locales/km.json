@@ -487,7 +487,7 @@
         "liveBalance": "សមតុល្យបន្តផ្ទាល់៖",
         "formulaLabel": "រូបមន្ត៖ {name}",
         "amountLabel": "ចំនួនទឹកប្រាក់ ({currency})",
-        "noteLabel": "ចំណាំ (ធនាគារ / bKash យោង)",
+        "noteLabel": "ចំណាំ",
         "recordPayout": "កត់ត្រាការទូទាត់",
         "paying": "កំពុងបង់…",
         "payoutHistory": "ប្រវត្តិនៃការទូទាត់ - {org}",

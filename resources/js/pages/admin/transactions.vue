@@ -274,6 +274,10 @@
     }
 
     const loadPage = async (page = 1) => {
+        if (fromDate.value && toDate.value && fromDate.value > toDate.value) {
+            notifyError(t('admin.invalidDateRange'))
+            return
+        }
         loading.value = true
         try {
             const params = buildParams(page)

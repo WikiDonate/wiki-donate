@@ -9,12 +9,11 @@
 
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input
+                    <AdminSearchInput
                         v-model="query"
-                        type="text"
                         :placeholder="t('admin.searchLogsPlaceholder')"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                        @keyup.enter="loadPage(1)"
+                        @enter="loadPage(1)"
+                        @clear="loadPage(1)"
                     />
                     <select
                         v-model="categoryFilter"
@@ -125,6 +124,7 @@
     import { formatDateUTC } from '~/utils/dateFormatUTC'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
+    import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'
     import Pagination from '~/components/Pagination.vue'
     import Button from '~/components/Button.vue'
@@ -144,7 +144,12 @@
     const eventFilter = ref('')
 
     const columns = [
-        { key: 'created_at', label: t('admin.date') },
+        {
+            key: 'created_at',
+            label: t('admin.date'),
+            thClass: 'whitespace-nowrap',
+            tdClass: 'whitespace-nowrap',
+        },
         { key: 'event', label: t('admin.event') },
         { key: 'subject', label: t('admin.subject') },
         { key: 'actor', label: t('admin.actor') },

@@ -10,18 +10,10 @@
             <!-- Filters -->
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <font-awesome-icon
-                            :icon="['fas', 'search']"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                        />
-                        <input
-                            v-model="searchQuery"
-                            type="text"
-                            :placeholder="t('admin.searchDonorPlaceholder')"
-                            class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                        />
-                    </div>
+                    <AdminSearchInput
+                        v-model="searchQuery"
+                        :placeholder="t('admin.searchDonorPlaceholder')"
+                    />
                     <div class="flex gap-3 sm:w-auto w-full">
                         <select
                             v-model="filterStatus"
@@ -38,81 +30,84 @@
 
             <LoadingSpinner v-if="loading" :text="t('admin.loadingDonations')" />
             <template v-else>
-                <AdminTable
-                    :columns="columns"
-                    :rows="donations"
-                    row-key="id"
-                    :empty-text="t('admin.noDonations')"
-                >
-                    <template #cell-source>
-                        <AdminBadge variant="info" text="Checkout" />
-                    </template>
-                    <template #cell-donor="{ row }">
-                        <div>
-                            <span class="font-medium text-sm">{{ row.user }}</span>
-                            <span v-if="row.email" class="block text-xs text-gray-400">{{
-                                row.email
-                            }}</span>
-                        </div>
-                    </template>
-                    <template #cell-amount="{ row }"
-                        >{{ row.currency || 'USD' }} {{ Number(row.amount).toFixed(2) }}</template
+                <div class="px-4 sm:px-6 py-4">
+                    <AdminTable
+                        :columns="columns"
+                        :rows="donations"
+                        row-key="id"
+                        :empty-text="t('admin.noDonations')"
                     >
-                    <template #cell-status="{ row }">
-                        <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
-                    </template>
-                    <template #cell-date="{ row }"
-                        ><span class="text-gray-500 text-xs">{{
-                            formatDateUTC(row.date_raw || row.date)
-                        }}</span></template
-                    >
-                    <template #cell-paymentId="{ row }">
-                        <span class="text-xs text-gray-400 font-mono">{{
-                            row.payment_id || row.stripe_session_id || '—'
-                        }}</span>
-                    </template>
-                    <template #cell-article="{ row }">
-                        <template v-if="row.article">
-                            <NuxtLink
-                                :to="
-                                    row.formula_url ||
-                                    `/article?title=${encodeURIComponent(row.article.slug)}`
-                                "
-                                class="text-indigo-600 hover:text-indigo-800 font-medium text-sm underline"
-                            >
-                                {{ row.article.title }}
-                            </NuxtLink>
+                        <template #cell-source>
+                            <AdminBadge variant="info" text="Checkout" />
                         </template>
-                        <span v-else class="text-xs text-gray-400">—</span>
-                    </template>
-                    <template #cell-action="{ row }">
-                        <button
-                            class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
-                            @click="openDetail(row)"
+                        <template #cell-donor="{ row }">
+                            <div>
+                                <span class="font-medium text-sm">{{ row.user }}</span>
+                                <span v-if="row.email" class="block text-xs text-gray-400">{{
+                                    row.email
+                                }}</span>
+                            </div>
+                        </template>
+                        <template #cell-amount="{ row }"
+                            >{{ row.currency || 'USD' }}
+                            {{ Number(row.amount).toFixed(2) }}</template
                         >
-                            {{ t('common.view') }}
-                        </button>
-                    </template>
-                </AdminTable>
+                        <template #cell-status="{ row }">
+                            <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
+                        </template>
+                        <template #cell-date="{ row }"
+                            ><span class="text-gray-500 text-xs">{{
+                                formatDateUTC(row.date_raw || row.date)
+                            }}</span></template
+                        >
+                        <template #cell-paymentId="{ row }">
+                            <span class="text-xs text-gray-400 font-mono">{{
+                                row.payment_id || row.stripe_session_id || '—'
+                            }}</span>
+                        </template>
+                        <template #cell-article="{ row }">
+                            <template v-if="row.article">
+                                <NuxtLink
+                                    :to="
+                                        row.formula_url ||
+                                        `/article?title=${encodeURIComponent(row.article.slug)}`
+                                    "
+                                    class="text-indigo-600 hover:text-indigo-800 font-medium text-sm underline"
+                                >
+                                    {{ row.article.title }}
+                                </NuxtLink>
+                            </template>
+                            <span v-else class="text-xs text-gray-400">—</span>
+                        </template>
+                        <template #cell-action="{ row }">
+                            <button
+                                class="text-indigo-600 hover:text-indigo-800 font-medium text-xs"
+                                @click="openDetail(row)"
+                            >
+                                {{ t('common.view') }}
+                            </button>
+                        </template>
+                    </AdminTable>
 
-                <div
-                    v-if="meta.lastPage > 1"
-                    class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
-                >
-                    <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        {{
-                            t('report.pageOf', {
-                                current: meta.currentPage,
-                                last: meta.lastPage,
-                                total: meta.total,
-                            })
-                        }}
-                    </span>
-                    <Pagination
-                        :current-page="meta.currentPage"
-                        :total-pages="meta.lastPage"
-                        @page-change="loadPage"
-                    />
+                    <div
+                        v-if="meta.lastPage > 1"
+                        class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
+                    >
+                        <span class="text-sm text-gray-500 order-2 sm:order-1">
+                            {{
+                                t('report.pageOf', {
+                                    current: meta.currentPage,
+                                    last: meta.lastPage,
+                                    total: meta.total,
+                                })
+                            }}
+                        </span>
+                        <Pagination
+                            :current-page="meta.currentPage"
+                            :total-pages="meta.lastPage"
+                            @page-change="loadPage"
+                        />
+                    </div>
                 </div>
             </template>
         </div>
@@ -132,6 +127,7 @@
     import { useToastify } from '~/composables/useToastify'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
+    import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
 
     const { notifyError } = useToastify()
 

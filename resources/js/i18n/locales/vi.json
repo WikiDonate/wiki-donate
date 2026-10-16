@@ -487,7 +487,7 @@
         "liveBalance": "Cân bằng trực tiếp:",
         "formulaLabel": "Công thức: {name}",
         "amountLabel": "Số tiền ({currency})",
-        "noteLabel": "Lưu ý (ngân hàng / bKash ref)",
+        "noteLabel": "Lưu ý",
         "recordPayout": "Ghi lại khoản thanh toán",
         "paying": "Đang thanh toán…",
         "payoutHistory": "Lịch sử thanh toán — {org}",

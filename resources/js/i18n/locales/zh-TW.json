@@ -487,7 +487,7 @@
         "liveBalance": "即時餘額：",
         "formulaLabel": "公式：{name}",
         "amountLabel": "金額（{currency}）",
-        "noteLabel": "注意（銀行/bKash 參考）",
+        "noteLabel": "注意",
         "recordPayout": "創紀錄的支出",
         "paying": "付費…",
         "payoutHistory": "支付歷史記錄 —{org}",

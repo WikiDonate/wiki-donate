@@ -487,7 +487,7 @@
         "liveBalance": "लाइव बैलेंस:",
         "formulaLabel": "सूत्र: {name}",
         "amountLabel": "राशि ({currency})",
-        "noteLabel": "नोट (बैंक / bKash रेफरी)",
+        "noteLabel": "नोट",
         "recordPayout": "भुगतान रिकॉर्ड करें",
         "paying": "भुगतान कर रहा हूँ...",
         "payoutHistory": "भुगतान इतिहास - {org}",

@@ -487,7 +487,7 @@
         "liveBalance": "Saldo hidup:",
         "formulaLabel": "Rumus: {name}",
         "amountLabel": "Jumlah ({currency})",
-        "noteLabel": "Catatan (bank / bKash ref)",
+        "noteLabel": "Catatan",
         "recordPayout": "Rekam Pembayaran",
         "paying": "Membayar…",
         "payoutHistory": "Riwayat Pembayaran — {org}",

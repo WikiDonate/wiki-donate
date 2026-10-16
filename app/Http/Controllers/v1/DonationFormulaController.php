@@ -43,8 +43,8 @@ class DonationFormulaController extends Controller
                 $row['payout_status'] = $org->payout_status ?: 'unverified';
                 $row['is_verified'] = $org->isVerified();
             } else {
-                $row['payout_status'] = $row['payout_status'] ?: 'unverified';
-                $row['is_verified'] = $row['is_verified'] ?? $row['payout_status'] === 'verified';
+                $row['payout_status'] = ($row['payout_status'] ?? null) ?: 'unverified';
+                $row['is_verified'] = $row['is_verified'] ?? ($row['payout_status'] === 'verified');
             }
 
             return $row;

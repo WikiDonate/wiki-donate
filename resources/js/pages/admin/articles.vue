@@ -9,18 +9,10 @@
 
             <div class="px-4 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <font-awesome-icon
-                            :icon="['fas', 'search']"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                        />
-                        <input
-                            v-model="searchQuery"
-                            type="text"
-                            :placeholder="t('admin.searchArticlesPlaceholder')"
-                            class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                        />
-                    </div>
+                    <AdminSearchInput
+                        v-model="searchQuery"
+                        :placeholder="t('admin.searchArticlesPlaceholder')"
+                    />
                     <div class="flex gap-3 sm:w-auto w-full">
                         <select
                             v-model="filterType"
@@ -44,67 +36,69 @@
 
             <LoadingSpinner v-if="loading" :text="t('admin.loadingArticles')" />
             <template v-else>
-                <AdminTable
-                    :columns="columns"
-                    :rows="articles"
-                    row-key="uuid"
-                    :empty-text="t('admin.noArticlesFound')"
-                >
-                    <template #cell-title="{ row }">
-                        <span class="font-medium max-w-xs truncate block">{{ row.title }}</span>
-                    </template>
-                    <template #cell-author="{ row }">
-                        <span class="text-gray-600">{{ row.user?.username || '—' }}</span>
-                    </template>
-                    <template #cell-type="{ row }">
-                        <AdminBadge
-                            :variant="row.type === 'user page' ? 'purple' : 'info'"
-                            :text="row.type || 'article'"
-                        />
-                    </template>
-                    <template #cell-accessType="{ row }">
-                        <AdminBadge
-                            :variant="row.accessType === 'public' ? 'success' : 'amber'"
-                            :text="row.accessType"
-                        />
-                    </template>
-                    <template #cell-updatedAt="{ row }">
-                        <span class="text-gray-500">{{ formatDateUTC(row.updatedAt) }}</span>
-                    </template>
-                    <template #cell-actions="{ row }">
-                        <div class="flex items-center justify-end gap-1">
-                            <NuxtLink
-                                :to="'/article?title=' + encodeURIComponent(row.slug)"
-                                target="_blank"
-                                class="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
-                                :title="t('admin.viewArticle')"
-                            >
-                                <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
-                            </NuxtLink>
-                            <button
-                                class="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
-                                :title="t('admin.deleteArticle')"
-                                @click="confirmDelete(row)"
-                            >
-                                <font-awesome-icon :icon="['fas', 'trash']" class="w-4 h-4" />
-                            </button>
-                        </div>
-                    </template>
-                </AdminTable>
+                <div class="px-4 sm:px-6 py-4">
+                    <AdminTable
+                        :columns="columns"
+                        :rows="articles"
+                        row-key="uuid"
+                        :empty-text="t('admin.noArticlesFound')"
+                    >
+                        <template #cell-title="{ row }">
+                            <span class="font-medium max-w-xs truncate block">{{ row.title }}</span>
+                        </template>
+                        <template #cell-author="{ row }">
+                            <span class="text-gray-600">{{ row.user?.username || '—' }}</span>
+                        </template>
+                        <template #cell-type="{ row }">
+                            <AdminBadge
+                                :variant="row.type === 'user page' ? 'purple' : 'info'"
+                                :text="row.type || 'article'"
+                            />
+                        </template>
+                        <template #cell-accessType="{ row }">
+                            <AdminBadge
+                                :variant="row.accessType === 'public' ? 'success' : 'amber'"
+                                :text="row.accessType"
+                            />
+                        </template>
+                        <template #cell-updatedAt="{ row }">
+                            <span class="text-gray-500">{{ formatDateUTC(row.updatedAt) }}</span>
+                        </template>
+                        <template #cell-actions="{ row }">
+                            <div class="flex items-center justify-end gap-1">
+                                <NuxtLink
+                                    :to="'/article?title=' + encodeURIComponent(row.slug)"
+                                    target="_blank"
+                                    class="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
+                                    :title="t('admin.viewArticle')"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'eye']" class="w-4 h-4" />
+                                </NuxtLink>
+                                <button
+                                    class="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                                    :title="t('admin.deleteArticle')"
+                                    @click="confirmDelete(row)"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'trash']" class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </template>
+                    </AdminTable>
 
-                <div
-                    v-if="meta.lastPage > 1"
-                    class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
-                >
-                    <span class="text-sm text-gray-500 order-2 sm:order-1">
-                        Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
-                        total)
-                    </span>
-                    <Pagination
-                        :current-page="meta.currentPage"
-                        :total-pages="meta.lastPage"
-                        @page-change="loadPage"
-                    />
+                    <div
+                        v-if="meta.lastPage > 1"
+                        class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-2"
+                    >
+                        <span class="text-sm text-gray-500 order-2 sm:order-1">
+                            Page {{ meta.currentPage }} of {{ meta.lastPage }} ({{ meta.total }}
+                            total)
+                        </span>
+                        <Pagination
+                            :current-page="meta.currentPage"
+                            :total-pages="meta.lastPage"
+                            @page-change="loadPage"
+                        />
+                    </div>
                 </div>
             </template>
         </div>
@@ -128,6 +122,7 @@
     import { adminService } from '~/services/adminService'
     import { useToastify } from '~/composables/useToastify'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
+    import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
 
     const { notifySuccess, notifyError } = useToastify()
 

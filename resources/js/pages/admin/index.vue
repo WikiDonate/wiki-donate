@@ -29,7 +29,7 @@
                             :icon="['fas', 'coins']"
                             icon-bg="green"
                             :label="t('admin.totalDonations')"
-                            :value="stats.monthlyStats.donations.length"
+                            :value="totalDonationsAmount"
                         />
                         <StatCard
                             :icon="['fas', 'user-plus']"
@@ -298,10 +298,17 @@
         { key: 'action', label: t('admin.action') },
     ]
 
+    // Backend orders months ascending — the newest month is LAST.
+    // (regs[0] would be ~6 months ago, not "this month".)
     const recentRegistrationsCount = computed(() => {
         const regs = stats.value.monthlyStats.registrations
-        return regs.length > 0 ? Number(regs[0].total) : 0
+        return regs.length > 0 ? Number(regs[regs.length - 1].total) : 0
     })
+
+    // Sum of the last-6-months buckets (backend provides no grand total).
+    const totalDonationsAmount = computed(() =>
+        stats.value.monthlyStats.donations.reduce((sum, r) => sum + Number(r.total || 0), 0),
+    )
 
     const userColumns = [
         { key: 'username', label: t('admin.username'), tdClass: 'font-medium' },

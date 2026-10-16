@@ -487,7 +487,7 @@
         "liveBalance": "الرصيد المباشر:",
         "formulaLabel": "الصيغة: {name}",
         "amountLabel": "المبلغ ({currency})",
-        "noteLabel": "ملاحظة (البنك / مرجع bKash)",
+        "noteLabel": "ملاحظة",
         "recordPayout": "سجل الدفع",
         "paying": "جارٍ الدفع…",
         "payoutHistory": "تاريخ الدفع — {org}",

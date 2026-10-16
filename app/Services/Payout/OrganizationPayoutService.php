@@ -10,6 +10,7 @@ use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
 use App\Services\PayPalClient;
 use Exception;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -64,6 +65,20 @@ class OrganizationPayoutService
 
         $allocations = collect();
 
+        // Batch-load registry rows so each allocation knows its verification
+        // state (Pay button disabled for unverified). Rows saved before
+        // organization_id existed resolve via normalized name.
+        $orgIds = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
+            ->pluck('organization_id')->filter())->unique()->values();
+        $orgsById = $orgIds->isEmpty()
+            ? collect()
+            : Organization::whereIn('id', $orgIds)->get()->keyBy('id');
+        $orgKeys = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
+            ->map(fn ($i) => $i['key']))->unique()->values();
+        $orgsByKey = $orgKeys->isEmpty()
+            ? collect()
+            : Organization::whereIn('normalized_name', $orgKeys)->get()->keyBy('normalized_name');
+
         foreach ($formulas as $formula) {
             $totalDonated = (float) ($donationSums->get($formula->id) ?? 0);
             $currency = (string) ($currencies->get($formula->id) ?? 'usd');
@@ -78,6 +93,9 @@ class OrganizationPayoutService
                     continue;
                 }
 
+                $org = ($item['organization_id'] ? $orgsById->get($item['organization_id']) : null)
+                    ?? $orgsByKey->get($item['key']);
+
                 $allocations->push([
                     'formula_id' => $formula->id,
                     'formula_uuid' => $formula->uuid,
@@ -89,6 +107,9 @@ class OrganizationPayoutService
                     ] : null,
                     'organization_name' => $item['name'],
                     'organization_key' => $item['key'],
+                    'organization_id' => $org?->id ?? $item['organization_id'],
+                    'payout_status' => $org?->payout_status ?? 'unverified',
+                    'is_verified' => $org ? $org->isVerified() : false,
                     'percentage' => $item['percentage'],
                     'currency' => $currency,
                     'owed' => $owed,
@@ -288,6 +309,23 @@ class OrganizationPayoutService
             // (and re-throws). A network/5xx error leaves it pending.
             if ($payout->status === 'failed') {
                 throw $e;
+            }
+
+            // The batch call itself was rejected (401 bad credentials, 403
+            // Payouts not enabled, 422 validation): PayPal moved no money,
+            // so record the row as failed instead of leaving it pending
+            // forever (sync only touches rows WITH a batch id). Only pure
+            // connection errors (no response at all) stay pending.
+            $response = $e instanceof RequestException ? $e->response : null;
+            if ($response) {
+                $reason = $response->json('message')
+                    ?: ($response->json('error_description') ?? $e->getMessage());
+                $payout->forceFill([
+                    'status' => 'failed',
+                    'failure_reason' => mb_substr((string) $reason, 0, 1000),
+                ])->save();
+
+                throw new UserFacingException('PayPal rejected the payout: '.$reason);
             }
 
             Log::error('PayPal payout submission failed; row left pending', [

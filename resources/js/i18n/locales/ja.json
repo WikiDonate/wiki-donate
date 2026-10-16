@@ -487,7 +487,7 @@
         "liveBalance": "ライブバランス：",
         "formulaLabel": "式: {name}",
         "amountLabel": "金額（{currency})",
-        "noteLabel": "メモ (銀行 / bKash 参照)",
+        "noteLabel": "メモ",
         "recordPayout": "支払いの記録",
         "paying": "支払い中…",
         "payoutHistory": "支払い履歴 — {org}",

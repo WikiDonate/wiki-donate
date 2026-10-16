@@ -487,7 +487,7 @@
         "liveBalance": "Bilans na żywo:",
         "formulaLabel": "Formuła: {name}",
         "amountLabel": "Kwota ({currency})",
-        "noteLabel": "Notatka (ref banku / bKash)",
+        "noteLabel": "Notatka",
         "recordPayout": "Rekordowa wypłata",
         "paying": "Płacenie…",
         "payoutHistory": "Historia wypłat — {org}",

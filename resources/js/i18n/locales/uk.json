@@ -487,7 +487,7 @@
         "liveBalance": "Живий баланс:",
         "formulaLabel": "формула: {name}",
         "amountLabel": "Сума ({currency})",
-        "noteLabel": "Примітка (реклама банку/bKash)",
+        "noteLabel": "Примітка",
         "recordPayout": "Запис виплати",
         "paying": "Оплата…",
         "payoutHistory": "Історія виплат — {org}",
