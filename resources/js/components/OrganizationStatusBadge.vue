@@ -1,20 +1,16 @@
 <template>
-    <span
-        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-        :class="isVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-        :title="isVerified ? t('formula.verifiedHint') : t('formula.needsVerificationHint')"
-    >
-        <font-awesome-icon
-            :icon="['fas', isVerified ? 'check-circle' : 'exclamation-circle']"
-            class="w-3 h-3"
+    <span :title="isVerified ? t('formula.verifiedHint') : t('formula.needsVerificationHint')">
+        <AdminBadge
+            :variant="isVerified ? 'success' : 'danger'"
+            :text="isVerified ? t('formula.verified') : t('formula.needsVerification')"
         />
-        {{ isVerified ? t('formula.verified') : t('formula.needsVerification') }}
     </span>
 </template>
 
 <script setup>
     import { computed } from 'vue'
     import { useI18n } from 'vue-i18n'
+    import AdminBadge from '~/components/admin/AdminBadge.vue'
 
     const { t } = useI18n()
 
@@ -29,5 +25,6 @@
         },
     })
 
+    // Same green/red as the admin panel (AdminBadge success/danger).
     const isVerified = computed(() => (props.status ? props.status === 'verified' : props.verified))
 </script>
