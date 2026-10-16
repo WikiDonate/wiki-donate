@@ -10,6 +10,7 @@ use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -90,6 +91,26 @@ class TransactionLogAuditTest extends TestCase
 
     public function test_payout_creates_transaction_log_with_destination(): void
     {
+        Http::fake([
+            '*/v1/oauth2/token' => Http::response([
+                'access_token' => 'fake-token',
+                'expires_in' => 3600,
+                'token_type' => 'Bearer',
+            ]),
+            '*/v1/payments/payouts' => Http::response([
+                'batch_header' => [
+                    'payout_batch_id' => 'BATCH-SUCCESS',
+                    'batch_status' => 'PENDING',
+                ],
+                'items' => [[
+                    'payout_item_id' => 'ITEM-SUCCESS',
+                    'sender_item_id' => 'dummy',
+                    'transaction_status' => 'SUCCESS',
+                    'errors' => null,
+                ]],
+            ]),
+        ]);
+
         $article = Article::create(['title' => 'T', 'slug' => 't-'.uniqid()]);
         $formula = DonationFormula::create([
             'article_id' => $article->id,
