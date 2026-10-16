@@ -67,3 +67,5 @@ docs/*
 memory/*.agent-*
 .agent-config.*
 agent-*.log
+.agent-*
+wiki_donate

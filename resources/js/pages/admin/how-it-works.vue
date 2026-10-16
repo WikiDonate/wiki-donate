@@ -68,13 +68,23 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     {{ t('admin.title') }}
+                                    <span class="text-red-500">*</span>
                                 </label>
                                 <input
                                     v-model="step.title"
                                     type="text"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                                    :class="[
+                                        'w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                        stepErrors[index]
+                                            ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                            : 'border-gray-300',
+                                    ]"
                                     :placeholder="t('admin.stepTitlePlaceholder')"
+                                    @input="stepErrors[index] = ''"
                                 />
+                                <p v-if="stepErrors[index]" class="text-xs text-red-600 mt-1">
+                                    {{ stepErrors[index] }}
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -139,6 +149,7 @@
     const saving = ref(false)
     const steps = ref([])
     const originalSteps = ref([])
+    const stepErrors = ref([])
 
     const availableIcons = [
         ['fas', 'search'],
@@ -206,6 +217,12 @@
     }
 
     const saveContent = async () => {
+        stepErrors.value = steps.value.map((step) =>
+            (step.title || '').trim() ? '' : t('admin.stepTitleRequired'),
+        )
+        if (stepErrors.value.some(Boolean)) {
+            return
+        }
         const content = steps.value.map((step) => ({
             title: step.title,
             icon: step.icon || ['fas', 'search'],

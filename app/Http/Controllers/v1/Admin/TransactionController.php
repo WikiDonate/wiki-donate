@@ -27,7 +27,7 @@ class TransactionController extends Controller
      * Paginated merged chronological feed.
      *
      * GET /admin/transactions
-     * Filters: from, to, type (income|expense), method (stripe|paypal|bank|bKash|other), org, article, sort (asc|desc)
+     * Filters: from, to, type (income|expense), method (stripe|paypal|bank|other), org, article, sort (asc|desc)
      */
     public function index(Request $request): JsonResponse
     {
@@ -61,7 +61,7 @@ class TransactionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load transactions.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -83,6 +83,7 @@ class TransactionController extends Controller
                 ->sum('amount');
 
             $totalPayouts = (float) OrganizationPayout::query()
+                ->where('status', '!=', 'failed')
                 ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
                 ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
                 ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
@@ -105,7 +106,7 @@ class TransactionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load transaction summary.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -204,12 +205,21 @@ class TransactionController extends Controller
             ->values();
 
         // ---- Expense rows: organization payouts -------------------------------
+        // Paid + pending reserve money (same rule as balance math); failed
+        // rows never moved funds so they stay out. paid_at is null until
+        // PayPal confirms, so date filters fall back to created_at then.
         $expense = OrganizationPayout::query()
             ->with('actorUser:id,username')
-            ->whereNotNull('paid_at')
+            ->where('status', '!=', 'failed')
             ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
-            ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
-            ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
+            ->when($request->filled('from'), fn ($q) => $q->where(function ($qq) use ($request) {
+                $qq->whereDate('paid_at', '>=', $request->input('from'))
+                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '>=', $request->input('from')));
+            }))
+            ->when($request->filled('to'), fn ($q) => $q->where(function ($qq) use ($request) {
+                $qq->whereDate('paid_at', '<=', $request->input('to'))
+                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '<=', $request->input('to')));
+            }))
             ->get()
             ->filter(function ($payout) use ($org) {
                 if ($org !== '' && strcasecmp($payout->organization_name, $org) !== 0) {

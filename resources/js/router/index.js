@@ -98,6 +98,11 @@ const routes = [
                 name: 'payment-cancel',
                 component: () => import('@/pages/payment/cancel.vue'),
             },
+            {
+                path: 'organization/confirm-email',
+                name: 'organization-confirm-email',
+                component: () => import('@/pages/organization/confirm-email.vue'),
+            },
         ],
     },
     {
@@ -135,6 +140,16 @@ const routes = [
                 path: 'payouts',
                 name: 'admin-payouts',
                 component: () => import('@/pages/admin/payouts.vue'),
+            },
+            {
+                path: 'organizations',
+                name: 'admin-organizations',
+                component: () => import('@/pages/admin/organizations.vue'),
+            },
+            {
+                path: 'transaction-logs',
+                name: 'admin-transaction-logs',
+                component: () => import('@/pages/admin/transaction-logs.vue'),
             },
         ],
     },

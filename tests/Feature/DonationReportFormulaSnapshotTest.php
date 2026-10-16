@@ -146,9 +146,12 @@ class DonationReportFormulaSnapshotTest extends TestCase
             ->assertOk();
 
         $formula->refresh();
-        $this->assertSame([
-            ['organization' => 'Wiki1', 'percentage' => 100],
-        ], $formula->formula);
+        $editedRows = $formula->formula;
+        $this->assertCount(1, $editedRows);
+        $this->assertEquals('Wiki1', $editedRows[0]['organization']);
+        $this->assertEquals(100, $editedRows[0]['percentage']);
+        // Registry enrichment keys are tolerated (org upsert persists id)
+        $this->assertArrayHasKey('organization_id', $editedRows[0]);
 
         // The report must STILL show the original split from payment time
         $report = $this->withHeaders($auth)->getJson('/api/v1/report/donations');

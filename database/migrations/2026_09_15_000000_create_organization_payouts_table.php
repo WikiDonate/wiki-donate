@@ -24,18 +24,48 @@ return new class extends Migration
             $table->foreignId('donation_formula_id')->constrained('donation_formulas')->onDelete('cascade');
             $table->string('organization_name');
             $table->string('organization_key');
+            // Resolved registry entry for this allocation (nullable for
+            // legacy rows created before the registry existed).
+            // NOTE: no ->constrained() here — the `organizations` table is
+            // created by a later migration (2026_09_26), and MySQL requires
+            // the referenced table to exist. The FK is added conditionally
+            // below on incremental runs and in the organizations migration
+            // for fresh databases.
+            $table->foreignId('organization_id')->nullable();
+            // Frozen destination so history stays readable even if the org's
+            // PayPal email changes later. Ledger remains append-only.
+            $table->string('destination_paypal_email')->nullable();
             $table->decimal('amount', 12, 2);
             $table->string('currency', 3)->default('usd');
             $table->string('type')->nullable()->comment('full|partial');
-            $table->string('status')->nullable()->default('paid');
-            $table->timestamp('paid_at');
+            // paid | pending (transfer submitted to PayPal) | failed.
+            // Ledger stays append-only: failed rows are excluded from
+            // balance math so an admin can retry.
+            $table->string('status')->nullable()->default('pending');
+            // Null until the PayPal transfer actually completes.
+            $table->timestamp('paid_at')->nullable();
+            // Provider (PayPal Payouts) tracking fields.
+            $table->string('payout_batch_id')->nullable();
+            $table->string('payout_item_id')->nullable();
+            $table->string('provider_status')->nullable()->comment('PayPal item transaction_status');
+            $table->text('failure_reason')->nullable();
             $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
             $table->string('method')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
 
             $table->index(['donation_formula_id', 'organization_key']);
+            $table->index('payout_item_id');
         });
+
+        // Add the registry FK only when the referenced table already exists
+        // (incremental migrate path). Fresh installs add it after the
+        // organizations table is created — see 2026_09_26 migration.
+        if (Schema::hasTable('organizations')) {
+            Schema::table('organization_payouts', function (Blueprint $table) {
+                $table->foreign('organization_id')->references('id')->on('organizations')->nullOnDelete();
+            });
+        }
     }
 
     /**

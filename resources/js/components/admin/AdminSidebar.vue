@@ -119,7 +119,7 @@
         },
         {
             type: 'link',
-            name: 'Articles',
+            name: 'admin.articles',
             link: '/admin/articles',
             icon: ['fas', 'newspaper'],
         },
@@ -137,9 +137,21 @@
         },
         {
             type: 'link',
-            name: 'Transactions',
+            name: 'admin.transactions',
             link: '/admin/transactions',
             icon: ['fas', 'file-invoice-dollar'],
+        },
+        {
+            type: 'link',
+            name: 'admin.organizations',
+            link: '/admin/organizations',
+            icon: ['fas', 'building'],
+        },
+        {
+            type: 'link',
+            name: 'admin.transactionLogs',
+            link: '/admin/transaction-logs',
+            icon: ['fas', 'clipboard-list'],
         },
         {
             type: 'group',

@@ -24,7 +24,7 @@ class ContactController extends Controller
                 'lastName' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'subject' => 'required|string|max:255',
-                'details' => 'required|string',
+                'details' => 'required|string|max:5000',
             ]);
 
             if ($validator->fails()) {
@@ -54,7 +54,7 @@ class ContactController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception Error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

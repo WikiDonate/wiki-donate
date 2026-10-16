@@ -103,7 +103,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -200,7 +200,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
@@ -304,9 +304,9 @@ class ArticleController extends Controller
     public function save(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'content' => 'nullable|string',
-            'type' => 'nullable|string',
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string|max:60000',
+            'type' => 'nullable|string|max:50',
             'accessType' => 'nullable|in:public,private',
         ]);
 
@@ -386,7 +386,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -492,8 +492,8 @@ class ArticleController extends Controller
     public function update(Request $request, $slug)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'content' => 'required|string',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|max:100000',
             'accessType' => 'nullable|in:public,private',
         ]);
 
@@ -613,7 +613,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -718,7 +718,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -847,7 +847,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
@@ -900,7 +900,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exceptions error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

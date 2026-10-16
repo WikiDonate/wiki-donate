@@ -202,7 +202,7 @@ class AuthController extends Controller
             return response()->json(
                 [
                     'success' => false,
-                    'errors' => [$e->getMessage()],
+                    'errors' => [$this->apiErrorMessage($e)],
                 ],
                 Response::HTTP_EXPECTATION_FAILED,
             );
@@ -252,7 +252,7 @@ class AuthController extends Controller
                 [
                     'success' => false,
                     'message' => 'Exceptions error',
-                    'errors' => [$e->getMessage()],
+                    'errors' => [$this->apiErrorMessage($e)],
                 ],
                 Response::HTTP_EXPECTATION_FAILED,
             );

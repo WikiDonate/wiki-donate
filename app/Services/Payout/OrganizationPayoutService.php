@@ -2,12 +2,18 @@
 
 namespace App\Services\Payout;
 
+use App\Exceptions\UserFacingException;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Models\TransactionLog;
+use App\Services\PayPalClient;
 use Exception;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Computes live organization balances from the current donation formula JSON
@@ -38,9 +44,12 @@ class OrganizationPayoutService
             ->selectRaw('donation_formula_id, SUM(amount) as total')
             ->pluck('total', 'donation_formula_id');
 
-        // Batch aggregate payouts per (formula_id, organization_key)
+        // Batch aggregate payouts per (formula_id, organization_key).
+        // Paid + pending reserve the balance; failed rows never moved money
+        // so they are excluded (admin can retry).
         $payoutSums = DB::table('organization_payouts')
             ->whereIn('donation_formula_id', $formulaIds)
+            ->whereIn('status', ['paid', 'pending'])
             ->groupBy('donation_formula_id', 'organization_key')
             ->selectRaw('donation_formula_id, organization_key, SUM(amount) as total')
             ->get()
@@ -56,6 +65,20 @@ class OrganizationPayoutService
 
         $allocations = collect();
 
+        // Batch-load registry rows so each allocation knows its verification
+        // state (Pay button disabled for unverified). Rows saved before
+        // organization_id existed resolve via normalized name.
+        $orgIds = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
+            ->pluck('organization_id')->filter())->unique()->values();
+        $orgsById = $orgIds->isEmpty()
+            ? collect()
+            : Organization::whereIn('id', $orgIds)->get()->keyBy('id');
+        $orgKeys = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
+            ->map(fn ($i) => $i['key']))->unique()->values();
+        $orgsByKey = $orgKeys->isEmpty()
+            ? collect()
+            : Organization::whereIn('normalized_name', $orgKeys)->get()->keyBy('normalized_name');
+
         foreach ($formulas as $formula) {
             $totalDonated = (float) ($donationSums->get($formula->id) ?? 0);
             $currency = (string) ($currencies->get($formula->id) ?? 'usd');
@@ -70,6 +93,9 @@ class OrganizationPayoutService
                     continue;
                 }
 
+                $org = ($item['organization_id'] ? $orgsById->get($item['organization_id']) : null)
+                    ?? $orgsByKey->get($item['key']);
+
                 $allocations->push([
                     'formula_id' => $formula->id,
                     'formula_uuid' => $formula->uuid,
@@ -81,6 +107,9 @@ class OrganizationPayoutService
                     ] : null,
                     'organization_name' => $item['name'],
                     'organization_key' => $item['key'],
+                    'organization_id' => $org?->id ?? $item['organization_id'],
+                    'payout_status' => $org?->payout_status ?? 'unverified',
+                    'is_verified' => $org ? $org->isVerified() : false,
                     'percentage' => $item['percentage'],
                     'currency' => $currency,
                     'owed' => $owed,
@@ -108,10 +137,31 @@ class OrganizationPayoutService
      */
     public function createPayout(array $data, int $actorId): OrganizationPayout
     {
-        return DB::transaction(function () use ($data, $actorId) {
-            $formula = $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
+        $orgName = trim($data['organization_name']);
+        $key = OrganizationPayout::makeKey($orgName);
+        // Normalize once at the boundary: donations store mixed case
+        // (Stripe `usd`, PayPal `USD`) and callers send either form.
+        $data['currency'] = strtoupper(trim((string) ($data['currency'] ?? '')));
+
+        // Resolve the formula's row outside the transaction (read-only) so we
+        // can run the destination guard — and persist its audit log — even
+        // when the guard rejects the payout.
+        $formulaProbe = DonationFormula::whereKey($data['donation_formula_id'])->first();
+        $probeMatch = $formulaProbe
+            ? collect($this->normalizeItems($formulaProbe->formula))->first(fn ($i) => $i['key'] === $key)
+            : null;
+
+        // Payout guard: destination must be a verified org with a PayPal
+        // receiving email. Blocks the payout and logs the attempt.
+        if ($probeMatch) {
+            app(OrganizationPayoutDestinationService::class)
+                ->guardPayoutDestination($probeMatch['organization_id'] ?? null, $orgName, $actorId);
+        }
+
+        $payout = DB::transaction(function () use ($data, $actorId) {
+            $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
             if (! $formula) {
-                throw new Exception('Donation formula not found.');
+                throw new UserFacingException('Donation formula not found.');
             }
 
             $orgName = trim($data['organization_name']);
@@ -120,39 +170,282 @@ class OrganizationPayoutService
             $items = $this->normalizeItems($formula->formula);
             $match = collect($items)->first(fn ($i) => $i['key'] === $key);
             if (! $match) {
-                throw new Exception('Organization is not allocated in this formula (anymore).');
+                throw new UserFacingException('Organization is not allocated in this formula (anymore).');
             }
 
+            // Re-check inside the lock — belt and braces against an org being
+            // unverified between the guard and the write.
+            $destination = app(OrganizationPayoutDestinationService::class)
+                ->guardPayoutDestination($match['organization_id'] ?? null, $orgName, $actorId);
+
             $balance = $this->owedFor($formula, $key);
-            if ($balance->currency && $data['currency'] !== $balance->currency) {
-                throw new Exception("Currency mismatch: allocation currency is {$balance->currency}.");
+            if ($balance->currency && $data['currency'] !== strtoupper($balance->currency)) {
+                throw new UserFacingException("Currency mismatch: allocation currency is {$balance->currency}.");
             }
 
             $amount = round((float) $data['amount'], 2);
             if ($amount <= 0) {
-                throw new Exception('Payout amount must be greater than 0.');
+                throw new UserFacingException('Payout amount must be greater than 0.');
             }
             if ($amount > $balance->balance + 0.009) {
-                throw new Exception(sprintf(
+                throw new UserFacingException(sprintf(
                     'Payout of %.2f exceeds the live balance of %.2f.',
                     $amount,
                     $balance->balance
                 ));
             }
 
-            return OrganizationPayout::create([
+            $type = $amount >= $balance->balance - 0.009 ? 'full' : 'partial';
+
+            // Reserve the allocation in the ledger FIRST, inside the lock.
+            // While the payout is pending its amount counts as already paid
+            // towards the balance, so a duplicate Pay cannot overdraw.
+            $payout = OrganizationPayout::create([
                 'donation_formula_id' => $formula->id,
+                'organization_id' => $destination->id,
                 'organization_name' => $orgName,
                 'organization_key' => $key,
                 'amount' => $amount,
                 'currency' => $data['currency'],
-                'type' => $amount >= $balance->balance - 0.009 ? 'full' : 'partial',
-                'status' => 'paid',
-                'paid_at' => now(),
+                'type' => $type,
+                'status' => 'pending',
                 'actor_id' => $actorId,
+                'method' => 'paypal',
+                'destination_paypal_email' => $destination->paypal_email,
                 'note' => $data['note'] ?? null,
             ]);
+
+            return [$payout, $amount, $type, $key, $formula];
         });
+
+        /** @var OrganizationPayout $payout */
+        [$payout, $amount, $type, $key, $formula] = $payout;
+
+        // Phase 2 — outside the DB lock: submit the real PayPal transfer.
+        // A provider failure marks the row failed (off the balance) instead
+        // of rolling back and losing the audit trail. The log records the
+        // PayPal-response status in every outcome — including rejections.
+        try {
+            $this->submitToPayPal($payout, $amount, $type);
+        } finally {
+            $this->recordLog($payout->refresh(), $amount, $type, $actorId);
+        }
+
+        return $payout->refresh();
+    }
+
+    /**
+     * Push a ledger row to the real PayPal Payouts API.
+     *
+     * Sets payout_batch_id / payout_item_id / provider_status and flips the
+     * row: pending → paid (funds moved) or pending → failed (rejected with
+     * reason). Throws a safe message on provider rejection so the dashboard
+     * surfaces it; transient network errors leave the row pending for a
+     * later sync call.
+     */
+    private function submitToPayPal(OrganizationPayout $payout, float $amount, string $type): void
+    {
+        try {
+            $batch = app(PayPalClient::class)->createBatchPayout(
+                [[
+                    'recipient_email' => $payout->destination_paypal_email,
+                    'amount' => $amount,
+                    'currency' => $payout->currency,
+                    'note' => sprintf('WikiDonate payout (%s)', $type),
+                    'sender_item_id' => $payout->uuid,
+                ]],
+                (string) $payout->uuid,
+                'WikiDonate payout',
+                'Your payout from WikiDonate is on the way.',
+            );
+
+            $item = (array) ($batch['items'][0] ?? []);
+            $header = (array) ($batch['batch_header'] ?? []);
+
+            // PayPal accepts the batch; the item now has a transaction status
+            // (SUCCESS / PENDING / FAILED).
+            $providerStatus = strtoupper((string) ($item['transaction_status'] ?? 'PENDING'));
+            $itemStatus = strtoupper((string) ($item['payout_item_status'] ?? ''));
+            $effective = $providerStatus ?: $itemStatus;
+
+            if ($effective === 'SUCCESS' || $effective === 'COMPLETED') {
+                $payout->forceFill([
+                    'status' => 'paid',
+                    'paid_at' => now(),
+                    'payout_batch_id' => $header['payout_batch_id'] ?? null,
+                    'payout_item_id' => $item['payout_item_id'] ?? null,
+                    'provider_status' => $effective,
+                    'failure_reason' => null,
+                ])->save();
+
+                return;
+            }
+
+            if ($effective === 'FAILED' || in_array($itemStatus, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
+                $reason = (string) ($item['errors']['message'] ?? ($item['errors']['description'] ?? 'PayPal rejected the payout item'));
+                $payout->forceFill([
+                    'status' => 'failed',
+                    'payout_batch_id' => $header['payout_batch_id'] ?? null,
+                    'payout_item_id' => $item['payout_item_id'] ?? null,
+                    'provider_status' => $effective ?: $itemStatus,
+                    'failure_reason' => mb_substr($reason, 0, 1000),
+                ])->save();
+
+                throw new UserFacingException('PayPal rejected the payout: '.$reason);
+            }
+
+            // PENDING (normal: PayPal may take minutes to clear) — store the
+            // tracking ids and stay pending until syncPending() confirms.
+            $payout->forceFill([
+                'status' => 'pending',
+                'paid_at' => null,
+                'payout_batch_id' => $header['payout_batch_id'] ?? null,
+                'payout_item_id' => $item['payout_item_id'] ?? null,
+                'provider_status' => $effective ?: 'PENDING',
+                'failure_reason' => null,
+            ])->save();
+        } catch (Exception $e) {
+            // Provider rejection already recorded the row as failed above
+            // (and re-throws). A network/5xx error leaves it pending.
+            if ($payout->status === 'failed') {
+                throw $e;
+            }
+
+            // The batch call itself was rejected (401 bad credentials, 403
+            // Payouts not enabled, 422 validation): PayPal moved no money,
+            // so record the row as failed instead of leaving it pending
+            // forever (sync only touches rows WITH a batch id). Only pure
+            // connection errors (no response at all) stay pending.
+            $response = $e instanceof RequestException ? $e->response : null;
+            if ($response) {
+                $reason = $response->json('message')
+                    ?: ($response->json('error_description') ?? $e->getMessage());
+                $payout->forceFill([
+                    'status' => 'failed',
+                    'failure_reason' => mb_substr((string) $reason, 0, 1000),
+                ])->save();
+
+                throw new UserFacingException('PayPal rejected the payout: '.$reason);
+            }
+
+            Log::error('PayPal payout submission failed; row left pending', [
+                'payout_uuid' => $payout->uuid,
+                'payout_id' => $payout->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Reconcile pending ledger rows against the PayPal Payouts API.
+     *
+     * Pending → paid once PayPal reports item SUCCESS; pending → failed on
+     * a definitive rejection; stays pending otherwise. Returns the payouts
+     * whose status changed.
+     */
+    public function syncPending(): Collection
+    {
+        $pending = OrganizationPayout::query()
+            ->where('status', 'pending')
+            ->whereNotNull('payout_batch_id')
+            ->get();
+
+        $changed = collect();
+
+        foreach ($pending as $payout) {
+            try {
+                $batch = app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id);
+                $statuses = PayPalClient::extractBatchItemStatuses($batch);
+                $info = $statuses[$payout->uuid] ?? null;
+
+                if (! $info) {
+                    continue;
+                }
+
+                $effective = strtoupper($info['status']);
+
+                if ($effective === 'SUCCESS' || $effective === 'COMPLETED') {
+                    $payout->forceFill([
+                        'status' => 'paid',
+                        'paid_at' => now(),
+                        'provider_status' => $effective,
+                        'failure_reason' => null,
+                    ])->save();
+                    $changed->push($payout);
+
+                    TransactionLog::record('payout.synced', [
+                        'actor_id' => null,
+                        'actor_role' => 'System',
+                        'subject_type' => OrganizationPayout::class,
+                        'subject_id' => $payout->id,
+                        'message' => sprintf(
+                            'PayPal confirmed payout of %.2f %s to %s',
+                            $payout->amount,
+                            strtoupper($payout->currency),
+                            $payout->organization_name
+                        ),
+                        'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                    ]);
+                } elseif (in_array($effective, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
+                    $payout->forceFill([
+                        'status' => 'failed',
+                        'provider_status' => $effective,
+                        'failure_reason' => mb_substr((string) ($info['error'] ?? 'PayPal reported a failed payout item'), 0, 1000),
+                    ])->save();
+                    $changed->push($payout);
+
+                    TransactionLog::record('payout.failed', [
+                        'actor_id' => null,
+                        'actor_role' => 'System',
+                        'subject_type' => OrganizationPayout::class,
+                        'subject_id' => $payout->id,
+                        'message' => sprintf(
+                            'PayPal rejected payout of %.2f %s to %s — %s',
+                            $payout->amount,
+                            strtoupper($payout->currency),
+                            $payout->organization_name,
+                            $payout->failure_reason
+                        ),
+                        'after' => ['status' => 'failed', 'provider_status' => $effective],
+                    ]);
+                }
+            } catch (Exception $e) {
+                Log::warning('PayPal payout sync failed for row '.$payout->id, ['error' => $e->getMessage()]);
+            }
+        }
+
+        return $changed;
+    }
+
+    private function recordLog(OrganizationPayout $payout, float $amount, string $type, int $actorId): void
+    {
+        TransactionLog::record('payout.created', [
+            'subject_type' => OrganizationPayout::class,
+            'subject_id' => $payout->id,
+            'actor_id' => $actorId,
+            'actor_role' => 'Admin',
+            'message' => sprintf(
+                '%s payout of %.2f %s to %s (%s) via PayPal',
+                $type,
+                $amount,
+                strtoupper($payout->currency),
+                $payout->organization_name,
+                $payout->destination_paypal_email
+            ),
+            'after' => [
+                'organization_id' => $payout->organization_id,
+                'organization_name' => $payout->organization_name,
+                'amount' => $amount,
+                'currency' => strtoupper($payout->currency),
+                'type' => $type,
+                'status' => $payout->status,
+                'destination_paypal_email' => $payout->destination_paypal_email,
+                'payout_batch_id' => $payout->payout_batch_id,
+                'payout_item_id' => $payout->payout_item_id,
+                'provider_status' => $payout->provider_status,
+                'failure_reason' => $payout->failure_reason,
+            ],
+        ]);
     }
 
     /**
@@ -176,6 +469,7 @@ class OrganizationPayoutService
         $paid = (float) OrganizationPayout::query()
             ->where('donation_formula_id', $formula->id)
             ->where('organization_key', $key)
+            ->whereIn('status', ['paid', 'pending'])
             ->sum('amount');
 
         if (! $item) {
@@ -211,6 +505,7 @@ class OrganizationPayoutService
             ->map(fn ($row) => [
                 'name' => (string) $row['organization'],
                 'key' => OrganizationPayout::makeKey((string) $row['organization']),
+                'organization_id' => isset($row['organization_id']) ? (int) $row['organization_id'] : null,
                 'percentage' => (float) ($row['percentage'] ?? 0),
             ])
             ->unique('key')
@@ -220,8 +515,10 @@ class OrganizationPayoutService
 
     private function currencyFor(DonationFormula $formula): string
     {
-        return (string) (Donation::query()
+        // Canonical uppercase: donations store mixed case depending on the
+        // gateway (Stripe `usd`, PayPal `USD`).
+        return strtoupper((string) (Donation::query()
             ->where('donation_formula_id', $formula->id)
-            ->value('currency') ?: 'usd');
+            ->value('currency') ?: 'usd'));
     }
 }

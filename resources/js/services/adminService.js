@@ -23,9 +23,25 @@ const getPayoutHistory = (formulaId, organization) =>
 
 const createPayout = (payload) => api.post('/admin/payouts', payload)
 
+const syncPayouts = () => api.post('/admin/payouts/sync')
+
 const getTransactions = (params) => api.get('/admin/transactions', { params })
 
 const getTransactionSummary = (params) => api.get('/admin/transactions/summary', { params })
+
+// Organization registry
+const getOrganizations = (params, signal) => api.get('/admin/organizations', { params, signal })
+
+const getOrganization = (id) => api.get(`/admin/organizations/${id}`)
+
+const updateOrganization = (id, payload) => api.put(`/admin/organizations/${id}`, payload)
+
+const verifyOrganization = (id) => api.post(`/admin/organizations/${id}/verify`)
+
+const unverifyOrganization = (id) => api.post(`/admin/organizations/${id}/unverify`)
+
+// Structured audit log
+const getTransactionLogs = (params) => api.get('/admin/transaction-logs', { params })
 
 export const adminService = {
     getDashboard,
@@ -40,4 +56,11 @@ export const adminService = {
     getPayoutAllocations,
     getPayoutHistory,
     createPayout,
+    syncPayouts,
+    getOrganizations,
+    getOrganization,
+    updateOrganization,
+    verifyOrganization,
+    unverifyOrganization,
+    getTransactionLogs,
 }

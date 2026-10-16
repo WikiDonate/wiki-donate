@@ -157,73 +157,66 @@
             </div>
         </section>
 
-        <!-- Modal for Changing Password -->
-        <div
-            v-if="isModalOpen"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-gray-900/50 p-4"
+        <!-- Modal for Changing Password (shared Modal component) -->
+        <Modal
+            :model-value="isModalOpen"
+            :title="t('preferences.changePassword')"
+            @update:model-value="isModalOpen = $event"
         >
-            <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
-                <h3
-                    class="text-lg font-bold mb-4 bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600"
-                >
-                    {{ t('preferences.changePassword') }}
-                </h3>
+            <form @submit.prevent="submitChangePassword">
+                <AlertMessage
+                    v-if="showAlertError"
+                    variant="error"
+                    :message="alertMessage"
+                    class="mb-3"
+                    @close="showAlertError = false"
+                />
 
-                <form @submit.prevent="submitChangePassword">
-                    <AlertMessage
-                        v-if="showAlertError"
-                        variant="error"
-                        :message="alertMessage"
-                        class="mb-3"
-                        @close="showAlertError = false"
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                        t('preferences.newPassword')
+                    }}</label>
+                    <FormInput
+                        v-model="password"
+                        type="password"
+                        :placeholder="t('preferences.passwordPlaceholder')"
+                        v-bind="passwordProps"
+                        :error-message="errors['password']"
                     />
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
-                            t('preferences.newPassword')
-                        }}</label>
-                        <FormInput
-                            v-model="password"
-                            type="password"
-                            :placeholder="t('preferences.passwordPlaceholder')"
-                            v-bind="passwordProps"
-                            :error-message="errors['password']"
-                        />
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                        t('preferences.confirmPassword')
+                    }}</label>
+                    <FormInput
+                        v-model="confirmPassword"
+                        type="password"
+                        :placeholder="t('preferences.confirmPasswordPlaceholder')"
+                        v-bind="confirmPasswordProps"
+                        :error-message="errors['confirmPassword']"
+                    />
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{
-                            t('preferences.confirmPassword')
-                        }}</label>
-                        <FormInput
-                            v-model="confirmPassword"
-                            type="password"
-                            :placeholder="t('preferences.confirmPasswordPlaceholder')"
-                            v-bind="confirmPasswordProps"
-                            :error-message="errors['confirmPassword']"
-                        />
-                    </div>
-
-                    <div class="flex justify-end space-x-2">
-                        <button
-                            type="button"
-                            class="bg-gray-200 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                            :disabled="submittingPassword"
-                            @click="closeModal"
-                        >
-                            {{ t('common.cancel') }}
-                        </button>
-                        <button
-                            type="submit"
-                            class="bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white hover:bg-indigo-700 hover:from-indigo-500 hover:to-purple-500 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                            :disabled="submittingPassword"
-                        >
-                            {{ submittingPassword ? 'Submitting...' : 'Submit' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex justify-end space-x-2">
+                    <button
+                        type="button"
+                        class="bg-gray-200 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        :disabled="submittingPassword"
+                        @click="closeModal"
+                    >
+                        {{ t('common.cancel') }}
+                    </button>
+                    <button
+                        type="submit"
+                        class="bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 text-white hover:bg-indigo-700 hover:from-indigo-500 hover:to-purple-500 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        :disabled="submittingPassword"
+                    >
+                        {{ submittingPassword ? t('common.submitting') : t('common.submit') }}
+                    </button>
+                </div>
+            </form>
+        </Modal>
     </main>
 </template>
 
@@ -329,7 +322,7 @@
         password: yup
             .string()
             .required(t('preferences.passwordRequired'))
-            .min(6, 'Password must be at least 6 characters'),
+            .min(8, t('preferences.minChars', { n: 8 })),
         confirmPassword: yup
             .string()
             .required(t('preferences.confirmPasswordRequired'))

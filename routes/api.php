@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
+use App\Http\Controllers\v1\OrganizationConfirmationController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalController;
 use App\Http\Controllers\v1\PayPalWebhookController;
@@ -28,7 +30,14 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
+    // Verified US-charity autocomplete (valid EIN only, cached server-side)
+    Route::get('charities/search', [CharitySearchController::class, 'search'])
+        ->middleware('throttle:30,1');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
+
+    // Organization PayPal-email confirmation (public: recipient is not a user)
+    Route::post('organizations/confirm-email', [OrganizationConfirmationController::class, 'confirm'])
+        ->middleware('throttle:10,1');
 
     // Donation Formula routes (public)
     Route::get('donation-formulas/article/{slug}', [
@@ -58,8 +67,10 @@ Route::prefix('v1')->group(function () {
         ->middleware('auth:sanctum');
     Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
 
-    // Stripe Webhook (public, no auth)
-    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+    // Stripe Webhook (public, no auth — verified by signature; throttled
+    // so attackers can't force expensive signature checks at will)
+    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
+        ->middleware('throttle:60,1');
 
     // PayPal Checkout (create + capture are callable without an authenticated
     // user so guest donations and the post-redirect success-page flow work)
@@ -68,8 +79,10 @@ Route::prefix('v1')->group(function () {
     Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
         ->middleware(['throttle:20,1', OptionalAuth::class]);
 
-    // PayPal Webhook (public, no auth)
-    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook']);
+    // PayPal Webhook (public, no auth — verified by signature; throttled
+    // so attackers can't force expensive verification calls at will)
+    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook'])
+        ->middleware('throttle:60,1');
 
     // Public page content
     Route::get('page-contents/{page}', [PageController::class, 'show']);

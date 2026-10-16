@@ -41,7 +41,7 @@ class PageContentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch page content.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -83,7 +83,7 @@ class PageContentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update page content.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

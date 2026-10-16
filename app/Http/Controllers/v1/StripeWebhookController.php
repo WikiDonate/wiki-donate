@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Models\TransactionLog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -166,6 +167,26 @@ class StripeWebhookController extends Controller
         }
 
         Cache::store('file')->forget('dashboard');
+
+        // Report-friendly income transaction: single log for financial reports.
+        TransactionLog::record('donation.completed', [
+            'subject_type' => Donation::class,
+            'subject_id' => $donation->id,
+            'message' => sprintf(
+                'Donation of %.2f %s received via Stripe (%s)',
+                $donation->amount,
+                strtoupper($donation->currency),
+                $session->id
+            ),
+            'after' => [
+                'donation_id' => $donation->id,
+                'amount' => (float) $donation->amount,
+                'currency' => strtoupper($donation->currency ?? 'usd'),
+                'provider' => 'stripe',
+                'session_id' => $session->id,
+                'status' => 'completed',
+            ],
+        ]);
 
         Log::info('Donation recorded from checkout session', [
             'donation_id' => $donation->id,

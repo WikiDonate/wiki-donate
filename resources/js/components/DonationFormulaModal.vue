@@ -36,9 +36,11 @@
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
                                 {{ t('formula.organization') }}
                             </label>
-                            <FormInput
-                                v-model="field.value.organization"
+                            <OrganizationSelect
+                                :model-value="field.value.organization"
                                 :placeholder="t('formula.organizationPlaceholder')"
+                                @update:model-value="field.value.organization = $event"
+                                @select="onOrgSelect(index, $event)"
                             />
                         </div>
                         <div class="col-span-10 sm:col-span-4">
@@ -58,7 +60,7 @@
                                 type="button"
                                 class="text-red-500 hover:text-red-700 transition-all duration-200 p-2"
                                 :title="t('formula.deleteRow')"
-                                @click="remove(index)"
+                                @click="removeRow(index)"
                             >
                                 <font-awesome-icon :icon="['fas', 'trash-alt']" />
                             </button>
@@ -159,6 +161,7 @@
         :message-title="t('formula.confirmYourAction')"
         :message="props.isEdit ? t('formula.updateConfirmMsg') : t('formula.saveConfirmMsg')"
         :confirm-text="props.isEdit ? t('formula.update') : t('formula.save')"
+        :cancel-text="t('formula.cancel')"
         :is-loading="localIsSaving || props.isSaving"
         @confirm="confirmSave"
     />
@@ -171,6 +174,7 @@
     import * as yup from 'yup'
     import FormTextarea from '~/components/FormTextarea.vue'
     import ConfirmModal from '~/components/ConfirmModal.vue'
+    import OrganizationSelect from '~/components/OrganizationSelect.vue'
 
     const { t } = useI18n()
 
@@ -208,6 +212,10 @@
             .of(
                 yup.object({
                     organization: yup.string().required(t('formula.organizationRequired')),
+                    // Optional: set when a verified charity is selected from
+                    // autocomplete. Custom (free-text) values are allowed and
+                    // simply carry no EIN.
+                    ein: yup.string().nullable(),
                     percentage: yup
                         .number()
                         .typeError(t('formula.percentageNumber'))
@@ -240,6 +248,24 @@
     const showSaveConfirm = ref(false)
     const pendingSaveData = ref(null)
 
+    // Organization selection is delegated to OrganizationSelect (dropdown-only,
+    // verified charities with valid EIN). Only the EIN write-back lives here.
+    const onOrgSelect = (index, suggestion) => {
+        const row = fields.value[index]?.value
+        if (row) {
+            row.ein = suggestion.ein ?? null
+            row.website = suggestion.website ?? null
+        }
+    }
+
+    const normalizeFormulaRows = (rows) =>
+        (rows ?? []).map((row) => ({
+            organization: row.organization ?? '',
+            ein: row.ein ?? null,
+            website: row.website ?? null,
+            percentage: row.percentage ?? 0,
+        }))
+
     const modalTitle = computed(() => {
         return props.isEdit ? t('formula.editTitle') : t('formula.createTitle')
     })
@@ -256,8 +282,10 @@
 
                 const formula =
                     props.initialData?.formula && props.initialData.formula.length > 0
-                        ? JSON.parse(JSON.stringify(props.initialData.formula))
-                        : [{ organization: '', percentage: 0 }]
+                        ? JSON.parse(
+                              JSON.stringify(normalizeFormulaRows(props.initialData.formula)),
+                          )
+                        : [{ organization: '', ein: null, percentage: 0 }]
 
                 resetForm({
                     values: {
@@ -319,7 +347,11 @@
      * Adds a new empty row to the charity list
      */
     const addRow = () => {
-        push({ organization: '', percentage: 0 })
+        push({ organization: '', ein: null, percentage: 0 })
+    }
+
+    const removeRow = (index) => {
+        remove(index)
     }
 
     const handleSave = handleSubmit((values) => {
@@ -327,6 +359,8 @@
 
         const sanitizedRows = values.formula.map((row) => ({
             organization: String(row.organization).trim(),
+            ein: row.ein ? String(row.ein).trim() : null,
+            website: row.website ? String(row.website).trim().slice(0, 500) : null,
             percentage: parseFloat(row.percentage),
         }))
 

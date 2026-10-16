@@ -131,7 +131,7 @@ class DonationReportController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load donation report.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

@@ -35,7 +35,7 @@ class PageController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load page.',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

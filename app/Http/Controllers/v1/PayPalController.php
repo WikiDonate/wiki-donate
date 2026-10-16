@@ -134,7 +134,7 @@ class PayPalController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create PayPal order',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -361,7 +361,7 @@ class PayPalController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to capture PayPal order',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

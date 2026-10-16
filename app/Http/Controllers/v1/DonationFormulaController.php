@@ -5,6 +5,10 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\DonationFormula;
+use App\Models\Organization;
+use App\Models\TransactionLog;
+use App\Services\Organization\CustomOrganizationNotifier;
+use App\Services\Organization\OrganizationRegistryService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +17,42 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DonationFormulaController extends Controller
 {
+    /**
+     * Attach live verification status to formula rows so the SPA can render
+     * green (verified) / red (needs verification) badges without an extra
+     * lookup. Backfills rows saved before payout_status was persisted.
+     */
+    private function enrichWithVerification(DonationFormula $formula): DonationFormula
+    {
+        $rows = $formula->formula ?? [];
+        if (! is_array($rows) || $rows === []) {
+            return $formula;
+        }
+
+        $ids = collect($rows)->pluck('organization_id')->filter()->unique()->values();
+        $orgs = $ids->isEmpty()
+            ? collect()
+            : Organization::whereIn('id', $ids)->get()->keyBy('id');
+
+        $formula->formula = collect($rows)->map(function ($row) use ($orgs) {
+            $org = isset($row['organization_id']) ? $orgs->get($row['organization_id']) : null;
+            // Live registry is source of truth: an admin verify/unverify after
+            // the formula was saved must reflect immediately, not the stored
+            // snapshot from creation time.
+            if ($org) {
+                $row['payout_status'] = $org->payout_status ?: 'unverified';
+                $row['is_verified'] = $org->isVerified();
+            } else {
+                $row['payout_status'] = ($row['payout_status'] ?? null) ?: 'unverified';
+                $row['is_verified'] = $row['is_verified'] ?? ($row['payout_status'] === 'verified');
+            }
+
+            return $row;
+        })->all();
+
+        return $formula;
+    }
+
     /**
      * Display a listing of donation formulas for a specified article.
      */
@@ -32,7 +72,8 @@ class DonationFormulaController extends Controller
             // Return all formulas for this article
             $formulas = DonationFormula::with('user:id,username')
                 ->where('article_id', $article->id)
-                ->get();
+                ->get()
+                ->each(fn ($f) => $this->enrichWithVerification($f));
 
             return response()->json([
                 'success' => true,
@@ -44,7 +85,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -65,6 +106,8 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            $this->enrichWithVerification($formula);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Donation formula retrieved successfully',
@@ -75,9 +118,70 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
+    }
+
+    /**
+     * Cross-row consistency for organization identity.
+     *
+     * The registry resolves rows by EIN, then name, then ID — so a wrong
+     * combination submitted directly via API would silently merge or create
+     * the wrong organization record. Enforce here:
+     *  - organization names are bounded (org table is varchar 255);
+     *  - a provided EIN must be 9 digits (real US EIN form, dashes allowed);
+     *  - organization_id + ein together must belong to the same record.
+     *
+     * Returns an error response when invalid, null when rows are consistent.
+     */
+    private function validateOrganizationIdentity(array $rows)
+    {
+        foreach (array_values($rows) as $i => $row) {
+            $rowNo = $i + 1;
+
+            if (mb_strlen((string) ($row['organization'] ?? '')) > 255) {
+                return $this->identityError("Row {$rowNo}: organization name is too long.");
+            }
+
+            $ein = $this->normalizeEin($row['ein'] ?? null);
+            if (array_key_exists('ein', $row) && $row['ein'] !== null && $row['ein'] !== '' && $ein === null) {
+                return $this->identityError("Row {$rowNo}: EIN must be 9 digits (e.g. 53-0196605).");
+            }
+
+            if (! empty($row['organization_id']) && $ein !== null) {
+                $org = Organization::find($row['organization_id']);
+                if ($org && $this->normalizeEin($org->ein) !== null && $this->normalizeEin($org->ein) !== $ein) {
+                    return $this->identityError("Row {$rowNo}: EIN does not belong to the given organization.");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Canonical EIN form: digits only, uppercased — mirrors
+     * OrganizationRegistryService so both sides compare identically.
+     */
+    private function normalizeEin(mixed $ein): ?string
+    {
+        if ($ein === null || $ein === '') {
+            return null;
+        }
+
+        $clean = strtoupper((string) preg_replace('/[^A-Z0-9]/i', '', (string) $ein));
+
+        return preg_match('/^[0-9]{9}$/', $clean) ? $clean : null;
+    }
+
+    private function identityError(string $message)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => [$message],
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -89,8 +193,12 @@ class DonationFormulaController extends Controller
             'article_slug' => 'required|string',
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
-            'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
+            'formula.*.organization' => 'required|string|max:255',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
+            'formula.*.website' => 'nullable|string|max:500',
+            'formula.*.city' => 'nullable|string|max:100',
+            'formula.*.state' => 'nullable|string|max:10',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
             'details' => 'nullable|string',
         ]);
@@ -101,6 +209,10 @@ class DonationFormulaController extends Controller
                 'message' => 'Validation error',
                 'errors' => $validator->errors()->all(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($error = $this->validateOrganizationIdentity($request->input('formula', []))) {
+            return $error;
         }
 
         try {
@@ -141,13 +253,38 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            // Upsert organizations and persist organization_id back into rows.
+            $report = OrganizationRegistryService::upsertFromFormulaRowsWithReport(
+                $request->formula,
+                Auth::id(),
+            );
+            $formulaRows = $report['rows'];
+
             // Create new formula (not updateOrCreate anymore)
             $formula = DonationFormula::create([
                 'article_id' => $article->id,
                 'user_id' => Auth::id(),
                 'name' => $request->name,
-                'formula' => $request->formula,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
+            ]);
+
+            CustomOrganizationNotifier::notifyIfNeeded($report['created'], $formula, $formula->user ?? Auth::user());
+
+            TransactionLog::record('formula.created', [
+                'subject_type' => DonationFormula::class,
+                'subject_id' => $formula->id,
+                'actor_id' => Auth::id(),
+                'actor_role' => 'Editor',
+                'message' => 'Donation formula created: '.$request->name,
+                'after' => [
+                    'name' => $formula->name,
+                    'article_slug' => $article->slug,
+                    'organizations' => collect($formulaRows)->map(fn ($r) => [
+                        'organization_id' => $r['organization_id'],
+                        'name' => $r['organization'],
+                    ])->all(),
+                ],
             ]);
 
             return response()->json([
@@ -160,7 +297,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -173,8 +310,12 @@ class DonationFormulaController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'formula' => 'required|array',
-            'formula.*.organization' => 'required|string',
-            'formula.*.organization_id' => 'nullable|integer',
+            'formula.*.organization' => 'required|string|max:255',
+            'formula.*.organization_id' => 'nullable|integer|exists:organizations,id',
+            'formula.*.ein' => 'nullable|string|max:50',
+            'formula.*.website' => 'nullable|string|max:500',
+            'formula.*.city' => 'nullable|string|max:100',
+            'formula.*.state' => 'nullable|string|max:10',
             'formula.*.percentage' => 'required|numeric|min:0|max:100',
             'details' => 'nullable|string',
         ]);
@@ -185,6 +326,10 @@ class DonationFormulaController extends Controller
                 'message' => 'Validation error',
                 'errors' => $validator->errors()->all(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($error = $this->validateOrganizationIdentity($request->input('formula', []))) {
+            return $error;
         }
 
         try {
@@ -242,10 +387,31 @@ class DonationFormulaController extends Controller
             // for transparency in donation details.
             $hadCompletedDonation = $formula->hasCompletedDonation();
 
+            // Upsert organizations and persist organization_id back into rows.
+            $report = OrganizationRegistryService::upsertFromFormulaRowsWithReport(
+                $request->formula,
+                Auth::id(),
+            );
+            $formulaRows = $report['rows'];
+
+            $beforeFormula = $formula->formula;
             $formula->update([
                 'name' => $request->name,
-                'formula' => $request->formula,
+                'formula' => $formulaRows,
                 'details' => $request->details ?? null,
+            ]);
+
+            TransactionLog::record('formula.updated', [
+                'subject_type' => DonationFormula::class,
+                'subject_id' => $formula->id,
+                'actor_id' => Auth::id(),
+                'actor_role' => 'Editor',
+                'message' => 'Donation formula updated: '.$request->name,
+                'before' => ['formula' => $beforeFormula],
+                'after' => [
+                    'name' => $formula->name,
+                    'formula' => $formulaRows,
+                ],
             ]);
 
             if ($hadCompletedDonation) {
@@ -255,6 +421,8 @@ class DonationFormulaController extends Controller
                 ])->save();
                 $formula->refresh();
             }
+
+            CustomOrganizationNotifier::notifyIfNeeded($report['created'], $formula, Auth::user());
 
             return response()->json([
                 'success' => true,
@@ -266,7 +434,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }
@@ -309,7 +477,7 @@ class DonationFormulaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Exception error',
-                'errors' => [$e->getMessage()],
+                'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
         }
     }

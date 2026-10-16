@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -22,6 +23,83 @@ class SecurityTest extends TestCase
     private function authHeader(User $user): array
     {
         return ['Authorization' => 'Bearer '.$user->createToken('test')->plainTextToken];
+    }
+
+    private function editorHeaders(): array
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Editor');
+
+        return $this->authHeader($user);
+    }
+
+    // ---------------------------------------------------------------------
+    // PASSWORD CHANGE — current password re-auth + token rotation
+    // ---------------------------------------------------------------------
+
+    public function test_change_password_rejects_wrong_current_password(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Editor');
+
+        $this->withHeaders($this->authHeader($user))
+            ->postJson('/api/v1/changePassword', [
+                'currentPassword' => 'wrong-password',
+                'newPassword' => 'NewPassword123',
+                'confirmPassword' => 'NewPassword123',
+            ])
+            ->assertUnprocessable();
+
+        // Password unchanged.
+        $this->assertTrue(Hash::check('password', $user->fresh()->password));
+    }
+
+    public function test_change_password_requires_current_password(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Editor');
+
+        $this->withHeaders($this->authHeader($user))
+            ->postJson('/api/v1/changePassword', [
+                'newPassword' => 'NewPassword123',
+                'confirmPassword' => 'NewPassword123',
+            ])
+            ->assertUnprocessable();
+    }
+
+    public function test_change_password_rotates_other_tokens(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Editor');
+        $other = $user->createToken('other-device')->plainTextToken;
+        $headers = $this->authHeader($user);
+
+        $this->withHeaders($headers)
+            ->postJson('/api/v1/changePassword', [
+                'currentPassword' => 'password',
+                'newPassword' => 'NewPassword123',
+                'confirmPassword' => 'NewPassword123',
+            ])
+            ->assertCreated();
+
+        // Other sessions logged out; current session survives.
+        $this->assertDatabaseMissing('personal_access_tokens', ['token' => hash('sha256', explode('|', $other)[1])]);
+        $this->withHeaders($headers)->getJson('/api/v1/user/get')->assertOk();
+    }
+
+    // ---------------------------------------------------------------------
+    // STRIPE REDIRECTS — same-host only
+    // ---------------------------------------------------------------------
+
+    public function test_stripe_checkout_rejects_off_host_redirect(): void
+    {
+        $this->withHeaders($this->editorHeaders())
+            ->postJson('/api/v1/stripe/checkout', [
+                'amount' => 10,
+                'success_url' => 'https://evil.example/phish',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonFragment(['success_url must point to this application.']);
     }
 
     // ---------------------------------------------------------------------
