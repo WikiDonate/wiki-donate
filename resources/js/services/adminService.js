@@ -34,7 +34,11 @@ const getOrganizations = (params, signal) => api.get('/admin/organizations', { p
 
 const getOrganization = (id) => api.get(`/admin/organizations/${id}`)
 
+const createOrganization = (payload) => api.post('/admin/organizations', payload)
+
 const updateOrganization = (id, payload) => api.put(`/admin/organizations/${id}`, payload)
+
+const deleteOrganization = (id) => api.delete(`/admin/organizations/${id}`)
 
 const verifyOrganization = (id) => api.post(`/admin/organizations/${id}/verify`)
 
@@ -59,7 +63,9 @@ export const adminService = {
     syncPayouts,
     getOrganizations,
     getOrganization,
+    createOrganization,
     updateOrganization,
+    deleteOrganization,
     verifyOrganization,
     unverifyOrganization,
     getTransactionLogs,

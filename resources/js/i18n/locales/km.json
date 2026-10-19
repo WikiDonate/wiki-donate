@@ -33,7 +33,8 @@
         "pagination": "ការបិទភ្ជាប់",
         "previousPage": "ទំព័រមុន។",
         "nextPage": "ទំព័របន្ទាប់",
-        "clear": "ច្បាស់"
+        "clear": "ច្បាស់",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "ចូលទៅគណនីរបស់អ្នក។",
@@ -605,7 +606,29 @@
         "payoutFormulaCount": "រូបមន្ត {count}",
         "paymentMethod": "វិធីបង់ប្រាក់",
         "allPaymentMethods": "វិធីបង់ប្រាក់ទាំងអស់។",
-        "paymentMethodLabel": "វិធីបង់ប្រាក់"
+        "paymentMethodLabel": "វិធីបង់ប្រាក់",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"
