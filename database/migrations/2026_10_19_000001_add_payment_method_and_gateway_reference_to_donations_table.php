@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -37,33 +36,13 @@ return new class extends Migration
     /**
      * Derive the generic columns for pre-existing rows.
      *
-     * PayPal is authoritative when a paypal_order_id is present; otherwise the
-     * row is a Stripe one and the session id is preferred over the intent id.
+     * Delegates to DonationPaymentBackfillService so the derivation logic is
+     * unit-testable and independently re-runnable (see that class for the
+     * PayPal-beats-Stripe precedence rule).
      */
     protected function backfill(): void
     {
-        DB::table('donations')
-            ->whereNotNull('paypal_order_id')
-            ->where(function ($query) {
-                $query->whereNull('payment_method')->orWhere('payment_method', '!=', 'paypal');
-            })
-            ->update([
-                'payment_method' => 'paypal',
-                'gateway_reference' => DB::raw('paypal_order_id'),
-            ]);
-
-        DB::table('donations')
-            ->whereNull('paypal_order_id')
-            ->where(function ($query) {
-                $query->whereNotNull('stripe_session_id')->orWhereNotNull('stripe_payment_intent_id');
-            })
-            ->where(function ($query) {
-                $query->whereNull('payment_method')->orWhere('payment_method', '!=', 'stripe');
-            })
-            ->update([
-                'payment_method' => 'stripe',
-                'gateway_reference' => DB::raw('COALESCE(stripe_session_id, stripe_payment_intent_id)'),
-            ]);
+        app(\App\Services\Payment\DonationPaymentBackfillService::class)->run();
     }
 
     public function down(): void
