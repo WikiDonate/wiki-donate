@@ -347,6 +347,7 @@
         "logIn": "Conectați-vă",
         "donationAmount": "Suma donației ($)",
         "enterAmount": "Introduceți suma",
+        "transactionCost": "Costul tranzacției ({rate}%):",
         "operationalCosts": "* Până la 0,1% pentru costurile operaționale.",
         "enterAmountToDonate": "Introduceți o sumă de donat",
         "paypalNotConfigured": "PayPal nu este configurat.",

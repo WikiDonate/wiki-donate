@@ -347,6 +347,7 @@
         "logIn": "લોગ ઇન કરો",
         "donationAmount": "દાનની રકમ ($)",
         "enterAmount": "રકમ દાખલ કરો",
+        "transactionCost": "વ્યવહાર ખર્ચ ({rate}%):",
         "operationalCosts": "* ઓપરેશનલ ખર્ચ માટે 0.1% સુધી.",
         "enterAmountToDonate": "દાન કરવા માટે રકમ દાખલ કરો",
         "paypalNotConfigured": "PayPal ગોઠવેલ નથી.",

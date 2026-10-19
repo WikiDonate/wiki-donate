@@ -347,6 +347,7 @@
         "logIn": "登入",
         "donationAmount": "捐款金額（元）",
         "enterAmount": "輸入金額",
+        "transactionCost": "交易成本（{rate}%）：",
         "operationalCosts": "* 營運成本高達 0.1%。",
         "enterAmountToDonate": "輸入捐贈金額",
         "paypalNotConfigured": "未配置 PayPal。",

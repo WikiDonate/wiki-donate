@@ -347,6 +347,7 @@
         "logIn": "Inloggen",
         "donationAmount": "Donatiebedrag ($)",
         "enterAmount": "Voer bedrag in",
+        "transactionCost": "Transactiekosten ({rate}%):",
         "operationalCosts": "* Maximaal 0,1% voor operationele kosten.",
         "enterAmountToDonate": "Vul een bedrag in dat u wilt doneren",
         "paypalNotConfigured": "PayPal is niet geconfigureerd.",

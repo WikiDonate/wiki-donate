@@ -347,6 +347,7 @@
         "logIn": "लॉग इन करा",
         "donationAmount": "देणगी रक्कम ($)",
         "enterAmount": "रक्कम प्रविष्ट करा",
+        "transactionCost": "व्यवहार खर्च ({rate}%):",
         "operationalCosts": "* ऑपरेशनल खर्चासाठी 0.1% पर्यंत.",
         "enterAmountToDonate": "देणगी देण्यासाठी रक्कम प्रविष्ट करा",
         "paypalNotConfigured": "PayPal कॉन्फिगर केलेले नाही.",

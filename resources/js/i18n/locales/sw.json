@@ -347,6 +347,7 @@
         "logIn": "Ingia",
         "donationAmount": "Kiasi cha Mchango ($)",
         "enterAmount": "Weka kiasi",
+        "transactionCost": "Gharama ya muamala ({rate}%):",
         "operationalCosts": "* Hadi 0.1% kwa gharama za uendeshaji.",
         "enterAmountToDonate": "Weka kiasi cha kuchangia",
         "paypalNotConfigured": "PayPal haijasanidiwa.",

@@ -347,6 +347,7 @@
         "logIn": "Masuk",
         "donationAmount": "Jumlah Donasi ($)",
         "enterAmount": "Masukkan jumlah",
+        "transactionCost": "Biaya transaksi ({rate}%):",
         "operationalCosts": "* Hingga 0,1% untuk biaya operasional.",
         "enterAmountToDonate": "Masukkan jumlah yang akan disumbangkan",
         "paypalNotConfigured": "PayPal tidak dikonfigurasi.",

@@ -347,6 +347,7 @@
         "logIn": "لاگ ان کریں۔",
         "donationAmount": "عطیہ کی رقم ($)",
         "enterAmount": "رقم درج کریں۔",
+        "transactionCost": "لین دین کی لاگت ({rate}%):",
         "operationalCosts": "* آپریشنل اخراجات کے لیے 0.1% تک۔",
         "enterAmountToDonate": "عطیہ کرنے کے لیے رقم درج کریں۔",
         "paypalNotConfigured": "پے پال کنفیگر نہیں ہے۔",

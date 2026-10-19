@@ -347,6 +347,7 @@
         "logIn": "Log masuk",
         "donationAmount": "Jumlah Derma ($)",
         "enterAmount": "Masukkan jumlah",
+        "transactionCost": "Kos urus niaga ({rate}%):",
         "operationalCosts": "* Sehingga 0.1% untuk kos operasi.",
         "enterAmountToDonate": "Masukkan jumlah untuk didermakan",
         "paypalNotConfigured": "PayPal tidak dikonfigurasikan.",

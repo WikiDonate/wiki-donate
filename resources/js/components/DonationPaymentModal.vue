@@ -102,6 +102,15 @@
                             ${{ quickAmount }}
                         </button>
                     </div>
+                    <p
+                        v-if="transactionCost"
+                        class="flex justify-between items-center text-sm text-gray-700 mt-3"
+                    >
+                        <span>{{
+                            t('donate.transactionCost', { rate: TRANSACTION_FEE_PERCENT })
+                        }}</span>
+                        <span class="font-semibold">${{ transactionCost.toFixed(2) }}</span>
+                    </p>
                     <p class="text-xs text-gray-600 mt-3 italic">
                         {{ t('donate.operationalCosts') }}
                     </p>
@@ -160,6 +169,7 @@
     import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
     import { useI18n } from 'vue-i18n'
     import { donateService } from '~/services/donateService'
+    import { TRANSACTION_FEE_PERCENT, calculateTransactionCost } from '~/config/donationFees'
 
     const { t } = useI18n()
     const authStore = useAuthStore()
@@ -210,6 +220,16 @@
     const hasValidAmount = computed(
         () => Number(amount.value) >= 0.5 && Number(amount.value) <= 500000 && props.modelValue,
     )
+
+    // Display-only transaction cost, recalculated live from the entered amount.
+    // Hidden for empty, zero, or out-of-range amounts so no stale/invalid fee shows.
+    const transactionCost = computed(() => {
+        const value = Number(amount.value)
+        if (!Number.isFinite(value) || value <= 0 || value < 0.5 || value > 500000) {
+            return 0
+        }
+        return calculateTransactionCost(value) || 0
+    })
 
     const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || ''
 

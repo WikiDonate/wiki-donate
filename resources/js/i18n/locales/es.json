@@ -347,6 +347,7 @@
         "logIn": "Iniciar sesión",
         "donationAmount": "Monto de la donación ($)",
         "enterAmount": "Ingrese la cantidad",
+        "transactionCost": "Costo de transacción ({rate}%):",
         "operationalCosts": "* Hasta 0,1% para costos operativos.",
         "enterAmountToDonate": "Ingrese una cantidad para donar",
         "paypalNotConfigured": "PayPal no está configurado.",

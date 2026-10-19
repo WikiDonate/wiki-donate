@@ -347,6 +347,7 @@
         "logIn": "Zaloguj się",
         "donationAmount": "Kwota darowizny ($)",
         "enterAmount": "Wpisz kwotę",
+        "transactionCost": "Koszt transakcji ({rate}%):",
         "operationalCosts": "* Do 0,1% na koszty operacyjne.",
         "enterAmountToDonate": "Wpisz kwotę do przekazania",
         "paypalNotConfigured": "PayPal nie jest skonfigurowany.",

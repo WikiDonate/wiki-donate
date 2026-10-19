@@ -347,6 +347,7 @@
         "logIn": "Giriş yap",
         "donationAmount": "Bağış Tutarı ($)",
         "enterAmount": "Tutarı girin",
+        "transactionCost": "İşlem maliyeti (%{rate}):",
         "operationalCosts": "* Operasyonel maliyetler için %0,1'e kadar.",
         "enterAmountToDonate": "Bağış yapmak için bir miktar girin",
         "paypalNotConfigured": "PayPal yapılandırılmamış.",

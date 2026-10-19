@@ -347,6 +347,7 @@
         "logIn": "로그인",
         "donationAmount": "기부금액($)",
         "enterAmount": "금액 입력",
+        "transactionCost": "거래 비용({rate}%):",
         "operationalCosts": "* 운영비 최대 0.1%.",
         "enterAmountToDonate": "기부할 금액을 입력하세요.",
         "paypalNotConfigured": "PayPal이 구성되지 않았습니다.",

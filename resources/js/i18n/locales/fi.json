@@ -347,6 +347,7 @@
         "logIn": "Kirjaudu sisään",
         "donationAmount": "Lahjoituksen summa ($)",
         "enterAmount": "Syötä summa",
+        "transactionCost": "Tapahtumakulut ({rate} %):",
         "operationalCosts": "* Jopa 0,1 % toimintakuluihin.",
         "enterAmountToDonate": "Anna lahjoitettava summa",
         "paypalNotConfigured": "PayPalia ei ole määritetty.",

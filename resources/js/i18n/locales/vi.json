@@ -347,6 +347,7 @@
         "logIn": "Đăng nhập",
         "donationAmount": "Số tiền quyên góp ($)",
         "enterAmount": "Nhập số tiền",
+        "transactionCost": "Chi phí giao dịch ({rate}%):",
         "operationalCosts": "* Lên tới 0,1% cho chi phí hoạt động.",
         "enterAmountToDonate": "Nhập số tiền muốn quyên góp",
         "paypalNotConfigured": "PayPal chưa được định cấu hình.",

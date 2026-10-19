@@ -347,6 +347,7 @@
         "logIn": "авторизуватися",
         "donationAmount": "Сума пожертви ($)",
         "enterAmount": "Введіть суму",
+        "transactionCost": "Вартість трансакції ({rate}%):",
         "operationalCosts": "* До 0,1% на експлуатаційні витрати.",
         "enterAmountToDonate": "Введіть суму для пожертви",
         "paypalNotConfigured": "PayPal не налаштовано.",

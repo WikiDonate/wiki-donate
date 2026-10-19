@@ -347,6 +347,7 @@
         "logIn": "ግባ",
         "donationAmount": "የመዋጮ መጠን ($)",
         "enterAmount": "መጠን ያስገቡ",
+        "transactionCost": "የግብይት ዋጋ ({rate}%)፡",
         "operationalCosts": "* ለስራ ማስኬጃ ወጪዎች እስከ 0.1%።",
         "enterAmountToDonate": "ለመለገስ መጠን ያስገቡ",
         "paypalNotConfigured": "PayPal አልተዋቀረም።",

@@ -347,6 +347,7 @@
         "logIn": "Войти",
         "donationAmount": "Сумма пожертвования ($)",
         "enterAmount": "Введите сумму",
+        "transactionCost": "Стоимость транзакции ({rate}%):",
         "operationalCosts": "* До 0,1% на эксплуатационные расходы.",
         "enterAmountToDonate": "Введите сумму для пожертвования",
         "paypalNotConfigured": "PayPal не настроен.",

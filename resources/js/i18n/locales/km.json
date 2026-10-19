@@ -347,6 +347,7 @@
         "logIn": "ចូល",
         "donationAmount": "ចំនួនទឹកប្រាក់បរិច្ចាគ ($)",
         "enterAmount": "បញ្ចូលចំនួនទឹកប្រាក់",
+        "transactionCost": "តម្លៃប្រតិបត្តិការ ({rate}%)៖",
         "operationalCosts": "* រហូតដល់ 0.1% សម្រាប់ការចំណាយប្រតិបត្តិការ។",
         "enterAmountToDonate": "បញ្ចូលចំនួនទឹកប្រាក់ដែលត្រូវបរិច្ចាគ",
         "paypalNotConfigured": "PayPal មិនត្រូវបានកំណត់រចនាសម្ព័ន្ធទេ។",

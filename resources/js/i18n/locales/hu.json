@@ -347,6 +347,7 @@
         "logIn": "Jelentkezzen be",
         "donationAmount": "Adomány összege ($)",
         "enterAmount": "Adja meg az összeget",
+        "transactionCost": "Tranzakciós költség ({rate}%):",
         "operationalCosts": "* Akár 0,1% a működési költségekre.",
         "enterAmountToDonate": "Adja meg az adományozandó összeget",
         "paypalNotConfigured": "A PayPal nincs konfigurálva.",

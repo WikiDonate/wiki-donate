@@ -347,6 +347,7 @@
         "logIn": "התחבר",
         "donationAmount": "סכום התרומה ($)",
         "enterAmount": "הזן סכום",
+        "transactionCost": "עלות עסקה ({rate}%):",
         "operationalCosts": "* עד 0.1% עבור עלויות תפעול.",
         "enterAmountToDonate": "הזן סכום לתרומה",
         "paypalNotConfigured": "PayPal לא מוגדר.",

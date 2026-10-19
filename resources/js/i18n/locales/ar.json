@@ -347,6 +347,7 @@
         "logIn": "تسجيل الدخول",
         "donationAmount": "مبلغ التبرع ($)",
         "enterAmount": "أدخل المبلغ",
+        "transactionCost": "تكلفة المعاملة ({rate}%):",
         "operationalCosts": "* ما يصل إلى 0.1% للتكاليف التشغيلية.",
         "enterAmountToDonate": "أدخل المبلغ للتبرع",
         "paypalNotConfigured": "لم يتم تكوين باي بال.",
