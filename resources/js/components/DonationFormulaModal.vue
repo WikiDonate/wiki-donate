@@ -39,6 +39,7 @@
                             <OrganizationSelect
                                 :model-value="field.value.organization"
                                 :placeholder="t('formula.organizationPlaceholder')"
+                                source="registry"
                                 @update:model-value="field.value.organization = $event"
                                 @select="onOrgSelect(index, $event)"
                             />

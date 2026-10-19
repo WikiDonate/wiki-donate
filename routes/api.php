@@ -5,12 +5,14 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\OrganizationConfirmationController;
+use App\Http\Controllers\v1\OrganizationSearchController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PayPalController;
 use App\Http\Controllers\v1\PayPalWebhookController;
 use App\Http\Controllers\v1\StripeController;
 use App\Http\Controllers\v1\StripeWebhookController;
 use App\Http\Controllers\v1\UserController;
+use App\Http\Middleware\FreshAuthGuard;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +46,11 @@ Route::prefix('v1')->group(function () {
         DonationFormulaController::class,
         'index',
     ]);
+
+    // Donor/editor organization autocomplete: admin-curated registry ONLY.
+    // External charity-directory lookup is admin-only (see routes/api/admin.php).
+    Route::get('organizations/search', [OrganizationSearchController::class, 'search'])
+        ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin|Editor']);
 
     // Editor & Admin shared routes — loaded BEFORE the public `articles/{slug}`
     // route so static segments (e.g. `articles/my`) are not shadowed by the
