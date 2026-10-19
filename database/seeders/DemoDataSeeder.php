@@ -215,25 +215,25 @@ class DemoDataSeeder extends Seeder
 
         $demo = [
             // ---- Stripe (completed) ----
-            ['key' => ['stripe_session_id' => 'cs_demo_001'], 'pi' => 'pi_demo_001', 'formula' => 0, 'user' => $donor?->id, 'name' => 'Demo Donor', 'email' => 'donor@demo.local', 'amount' => 120.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 1, 'details' => 'Clean water one-time gift.'],
-            ['key' => ['stripe_session_id' => 'cs_demo_002'], 'pi' => 'pi_demo_002', 'formula' => 1, 'user' => null, 'name' => 'Guest Giver', 'email' => 'guest@example.com', 'amount' => 45.50, 'currency' => 'USD', 'status' => 'completed', 'days' => 3, 'details' => null],
-            ['key' => ['stripe_session_id' => 'cs_demo_003'], 'pi' => 'pi_demo_003', 'formula' => 2, 'user' => $admin->id, 'name' => 'Site Admin', 'email' => 'gshahaj+admin@gmail.com', 'amount' => 500.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 6, 'details' => 'Test pledge.'],
+            ['method' => 'stripe', 'reference' => 'cs_demo_001', 'pi' => 'pi_demo_001', 'formula' => 0, 'user' => $donor?->id, 'name' => 'Demo Donor', 'email' => 'donor@demo.local', 'amount' => 120.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 1, 'details' => 'Clean water one-time gift.'],
+            ['method' => 'stripe', 'reference' => 'cs_demo_002', 'pi' => 'pi_demo_002', 'formula' => 1, 'user' => null, 'name' => 'Guest Giver', 'email' => 'guest@example.com', 'amount' => 45.50, 'currency' => 'USD', 'status' => 'completed', 'days' => 3, 'details' => null],
+            ['method' => 'stripe', 'reference' => 'cs_demo_003', 'pi' => 'pi_demo_003', 'formula' => 2, 'user' => $admin->id, 'name' => 'Site Admin', 'email' => 'gshahaj+admin@gmail.com', 'amount' => 500.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 6, 'details' => 'Test pledge.'],
             // ---- PayPal (completed) ----
-            ['key' => ['paypal_order_id' => 'PAYD-DEMO-0001'], 'capture' => 'CAPTURE-DEMO-0001', 'formula' => 0, 'user' => null, 'name' => 'Amina Rahman', 'email' => 'amina.rahman@example.com', 'amount' => 250.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 2, 'details' => 'Monthly support.'],
-            ['key' => ['paypal_order_id' => 'PAYD-DEMO-0002'], 'capture' => 'CAPTURE-DEMO-0002', 'formula' => 3, 'user' => $donor?->id, 'name' => 'Demo Donor', 'email' => 'donor@demo.local', 'amount' => 75.00, 'currency' => 'EUR', 'status' => 'completed', 'days' => 5, 'details' => null],
+            ['method' => 'paypal', 'reference' => 'PAYD-DEMO-0001', 'capture' => 'CAPTURE-DEMO-0001', 'formula' => 0, 'user' => null, 'name' => 'Amina Rahman', 'email' => 'amina.rahman@example.com', 'amount' => 250.00, 'currency' => 'USD', 'status' => 'completed', 'days' => 2, 'details' => 'Monthly support.'],
+            ['method' => 'paypal', 'reference' => 'PAYD-DEMO-0002', 'capture' => 'CAPTURE-DEMO-0002', 'formula' => 3, 'user' => $donor?->id, 'name' => 'Demo Donor', 'email' => 'donor@demo.local', 'amount' => 75.00, 'currency' => 'EUR', 'status' => 'completed', 'days' => 5, 'details' => null],
             // ---- Other states for dashboard/report coverage ----
-            ['key' => ['paypal_order_id' => 'PAYD-DEMO-0003'], 'capture' => null, 'formula' => 1, 'user' => null, 'name' => 'Pending Pat', 'email' => 'pending@example.com', 'amount' => 25.00, 'currency' => 'USD', 'status' => 'pending', 'days' => 0, 'details' => 'Awaiting approval.'],
-            ['key' => ['paypal_order_id' => 'PAYD-DEMO-0004'], 'capture' => null, 'formula' => 2, 'user' => null, 'name' => 'Failed Fran', 'email' => 'failed@example.com', 'amount' => 60.00, 'currency' => 'GBP', 'status' => 'failed', 'days' => 4, 'details' => 'Declined.'],
-            ['key' => ['stripe_session_id' => 'cs_demo_004'], 'pi' => null, 'formula' => 3, 'user' => null, 'name' => 'Expired Ed', 'email' => null, 'amount' => 15.00, 'currency' => 'USD', 'status' => 'expired', 'days' => 12, 'details' => null],
+            ['method' => 'paypal', 'reference' => 'PAYD-DEMO-0003', 'capture' => null, 'formula' => 1, 'user' => null, 'name' => 'Pending Pat', 'email' => 'pending@example.com', 'amount' => 25.00, 'currency' => 'USD', 'status' => 'pending', 'days' => 0, 'details' => 'Awaiting approval.'],
+            ['method' => 'paypal', 'reference' => 'PAYD-DEMO-0004', 'capture' => null, 'formula' => 2, 'user' => null, 'name' => 'Failed Fran', 'email' => 'failed@example.com', 'amount' => 60.00, 'currency' => 'GBP', 'status' => 'failed', 'days' => 4, 'details' => 'Declined.'],
+            ['method' => 'stripe', 'reference' => 'cs_demo_004', 'pi' => null, 'formula' => 3, 'user' => null, 'name' => 'Expired Ed', 'email' => null, 'amount' => 15.00, 'currency' => 'USD', 'status' => 'expired', 'days' => 12, 'details' => null],
         ];
 
         foreach ($demo as $row) {
             $formula = $formulas[$row['formula']] ?? null;
-            $isPaypal = isset($row['key']['paypal_order_id']);
-            $reference = $row['key']['paypal_order_id'] ?? $row['key']['stripe_session_id'] ?? null;
+            $method = $row['method'];
+            $reference = $row['reference'];
 
             $metadata = [
-                'source' => $isPaypal ? 'paypal' : 'stripe_checkout',
+                'source' => $method === 'paypal' ? 'paypal' : 'stripe_checkout',
                 'details' => $row['details'],
             ];
 
@@ -242,7 +242,7 @@ class DemoDataSeeder extends Seeder
             }
 
             $donation = Donation::firstOrNew([
-                'payment_method' => $isPaypal ? 'paypal' : 'stripe',
+                'payment_method' => $method,
                 'gateway_reference' => $reference,
             ]);
             if (! $donation->exists) {
@@ -250,7 +250,7 @@ class DemoDataSeeder extends Seeder
                     'uuid' => (string) Str::uuid(),
                     'user_id' => $row['user'],
                     'donation_formula_id' => $formula?->id,
-                    'payment_method' => $isPaypal ? 'paypal' : 'stripe',
+                    'payment_method' => $method,
                     'gateway_reference' => $reference,
                     'donor_name' => $row['name'],
                     'donor_email' => $row['email'],

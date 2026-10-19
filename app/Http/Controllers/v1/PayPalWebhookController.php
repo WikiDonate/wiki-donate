@@ -408,7 +408,7 @@ class PayPalWebhookController extends Controller
         $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? $resource['custom_id'] ?? null;
 
         if ($orderId) {
-            PayPalPendingOrder::where('payment_method', 'paypal')
+            PaymentPendingOrder::where('payment_method', 'paypal')
                 ->where('gateway_reference', $orderId)
                 ->delete();
             Log::info('PayPal capture denied, pending order removed', ['order_id' => $orderId]);
@@ -424,7 +424,7 @@ class PayPalWebhookController extends Controller
         $orderId = $event['resource']['id'] ?? null;
 
         if ($orderId) {
-            PayPalPendingOrder::where('payment_method', 'paypal')
+            PaymentPendingOrder::where('payment_method', 'paypal')
                 ->where('gateway_reference', $orderId)
                 ->delete();
             Log::info('PayPal order cancelled, pending order removed', ['order_id' => $orderId]);

@@ -29,7 +29,8 @@ class DonationSeeder extends Seeder
                 'amount' => 250.00,
                 'currency' => 'USD',
                 'status' => 'completed',
-                'paypal_order_id' => 'PAYD-8P2D3K1X',
+                'payment_method' => 'paypal',
+                'gateway_reference' => 'PAYD-8P2D3K1X',
                 'payment_id' => 'CAPTURE-AMN-8821',
                 'formula_index' => 0,
                 'details' => 'Monthly support for the education fund.',
@@ -42,7 +43,8 @@ class DonationSeeder extends Seeder
                 'amount' => 75.50,
                 'currency' => 'EUR',
                 'status' => 'completed',
-                'paypal_order_id' => 'PAYD-5Q7H8J2W',
+                'payment_method' => 'paypal',
+                'gateway_reference' => 'PAYD-5Q7H8J2W',
                 'payment_id' => 'CAPTURE-ABD-5533',
                 'formula_index' => 1,
                 'details' => null,
@@ -55,7 +57,8 @@ class DonationSeeder extends Seeder
                 'amount' => 25.00,
                 'currency' => 'USD',
                 'status' => 'pending',
-                'paypal_order_id' => 'PAYD-1M3N6P8R',
+                'payment_method' => 'paypal',
+                'gateway_reference' => 'PAYD-1M3N6P8R',
                 'payment_id' => null,
                 'formula_index' => 2,
                 'details' => 'Processing PayPal approval.',
@@ -68,7 +71,8 @@ class DonationSeeder extends Seeder
                 'amount' => 500.00,
                 'currency' => 'USD',
                 'status' => 'failed',
-                'paypal_order_id' => 'PAYD-6T2V4Y7Z',
+                'payment_method' => 'paypal',
+                'gateway_reference' => 'PAYD-6T2V4Y7Z',
                 'payment_id' => null,
                 'formula_index' => 3,
                 'details' => 'Payment declined by the buyer.',
@@ -83,8 +87,9 @@ class DonationSeeder extends Seeder
                 'amount' => 125.00,
                 'currency' => 'USD',
                 'status' => 'completed',
-                'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
-                'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
+                'payment_method' => 'stripe',
+                'gateway_reference' => 'cs_demo_seed_'.uniqid(),
+                'payment_intent_id' => 'pi_demo_seed_'.uniqid(),
                 'formula_index' => 0,
                 'details' => 'One-time donation after reading the article.',
                 'days_ago' => 3,
@@ -96,8 +101,9 @@ class DonationSeeder extends Seeder
                 'amount' => 40.25,
                 'currency' => 'GBP',
                 'status' => 'completed',
-                'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
-                'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
+                'payment_method' => 'stripe',
+                'gateway_reference' => 'cs_demo_seed_'.uniqid(),
+                'payment_intent_id' => 'pi_demo_seed_'.uniqid(),
                 'formula_index' => 1,
                 'details' => null,
                 'days_ago' => 9,
@@ -109,8 +115,9 @@ class DonationSeeder extends Seeder
                 'amount' => 15.00,
                 'currency' => 'USD',
                 'status' => 'expired',
-                'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
-                'stripe_payment_intent_id' => null,
+                'payment_method' => 'stripe',
+                'gateway_reference' => 'cs_demo_seed_'.uniqid(),
+                'payment_intent_id' => null,
                 'formula_index' => 2,
                 'details' => null,
                 'days_ago' => 12,
@@ -122,8 +129,9 @@ class DonationSeeder extends Seeder
                 'amount' => 1000.00,
                 'currency' => 'USD',
                 'status' => 'completed',
-                'stripe_session_id' => 'cs_demo_seed_'.uniqid(),
-                'stripe_payment_intent_id' => 'pi_demo_seed_'.uniqid(),
+                'payment_method' => 'stripe',
+                'gateway_reference' => 'cs_demo_seed_'.uniqid(),
+                'payment_intent_id' => 'pi_demo_seed_'.uniqid(),
                 'formula_index' => 3,
                 'details' => 'Special campaign pledge.',
                 'days_ago' => 15,
@@ -131,14 +139,14 @@ class DonationSeeder extends Seeder
         ];
 
         foreach ($demo as $row) {
-            $stripeSession = $row['stripe_session_id'] ?? null;
-            $paymentIntent = $row['stripe_payment_intent_id'] ?? null;
-            $paypalOrder = $row['paypal_order_id'] ?? null;
+            $paymentMethod = $row['payment_method'] ?? 'stripe';
+            $reference = $row['gateway_reference'] ?? null;
+            $paymentIntent = $row['payment_intent_id'] ?? null;
             $paymentId = $row['payment_id'] ?? null;
             $formulaId = $formulaIds[$row['formula_index']] ?? null;
 
             $metadata = [
-                'source' => $paypalOrder ? 'paypal' : 'stripe_checkout',
+                'source' => $paymentMethod === 'paypal' ? 'paypal' : 'stripe_checkout',
                 'details' => $row['details'],
             ];
 
@@ -155,8 +163,8 @@ class DonationSeeder extends Seeder
             $donation = Donation::create([
                 'user_id' => $row['user_id'],
                 'donation_formula_id' => $formulaId,
-                'payment_method' => $paypalOrder ? 'paypal' : 'stripe',
-                'gateway_reference' => $paypalOrder ?: ($stripeSession ?: $paymentIntent),
+                'payment_method' => $paymentMethod,
+                'gateway_reference' => $reference,
                 'donor_name' => $row['donor_name'],
                 'donor_email' => $row['donor_email'],
                 'amount' => $row['amount'],

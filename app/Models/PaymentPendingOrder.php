@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  * In-flight checkout payload for any payment method.
  *
  * Renamed from PayPalPendingOrder (table paypal_pending_orders) in phase 3 of
- * the pluggable payment-method refactor: `payment_method` replaces the
- * PayPal-specific `paypal_order_id` and `gateway_reference` holds the
- * method-specific id (a PayPal order id, a Stripe session id, ...).
+ * the pluggable payment-method refactor: `payment_method` names the gateway and
+ * `gateway_reference` holds the method-specific id (a PayPal order id, a Stripe
+ * session id, ...).
  *
  * The row exists so the donor's formula/details survive the gateway redirect;
  * it is deleted once the donation is captured (or cleaned up after its TTL).
