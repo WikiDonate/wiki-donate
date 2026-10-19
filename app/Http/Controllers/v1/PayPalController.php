@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\PayPalPendingOrder;
+use App\Models\TransactionLog;
 use App\Services\PayPalClient;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -241,6 +242,29 @@ class PayPalController extends Controller
 
                 $pending->delete();
 
+                // Report-friendly income transaction: same shape as the webhook
+                // path so a donation is audited exactly once whichever route
+                // completes it (capture here, webhook there).
+                TransactionLog::record('donation.completed', [
+                    'subject_type' => Donation::class,
+                    'subject_id' => $donation->id,
+                    'message' => sprintf(
+                        'Donation of %.2f %s received via PayPal (%s)',
+                        $donation->amount,
+                        strtoupper($donation->currency ?? 'USD'),
+                        $orderId
+                    ),
+                    'after' => [
+                        'donation_id' => $donation->id,
+                        'amount' => (float) $donation->amount,
+                        'currency' => strtoupper($donation->currency ?? 'USD'),
+                        'provider' => 'paypal',
+                        'order_id' => $orderId,
+                        'status' => 'completed',
+                    ],
+                    'meta' => ['payment_method' => 'paypal'],
+                ]);
+
                 Log::info('PayPal donation recorded', [
                     'donation_id' => $donation->id,
                     'paypal_order_id' => $orderId,
@@ -330,6 +354,27 @@ class PayPalController extends Controller
 
                     $pending?->delete();
                     Cache::store('file')->forget('dashboard');
+
+                    // Recovered capture: audit it exactly like the normal path.
+                    TransactionLog::record('donation.completed', [
+                        'subject_type' => Donation::class,
+                        'subject_id' => $donation->id,
+                        'message' => sprintf(
+                            'Donation of %.2f %s received via PayPal (%s)',
+                            $donation->amount,
+                            strtoupper($donation->currency ?? 'USD'),
+                            $orderId
+                        ),
+                        'after' => [
+                            'donation_id' => $donation->id,
+                            'amount' => (float) $donation->amount,
+                            'currency' => strtoupper($donation->currency ?? 'USD'),
+                            'provider' => 'paypal',
+                            'order_id' => $orderId,
+                            'status' => 'completed',
+                        ],
+                        'meta' => ['payment_method' => 'paypal'],
+                    ]);
 
                     return $this->captureSuccessResponse($donation, true);
                 } catch (\Throwable $recoveryError) {

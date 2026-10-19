@@ -166,8 +166,11 @@
                             :rows="stats.recentDonations"
                             empty-text="admin.noDonationsYet"
                         >
-                            <template #cell-source>
-                                <AdminBadge variant="info" :text="t('admin.checkout')" />
+                            <template #cell-source="{ row }">
+                                <AdminBadge
+                                    :variant="methodVariant(row.source)"
+                                    :text="methodLabel(row.source)"
+                                />
                             </template>
                             <template #cell-amount="{ row }"
                                 >{{ row.currency }} {{ Number(row.amount).toFixed(2) }}</template
@@ -256,9 +259,11 @@
     import StatCard from '~/components/admin/StatCard.vue'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
     const { notifyError } = useToastify()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     const selectedDonation = ref(null)
     const selectedFormulaUrl = ref('')
@@ -329,6 +334,7 @@
     }
 
     onMounted(async () => {
+        loadPaymentMethods()
         try {
             const response = await adminService.getDashboard()
             if (response.success) {

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Testing\TestResponse;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -20,11 +21,10 @@ use Tests\TestCase;
  *
  * Two invariants:
  *  1. the legacy per-gateway route (/webhooks/paypal) and the new generic
- *     route (/webhooks/{method}) must accept identical payloads and produce
- *     identical effects during the transition window;
+ *     route (/webhooks/{method}) must both work during the transition window;
  *  2. the generic route is genuinely method-parameterised — an unknown method
- *     is a clean 404, and a known-but-differently-verified method (stripe)
- *     routes to that gateway's own signature verification, not PayPal's.
+ *     is a clean 404, and an inactive method's in-flight event still resolves
+ *     and reaches that gateway's own signature verification (never a 404/500).
  */
 class PaymentWebhookRouteTest extends TestCase
 {
@@ -99,7 +99,7 @@ class PaymentWebhookRouteTest extends TestCase
         ]);
     }
 
-    private function postWebhook(string $path, array $payload): \Illuminate\Testing\TestResponse
+    private function postPayPalWebhook(string $path, array $payload): TestResponse
     {
         return $this->call(
             'POST',
@@ -112,44 +112,39 @@ class PaymentWebhookRouteTest extends TestCase
         );
     }
 
-    public function test_legacy_paypal_route_records_the_donation(): void
+    public function test_legacy_paypal_alias_route_records_the_donation(): void
     {
         $this->mockPayPalClient();
         $this->seedPendingOrder();
 
-        $this->postWebhook('/api/v1/webhooks/paypal', $this->captureCompletedPayload())
+        $this->postPayPalWebhook('/api/v1/webhooks/paypal', $this->captureCompletedPayload())
             ->assertOk()
             ->assertJson(['success' => true]);
 
         $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($donation);
         $this->assertSame('completed', $donation->status);
+        // Phase-1 mirror: the generic pair is populated alongside the legacy id.
         $this->assertSame('paypal', $donation->payment_method);
         $this->assertSame('PAYPAL_ORDER_123', $donation->gateway_reference);
     }
 
-    public function test_generic_webhook_route_is_an_equivalent_alias_for_paypal(): void
+    public function test_generic_route_dispatches_a_non_paypal_method_to_its_own_handler(): void
     {
-        $this->mockPayPalClient();
-        $this->seedPendingOrder();
+        // /webhooks/stripe has no dedicated legacy route, so it exercises the
+        // generic /webhooks/{method} pattern. Stripe's own signature check runs
+        // (not PayPal's), so a bogus signature is rejected with 401 — proving
+        // dispatch reached StripeWebhookController and did not 404.
+        config(['services.stripe.webhook_secret' => 'whsec_test']);
 
-        $this->postWebhook('/api/v1/webhooks/paypal-generic', $this->captureCompletedPayload())
-            ->assertStatus(404);
+        $response = $this->postJson(
+            '/api/v1/webhooks/stripe',
+            [],
+            ['Stripe-Signature' => 't=1700000000,v1=bogus']
+        );
 
-        // Sanity: the real generic alias path.
-        $this->postWebhook('/api/v1/webhooks/paypal', $this->captureCompletedPayload())
-            ->assertOk();
-    }
-
-    public function test_inactive_method_webhook_is_still_processed(): void
-    {
-        // stripe is seeded inactive, but a donor redirected moments before an
-        // admin disabled it must still have their event handled. Stripe's own
-        // signature check runs, so an unsigned payload is a 400 (not a 404).
-        $response = $this->postJson('/api/v1/webhooks/stripe', []);
-
-        $response->assertStatus(400);
-        $this->assertSame('Invalid payload', $response->json('message'));
+        $response->assertStatus(401);
+        $this->assertSame('Invalid signature', $response->json('message'));
     }
 
     public function test_unknown_method_is_rejected_without_a_500(): void
@@ -165,7 +160,7 @@ class PaymentWebhookRouteTest extends TestCase
         $this->mockPayPalClient();
         $this->seedPendingOrder();
 
-        $this->postWebhook('/api/v1/webhooks/paypal', $this->captureCompletedPayload())
+        $this->postPayPalWebhook('/api/v1/webhooks/paypal', $this->captureCompletedPayload())
             ->assertOk();
 
         $log = TransactionLog::where('event', 'donation.completed')->latest('id')->first();

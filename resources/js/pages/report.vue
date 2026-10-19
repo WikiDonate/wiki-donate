@@ -106,8 +106,8 @@
                     </template>
                     <template #cell-source="{ row }">
                         <AdminBadge
-                            :variant="row.source === 'paypal' ? 'info' : 'success'"
-                            :text="row.source === 'paypal' ? 'PayPal' : 'Stripe'"
+                            :variant="methodVariant(row.source)"
+                            :text="methodLabel(row.source)"
                         />
                     </template>
                     <template #cell-amount="{ row }">
@@ -181,11 +181,13 @@
     import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
     import { useToastify } from '~/composables/useToastify'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
     const { notifyError } = useToastify()
 
     const { t } = useI18n()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     useHead({ title: t('report.title') })
     definePageMeta({ middleware: 'auth' })
@@ -197,7 +199,7 @@
         totalDonations: 0,
         pendingDonations: 0,
         failedDonations: 0,
-        bySource: [],
+        byPaymentMethod: [],
     })
     const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
     const searchQuery = ref('')
@@ -272,5 +274,8 @@
         searchTimeout = setTimeout(() => loadPage(1), 400)
     })
 
-    onMounted(() => loadPage())
+    onMounted(() => {
+        loadPaymentMethods()
+        loadPage()
+    })
 </script>

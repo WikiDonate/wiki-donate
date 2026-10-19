@@ -14,8 +14,8 @@
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3">
                     <AdminBadge
-                        :variant="donation.paypal_order_id ? 'warning' : 'info'"
-                        :text="donation.source"
+                        :variant="methodVariant(donation.source)"
+                        :text="methodLabel(donation.source)"
                     />
                     <AdminBadge :variant="statusVariant(donation.status)" :text="donation.status" />
                 </div>
@@ -141,8 +141,12 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
+
+    loadPaymentMethods()
 
     defineProps({
         modelValue: {

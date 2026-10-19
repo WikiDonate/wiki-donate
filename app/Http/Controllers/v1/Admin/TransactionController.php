@@ -193,7 +193,7 @@ class TransactionController extends Controller
                     return false;
                 }
                 if ($methodFilter !== '') {
-                    $incomeMethod = $d->paypal_order_id ? 'paypal' : 'stripe';
+                    $incomeMethod = $d->paymentMethodCode() ?? 'stripe';
                     if (strcasecmp($incomeMethod, $methodFilter) !== 0) {
                         return false;
                     }
@@ -238,7 +238,7 @@ class TransactionController extends Controller
     {
         $formula = $d->formula;
         $article = $formula?->article;
-        $method = $d->paypal_order_id ? 'paypal' : 'stripe';
+        $method = $d->paymentMethodCode() ?? 'stripe';
 
         $description = 'Donation from '.($d->donor_name ?: $d->user?->username ?: ($d->donor_email ?: 'Guest'));
 

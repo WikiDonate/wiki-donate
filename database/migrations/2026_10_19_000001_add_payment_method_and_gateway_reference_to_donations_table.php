@@ -28,9 +28,11 @@ return new class extends Migration
 
         // Composite index (non-unique in phase 1: legacy cols may still hold
         // duplicates during the transition; the unique index lands in phase 3).
-        Schema::table('donations', function (Blueprint $table) {
-            $table->index(['payment_method', 'gateway_reference'], 'donations_payment_method_reference_index');
-        });
+        if (! Schema::hasIndex('donations', 'donations_payment_method_reference_index')) {
+            Schema::table('donations', function (Blueprint $table) {
+                $table->index(['payment_method', 'gateway_reference'], 'donations_payment_method_reference_index');
+            });
+        }
     }
 
     /**
@@ -47,8 +49,13 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (Schema::hasIndex('donations', 'donations_payment_method_reference_index')) {
+            Schema::table('donations', function (Blueprint $table) {
+                $table->dropIndex('donations_payment_method_reference_index');
+            });
+        }
+
         Schema::table('donations', function (Blueprint $table) {
-            $table->dropIndex('donations_payment_method_reference_index');
             $table->dropColumn(['payment_method', 'gateway_reference']);
         });
     }

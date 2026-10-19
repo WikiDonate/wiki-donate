@@ -59,13 +59,15 @@ class DonationReportController extends Controller
                 'totalDonations' => (int) ($completed->count ?? 0),
                 'pendingDonations' => (int) ($statusStats['pending']->count ?? 0),
                 'failedDonations' => (int) ($statusStats['failed']->count ?? 0),
-                'bySource' => (clone $base)
+                // Data-driven: group on the generic column, falling back to the
+                // legacy ids only for rows written before the phase-1 backfill.
+                'byPaymentMethod' => (clone $base)
                     ->selectRaw(
-                        "CASE WHEN paypal_order_id IS NOT NULL THEN 'paypal' ELSE 'stripe' END as source, "
+                        "COALESCE(payment_method, CASE WHEN paypal_order_id IS NOT NULL THEN 'paypal' ELSE 'stripe' END) as payment_method, "
                         .'COUNT(*) as count, SUM(amount) as total'
                     )
                     ->where('status', 'completed')
-                    ->groupBy('source')
+                    ->groupBy('payment_method')
                     ->get(),
             ];
 
@@ -89,7 +91,7 @@ class DonationReportController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $donation->paypal_order_id ? 'paypal' : 'stripe',
+                    'source' => $donation->paymentMethodCode() ?? 'stripe',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,

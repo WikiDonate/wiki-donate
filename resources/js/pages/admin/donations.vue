@@ -37,8 +37,11 @@
                         row-key="id"
                         :empty-text="t('admin.noDonations')"
                     >
-                        <template #cell-source>
-                            <AdminBadge variant="info" text="Checkout" />
+                        <template #cell-source="{ row }">
+                            <AdminBadge
+                                :variant="methodVariant(row.source)"
+                                :text="methodLabel(row.source)"
+                            />
                         </template>
                         <template #cell-donor="{ row }">
                             <div>
@@ -128,6 +131,7 @@
     import { formatDateUTC } from '~/utils/dateFormatUTC'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
     import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { notifyError } = useToastify()
 
@@ -142,6 +146,7 @@
     }
 
     const { t } = useI18n()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     useHead({ title: t('admin.allDonations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -194,5 +199,8 @@
         searchTimeout = setTimeout(() => loadPage(1), 400)
     })
 
-    onMounted(() => loadPage())
+    onMounted(() => {
+        loadPaymentMethods()
+        loadPage()
+    })
 </script>

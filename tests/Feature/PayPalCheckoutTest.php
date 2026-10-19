@@ -423,6 +423,11 @@ class PayPalCheckoutTest extends TestCase
 
         // Pending order was deleted
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+
+        // Phase-1 mirror: the generic pair is written alongside the legacy id,
+        // so reports/UI can read payment_method before phase 3 drops it.
+        $this->assertSame('paypal', $donation->payment_method);
+        $this->assertSame('PAYPAL_ORDER_123', $donation->gateway_reference);
     }
 
     public function test_capture_order_uses_paypal_payer_data_when_donor_not_provided(): void
@@ -623,9 +628,6 @@ class PayPalCheckoutTest extends TestCase
 
         // Pending order was cleaned up
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
-
-        // Audit log carries the payment method for the income event.
-        $this->assertEquals('paypal', TransactionLog::where('event', 'donation.completed')->latest('id')->first()->meta['payment_method']);
 
         // Audit log carries the payment method so reports can group by it
         $log = TransactionLog::where('event', 'donation.completed')->latest('id')->first();

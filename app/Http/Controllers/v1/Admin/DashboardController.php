@@ -20,10 +20,10 @@ class DashboardController extends Controller
         return Donation::with('user:id,uuid,username', 'formula.article:id,slug,title')
             ->latest()
             ->take(10)
-            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'paypal_order_id', 'metadata'])
+            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'payment_method', 'gateway_reference', 'stripe_session_id', 'paypal_order_id', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
-                $source = $donation->paypal_order_id ? 'paypal' : 'stripe_checkout';
+                $source = $donation->paymentMethodCode() ?? 'stripe';
                 $formula = $donation->formula;
                 $article = $formula?->article;
                 $snapshot = $metadata['formula_snapshot'] ?? null;
@@ -146,7 +146,7 @@ class DashboardController extends Controller
 
                     return [
                         'id' => $donation->id,
-                        'source' => $donation->paypal_order_id ? 'paypal' : 'stripe_checkout',
+                        'source' => $donation->paymentMethodCode() ?? 'stripe',
                         'payment_id' => $donation->paypal_order_id
                             ? ($donation->metadata['payment_id'] ?? null)
                             : $donation->stripe_payment_intent_id,
