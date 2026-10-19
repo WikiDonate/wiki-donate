@@ -5,8 +5,8 @@ namespace App\Http\Controllers\v1\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrganizationVerificationMail;
 use App\Models\Organization;
+use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
-use App\Services\Organization\OrganizationEmailConfirmationService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -96,6 +96,8 @@ class OrganizationController extends Controller
             'city' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
+            'payout_methods' => 'nullable|array',
+            'payout_methods.*' => 'string|max:50',
         ]);
 
         if ($validator->fails()) {
@@ -106,7 +108,17 @@ class OrganizationController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $before = $org->only(['paypal_email', 'payout_status', 'verified_at']);
+        // Payout rails must reference active, payout-capable payment methods —
+        // the registry is the single source of truth (never client free-text).
+        if ($request->has('payout_methods') && $error = $this->payoutMethodError($request->input('payout_methods'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => [$error],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $before = $org->only(['paypal_email', 'payout_methods', 'payout_status', 'verified_at']);
         $paypalChanged = $request->has('paypal_email')
             && mb_strtolower(trim((string) $request->input('paypal_email') ?? '')) !== mb_strtolower(trim((string) $org->paypal_email ?? ''));
 
@@ -115,6 +127,10 @@ class OrganizationController extends Controller
             $org->paypal_email = $request->filled('paypal_email')
                 ? mb_strtolower(trim($request->input('paypal_email')))
                 : null;
+        }
+
+        if ($request->has('payout_methods')) {
+            $org->payout_methods = $this->normalizePayoutMethods($request->input('payout_methods'));
         }
 
         if ($paypalChanged) {
@@ -132,7 +148,7 @@ class OrganizationController extends Controller
             'actor_role' => 'Admin',
             'message' => "Organization updated: {$org->name}",
             'before' => $before,
-            'after' => $org->only(['paypal_email', 'payout_status', 'verified_at']),
+            'after' => $org->only(['paypal_email', 'payout_methods', 'payout_status', 'verified_at']),
         ]);
 
         if ($paypalChanged) {
@@ -147,12 +163,10 @@ class OrganizationController extends Controller
             ]);
         }
 
-        // New destination: mail a confirmation link so the address is proven
-        // before anyone can verify against it.
-        if ($paypalChanged && ! empty($org->paypal_email)) {
-            app(OrganizationEmailConfirmationService::class)->send($org, $request->user()->id);
-        }
-
+        // A changed destination invalidates verification: the new address has
+        // never been confirmed. Changing the email resets payout_status to
+        // unverified so admins re-approve the new destination. Manual
+        // verification (verify endpoint) superseded the token email flow.
         return response()->json([
             'success' => true,
             'message' => 'Organization updated successfully',
@@ -237,13 +251,6 @@ class OrganizationController extends Controller
         }
 
         $org->refresh();
-
-        // New destination: mail a confirmation link so the address is proven
-        // before anyone can verify against it.
-        if (! empty($newEmail)) {
-            app(OrganizationEmailConfirmationService::class)->send($org, $request->user()->id);
-            $org->refresh();
-        }
 
         return response()->json([
             'success' => true,
@@ -361,5 +368,52 @@ class OrganizationController extends Controller
             'message' => 'Organization unverified successfully',
             'data' => $org,
         ], Response::HTTP_OK);
+    }
+
+    /**
+     * Normalize a submitted payout-method list into a clean, unique,
+     * lowercase array of payment-method codes.
+     *
+     * @param  mixed  $methods
+     * @return array<int, string>
+     */
+    private function normalizePayoutMethods($methods): array
+    {
+        if (! is_array($methods)) {
+            return [];
+        }
+
+        $codes = array_filter(array_map(
+            fn ($code) => is_string($code) ? strtolower(trim($code)) : null,
+            $methods
+        ));
+
+        return array_values(array_unique($codes));
+    }
+
+    /**
+     * Validate that every requested payout method is active and
+     * payout-capable in the payment_methods registry.
+     *
+     * @param  mixed  $methods
+     * @return string|null Error message, or null when valid.
+     */
+    private function payoutMethodError($methods): ?string
+    {
+        $codes = $this->normalizePayoutMethods($methods);
+
+        if ($codes === []) {
+            return 'Select at least one payout method.';
+        }
+
+        $valid = PaymentMethod::query()->active()->payout()->pluck('code')
+            ->map(fn ($code) => strtolower($code))
+            ->all();
+
+        $invalid = array_diff($codes, $valid);
+
+        return $invalid === []
+            ? null
+            : 'Unknown or inactive payout method: '.implode(', ', $invalid).'.';
     }
 }
