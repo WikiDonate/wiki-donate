@@ -54,6 +54,7 @@ class PaymentWebhookController extends Controller
         } catch (PaymentProviderException $e) {
             Log::critical('Generic webhook rejected: unresolvable payment method.', [
                 'method' => $code,
+                // Detail stays in the log; the response body is generic.
                 'error' => $e->getMessage(),
             ]);
 

@@ -84,7 +84,7 @@ class PaymentController extends Controller
         if ($captureMethod === null) {
             return response()->json([
                 'success' => false,
-                'message' => "Payment method '{$code}' confirms via webhook, not client capture.",
+                'message' => 'This payment method is confirmed by the provider, not by client capture.',
                 'errors' => ['Capture is not supported for this payment method.'],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -107,6 +107,8 @@ class PaymentController extends Controller
             // unknown / unbound code with no provider class.
             $this->registry->forCode($code);
         } catch (PaymentProviderException $e) {
+            // A deployment mistake (unbound provider, missing class, disabled
+            // method). Log the diagnostic detail; never echo it to the donor.
             Log::warning('Generic payment endpoint rejected: unresolvable method.', [
                 'method' => $code,
                 'error' => $e->getMessage(),
@@ -114,8 +116,8 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-                'errors' => [$e->getMessage()],
+                'message' => 'This payment method is not available.',
+                'errors' => ['This payment method is not available.'],
             ], Response::HTTP_NOT_FOUND);
         }
 
@@ -123,13 +125,13 @@ class PaymentController extends Controller
 
         if ($handler === null) {
             // Registry row + provider exist but no checkout flow is wired yet:
-            // a deployment gap, not a donor error.
+            // a deployment gap, not a donor error. Detail stays in the log.
             Log::critical('Payment method has no checkout handler wired.', ['method' => $code]);
 
             return response()->json([
                 'success' => false,
-                'message' => "Payment method '{$code}' is not available for checkout yet.",
-                'errors' => ["'{$code}' has no checkout flow implemented."],
+                'message' => 'This payment method is not available for checkout.',
+                'errors' => ['This payment method is not available for checkout.'],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

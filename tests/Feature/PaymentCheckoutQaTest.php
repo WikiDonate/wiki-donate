@@ -212,8 +212,15 @@ class PaymentCheckoutQaTest extends TestCase
             ->assertNotFound()
             ->assertJsonPath('success', false);
 
-        $this->postJson('/api/v1/payment/bkash/create-order', ['amount' => 40.00])
+        $response = $this->postJson('/api/v1/payment/bkash/create-order', ['amount' => 40.00])
             ->assertNotFound()
             ->assertJsonPath('success', false);
+
+        // The donor must never see deployment detail (provider class names,
+        // env-var names, the exception text). It stays in the log only.
+        $body = json_encode($response->json());
+        $this->assertStringNotContainsString('provider class', $body);
+        $this->assertStringNotContainsString('PaymentProviderException', $body);
+        $this->assertStringNotContainsString('DISABLE', strtoupper($body));
     }
 }

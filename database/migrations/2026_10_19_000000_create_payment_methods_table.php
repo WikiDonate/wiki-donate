@@ -53,7 +53,10 @@ return new class extends Migration
                         'secret_ref' => 'PAYPAL_WEBHOOK_ID',
                     ],
                     'currencies' => ['USD', 'EUR', 'GBP', 'AUD', 'CAD'],
-                    'mode' => env('PAYPAL_MODE', 'sandbox'),
+                    // NB: resolved through config() (not env()) so the value is
+                    // correct when config is cached; env() only returns the real
+                    // value in a non-cached boot.
+                    'mode' => config('services.paypal.mode', 'sandbox'),
                     'min_amount' => 1,
                 ]),
                 'sort_order' => 1,
@@ -73,7 +76,7 @@ return new class extends Migration
                         'secret_ref' => 'STRIPE_WEBHOOK_SECRET',
                     ],
                     'currencies' => ['USD', 'EUR', 'GBP'],
-                    'mode' => env('STRIPE_MODE', 'test'),
+                    'mode' => config('services.stripe.mode', 'test'),
                     'min_amount' => 1,
                 ]),
                 'sort_order' => 2,
