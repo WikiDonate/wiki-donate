@@ -223,4 +223,80 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
         $response->assertCreated();
         $this->assertDatabaseCount('organization_payouts', 1);
     }
+
+    /**
+     * The selected payout method is part of the gate: an org that did not
+     * enable the requested rail cannot receive a payout through it.
+     */
+    public function test_payout_blocked_when_method_not_enabled_on_org(): void
+    {
+        $organization = Organization::create([
+            'name' => 'Guard Charity',
+            'normalized_name' => Organization::normalizeName('Guard Charity'),
+            'paypal_email' => 'finance@guard.example',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+            'payout_methods' => ['stripe'],
+        ]);
+
+        $this->formula->update([
+            'formula' => [
+                ['organization' => 'Guard Charity', 'organization_id' => $organization->id, 'percentage' => 100],
+            ],
+        ]);
+
+        $response = $this->asAdmin()->postJson('/api/v1/admin/payouts', [
+            'donation_formula_id' => $this->formula->id,
+            'organization_name' => 'Guard Charity',
+            'amount' => 50,
+            'currency' => 'usd',
+            'payment_method' => 'paypal',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['message' => 'This organization is not set up to receive paypal payouts. Enable that payout method in the Organizations page first.']);
+        $this->assertDatabaseCount('organization_payouts', 0);
+
+        $log = TransactionLog::where('event', 'payout.blocked')->latest('id')->first();
+        $this->assertEquals('method_not_allowed', $log->meta['reason']);
+        $this->assertEquals('paypal', $log->meta['payment_method']);
+    }
+
+    /**
+     * The enabled rail is honoured end-to-end: a payout on an org whose
+     * payout_methods include paypal goes through and records the rail.
+     */
+    public function test_payout_allowed_when_method_enabled_on_org(): void
+    {
+        $this->fakePayPalSuccess();
+
+        $organization = Organization::create([
+            'name' => 'Guard Charity',
+            'normalized_name' => Organization::normalizeName('Guard Charity'),
+            'paypal_email' => 'finance@guard.example',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+            'payout_methods' => ['paypal'],
+        ]);
+
+        $this->formula->update([
+            'formula' => [
+                ['organization' => 'Guard Charity', 'organization_id' => $organization->id, 'percentage' => 100],
+            ],
+        ]);
+
+        $response = $this->asAdmin()->postJson('/api/v1/admin/payouts', [
+            'donation_formula_id' => $this->formula->id,
+            'organization_name' => 'Guard Charity',
+            'amount' => 50,
+            'currency' => 'usd',
+            'payment_method' => 'paypal',
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('organization_payouts', [
+            'organization_id' => $organization->id,
+            'payment_method' => 'paypal',
+        ]);
+    }
 }
