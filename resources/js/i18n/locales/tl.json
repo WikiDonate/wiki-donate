@@ -354,6 +354,7 @@
         "enterAmount": "Maglagay ng halaga",
         "operationalCosts": "* Hanggang 0.1% para sa mga gastos sa pagpapatakbo.",
         "enterAmountToDonate": "Maglagay ng halagang ibibigay",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "Hindi naka-configure ang PayPal.",
         "enterValidAmount": "Mangyaring magpasok ng wastong halaga ng donasyon.",
         "failedToCreateOrder": "Nabigong gumawa ng PayPal order",

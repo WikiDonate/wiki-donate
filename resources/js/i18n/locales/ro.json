@@ -354,6 +354,7 @@
         "enterAmount": "Introduceți suma",
         "operationalCosts": "* Până la 0,1% pentru costurile operaționale.",
         "enterAmountToDonate": "Introduceți o sumă de donat",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal nu este configurat.",
         "enterValidAmount": "Vă rugăm să introduceți o sumă de donație validă.",
         "failedToCreateOrder": "Nu s-a putut crea comanda PayPal",

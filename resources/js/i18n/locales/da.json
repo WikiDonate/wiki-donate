@@ -354,6 +354,7 @@
         "enterAmount": "Indtast beløb",
         "operationalCosts": "* Op til 0,1 % for driftsomkostninger.",
         "enterAmountToDonate": "Indtast et beløb for at donere",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal er ikke konfigureret.",
         "enterValidAmount": "Indtast venligst et gyldigt donationsbeløb.",
         "failedToCreateOrder": "Kunne ikke oprette PayPal-ordre",

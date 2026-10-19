@@ -354,6 +354,7 @@
         "enterAmount": "أدخل المبلغ",
         "operationalCosts": "* ما يصل إلى 0.1% للتكاليف التشغيلية.",
         "enterAmountToDonate": "أدخل المبلغ للتبرع",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "لم يتم تكوين باي بال.",
         "enterValidAmount": "الرجاء إدخال مبلغ صالح للتبرع.",
         "failedToCreateOrder": "فشل في إنشاء طلب PayPal",

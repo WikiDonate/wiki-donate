@@ -354,6 +354,7 @@
         "enterAmount": "הזן סכום",
         "operationalCosts": "* עד 0.1% עבור עלויות תפעול.",
         "enterAmountToDonate": "הזן סכום לתרומה",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal לא מוגדר.",
         "enterValidAmount": "נא להזין סכום תרומה חוקי.",
         "failedToCreateOrder": "יצירת הזמנת PayPal נכשלה",

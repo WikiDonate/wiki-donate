@@ -354,6 +354,7 @@
         "enterAmount": "Введіть суму",
         "operationalCosts": "* До 0,1% на експлуатаційні витрати.",
         "enterAmountToDonate": "Введіть суму для пожертви",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal не налаштовано.",
         "enterValidAmount": "Введіть дійсну суму пожертви.",
         "failedToCreateOrder": "Не вдалося створити замовлення PayPal",

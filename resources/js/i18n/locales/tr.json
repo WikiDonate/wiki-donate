@@ -354,6 +354,7 @@
         "enterAmount": "Tutarı girin",
         "operationalCosts": "* Operasyonel maliyetler için %0,1'e kadar.",
         "enterAmountToDonate": "Bağış yapmak için bir miktar girin",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal yapılandırılmamış.",
         "enterValidAmount": "Lütfen geçerli bir bağış tutarı girin.",
         "failedToCreateOrder": "PayPal siparişi oluşturulamadı",

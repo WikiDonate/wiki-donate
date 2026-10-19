@@ -354,6 +354,7 @@
         "enterAmount": "পরিমাণ লিখুন",
         "operationalCosts": "* অপারেশনাল খরচের জন্য 0.1% পর্যন্ত।",
         "enterAmountToDonate": "দান করার জন্য একটি পরিমাণ লিখুন",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "পেপ্যাল ​​কনফিগার করা নেই।",
         "enterValidAmount": "অনুগ্রহ করে একটি বৈধ অনুদানের পরিমাণ লিখুন।",
         "failedToCreateOrder": "পেপ্যাল অর্ডার তৈরি করতে ব্যর্থ হয়েছে৷",

@@ -354,6 +354,7 @@
         "enterAmount": "ใส่จำนวนเงิน",
         "operationalCosts": "* สูงถึง 0.1% สำหรับค่าใช้จ่ายในการดำเนินงาน",
         "enterAmountToDonate": "ป้อนจำนวนเงินที่จะบริจาค",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "ไม่ได้กำหนดค่า PayPal",
         "enterValidAmount": "กรุณากรอกจำนวนเงินบริจาคที่ถูกต้อง",
         "failedToCreateOrder": "ไม่สามารถสร้างคำสั่งซื้อ PayPal",

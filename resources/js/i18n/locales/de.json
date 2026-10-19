@@ -354,6 +354,7 @@
         "enterAmount": "Geben Sie den Betrag ein",
         "operationalCosts": "* Bis zu 0,1 % für Betriebskosten.",
         "enterAmountToDonate": "Geben Sie einen Spendenbetrag ein",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal ist nicht konfiguriert.",
         "enterValidAmount": "Bitte geben Sie einen gültigen Spendenbetrag ein.",
         "failedToCreateOrder": "PayPal-Bestellung konnte nicht erstellt werden",

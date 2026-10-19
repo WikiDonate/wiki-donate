@@ -354,6 +354,7 @@
         "enterAmount": "Zadejte částku",
         "operationalCosts": "* Až 0,1 % na provozní náklady.",
         "enterAmountToDonate": "Zadejte částku, kterou chcete darovat",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal není nakonfigurován.",
         "enterValidAmount": "Zadejte platnou částku daru.",
         "failedToCreateOrder": "Vytvoření objednávky PayPal se nezdařilo",

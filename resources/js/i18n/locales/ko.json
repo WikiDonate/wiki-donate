@@ -354,6 +354,7 @@
         "enterAmount": "금액 입력",
         "operationalCosts": "* 운영비 최대 0.1%.",
         "enterAmountToDonate": "기부할 금액을 입력하세요.",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal이 구성되지 않았습니다.",
         "enterValidAmount": "올바른 기부 금액을 입력하세요.",
         "failedToCreateOrder": "PayPal 주문을 생성하지 못했습니다.",

@@ -354,6 +354,7 @@
         "enterAmount": "輸入金額",
         "operationalCosts": "* 營運成本高達 0.1%。",
         "enterAmountToDonate": "輸入捐贈金額",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "未配置 PayPal。",
         "enterValidAmount": "請輸入有效的捐贈金額。",
         "failedToCreateOrder": "建立 PayPal 訂單失敗",

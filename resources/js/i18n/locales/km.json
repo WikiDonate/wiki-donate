@@ -354,6 +354,7 @@
         "enterAmount": "បញ្ចូលចំនួនទឹកប្រាក់",
         "operationalCosts": "* រហូតដល់ 0.1% សម្រាប់ការចំណាយប្រតិបត្តិការ។",
         "enterAmountToDonate": "បញ្ចូលចំនួនទឹកប្រាក់ដែលត្រូវបរិច្ចាគ",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal មិនត្រូវបានកំណត់រចនាសម្ព័ន្ធទេ។",
         "enterValidAmount": "សូមបញ្ចូលចំនួនបរិច្ចាកត្រឹមត្រូវ។",
         "failedToCreateOrder": "បរាជ័យក្នុងការបង្កើតការបញ្ជាទិញ PayPal",

@@ -354,6 +354,7 @@
         "enterAmount": "金額を入力してください",
         "operationalCosts": "※運用コストは最大0.1%。",
         "enterAmountToDonate": "寄付する金額を入力してください",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal が設定されていません。",
         "enterValidAmount": "有効な寄付金額を入力してください。",
         "failedToCreateOrder": "PayPal 注文の作成に失敗しました",

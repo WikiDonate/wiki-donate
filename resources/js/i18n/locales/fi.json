@@ -354,6 +354,7 @@
         "enterAmount": "Syötä summa",
         "operationalCosts": "* Jopa 0,1 % toimintakuluihin.",
         "enterAmountToDonate": "Anna lahjoitettava summa",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPalia ei ole määritetty.",
         "enterValidAmount": "Anna kelvollinen lahjoitussumma.",
         "failedToCreateOrder": "PayPal-tilauksen luominen epäonnistui",

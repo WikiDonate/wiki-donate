@@ -354,6 +354,7 @@
         "enterAmount": "Nhập số tiền",
         "operationalCosts": "* Lên tới 0,1% cho chi phí hoạt động.",
         "enterAmountToDonate": "Nhập số tiền muốn quyên góp",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal chưa được định cấu hình.",
         "enterValidAmount": "Vui lòng nhập số tiền quyên góp hợp lệ.",
         "failedToCreateOrder": "Không tạo được đơn hàng PayPal",

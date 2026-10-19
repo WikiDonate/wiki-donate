@@ -354,6 +354,7 @@
         "enterAmount": "રકમ દાખલ કરો",
         "operationalCosts": "* ઓપરેશનલ ખર્ચ માટે 0.1% સુધી.",
         "enterAmountToDonate": "દાન કરવા માટે રકમ દાખલ કરો",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal ગોઠવેલ નથી.",
         "enterValidAmount": "કૃપા કરીને માન્ય દાન રકમ દાખલ કરો.",
         "failedToCreateOrder": "PayPal ઓર્ડર બનાવવામાં નિષ્ફળ",

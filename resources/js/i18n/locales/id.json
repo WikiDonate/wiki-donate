@@ -354,6 +354,7 @@
         "enterAmount": "Masukkan jumlah",
         "operationalCosts": "* Hingga 0,1% untuk biaya operasional.",
         "enterAmountToDonate": "Masukkan jumlah yang akan disumbangkan",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal tidak dikonfigurasi.",
         "enterValidAmount": "Silakan masukkan jumlah donasi yang valid.",
         "failedToCreateOrder": "Gagal membuat pesanan PayPal",

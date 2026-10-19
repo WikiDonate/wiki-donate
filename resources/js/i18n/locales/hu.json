@@ -354,6 +354,7 @@
         "enterAmount": "Adja meg az összeget",
         "operationalCosts": "* Akár 0,1% a működési költségekre.",
         "enterAmountToDonate": "Adja meg az adományozandó összeget",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "A PayPal nincs konfigurálva.",
         "enterValidAmount": "Adjon meg egy érvényes adományösszeget.",
         "failedToCreateOrder": "Nem sikerült létrehozni a PayPal-rendelést",

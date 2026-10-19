@@ -354,6 +354,7 @@
         "enterAmount": "தொகையை உள்ளிடவும்",
         "operationalCosts": "* செயல்பாட்டுச் செலவுகளுக்கு 0.1% வரை.",
         "enterAmountToDonate": "நன்கொடைக்கான தொகையை உள்ளிடவும்",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal கட்டமைக்கப்படவில்லை.",
         "enterValidAmount": "சரியான நன்கொடைத் தொகையை உள்ளிடவும்.",
         "failedToCreateOrder": "PayPal ஆர்டரை உருவாக்க முடியவில்லை",

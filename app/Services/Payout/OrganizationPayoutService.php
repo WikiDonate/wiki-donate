@@ -142,6 +142,10 @@ class OrganizationPayoutService
         // Normalize once at the boundary: donations store mixed case
         // (Stripe `usd`, PayPal `USD`) and callers send either form.
         $data['currency'] = strtoupper(trim((string) ($data['currency'] ?? '')));
+        // Payout rail is data-driven: the caller (admin UI) sends the chosen
+        // payout-capable method code; PayPal stays the default for legacy
+        // callers that predate the registry.
+        $paymentMethod = strtolower(trim((string) ($data['payment_method'] ?? ''))) ?: 'paypal';
 
         // Resolve the formula's row outside the transaction (read-only) so we
         // can run the destination guard — and persist its audit log — even
@@ -158,7 +162,7 @@ class OrganizationPayoutService
                 ->guardPayoutDestination($probeMatch['organization_id'] ?? null, $orgName, $actorId);
         }
 
-        $payout = DB::transaction(function () use ($data, $actorId) {
+        $payout = DB::transaction(function () use ($data, $actorId, $paymentMethod) {
             $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
             if (! $formula) {
                 throw new UserFacingException('Donation formula not found.');
@@ -210,7 +214,7 @@ class OrganizationPayoutService
                 'type' => $type,
                 'status' => 'pending',
                 'actor_id' => $actorId,
-                'payment_method' => 'paypal',
+                'payment_method' => $paymentMethod,
                 'destination_paypal_email' => $destination->paypal_email,
                 'note' => $data['note'] ?? null,
             ]);

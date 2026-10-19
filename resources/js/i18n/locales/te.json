@@ -354,6 +354,7 @@
         "enterAmount": "మొత్తాన్ని నమోదు చేయండి",
         "operationalCosts": "* నిర్వహణ ఖర్చుల కోసం 0.1% వరకు.",
         "enterAmountToDonate": "విరాళం ఇవ్వడానికి ఒక మొత్తాన్ని నమోదు చేయండి",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal కాన్ఫిగర్ చేయబడలేదు.",
         "enterValidAmount": "దయచేసి చెల్లుబాటు అయ్యే విరాళం మొత్తాన్ని నమోదు చేయండి.",
         "failedToCreateOrder": "PayPal ఆర్డర్‌ని సృష్టించడం విఫలమైంది",

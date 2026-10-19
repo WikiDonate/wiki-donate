@@ -354,6 +354,7 @@
         "enterAmount": "Masukkan jumlah",
         "operationalCosts": "* Sehingga 0.1% untuk kos operasi.",
         "enterAmountToDonate": "Masukkan jumlah untuk didermakan",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal tidak dikonfigurasikan.",
         "enterValidAmount": "Sila masukkan jumlah derma yang sah.",
         "failedToCreateOrder": "Gagal membuat pesanan PayPal",

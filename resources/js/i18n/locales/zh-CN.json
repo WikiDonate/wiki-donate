@@ -354,6 +354,7 @@
         "enterAmount": "输入金额",
         "operationalCosts": "* 运营成本高达 0.1%。",
         "enterAmountToDonate": "输入捐赠金额",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "未配置 PayPal。",
         "enterValidAmount": "请输入有效的捐赠金额。",
         "failedToCreateOrder": "创建 PayPal 订单失败",

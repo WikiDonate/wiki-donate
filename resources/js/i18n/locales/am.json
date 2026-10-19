@@ -354,6 +354,7 @@
         "enterAmount": "መጠን ያስገቡ",
         "operationalCosts": "* ለስራ ማስኬጃ ወጪዎች እስከ 0.1%።",
         "enterAmountToDonate": "ለመለገስ መጠን ያስገቡ",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal አልተዋቀረም።",
         "enterValidAmount": "እባክዎ ልክ የሆነ የልገሳ መጠን ያስገቡ።",
         "failedToCreateOrder": "የ PayPal ትዕዛዝ መፍጠር አልተሳካም።",

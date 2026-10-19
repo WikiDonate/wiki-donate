@@ -354,6 +354,7 @@
         "enterAmount": "Weka kiasi",
         "operationalCosts": "* Hadi 0.1% kwa gharama za uendeshaji.",
         "enterAmountToDonate": "Weka kiasi cha kuchangia",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal haijasanidiwa.",
         "enterValidAmount": "Tafadhali weka kiasi halali cha mchango.",
         "failedToCreateOrder": "Imeshindwa kuunda agizo la PayPal",

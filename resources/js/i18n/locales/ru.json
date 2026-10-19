@@ -354,6 +354,7 @@
         "enterAmount": "Введите сумму",
         "operationalCosts": "* До 0,1% на эксплуатационные расходы.",
         "enterAmountToDonate": "Введите сумму для пожертвования",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal не настроен.",
         "enterValidAmount": "Пожалуйста, введите действительную сумму пожертвования.",
         "failedToCreateOrder": "Не удалось создать заказ PayPal.",

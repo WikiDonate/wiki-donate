@@ -354,6 +354,7 @@
         "enterAmount": "مقدار را وارد کنید",
         "operationalCosts": "* تا 0.1٪ برای هزینه های عملیاتی.",
         "enterAmountToDonate": "مبلغی را برای اهدا وارد کنید",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "پی پال پیکربندی نشده است.",
         "enterValidAmount": "لطفا یک مبلغ کمک مالی معتبر وارد کنید.",
         "failedToCreateOrder": "سفارش پی پال ایجاد نشد",

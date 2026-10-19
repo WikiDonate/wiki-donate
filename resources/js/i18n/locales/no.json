@@ -354,6 +354,7 @@
         "enterAmount": "Angi beløp",
         "operationalCosts": "* Opptil 0,1 % for driftskostnader.",
         "enterAmountToDonate": "Angi et beløp for å donere",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal er ikke konfigurert.",
         "enterValidAmount": "Vennligst skriv inn et gyldig donasjonsbeløp.",
         "failedToCreateOrder": "Kunne ikke opprette PayPal-bestilling",

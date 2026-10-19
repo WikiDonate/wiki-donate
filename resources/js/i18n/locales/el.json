@@ -354,6 +354,7 @@
         "enterAmount": "Εισαγάγετε το ποσό",
         "operationalCosts": "* Έως 0,1% για λειτουργικά έξοδα.",
         "enterAmountToDonate": "Εισαγάγετε ένα ποσό για δωρεά",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "Το PayPal δεν έχει ρυθμιστεί.",
         "enterValidAmount": "Εισαγάγετε ένα έγκυρο ποσό δωρεάς.",
         "failedToCreateOrder": "Αποτυχία δημιουργίας παραγγελίας PayPal",
