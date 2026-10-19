@@ -7,6 +7,7 @@ use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\OrganizationConfirmationController;
 use App\Http\Controllers\v1\PageController;
+use App\Http\Controllers\v1\PaymentController;
 use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Controllers\v1\PaymentWebhookController;
 use App\Http\Controllers\v1\PayPalController;
@@ -76,9 +77,24 @@ Route::prefix('v1')->group(function () {
 
     // PayPal Checkout (create + capture are callable without an authenticated
     // user so guest donations and the post-redirect success-page flow work)
+    //
+    // Legacy per-gateway routes: kept for in-flight clients and the PayPal
+    // dashboard until it is repointed at the generic /payment/{method} routes
+    // below. Both paths share the same handlers.
     Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
         ->middleware(['throttle:10,1', OptionalAuth::class]);
     Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
+        ->middleware(['throttle:20,1', OptionalAuth::class]);
+
+    // Generic donor checkout: /payment/{method}/create-order + /capture-order,
+    // where {method} is a payment_methods.code. Resolution enforces `active`
+    // and fails loudly for methods with no checkout handler, so enabling a new
+    // method needs no front-end change.
+    Route::post('payment/{method}/create-order', [PaymentController::class, 'createOrder'])
+        ->where('method', '[a-z0-9_-]+')
+        ->middleware(['throttle:10,1', OptionalAuth::class]);
+    Route::post('payment/{method}/capture-order', [PaymentController::class, 'captureOrder'])
+        ->where('method', '[a-z0-9_-]+')
         ->middleware(['throttle:20,1', OptionalAuth::class]);
 
     // PayPal Webhook (public, no auth — verified by signature; throttled

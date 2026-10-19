@@ -156,7 +156,7 @@ class StripeProvider implements PaymentProvider
     /**
      * Stripe has no payout capability in this app — fail loud, never silently.
      *
-     * @throws \App\Exceptions\PaymentProviderException
+     * @throws PaymentProviderException
      */
     public function payout(array $items, string $senderBatchId, string $emailSubject = '', string $emailMessage = ''): array
     {

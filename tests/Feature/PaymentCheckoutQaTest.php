@@ -157,4 +157,63 @@ class PaymentCheckoutQaTest extends TestCase
 
         $this->assertSame(1, Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->count());
     }
+
+    /**
+     * The SPA posts to the method-parameterised endpoints. They must reach the
+     * same handler as the legacy /paypal/* aliases and echo the normalised
+     * generic fields (`payment_method`, `reference`) so a caller never needs to
+     * know which gateway answered.
+     */
+    public function test_generic_payment_endpoints_delegate_and_normalise(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('test')->plainTextToken;
+        $formula = $this->makeFormula($user);
+
+        $this->mockPayPalClient();
+
+        $headers = ['Authorization' => "Bearer {$token}"];
+
+        $created = $this->withHeaders($headers)
+            ->postJson('/api/v1/payment/paypal/create-order', [
+                'amount' => 40.00,
+                'formula_id' => $formula->id,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.payment_method', 'paypal')
+            ->assertJsonPath('data.reference', 'PAYPAL_ORDER_QA')
+            ->assertJsonPath('data.order_id', 'PAYPAL_ORDER_QA');
+
+        $this->assertNotEmpty($created->json('data.approval_url'));
+
+        $this->assertDatabaseHas('payment_pending_orders', [
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL_ORDER_QA',
+        ]);
+
+        $this->withHeaders($headers)
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
+            ->assertOk()
+            ->assertJsonPath('data.payment_method', 'paypal')
+            ->assertJsonPath('data.reference', 'PAYPAL_ORDER_QA');
+
+        $this->assertSame(
+            1,
+            Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->count()
+        );
+    }
+
+    public function test_generic_endpoint_rejects_inactive_and_unknown_methods(): void
+    {
+        $this->mockPayPalClient();
+
+        // stripe is seeded active=0: not offered anew.
+        $this->postJson('/api/v1/payment/stripe/create-order', ['amount' => 40.00])
+            ->assertNotFound()
+            ->assertJsonPath('success', false);
+
+        $this->postJson('/api/v1/payment/bkash/create-order', ['amount' => 40.00])
+            ->assertNotFound()
+            ->assertJsonPath('success', false);
+    }
 }

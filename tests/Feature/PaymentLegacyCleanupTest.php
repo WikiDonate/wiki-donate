@@ -79,6 +79,7 @@ class PaymentLegacyCleanupTest extends TestCase
     private function donation(DonationFormula $formula, string $method, string $reference, float $amount): Donation
     {
         return Donation::create([
+            'user_id' => $this->admin->id,
             'donation_formula_id' => $formula->id,
             'payment_method' => $method,
             'gateway_reference' => $reference,
@@ -188,6 +189,8 @@ class PaymentLegacyCleanupTest extends TestCase
         OrganizationPayout::create([
             'donation_formula_id' => $formula->id,
             'organization_name' => 'Wiki Org',
+            'organization_key' => OrganizationPayout::makeKey('Wiki Org'),
+            'actor_id' => $this->admin->id,
             'amount' => 15,
             'currency' => 'USD',
             'type' => 'partial',

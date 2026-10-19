@@ -9,6 +9,4 @@ namespace App\Models;
  * references the old class name keeps working; new code must use
  * PaymentPendingOrder.
  */
-class PayPalPendingOrder extends PaymentPendingOrder
-{
-}
+class PayPalPendingOrder extends PaymentPendingOrder {}

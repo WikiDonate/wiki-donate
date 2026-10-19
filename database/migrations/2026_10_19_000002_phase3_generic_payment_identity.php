@@ -171,7 +171,7 @@ return new class extends Migration
             DB::statement(
                 'INSERT INTO paypal_pending_orders '
                 .'(id, paypal_order_id, user_id, donation_formula_id, donor_email, donor_name, amount, currency, details, created_at, updated_at) '
-                ."SELECT id, gateway_reference, user_id, donation_formula_id, donor_email, donor_name, amount, currency, details, created_at, updated_at "
+                .'SELECT id, gateway_reference, user_id, donation_formula_id, donor_email, donor_name, amount, currency, details, created_at, updated_at '
                 ."FROM payment_pending_orders WHERE payment_method = 'paypal'"
             );
 

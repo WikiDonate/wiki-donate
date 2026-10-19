@@ -2,6 +2,8 @@
 
 namespace App\Contracts;
 
+use App\Exceptions\PaymentProviderException;
+
 /**
  * Boundary every pluggable payment method implements.
  *
@@ -57,7 +59,7 @@ interface PaymentProvider
      * @param  array<int, array<string, mixed>>  $items
      * @return array<string, mixed>
      *
-     * @throws \App\Exceptions\PaymentProviderException when unsupported
+     * @throws PaymentProviderException when unsupported
      */
     public function payout(array $items, string $senderBatchId, string $emailSubject = '', string $emailMessage = ''): array;
 }

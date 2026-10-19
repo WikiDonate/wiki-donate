@@ -168,15 +168,20 @@
                     </div>
                 </div>
 
-                <!-- Stripe Checkout: hand off to the hosted checkout page -->
+                <!-- Any non-PayPal method is a hosted-checkout redirect. The
+                     gateway difference lives on the server, so a newly enabled
+                     method works here with no template change. -->
                 <button
-                    v-else-if="selectedMethod === 'stripe' && hasValidAmount"
+                    v-else-if="hasValidAmount"
                     type="button"
                     class="w-full h-11.25 flex items-center justify-center gap-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-60"
                     :disabled="isDonating"
-                    @click="startStripeCheckout"
+                    @click="startHostedCheckout"
                 >
-                    <font-awesome-icon :icon="['fas', 'credit-card']" class="w-4 h-4" />
+                    <font-awesome-icon
+                        :icon="methodIcon(selectedMethod) || ['fas', 'credit-card']"
+                        class="w-4 h-4"
+                    />
                     {{ t('donate.continueToCheckout') }}
                 </button>
 
@@ -190,14 +195,6 @@
                         {{ t('donate.enterAmountToDonate') }}
                     </button>
                 </div>
-
-                <!-- A method with no client-side flow yet must fail loudly, never silently. -->
-                <p
-                    v-else-if="selectedMethod !== 'paypal' && selectedMethod !== 'stripe'"
-                    class="text-sm text-amber-700"
-                >
-                    {{ t('donate.methodNotConfigured', { method: methodLabel(selectedMethod) }) }}
-                </p>
             </template>
         </div>
 
@@ -398,7 +395,7 @@
                             formula_id: props.formulaId || null,
                             details: props.details,
                         }
-                        const response = await donateService.createPaypalOrder(params)
+                        const response = await donateService.createOrder('paypal', params)
 
                         if (response.success && response.data?.order_id) {
                             return response.data.order_id
@@ -414,7 +411,7 @@
                         isDonating.value = true
                         alertMessage.value = ''
                         try {
-                            const response = await donateService.capturePaypalOrder({
+                            const response = await donateService.captureOrder('paypal', {
                                 order_id: data.orderID,
                             })
 
@@ -466,10 +463,10 @@
     }
 
     /**
-     * Stripe is a hosted-checkout redirect (not an embedded button set), so we
-     * create the session and hand the browser over to Stripe.
+     * Hosted-checkout handoff for any non-PayPal method. The generic endpoint
+     * returns `checkout_url`/`approval_url` plus a normalised `reference`.
      */
-    async function startStripeCheckout() {
+    async function startHostedCheckout() {
         if (!amount.value || Number(amount.value) <= 0) {
             alertVariant.value = 'error'
             alertMessage.value = t('donate.enterValidAmount')
@@ -480,7 +477,7 @@
         alertMessage.value = ''
 
         try {
-            const response = await donateService.createCheckoutSession({
+            const response = await donateService.createOrder(selectedMethod.value, {
                 amount: Number(amount.value),
                 donor_name: authStore.user?.username || '',
                 donor_email: authStore.user?.email || '',
@@ -488,20 +485,24 @@
                 details: props.details,
             })
 
-            const checkoutUrl = response.data?.checkout_url
-            if (response.success && checkoutUrl) {
-                window.location.href = checkoutUrl
+            const target = response.data?.checkout_url || response.data?.approval_url
+            if (response.success && target) {
+                window.location.href = target
                 return
             }
 
             alertVariant.value = 'error'
             alertMessage.value =
-                response.errors?.[0] || response.message || t('donate.failedToCreateOrder')
+                response.errors?.[0] ||
+                response.message ||
+                t('donate.methodError', { method: methodLabel(selectedMethod.value) })
             isDonating.value = false
         } catch (error) {
             alertVariant.value = 'error'
             alertMessage.value =
-                error?.errors?.[0] || error?.message || t('donate.failedToCreateOrder')
+                error?.errors?.[0] ||
+                error?.message ||
+                t('donate.methodError', { method: methodLabel(selectedMethod.value) })
             isDonating.value = false
         }
     }
