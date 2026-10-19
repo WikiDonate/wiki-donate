@@ -4,7 +4,9 @@ namespace App\Http\Controllers\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OrganizationVerificationMail;
+use App\Models\DonationFormula;
 use App\Models\Organization;
+use App\Models\OrganizationPayout;
 use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use Exception;
@@ -72,6 +74,154 @@ class OrganizationController extends Controller
             'success' => true,
             'message' => 'Organization retrieved successfully',
             'data' => $org,
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Create an organization from the admin "Add organization" modal.
+     *
+     * Mirrors the update rules: EIN (nullable) and normalized_name are unique,
+     * the PayPal email must be valid, and every payout method must reference
+     * an active, payout-capable payment_methods row. `normalized_name` is
+     * always derived server-side and never accepted from the client.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'ein' => 'nullable|string|max:20|unique:organizations,ein',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
+            'paypal_email' => 'nullable|email|max:254',
+            'payout_methods' => 'nullable|array',
+            'payout_methods.*' => 'string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()->all(),
+                'field_errors' => $validator->errors()->toArray(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $name = trim(preg_replace('/\s+/u', ' ', (string) $request->input('name')));
+        $normalized = Organization::normalizeName($name);
+        $ein = $this->normalizeEin($request->input('ein'));
+
+        // EIN uniqueness is also enforced by the DB index, but a clear 422 is
+        // friendlier than a constraint violation.
+        if ($ein !== null && Organization::where('ein', $ein)->exists()) {
+            return $this->validationError(['ein' => 'An organization with this EIN already exists.']);
+        }
+
+        if (Organization::where('normalized_name', $normalized)->exists()) {
+            return $this->validationError(['name' => 'An organization with this name already exists.']);
+        }
+
+        $methods = $request->has('payout_methods')
+            ? $request->input('payout_methods')
+            : [Organization::DEFAULT_PAYOUT_METHOD];
+
+        if ($error = $this->payoutMethodError($methods)) {
+            return $this->validationError(['payout_methods' => $error]);
+        }
+
+        $org = Organization::create([
+            'name' => $name,
+            'normalized_name' => $normalized,
+            'ein' => $ein,
+            'city' => $request->input('city'),
+            'state' => $request->input('state'),
+            'country' => $request->filled('country') ? $request->input('country') : 'US',
+            'website' => $request->filled('website') ? trim((string) $request->input('website')) : null,
+            'paypal_email' => $request->filled('paypal_email')
+                ? mb_strtolower(trim((string) $request->input('paypal_email')))
+                : null,
+            'payout_methods' => $this->normalizePayoutMethods($methods),
+            'payout_status' => 'unverified',
+            'created_by_id' => $request->user()->id,
+            'updated_by_id' => $request->user()->id,
+        ]);
+
+        TransactionLog::record('organization.created', [
+            'subject_type' => Organization::class,
+            'subject_id' => $org->id,
+            'actor_id' => $request->user()->id,
+            'actor_role' => 'Admin',
+            'message' => "Organization created: {$org->name}",
+            'after' => $org->only([
+                'name', 'normalized_name', 'ein', 'city', 'state', 'country',
+                'website', 'paypal_email', 'payout_methods', 'payout_status',
+            ]),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Organization created successfully',
+            'data' => $org->refresh(),
+        ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Delete an organization, refusing when historical records still point at
+     * it (payout ledger rows or formula rows). History must stay reportable,
+     * so we never cascade-delete financial references.
+     */
+    public function destroy(Request $request, int $id): JsonResponse
+    {
+        $org = Organization::find($id);
+
+        if (! $org) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization not found',
+                'errors' => ['Organization not found'],
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $payoutCount = OrganizationPayout::where('organization_id', $org->id)->count();
+        $formulaCount = $this->formulaReferenceCount($org);
+
+        if ($payoutCount > 0 || $formulaCount > 0) {
+            $parts = [];
+            if ($payoutCount > 0) {
+                $parts[] = "{$payoutCount} payout(s)";
+            }
+            if ($formulaCount > 0) {
+                $parts[] = "{$formulaCount} donation formula(s)";
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization has payout or formula history and cannot be deleted; unverify it instead.',
+                'errors' => ['Referenced by '.implode(' and ', $parts).'.'],
+            ], Response::HTTP_CONFLICT);
+        }
+
+        $before = $org->only([
+            'name', 'normalized_name', 'ein', 'city', 'state', 'country',
+            'website', 'paypal_email', 'payout_methods', 'payout_status',
+        ]);
+
+        $org->delete();
+
+        TransactionLog::record('organization.deleted', [
+            'subject_type' => Organization::class,
+            'subject_id' => $id,
+            'actor_id' => $request->user()->id,
+            'actor_role' => 'Admin',
+            'message' => "Organization deleted: {$before['name']}",
+            'before' => $before,
+            'after' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Organization deleted successfully',
         ], Response::HTTP_OK);
     }
 
@@ -415,5 +565,80 @@ class OrganizationController extends Controller
         return $invalid === []
             ? null
             : 'Unknown or inactive payout method: '.implode(', ', $invalid).'.';
+    }
+
+    /**
+     * Normalize a client EIN the same way the model does (strip separators,
+     * uppercase) so uniqueness checks match stored values.
+     */
+    private function normalizeEin($ein): ?string
+    {
+        if (! is_string($ein) || trim($ein) === '') {
+            return null;
+        }
+
+        $clean = preg_replace('/[^a-zA-Z0-9]/u', '', $ein);
+
+        return ($clean === '' || $clean === false) ? null : strtoupper($clean);
+    }
+
+    /**
+     * Count donation formulas that still reference this organization, either
+     * by persisted id or (legacy rows) by normalized name.
+     */
+    private function formulaReferenceCount(Organization $org): int
+    {
+        $count = 0;
+
+        // JSON containment on an array of objects is not portable across
+        // MySQL/SQLite, so scan the decoded rows (chunked to bound memory)
+        // and match on persisted id first, normalized name as a fallback for
+        // legacy rows that predate organization_id.
+        DonationFormula::query()
+            ->select(['id', 'formula'])
+            ->chunkById(500, function ($formulas) use ($org, &$count) {
+                foreach ($formulas as $formula) {
+                    foreach ((array) $formula->formula as $entry) {
+                        if (! is_array($entry)) {
+                            continue;
+                        }
+
+                        $entryId = $entry['organization_id'] ?? null;
+                        $entryName = $entry['organization'] ?? null;
+
+                        if ((int) $entryId === $org->id
+                            || (is_string($entryName)
+                                && Organization::normalizeName($entryName) === $org->normalized_name)) {
+                            $count++;
+
+                            continue 2;
+                        }
+                    }
+                }
+            });
+
+        return $count;
+    }
+
+    /**
+     * Uniform 422 payload with per-field messages the SPA can map inline.
+     *
+     * @param  array<string, string|array<int, string>>  $fields
+     */
+    private function validationError(array $fields): JsonResponse
+    {
+        $flat = [];
+        foreach ($fields as $messages) {
+            foreach ((array) $messages as $message) {
+                $flat[] = $message;
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $flat,
+            'field_errors' => $fields,
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
