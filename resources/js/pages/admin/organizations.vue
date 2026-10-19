@@ -77,6 +77,11 @@
                         <template #cell-paypal_email="{ row }">
                             <span class="text-sm text-gray-600">{{ row.paypal_email || '—' }}</span>
                         </template>
+                        <template #cell-payout_methods="{ row }">
+                            <span class="text-sm text-gray-600">{{
+                                payoutMethodLabels(row.payout_methods)
+                            }}</span>
+                        </template>
                         <template #cell-status="{ row }">
                             <AdminBadge
                                 :variant="row.payout_status === 'verified' ? 'success' : 'danger'"
@@ -154,13 +159,48 @@
         </div>
 
         <!-- Edit modal -->
-        <!-- Edit modal -->
         <AdminModal
             :model-value="!!editTarget"
             :title="t('admin.editOrganization')"
+            size="lg"
             @close="editTarget = null"
         >
             <template v-if="editTarget">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.organizationNameLabel') }}
+                        </label>
+                        <input
+                            :value="editTarget.name"
+                            type="text"
+                            disabled
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.einLabel') }}
+                        </label>
+                        <input
+                            :value="editTarget.ein || '—'"
+                            type="text"
+                            disabled
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                        />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.websiteLabel') }}
+                        </label>
+                        <input
+                            :value="editTarget.website || '—'"
+                            type="text"
+                            disabled
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                        />
+                    </div>
+                </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         {{ t('admin.paypalEmailLabel') }}
@@ -375,6 +415,7 @@
         { key: 'location', label: t('admin.location') },
         { key: 'website', label: t('admin.website') },
         { key: 'paypal_email', label: t('admin.paypalEmail') },
+        { key: 'payout_methods', label: t('admin.payoutMethodsLabel') },
         { key: 'status', label: t('admin.status') },
         { key: 'created_at', label: t('admin.createdAt') },
         { key: 'verified_at', label: t('admin.verifiedAt') },
@@ -392,9 +433,18 @@
     const deleting = ref(false)
     const deleteMessage = computed(() =>
         deleteTarget.value
-            ? t('admin.deleteOrganizationMsg', { name: deleteTarget.value.name })
+            ? `${t('admin.deleteOrganizationMsg', { name: deleteTarget.value.name })} ${t('admin.deleteOrganizationHistoryHint')}`
             : '',
     )
+
+    // Map stored method codes to the registry labels; unknown codes (e.g. a
+    // rail retired after the org was created) still show so admins spot them.
+    const payoutMethodLabels = (codes) => {
+        if (!Array.isArray(codes) || codes.length === 0) return '—'
+        return codes
+            .map((code) => payoutMethods.value.find((m) => m.code === code)?.label || code)
+            .join(', ')
+    }
 
     const loadPage = async (page = 1) => {
         loading.value = true

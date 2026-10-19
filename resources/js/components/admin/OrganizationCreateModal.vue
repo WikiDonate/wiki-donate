@@ -375,6 +375,12 @@
             setErrors({ payout_methods: t('admin.payoutMethodsRequired') })
             return
         }
+        // registry-only target: a payout rail without a payee address can never
+        // be paid out, so require the matching email before submitting.
+        if (selectedPayoutMethods.value.includes('paypal') && !values.paypal_email) {
+            setErrors({ paypal_email: t('admin.paypalEmailRequired') })
+            return
+        }
         saving.value = true
         try {
             const response = await adminService.createOrganization({
@@ -438,6 +444,4 @@
     })
 
     onMounted(() => loadPaymentMethods())
-
-    defineExpose({ payoutMethodCodes })
 </script>
