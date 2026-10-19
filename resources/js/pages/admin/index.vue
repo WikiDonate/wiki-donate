@@ -166,10 +166,10 @@
                             :rows="stats.recentDonations"
                             empty-text="admin.noDonationsYet"
                         >
-                            <template #cell-source="{ row }">
+                            <template #cell-payment_method="{ row }">
                                 <AdminBadge
-                                    :variant="methodVariant(row.source)"
-                                    :text="methodLabel(row.source)"
+                                    :variant="methodVariant(row.payment_method)"
+                                    :text="methodLabel(row.payment_method)"
                                 />
                             </template>
                             <template #cell-amount="{ row }"
@@ -296,7 +296,7 @@
     const donationColumns = [
         { key: 'date', label: t('admin.date') },
         { key: 'user', label: t('admin.donor') },
-        { key: 'source', label: t('admin.source') },
+        { key: 'payment_method', label: t('admin.paymentMethod') },
         { key: 'amount', label: t('admin.amount') },
         { key: 'status', label: t('admin.status') },
         { key: 'article', label: t('admin.article') },

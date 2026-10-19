@@ -104,10 +104,10 @@
                     <template #cell-date="{ row }">
                         <span class="text-gray-600 text-xs">{{ row.date }}</span>
                     </template>
-                    <template #cell-source="{ row }">
+                    <template #cell-payment_method="{ row }">
                         <AdminBadge
-                            :variant="methodVariant(row.source)"
-                            :text="methodLabel(row.source)"
+                            :variant="methodVariant(row.payment_method)"
+                            :text="methodLabel(row.payment_method)"
                         />
                     </template>
                     <template #cell-amount="{ row }">
@@ -213,7 +213,7 @@
 
     const columns = [
         { key: 'date', label: t('report.date') },
-        { key: 'source', label: t('report.source') },
+        { key: 'payment_method', label: t('payment.methodLabel') },
         { key: 'amount', label: t('report.amount') },
         { key: 'status', label: t('report.status') },
         { key: 'paymentId', label: t('report.paymentId') },

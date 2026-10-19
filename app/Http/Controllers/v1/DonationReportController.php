@@ -89,7 +89,7 @@ class DonationReportController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $donation->paymentMethodCode() ?? 'stripe',
+                    'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,

@@ -93,8 +93,8 @@ class PaymentReportRegressionTest extends TestCase
         $this->assertEquals(1, (int) $byMethod['paypal']['count']);
         $this->assertEquals(1, (int) $byMethod['stripe']['count']);
 
-        $sources = collect($res->json('data.donations'))->pluck('source')->sort()->values()->all();
-        $this->assertSame(['paypal', 'stripe'], $sources);
+        $methods = collect($res->json('data.donations'))->pluck('payment_method')->sort()->values()->all();
+        $this->assertSame(['paypal', 'stripe'], $methods);
     }
 
     public function test_donor_report_payment_id_prefers_metadata_then_falls_back_to_the_reference(): void
@@ -118,7 +118,7 @@ class PaymentReportRegressionTest extends TestCase
 
         $rows = collect($this->withHeaders($this->userToken($donor))
             ->getJson('/api/v1/report/donations')
-            ->json('data.donations'))->keyBy('source');
+            ->json('data.donations'))->keyBy('payment_method');
 
         $this->assertSame('CAPTURE-9', $rows['paypal']['payment_id']);
         $this->assertSame('cs_report_2', $rows['stripe']['payment_id'], 'falls back to gateway_reference');
@@ -146,13 +146,13 @@ class PaymentReportRegressionTest extends TestCase
             ->getJson('/api/v1/report/donations?search=PAYPAL-SEARCH-1')
             ->json('data.donations');
         $this->assertCount(1, $byReference);
-        $this->assertSame('paypal', $byReference[0]['source']);
+        $this->assertSame('paypal', $byReference[0]['payment_method']);
 
         $byMethod = $this->withHeaders($this->userToken($donor))
             ->getJson('/api/v1/report/donations?search=stripe')
             ->json('data.donations');
         $this->assertCount(1, $byMethod);
-        $this->assertSame('stripe', $byMethod[0]['source']);
+        $this->assertSame('stripe', $byMethod[0]['payment_method']);
     }
 
     public function test_legacy_rows_without_a_payment_method_still_default_to_stripe(): void
@@ -171,7 +171,7 @@ class PaymentReportRegressionTest extends TestCase
         $res = $this->withHeaders($this->userToken($donor))->getJson('/api/v1/report/donations');
 
         $res->assertOk();
-        $this->assertSame('stripe', $res->json('data.donations.0.source'));
+        $this->assertSame('stripe', $res->json('data.donations.0.payment_method'));
         $this->assertSame(1, (int) $res->json('data.summary.byPaymentMethod.0.count'));
         $this->assertSame('stripe', $res->json('data.summary.byPaymentMethod.0.payment_method'));
     }
@@ -270,5 +270,20 @@ class PaymentReportRegressionTest extends TestCase
             ->getJson('/api/v1/admin/donations?search=PAYPAL-DASH-1')
             ->json('data');
         $this->assertCount(1, $hit);
+
+        // The method filter (driven by GET /v1/payment-methods in the UI)
+        // matches on the generic column, not a legacy id inference.
+        $this->donation([
+            'donation_formula_id' => $formula->id,
+            'payment_method' => 'stripe',
+            'gateway_reference' => 'cs_dash_1',
+            'donor_email' => 'dash@example.com',
+        ]);
+
+        $filtered = $this->withHeaders($this->userToken($admin))
+            ->getJson('/api/v1/admin/donations?method=stripe')
+            ->json('data');
+        $this->assertCount(1, $filtered);
+        $this->assertSame('stripe', $filtered[0]['payment_method']);
     }
 }

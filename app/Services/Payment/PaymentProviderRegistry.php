@@ -109,6 +109,96 @@ class PaymentProviderRegistry
     }
 
     /**
+     * Payout execution is bound per method code, separately from income:
+     * a method can be payout-capable in the registry yet still lack a rail.
+     * A code with no entry here fails LOUDLY at payout creation instead of
+     * recording a payout we would never actually send.
+     *
+     * @var array<string, class-string<PaymentProvider>>
+     */
+    private const PAYOUT_BINDINGS = [
+        PaymentMethod::CODE_PAYPAL => PayPalProvider::class,
+    ];
+
+    /**
+     * Validate a payout method and return its code.
+     *
+     * @throws PaymentProviderException when the code is unknown, inactive,
+     *                                  not payout-capable, or has no payout rail.
+     */
+    public function resolvePayoutMethod(?string $code): string
+    {
+        // Callers that predate the data-driven rail send no code at all;
+        // they keep the historical PayPal behavior. An explicitly unknown
+        // code still fails loudly below.
+        $code = self::normalizeCode($code) ?: PaymentMethod::CODE_PAYPAL;
+
+        $method = PaymentMethod::query()->where('code', $code)->first();
+
+        if (! $method) {
+            throw PaymentProviderException::forUnboundMethod($code);
+        }
+
+        if (! $method->active) {
+            throw PaymentProviderException::forInactiveMethod($method->code);
+        }
+
+        if (! $method->isPayoutCapable()) {
+            throw PaymentProviderException::unsupported($method->code, 'payouts');
+        }
+
+        return $this->instantiatePayout($method->code)->code();
+    }
+
+    /**
+     * Resolve the payout client for a method code.
+     *
+     * @throws PaymentProviderException
+     */
+    public function payoutClient(string $code): PaymentProvider
+    {
+        return $this->instantiatePayout(self::normalizeCode($code));
+    }
+
+    private static function normalizeCode(?string $code): string
+    {
+        return strtolower(trim((string) $code));
+    }
+
+    /**
+     * @throws PaymentProviderException
+     */
+    private function instantiatePayout(string $code): PaymentProvider
+    {
+        $class = self::PAYOUT_BINDINGS[$code] ?? null;
+
+        if ($class === null) {
+            Log::critical('Payout method has no payout rail bound.', ['code' => $code]);
+
+            throw PaymentProviderException::unsupported($code, 'payouts');
+        }
+
+        if (! class_exists($class)) {
+            Log::critical('Payout client class does not exist.', ['code' => $code, 'class' => $class]);
+
+            throw PaymentProviderException::forMissingProviderClass($code, $class);
+        }
+
+        $provider = app($class);
+
+        if (! $provider instanceof PaymentProvider) {
+            Log::critical('Payout provider does not implement the contract.', [
+                'code' => $code,
+                'class' => $class,
+            ]);
+
+            throw PaymentProviderException::forMissingProviderClass($code, $class);
+        }
+
+        return $provider;
+    }
+
+    /**
      * @throws PaymentProviderException
      */
     private function instantiate(string $code, bool $requireRow = false): PaymentProvider

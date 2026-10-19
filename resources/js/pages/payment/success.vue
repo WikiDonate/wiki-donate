@@ -39,10 +39,10 @@
                     class="bg-amber-50 border border-amber-200 rounded-lg p-6"
                 >
                     <p class="text-amber-700 font-medium mb-1">
-                        {{ t('payment.paypalUnverifiedTitle') }}
+                        {{ t('payment.unverifiedTitle', { method: methodLabel(returnedMethod) }) }}
                     </p>
                     <p class="text-gray-500 text-sm">
-                        {{ t('payment.paypalUnverifiedMsg') }}
+                        {{ t('payment.unverifiedMsg') }}
                     </p>
                 </div>
 
@@ -68,9 +68,18 @@
 
     const { t } = useI18n()
     const route = useRoute()
+    const { loadPaymentMethods, methodLabel } = usePaymentMethods()
     const sessionData = ref(null)
     const loading = ref(false)
     const paypalStatus = ref(null)
+
+    // Provider name comes from the registry, never a hardcoded label.
+    const returnedMethod = computed(() => {
+        const code = String(
+            route.query.method || (route.query.paypal === '1' ? 'paypal' : 'stripe'),
+        )
+        return code.toLowerCase()
+    })
 
     useHead({ title: t('payment.successTitle') })
 
@@ -95,6 +104,7 @@
     )
 
     onMounted(async () => {
+        loadPaymentMethods()
         const sessionId = route.query.session_id
 
         if (route.query.paypal === '1') {

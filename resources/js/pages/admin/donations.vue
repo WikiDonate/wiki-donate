@@ -16,6 +16,19 @@
                     />
                     <div class="flex gap-3 sm:w-auto w-full">
                         <select
+                            v-model="filterMethod"
+                            class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                        >
+                            <option value="">{{ t('admin.allMethods') }}</option>
+                            <option
+                                v-for="method in allMethods"
+                                :key="method.code"
+                                :value="method.code"
+                            >
+                                {{ method.label }}
+                            </option>
+                        </select>
+                        <select
                             v-model="filterStatus"
                             class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
                         >
@@ -37,10 +50,10 @@
                         row-key="id"
                         :empty-text="t('admin.noDonations')"
                     >
-                        <template #cell-source="{ row }">
+                        <template #cell-payment_method="{ row }">
                             <AdminBadge
-                                :variant="methodVariant(row.source)"
-                                :text="methodLabel(row.source)"
+                                :variant="methodVariant(row.payment_method)"
+                                :text="methodLabel(row.payment_method)"
                             />
                         </template>
                         <template #cell-donor="{ row }">
@@ -146,7 +159,7 @@
     }
 
     const { t } = useI18n()
-    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
+    const { allMethods, loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     useHead({ title: t('admin.allDonations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -156,12 +169,13 @@
     const loading = ref(true)
     const searchQuery = ref('')
     const filterStatus = ref('')
+    const filterMethod = ref('')
     let searchTimeout = null
 
     const columns = [
         { key: 'date', label: t('admin.date') },
         { key: 'donor', label: t('admin.donor') },
-        { key: 'source', label: t('admin.source') },
+        { key: 'payment_method', label: t('admin.paymentMethod') },
         { key: 'amount', label: t('admin.amount') },
         { key: 'status', label: t('admin.status') },
         { key: 'paymentId', label: t('admin.paymentId') },
@@ -181,6 +195,7 @@
             const params = { page, per_page: 15 }
             if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
             if (filterStatus.value) params.status = filterStatus.value
+            if (filterMethod.value) params.method = filterMethod.value
 
             const res = await adminService.getDonations(params)
             if (res.success) {
@@ -194,7 +209,7 @@
         }
     }
 
-    watch([searchQuery, filterStatus], () => {
+    watch([searchQuery, filterStatus, filterMethod], () => {
         clearTimeout(searchTimeout)
         searchTimeout = setTimeout(() => loadPage(1), 400)
     })

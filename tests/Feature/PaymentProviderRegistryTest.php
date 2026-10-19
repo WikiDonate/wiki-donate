@@ -120,4 +120,65 @@ class PaymentProviderRegistryTest extends TestCase
         $this->assertTrue($registry->hasBinding(PaymentMethod::CODE_PAYPAL));
         $this->assertTrue($registry->hasBinding(PaymentMethod::CODE_STRIPE));
     }
+
+    public function test_payout_rail_resolves_paypal_and_defaults_for_legacy_callers(): void
+    {
+        $registry = $this->registry();
+
+        $this->assertSame('paypal', $registry->resolvePayoutMethod('paypal'));
+        $this->assertSame('paypal', $registry->resolvePayoutMethod('  PAYPAL '));
+        $this->assertSame('paypal', $registry->resolvePayoutMethod(null));
+
+        $this->assertInstanceOf(PayPalProvider::class, $registry->payoutClient('paypal'));
+    }
+
+    public function test_payout_rail_rejects_inactive_and_income_only_methods(): void
+    {
+        PaymentMethod::create([
+            'code' => 'card',
+            'label' => 'Card',
+            'type' => PaymentMethod::TYPE_INCOME,
+            'active' => true,
+            'sort_order' => 3,
+        ]);
+
+        $registry = $this->registry();
+
+        // stripe is seeded inactive (and has no payout rail).
+        try {
+            $registry->resolvePayoutMethod(PaymentMethod::CODE_STRIPE);
+            $this->fail('An inactive method must not be usable for payouts.');
+        } catch (PaymentProviderException $e) {
+            $this->assertStringContainsString('stripe', $e->getMessage());
+        }
+
+        // card is active but income-only.
+        $this->expectException(PaymentProviderException::class);
+        $registry->resolvePayoutMethod('card');
+    }
+
+    public function test_payout_rail_fails_loudly_when_method_has_no_rail(): void
+    {
+        PaymentMethod::create([
+            'code' => 'bank',
+            'label' => 'Bank transfer',
+            'type' => PaymentMethod::TYPE_PAYOUT,
+            'active' => true,
+            'sort_order' => 4,
+        ]);
+
+        $registry = $this->registry();
+
+        // Payout-capable and active, but no provider class is bound.
+        try {
+            $registry->resolvePayoutMethod('bank');
+            $this->fail('A payout method without a bound rail must not resolve.');
+        } catch (PaymentProviderException $e) {
+            $this->assertStringContainsString('bank', $e->getMessage());
+        }
+
+        // An explicitly unknown code must never fall back to the default.
+        $this->expectException(PaymentProviderException::class);
+        $registry->resolvePayoutMethod('does-not-exist');
+    }
 }

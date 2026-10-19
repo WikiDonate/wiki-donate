@@ -23,7 +23,6 @@ class DashboardController extends Controller
             ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'payment_method', 'gateway_reference', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
-                $source = $donation->paymentMethodCode() ?? 'stripe';
                 $formula = $donation->formula;
                 $article = $formula?->article;
                 $snapshot = $metadata['formula_snapshot'] ?? null;
@@ -34,7 +33,7 @@ class DashboardController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $source,
+                    'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
@@ -42,7 +41,6 @@ class DashboardController extends Controller
                     'date_raw' => $donation->created_at->toISOString(),
                     'user' => $donation->user?->username ?? 'Guest',
                     'email' => $donation->donor_email ?? $donation->user?->email,
-                    'payment_method' => $donation->payment_method,
                     'gateway_reference' => $donation->gateway_reference,
                     'formula_id' => $metadata['formula_id'] ?? $formula?->id,
                     'formula' => $snapshot ?? $metadata['formula'] ?? $formula?->formula,
@@ -132,6 +130,9 @@ class DashboardController extends Controller
                 ->when($request->filled('status'), function ($q) use ($request) {
                     $q->where('status', $request->input('status'));
                 })
+                ->when($request->filled('method'), function ($q) use ($request) {
+                    $q->where('payment_method', $request->input('method'));
+                })
                 ->latest()
                 ->paginate($perPage);
 
@@ -145,7 +146,7 @@ class DashboardController extends Controller
 
                     return [
                         'id' => $donation->id,
-                        'source' => $donation->paymentMethodCode() ?? 'stripe',
+                        'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
                         'payment_id' => $donation->metadata['payment_id'] ?? $donation->gateway_reference,
                         'amount' => $donation->amount,
                         'currency' => $donation->currency,
@@ -154,7 +155,6 @@ class DashboardController extends Controller
                         'date_raw' => $donation->created_at->toISOString(),
                         'user' => $donation->user?->username ?? 'Guest',
                         'email' => $donation->donor_email ?? $donation->user?->email,
-                        'payment_method' => $donation->payment_method,
                         'gateway_reference' => $donation->gateway_reference,
                         'formula_id' => $donation->metadata['formula_id'] ?? $formula?->id,
                         'formula' => $donation->metadata['formula_snapshot']

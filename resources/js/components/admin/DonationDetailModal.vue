@@ -14,8 +14,8 @@
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3">
                     <AdminBadge
-                        :variant="methodVariant(donation.source)"
-                        :text="methodLabel(donation.source)"
+                        :variant="methodVariant(donation.payment_method)"
+                        :text="methodLabel(donation.payment_method)"
                     />
                     <AdminBadge :variant="statusVariant(donation.status)" :text="donation.status" />
                 </div>

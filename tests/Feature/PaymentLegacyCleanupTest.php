@@ -156,8 +156,8 @@ class PaymentLegacyCleanupTest extends TestCase
 
         // Rows expose the generic method code, never a legacy-column inference.
         $rows = collect($report->json('data.donations'))->keyBy('payment_id');
-        $this->assertSame('paypal', $rows['PAYPAL-ORDER-1']['source']);
-        $this->assertSame('stripe', $rows['cs_test_123']['source']);
+        $this->assertSame('paypal', $rows['PAYPAL-ORDER-1']['payment_method']);
+        $this->assertSame('stripe', $rows['cs_test_123']['payment_method']);
 
         // Admin transactions: same totals, method column is the generic code.
         $tx = $this->getJson('/api/v1/admin/transactions', $this->authHeader());
