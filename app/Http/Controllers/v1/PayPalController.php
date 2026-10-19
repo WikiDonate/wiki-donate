@@ -5,7 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Services\PayPalClient;
 use Illuminate\Http\Client\RequestException;
@@ -78,10 +78,11 @@ class PayPalController extends Controller
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            // Store full donor/formula payload keyed by PayPal order ID.
+            // Store full donor/formula payload keyed by the gateway reference.
             // custom_id is limited to 127 chars so we use a separate table instead.
-            PayPalPendingOrder::create([
-                'paypal_order_id' => $orderId,
+            PaymentPendingOrder::create([
+                'payment_method' => 'paypal',
+                'gateway_reference' => $orderId,
                 'user_id' => $userId,
                 'donation_formula_id' => $request->input('formula_id'),
                 'donor_email' => $request->input('donor_email'),
@@ -159,7 +160,8 @@ class PayPalController extends Controller
             // check is reliable (no double-charge, no double-record).
             $result = DB::transaction(function () use ($orderId) {
                 // Retrieve pending order metadata (locked)
-                $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)
+                $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+                    ->where('gateway_reference', $orderId)
                     ->lockForUpdate()
                     ->first();
 
@@ -167,7 +169,7 @@ class PayPalController extends Controller
                     // No pending row — the order may already have been processed
                     // by the webhook or a previous capture. Check for an existing
                     // completed donation before failing.
-                    $existing = Donation::where('paypal_order_id', $orderId)
+                    $existing = Donation::gateway('paypal', $orderId)
                         ->where('status', 'completed')
                         ->first();
 
@@ -184,7 +186,7 @@ class PayPalController extends Controller
                 }
 
                 // Idempotency: check if already completed
-                $existing = Donation::where('paypal_order_id', $orderId)
+                $existing = Donation::gateway('paypal', $orderId)
                     ->where('status', 'completed')
                     ->first();
 
@@ -221,7 +223,8 @@ class PayPalController extends Controller
                 }
 
                 $donation = Donation::create([
-                    'paypal_order_id' => $orderId,
+                    'payment_method' => 'paypal',
+                    'gateway_reference' => $orderId,
                     'user_id' => $pending->user_id,
                     'donation_formula_id' => $pending->donation_formula_id,
                     'donor_name' => $pending->donor_name ?: $captureData['payer_name'],
@@ -267,7 +270,7 @@ class PayPalController extends Controller
 
                 Log::info('PayPal donation recorded', [
                     'donation_id' => $donation->id,
-                    'paypal_order_id' => $orderId,
+                    'gateway_reference' => $orderId,
                     'amount' => $donation->amount,
                 ]);
 
@@ -305,7 +308,7 @@ class PayPalController extends Controller
             $alreadyCaptured = $issues->contains(fn ($i) => str_contains($i, 'ALREADY_CAPTURED'));
 
             if ($alreadyCaptured) {
-                $existing = Donation::where('paypal_order_id', $orderId)
+                $existing = Donation::gateway('paypal', $orderId)
                     ->where('status', 'completed')
                     ->first();
 
@@ -323,7 +326,9 @@ class PayPalController extends Controller
                 try {
                     $order = $this->paypal->showOrder($orderId);
                     $captureData = PayPalClient::extractCaptureData($order);
-                    $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)->first();
+                    $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+                        ->where('gateway_reference', $orderId)
+                        ->first();
 
                     $formulaSnapshot = null;
                     $formulaUuid = null;
@@ -334,7 +339,8 @@ class PayPalController extends Controller
                     }
 
                     $donation = Donation::create([
-                        'paypal_order_id' => $orderId,
+                        'payment_method' => 'paypal',
+                        'gateway_reference' => $orderId,
                         'user_id' => $pending?->user_id,
                         'donation_formula_id' => $pending?->donation_formula_id,
                         'donor_name' => $pending?->donor_name ?: $captureData['payer_name'],

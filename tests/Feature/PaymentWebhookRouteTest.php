@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\PayPalClient;
@@ -88,8 +88,9 @@ class PaymentWebhookRouteTest extends TestCase
             'formula' => [['organization' => 'Wiki', 'percentage' => 100]],
         ]);
 
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => null,
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Webhook Donor',
@@ -121,10 +122,10 @@ class PaymentWebhookRouteTest extends TestCase
             ->assertOk()
             ->assertJson(['success' => true]);
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($donation);
         $this->assertSame('completed', $donation->status);
-        // Phase-1 mirror: the generic pair is populated alongside the legacy id.
+        // Phase 3: the generic pair is the donation's payment identity.
         $this->assertSame('paypal', $donation->payment_method);
         $this->assertSame('PAYPAL_ORDER_123', $donation->gateway_reference);
     }

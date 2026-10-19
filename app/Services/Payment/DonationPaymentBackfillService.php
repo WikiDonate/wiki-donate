@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Phase-1 backfill: derive the generic `payment_method` + `gateway_reference`
@@ -25,9 +26,16 @@ class DonationPaymentBackfillService
     /**
      * Idempotent: only touches rows whose generic pair is absent or stale, so
      * running it against an already-backfilled table is a no-op.
+     *
+     * No-ops entirely once phase 3 has dropped the legacy id columns — the
+     * migration order guarantees this still runs (phase 1) while they exist.
      */
     public function run(): void
     {
+        if (! Schema::hasTable('donations') || ! Schema::hasColumn('donations', 'paypal_order_id')) {
+            return;
+        }
+
         DB::table('donations')
             ->whereNotNull('paypal_order_id')
             ->where(function ($query) {

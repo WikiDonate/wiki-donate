@@ -2,24 +2,43 @@
 
 namespace Tests\Feature;
 
-use App\Models\Donation;
 use App\Services\Payment\DonationPaymentBackfillService;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
  * Phase-1 data migration QA.
  *
- * The generic `payment_method` + `gateway_reference` pair must be derivable
- * from the legacy PayPal/Stripe id columns for every historical row shape, and
- * the derivation must be idempotent (safe to re-run, never clobbers a correct
- * row, never leaves a legacy-only row unclassified).
+ * Phase 3 dropped the legacy PayPal/Stripe id columns from `donations`, so this
+ * test re-creates them for the duration of each test to assert that the
+ * backfill derivation is correct and idempotent for every historical row shape.
+ * (The service itself no-ops when the legacy columns are absent, which is
+ * exactly what happens on a post-phase-3 database.)
  */
 class DonationPaymentBackfillTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Schema::table('donations', function (Blueprint $table) {
+            if (! Schema::hasColumn('donations', 'paypal_order_id')) {
+                $table->string('paypal_order_id')->nullable();
+            }
+            if (! Schema::hasColumn('donations', 'stripe_session_id')) {
+                $table->string('stripe_session_id')->nullable();
+            }
+            if (! Schema::hasColumn('donations', 'stripe_payment_intent_id')) {
+                $table->string('stripe_payment_intent_id')->nullable();
+            }
+        });
+    }
 
     private function insertLegacyRow(array $attrs): int
     {
@@ -97,7 +116,6 @@ class DonationPaymentBackfillTest extends TestCase
         $row = $this->row($id);
         $this->assertSame('paypal', $row->payment_method);
         $this->assertSame('PAYPAL-ORDER-2', $row->gateway_reference);
-        $this->assertSame('PAYPAL-ORDER-2', $row->paypal_order_id, 'legacy column untouched in phase 1');
     }
 
     public function test_stale_generic_value_is_repaired_from_the_legacy_column(): void
@@ -117,25 +135,15 @@ class DonationPaymentBackfillTest extends TestCase
         $this->assertSame('PAYPAL-ORDER-3', $row->gateway_reference);
     }
 
-    public function test_saving_mirror_keeps_generic_and_legacy_columns_in_sync(): void
+    public function test_backfill_no_ops_once_the_legacy_columns_are_dropped(): void
     {
-        $paypal = Donation::create([
-            'paypal_order_id' => 'PAYPAL-MIRROR-1',
-            'amount' => 25,
-            'currency' => 'usd',
-            'status' => 'completed',
-        ]);
-        $this->assertSame('paypal', $paypal->payment_method);
-        $this->assertSame('PAYPAL-MIRROR-1', $paypal->gateway_reference);
+        Schema::table('donations', function (Blueprint $table) {
+            $table->dropColumn(['paypal_order_id', 'stripe_session_id', 'stripe_payment_intent_id']);
+        });
 
-        $stripe = Donation::create([
-            'stripe_session_id' => 'cs_mirror_1',
-            'stripe_payment_intent_id' => 'pi_mirror_1',
-            'amount' => 25,
-            'currency' => 'usd',
-            'status' => 'completed',
-        ]);
-        $this->assertSame('stripe', $stripe->payment_method);
-        $this->assertSame('cs_mirror_1', $stripe->gateway_reference);
+        // Must not throw even though the referenced columns are gone.
+        app(DonationPaymentBackfillService::class)->run();
+
+        $this->assertTrue(true);
     }
 }

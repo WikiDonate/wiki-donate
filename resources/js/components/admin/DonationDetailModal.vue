@@ -52,7 +52,7 @@
                         t('admin.paymentId')
                     }}</span>
                     <p class="text-gray-800 text-xs font-mono mt-0.5 truncate">
-                        {{ donation.payment_id || donation.stripe_session_id || '—' }}
+                        {{ donation.payment_id || donation.gateway_reference || '—' }}
                     </p>
                 </div>
             </div>

@@ -110,7 +110,7 @@ class StripeWebhookController extends Controller
         $customerId = $session->customer ?? null;
 
         // Look for existing donation by session ID
-        $donation = Donation::where('stripe_session_id', $session->id)->first();
+        $donation = Donation::gateway('stripe', $session->id)->first();
 
         if (! $donation) {
             // Build metadata from session metadata
@@ -133,8 +133,8 @@ class StripeWebhookController extends Controller
 
             // Create new donation record
             $donation = Donation::create([
-                'stripe_session_id' => $session->id,
-                'stripe_payment_intent_id' => $paymentIntentId,
+                'payment_method' => 'stripe',
+                'gateway_reference' => $session->id,
                 'user_id' => $userId,
                 'donor_name' => $session->customer_details?->name,
                 'donor_email' => $session->customer_details?->email ?? $session->customer_email ?? null,
@@ -143,6 +143,7 @@ class StripeWebhookController extends Controller
                 'status' => 'completed',
                 'metadata' => [
                     'session_id' => $session->id,
+                    'payment_intent_id' => $paymentIntentId,
                     'payment_status' => $session->payment_status ?? null,
                     'source' => $sessionMetadata->source ?? 'wikidonate',
                     'formula' => $metaFormula,
@@ -158,9 +159,9 @@ class StripeWebhookController extends Controller
             // snapshot) is intentionally left untouched so a re-delivery can
             // never overwrite the snapshot frozen at the original completion.
             $donation->update([
-                'stripe_payment_intent_id' => $paymentIntentId,
                 'status' => 'completed',
                 'metadata' => array_merge($donation->metadata ?? [], [
+                    'payment_intent_id' => $paymentIntentId,
                     'payment_status' => $session->payment_status ?? null,
                 ]),
             ]);
@@ -203,7 +204,7 @@ class StripeWebhookController extends Controller
     {
         $session = $event->data->object;
 
-        $donation = Donation::where('stripe_session_id', $session->id)->first();
+        $donation = Donation::gateway('stripe', $session->id)->first();
 
         if ($donation) {
             $donation->update(['status' => 'expired']);
@@ -235,8 +236,10 @@ class StripeWebhookController extends Controller
     {
         $paymentIntent = $event->data->object;
 
-        // Find donation by payment intent ID if we have one
-        $donation = Donation::where('stripe_payment_intent_id', $paymentIntent->id)->first();
+        // Find donation by payment intent ID if we have one. Phase 3 stores the
+        // intent id in metadata (the dedicated column was dropped), so match on
+        // the JSON key instead.
+        $donation = Donation::where('metadata->payment_intent_id', $paymentIntent->id)->first();
 
         if ($donation) {
             $donation->update(['status' => 'failed']);

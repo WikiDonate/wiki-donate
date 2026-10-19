@@ -86,7 +86,7 @@ class TransactionController extends Controller
                 ->where('status', '!=', 'failed')
                 ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
                 ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
-                ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
+                ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
                 ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
                 ->sum('amount');
 
@@ -211,7 +211,7 @@ class TransactionController extends Controller
         $expense = OrganizationPayout::query()
             ->with('actorUser:id,username')
             ->where('status', '!=', 'failed')
-            ->when($request->filled('method'), fn ($q) => $q->where('method', $request->input('method')))
+            ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
             ->when($request->filled('from'), fn ($q) => $q->where(function ($qq) use ($request) {
                 $qq->whereDate('paid_at', '>=', $request->input('from'))
                     ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '>=', $request->input('from')));
@@ -276,7 +276,7 @@ class TransactionController extends Controller
             'organization_name' => $payout->organization_name,
             'amount' => (float) $payout->amount,
             'currency' => $payout->currency,
-            'method' => $payout->method,
+            'method' => $payout->payment_method,
             'status' => $payout->status,
             'payout_type' => $payout->type,
             'note' => $payout->note,

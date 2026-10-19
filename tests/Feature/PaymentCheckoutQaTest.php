@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\PayPalClient;
@@ -106,8 +106,9 @@ class PaymentCheckoutQaTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.order_id', 'PAYPAL_ORDER_QA');
 
-        $this->assertDatabaseHas('paypal_pending_orders', [
-            'paypal_order_id' => 'PAYPAL_ORDER_QA',
+        $this->assertDatabaseHas('payment_pending_orders', [
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL_ORDER_QA',
             'donation_formula_id' => $formula->id,
         ]);
 
@@ -116,15 +117,13 @@ class PaymentCheckoutQaTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.status', 'completed');
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_QA')->firstOrFail();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->firstOrFail();
 
-        // Generic pair (what reports/UI read from now on)...
+        // The generic pair is the donation's payment identity (phase 3).
         $this->assertSame('paypal', $donation->payment_method);
         $this->assertSame('PAYPAL_ORDER_QA', $donation->gateway_reference);
-        // ...and the legacy column is still mirrored during phase 1.
-        $this->assertSame('PAYPAL_ORDER_QA', $donation->paypal_order_id);
 
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_QA')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->first());
 
         $log = TransactionLog::where('event', 'donation.completed')->latest('id')->first();
         $this->assertNotNull($log, 'capture must be audited');
@@ -156,6 +155,6 @@ class PaymentCheckoutQaTest extends TestCase
             ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
             ->assertOk();
 
-        $this->assertSame(1, Donation::where('paypal_order_id', 'PAYPAL_ORDER_QA')->count());
+        $this->assertSame(1, Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->count());
     }
 }

@@ -210,7 +210,7 @@ class OrganizationPayoutService
                 'type' => $type,
                 'status' => 'pending',
                 'actor_id' => $actorId,
-                'method' => 'paypal',
+                'payment_method' => 'paypal',
                 'destination_paypal_email' => $destination->paypal_email,
                 'note' => $data['note'] ?? null,
             ]);
@@ -385,7 +385,7 @@ class OrganizationPayoutService
                             $payout->organization_name
                         ),
                         'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
-                        'meta' => ['payment_method' => $payout->method ?: 'paypal'],
+                        'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
                     ]);
                 } elseif (in_array($effective, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
                     $payout->forceFill([
@@ -405,11 +405,11 @@ class OrganizationPayoutService
                             $payout->amount,
                             strtoupper($payout->currency),
                             $payout->organization_name,
-                            $payout->method ?: 'paypal',
+                            $payout->payment_method ?: 'paypal',
                             $payout->failure_reason
                         ),
                         'after' => ['status' => 'failed', 'provider_status' => $effective],
-                        'meta' => ['payment_method' => $payout->method ?: 'paypal'],
+                        'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
                     ]);
                 }
             } catch (Exception $e) {
@@ -434,7 +434,7 @@ class OrganizationPayoutService
                 strtoupper($payout->currency),
                 $payout->organization_name,
                 $payout->destination_paypal_email,
-                $payout->method ?: 'paypal'
+                $payout->payment_method ?: 'paypal'
             ),
             'after' => [
                 'organization_id' => $payout->organization_id,
@@ -449,7 +449,7 @@ class OrganizationPayoutService
                 'provider_status' => $payout->provider_status,
                 'failure_reason' => $payout->failure_reason,
             ],
-            'meta' => ['payment_method' => $payout->method ?: 'paypal'],
+            'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
         ]);
     }
 

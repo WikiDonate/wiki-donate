@@ -65,7 +65,7 @@
                         >
                         <template #cell-paymentId="{ row }">
                             <span class="text-xs text-gray-400 font-mono">{{
-                                row.payment_id || row.stripe_session_id || '—'
+                                row.payment_id || row.gateway_reference || '—'
                             }}</span>
                         </template>
                         <template #cell-article="{ row }">

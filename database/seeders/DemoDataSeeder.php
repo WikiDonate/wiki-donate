@@ -230,20 +230,28 @@ class DemoDataSeeder extends Seeder
         foreach ($demo as $row) {
             $formula = $formulas[$row['formula']] ?? null;
             $isPaypal = isset($row['key']['paypal_order_id']);
+            $reference = $row['key']['paypal_order_id'] ?? $row['key']['stripe_session_id'] ?? null;
 
             $metadata = [
                 'source' => $isPaypal ? 'paypal' : 'stripe_checkout',
                 'details' => $row['details'],
             ];
 
-            $donation = Donation::firstOrNew($row['key']);
+            if (! empty($row['pi'])) {
+                $metadata['payment_intent_id'] = $row['pi'];
+            }
+
+            $donation = Donation::firstOrNew([
+                'payment_method' => $isPaypal ? 'paypal' : 'stripe',
+                'gateway_reference' => $reference,
+            ]);
             if (! $donation->exists) {
                 $donation->fill([
                     'uuid' => (string) Str::uuid(),
                     'user_id' => $row['user'],
                     'donation_formula_id' => $formula?->id,
-                    'stripe_payment_intent_id' => $row['pi'] ?? null,
-                    'paypal_order_id' => $row['key']['paypal_order_id'] ?? null,
+                    'payment_method' => $isPaypal ? 'paypal' : 'stripe',
+                    'gateway_reference' => $reference,
                     'donor_name' => $row['name'],
                     'donor_email' => $row['email'],
                     'amount' => $row['amount'],
@@ -296,7 +304,7 @@ class DemoDataSeeder extends Seeder
                 'status' => 'paid',
                 'paid_at' => Carbon::now()->subDays($p['days']),
                 'actor_id' => $admin->id,
-                'method' => $p['method'],
+                'payment_method' => $p['method'],
                 'note' => $p['note'],
             ]);
         }

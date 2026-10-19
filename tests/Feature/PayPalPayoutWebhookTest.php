@@ -80,7 +80,7 @@ class PayPalPayoutWebhookTest extends TestCase
             'type' => 'partial',
             'status' => 'pending',
             'actor_id' => $actor->id,
-            'method' => 'paypal',
+            'payment_method' => 'paypal',
             'payout_batch_id' => $batchId,
             'payout_item_id' => $itemId,
             'provider_status' => 'PENDING',

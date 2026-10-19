@@ -146,12 +146,17 @@ class DonationSeeder extends Seeder
                 $metadata['payment_id'] = $paymentId;
             }
 
+            // Extra Stripe ids are kept in metadata (dedicated columns were
+            // dropped in phase 3); the session id is the gateway reference.
+            if ($paymentIntent) {
+                $metadata['payment_intent_id'] = $paymentIntent;
+            }
+
             $donation = Donation::create([
                 'user_id' => $row['user_id'],
                 'donation_formula_id' => $formulaId,
-                'stripe_session_id' => $stripeSession,
-                'stripe_payment_intent_id' => $paymentIntent,
-                'paypal_order_id' => $paypalOrder,
+                'payment_method' => $paypalOrder ? 'paypal' : 'stripe',
+                'gateway_reference' => $paypalOrder ?: ($stripeSession ?: $paymentIntent),
                 'donor_name' => $row['donor_name'],
                 'donor_email' => $row['donor_email'],
                 'amount' => $row['amount'],

@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\PayPalClient;
@@ -230,7 +230,7 @@ class PayPalCheckoutTest extends TestCase
             ->assertJsonPath('data.approval_url', 'https://www.sandbox.paypal.com/checkoutnow?token=PAYPAL_ORDER_123');
 
         // Verify pending order was stored with formula id + donor metadata
-        $pending = PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
 
         $this->assertNotNull($pending);
         $this->assertEquals($user->id, $pending->user_id);
@@ -272,7 +272,7 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $pending = PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($pending);
         $this->assertNull($pending->user_id);
         $this->assertEquals('anon@example.com', $pending->donor_email);
@@ -320,7 +320,7 @@ class PayPalCheckoutTest extends TestCase
 
         // Pre-create a completed donation for this order
         $existing = Donation::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
             'donor_name' => 'Already',
             'donor_email' => 'already@example.com',
@@ -331,8 +331,8 @@ class PayPalCheckoutTest extends TestCase
         ]);
 
         // Also create the stale pending order
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -354,7 +354,7 @@ class PayPalCheckoutTest extends TestCase
             ->assertJsonPath('data.status', 'completed');
 
         // Should not create a duplicate donation
-        $this->assertEquals(1, Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->count());
+        $this->assertEquals(1, Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->count());
     }
 
     public function test_capture_order_creates_donation_and_deletes_pending(): void
@@ -376,8 +376,8 @@ class PayPalCheckoutTest extends TestCase
             'details' => 'Monthly donation',
         ]);
 
-        $pending = PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        $pending = PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Test Donor',
@@ -402,7 +402,7 @@ class PayPalCheckoutTest extends TestCase
             ->assertJsonPath('data.status', 'completed');
 
         // Donation was created
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($donation);
         $this->assertEquals('completed', $donation->status);
         $this->assertEquals(25.00, $donation->amount);
@@ -422,7 +422,7 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals($formula->uuid, $donation->metadata['formula_uuid']);
 
         // Pending order was deleted
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
 
         // Phase-1 mirror: the generic pair is written alongside the legacy id,
         // so reports/UI can read payment_method before phase 3 drops it.
@@ -436,8 +436,8 @@ class PayPalCheckoutTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         // Pending order WITHOUT donor info — should fall back to PayPal's payer data
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -453,7 +453,7 @@ class PayPalCheckoutTest extends TestCase
 
         $response->assertStatus(200);
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         // Falls back to PayPal payer data
         $this->assertEquals('Test Donor', $donation->donor_name);
         $this->assertEquals('donor@example.com', $donation->donor_email);
@@ -464,8 +464,8 @@ class PayPalCheckoutTest extends TestCase
         $user = User::factory()->create();
         $token = $user->createToken('test')->plainTextToken;
 
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $user->id,
             'donor_email' => 'eur@example.com',
             'amount' => 50.00,
@@ -501,7 +501,7 @@ class PayPalCheckoutTest extends TestCase
 
         $response->assertStatus(200);
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertEquals('EUR', $donation->currency);
         $this->assertEquals(50.00, $donation->amount);
     }
@@ -585,8 +585,8 @@ class PayPalCheckoutTest extends TestCase
         ]);
 
         // Create a pending order so webhook has something to link
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => null,
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Webhook Donor',
@@ -612,7 +612,7 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($donation);
         $this->assertEquals('completed', $donation->status);
         $this->assertEquals(25.00, $donation->amount);
@@ -627,7 +627,7 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals($formula->uuid, $donation->metadata['formula_uuid']);
 
         // Pending order was cleaned up
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
 
         // Audit log carries the payment method so reports can group by it
         $log = TransactionLog::where('event', 'donation.completed')->latest('id')->first();
@@ -639,7 +639,7 @@ class PayPalCheckoutTest extends TestCase
     {
         // Pre-create a completed donation for this order
         Donation::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'donor_email' => 'already@example.com',
             'amount' => 25.00,
             'currency' => 'USD',
@@ -731,8 +731,8 @@ class PayPalCheckoutTest extends TestCase
         $user = User::factory()->create();
         $token = $user->createToken('test')->plainTextToken;
 
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'EXPIRED_ORDER',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'EXPIRED_ORDER',
             'user_id' => $user->id,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -813,8 +813,8 @@ class PayPalCheckoutTest extends TestCase
 
     public function test_webhook_capture_denied_removes_pending_order(): void
     {
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => null,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -846,13 +846,13 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
     }
 
     public function test_webhook_order_cancelled_removes_pending_order(): void
     {
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => null,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -879,21 +879,21 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
     }
 
     public function test_cleanup_command_deletes_old_pending_orders(): void
     {
-        $old = PayPalPendingOrder::create([
-            'paypal_order_id' => 'OLD_ORDER',
+        $old = PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'OLD_ORDER',
             'user_id' => null,
             'amount' => 25.00,
             'currency' => 'USD',
         ]);
         $old->forceFill(['created_at' => now()->subDays(5)])->saveQuietly();
 
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'FRESH_ORDER',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal', 'gateway_reference' => 'FRESH_ORDER',
             'user_id' => null,
             'amount' => 25.00,
             'currency' => 'USD',
@@ -902,7 +902,7 @@ class PayPalCheckoutTest extends TestCase
         $this->artisan('paypal:cleanup-pending-orders', ['--hours' => 48])
             ->assertSuccessful();
 
-        $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'OLD_ORDER')->first());
-        $this->assertNotNull(PayPalPendingOrder::where('paypal_order_id', 'FRESH_ORDER')->first());
+        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'OLD_ORDER')->first());
+        $this->assertNotNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'FRESH_ORDER')->first());
     }
 }
