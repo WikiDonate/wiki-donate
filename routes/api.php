@@ -7,6 +7,7 @@ use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\OrganizationConfirmationController;
 use App\Http\Controllers\v1\PageController;
+use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Controllers\v1\PayPalController;
 use App\Http\Controllers\v1\PayPalWebhookController;
 use App\Http\Controllers\v1\StripeController;
@@ -82,6 +83,11 @@ Route::prefix('v1')->group(function () {
     // PayPal Webhook (public, no auth — verified by signature; throttled
     // so attackers can't force expensive verification calls at will)
     Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook'])
+        ->middleware('throttle:60,1');
+
+    // Active payment-method registry (public): drives donor checkout pickers
+    // and the admin filters/badges/payout rail. Only active=1 rows are exposed.
+    Route::get('payment-methods', [PaymentMethodController::class, 'index'])
         ->middleware('throttle:60,1');
 
     // Public page content
