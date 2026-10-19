@@ -87,6 +87,55 @@ class AdminOrganizationCrudTest extends TestCase
         $this->assertSame(['paypal'], Organization::firstOrFail()->payoutMethods());
     }
 
+    public function test_create_from_search_result_persists_registry_fields(): void
+    {
+        // Modal flow: admin picks a row from /charities/search (which carries
+        // ein/city/state/website) and submits it with the admin-only payout
+        // additions. Everything except normalized_name comes through as-is.
+        $searchMatch = [
+            'name' => 'Search Picked Charity',
+            'ein' => '12-3456789',
+            'city' => 'Denver',
+            'state' => 'CO',
+            'website' => 'https://search-picked.example.org',
+        ];
+
+        $this->withHeaders($this->headersFor($this->admin))
+            ->postJson('/api/v1/admin/organizations', [
+                ...$searchMatch,
+                'paypal_email' => 'give@search-picked.example.org',
+                'payout_methods' => ['paypal'],
+            ])
+            ->assertCreated();
+
+        $org = Organization::firstOrFail();
+        $this->assertSame('Search Picked Charity', $org->name);
+        $this->assertSame('123456789', $org->ein);
+        $this->assertSame('Denver', $org->city);
+        $this->assertSame('CO', $org->state);
+        $this->assertSame('https://search-picked.example.org', $org->website);
+        $this->assertSame(['paypal'], $org->payoutMethods());
+    }
+
+    public function test_create_manual_entry_without_ein_is_allowed(): void
+    {
+        // No search match -> admin types the name manually and leaves EIN
+        // blank. The org is still creatable (unverified custom org), and the
+        // registry-derived normalized_name is produced server-side.
+        $this->withHeaders($this->headersFor($this->admin))
+            ->postJson('/api/v1/admin/organizations', [
+                'name' => 'Hand Typed  Local Fund',
+                'payout_methods' => ['paypal'],
+            ])
+            ->assertCreated();
+
+        $org = Organization::firstOrFail();
+        $this->assertSame('Hand Typed Local Fund', $org->name);
+        $this->assertSame('hand typed local fund', $org->normalized_name);
+        $this->assertNull($org->ein);
+        $this->assertSame('unverified', $org->payout_status);
+    }
+
     public function test_create_rejects_duplicate_ein_and_name_and_bad_email(): void
     {
         Organization::create(['name' => 'Existing Org', 'ein' => '555555555']);
