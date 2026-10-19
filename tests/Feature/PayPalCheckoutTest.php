@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\PayPalPendingOrder;
+use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\PayPalClient;
 use GuzzleHttp\Psr7\Response;
@@ -622,6 +623,14 @@ class PayPalCheckoutTest extends TestCase
 
         // Pending order was cleaned up
         $this->assertNull(PayPalPendingOrder::where('paypal_order_id', 'PAYPAL_ORDER_123')->first());
+
+        // Audit log carries the payment method for the income event.
+        $this->assertEquals('paypal', TransactionLog::where('event', 'donation.completed')->latest('id')->first()->meta['payment_method']);
+
+        // Audit log carries the payment method so reports can group by it
+        $log = TransactionLog::where('event', 'donation.completed')->latest('id')->first();
+        $this->assertNotNull($log);
+        $this->assertEquals('paypal', $log->meta['payment_method']);
     }
 
     public function test_webhook_capture_completed_idempotency_already_recorded(): void

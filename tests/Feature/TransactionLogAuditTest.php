@@ -159,6 +159,7 @@ class TransactionLogAuditTest extends TestCase
         $log = TransactionLog::where('event', 'payout.created')->first();
         $this->assertEquals($organization->paypal_email, $log->after['destination_paypal_email']);
         $this->assertEquals($organization->id, $log->after['organization_id']);
+        $this->assertEquals('paypal', $log->meta['payment_method']);
     }
 
     public function test_non_admin_cannot_access_transaction_logs(): void

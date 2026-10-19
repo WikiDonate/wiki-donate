@@ -124,6 +124,7 @@ class PayPalPayoutWebhookTest extends TestCase
         ]);
         $this->assertNotNull($payout->fresh()->paid_at);
         $this->assertDatabaseHas('transaction_logs', ['event' => 'payout.synced']);
+        $this->assertEquals('paypal', TransactionLog::where('event', 'payout.synced')->latest('id')->first()->meta['payment_method']);
     }
 
     public function test_item_denied_marks_payout_failed_with_reason_and_logs(): void
@@ -205,6 +206,7 @@ class PayPalPayoutWebhookTest extends TestCase
             'status' => 'failed',
         ]);
         $this->assertDatabaseHas('transaction_logs', ['event' => 'payout.failed']);
+        $this->assertEquals('paypal', TransactionLog::where('event', 'payout.failed')->latest('id')->first()->meta['payment_method']);
     }
 
     public function test_item_unknown_payout_id_is_ignored_gracefully(): void

@@ -58,7 +58,7 @@ class OrganizationPayoutDestinationService
                 'actor_role' => 'Admin',
                 'subject_type' => OrganizationPayout::class,
                 'message' => 'Payout blocked: organization not in registry — '.$organizationName,
-                'meta' => ['organization_name' => $organizationName, 'reason' => 'not_in_registry'],
+                'meta' => ['organization_name' => $organizationName, 'reason' => 'not_in_registry', 'payment_method' => 'paypal'],
             ]);
 
             throw new UserFacingException('This organization has no verified payout destination yet. Verify it in the Organizations page first.');
@@ -71,7 +71,7 @@ class OrganizationPayoutDestinationService
                 'subject_type' => Organization::class,
                 'subject_id' => $org->id,
                 'message' => 'Payout blocked: missing PayPal email — '.$org->name,
-                'meta' => ['organization_id' => $org->id, 'reason' => 'missing_paypal_email'],
+                'meta' => ['organization_id' => $org->id, 'reason' => 'missing_paypal_email', 'payment_method' => 'paypal'],
             ]);
 
             throw new UserFacingException('This organization has no PayPal receiving email set. Set it in the Organizations page first.');
@@ -84,7 +84,7 @@ class OrganizationPayoutDestinationService
                 'subject_type' => Organization::class,
                 'subject_id' => $org->id,
                 'message' => 'Payout blocked: organization not verified — '.$org->name,
-                'meta' => ['organization_id' => $org->id, 'reason' => 'not_verified'],
+                'meta' => ['organization_id' => $org->id, 'reason' => 'not_verified', 'payment_method' => 'paypal'],
             ]);
 
             throw new UserFacingException('This organization is not verified yet. Verify it in the Organizations page before paying out.');

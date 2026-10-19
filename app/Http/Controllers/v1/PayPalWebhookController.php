@@ -204,6 +204,7 @@ class PayPalWebhookController extends Controller
                     $payout->organization_name
                 ),
                 'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                'meta' => ['payment_method' => $payout->method ?: 'paypal'],
             ]);
 
             return;
@@ -249,13 +250,15 @@ class PayPalWebhookController extends Controller
             'subject_type' => OrganizationPayout::class,
             'subject_id' => $payout->id,
             'message' => sprintf(
-                'PayPal rejected payout of %.2f %s to %s — %s',
+                'Payout of %.2f %s to %s via %s rejected — %s',
                 $payout->amount,
                 strtoupper($payout->currency),
                 $payout->organization_name,
+                $payout->method ?: 'paypal',
                 $reason
             ),
             'after' => ['status' => 'failed', 'provider_status' => 'FAILED', 'failure_reason' => $reason],
+            'meta' => ['payment_method' => $payout->method ?: 'paypal'],
         ]);
     }
 
@@ -382,6 +385,7 @@ class PayPalWebhookController extends Controller
                 'order_id' => $orderId,
                 'status' => 'completed',
             ],
+            'meta' => ['payment_method' => 'paypal'],
         ]);
 
         Log::info('PayPal donation recorded via webhook', [

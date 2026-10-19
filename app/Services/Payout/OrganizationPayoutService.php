@@ -385,6 +385,7 @@ class OrganizationPayoutService
                             $payout->organization_name
                         ),
                         'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                        'meta' => ['payment_method' => $payout->method ?: 'paypal'],
                     ]);
                 } elseif (in_array($effective, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
                     $payout->forceFill([
@@ -400,13 +401,15 @@ class OrganizationPayoutService
                         'subject_type' => OrganizationPayout::class,
                         'subject_id' => $payout->id,
                         'message' => sprintf(
-                            'PayPal rejected payout of %.2f %s to %s — %s',
+                            'Payout of %.2f %s to %s via %s rejected — %s',
                             $payout->amount,
                             strtoupper($payout->currency),
                             $payout->organization_name,
+                            $payout->method ?: 'paypal',
                             $payout->failure_reason
                         ),
                         'after' => ['status' => 'failed', 'provider_status' => $effective],
+                        'meta' => ['payment_method' => $payout->method ?: 'paypal'],
                     ]);
                 }
             } catch (Exception $e) {
@@ -425,12 +428,13 @@ class OrganizationPayoutService
             'actor_id' => $actorId,
             'actor_role' => 'Admin',
             'message' => sprintf(
-                '%s payout of %.2f %s to %s (%s) via PayPal',
+                '%s payout of %.2f %s to %s (%s) via %s',
                 $type,
                 $amount,
                 strtoupper($payout->currency),
                 $payout->organization_name,
-                $payout->destination_paypal_email
+                $payout->destination_paypal_email,
+                $payout->method ?: 'paypal'
             ),
             'after' => [
                 'organization_id' => $payout->organization_id,
@@ -445,6 +449,7 @@ class OrganizationPayoutService
                 'provider_status' => $payout->provider_status,
                 'failure_reason' => $payout->failure_reason,
             ],
+            'meta' => ['payment_method' => $payout->method ?: 'paypal'],
         ]);
     }
 

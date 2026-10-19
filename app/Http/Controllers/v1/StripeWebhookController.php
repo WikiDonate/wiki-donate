@@ -186,6 +186,7 @@ class StripeWebhookController extends Controller
                 'session_id' => $session->id,
                 'status' => 'completed',
             ],
+            'meta' => ['payment_method' => 'stripe'],
         ]);
 
         Log::info('Donation recorded from checkout session', [
