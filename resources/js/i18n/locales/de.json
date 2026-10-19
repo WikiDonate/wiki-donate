@@ -335,7 +335,12 @@
         "totalMustEqual100": "Die Gesamtzuteilung muss 100 % betragen.",
         "update": "Aktualisieren",
         "updateConfirmMsg": "Sind Sie sicher, dass Sie diese Spendenformel aktualisieren möchten?",
-        "updateConfirmTitle": "Spendenformel aktualisieren"
+        "updateConfirmTitle": "Spendenformel aktualisieren",
+        "verified": "Verifiziert",
+        "verifiedHint": "Diese Organisation ist für Auszahlungen verifiziert",
+        "needsVerification": "Muss überprüft werden",
+        "needsVerificationHint": "Benutzerdefinierte Organisation – Überprüfung durch den Administrator ausstehend",
+        "customOrgHint": "Benutzerdefinierter Name – Sie und der Administrator werden zur Bestätigung per E-Mail benachrichtigt."
     },
     "donate": {
         "title": "Spenden Sie über die Formel",
@@ -355,7 +360,13 @@
         "failedToCapture": "Die Zahlung konnte nicht erfasst werden",
         "failedToProcess": "Spende konnte nicht verarbeitet werden",
         "paypalError": "Bei PayPal ist ein Fehler aufgetreten.",
-        "failedToLoadPaypal": "PayPal konnte nicht geladen werden. Bitte versuchen Sie es erneut."
+        "failedToLoadPaypal": "PayPal konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+        "paymentMethod": "Zahlungsart",
+        "selectPaymentMethod": "Wählen Sie eine Zahlungsmethode aus",
+        "noPaymentMethods": "Derzeit sind keine Zahlungsmethoden verfügbar.",
+        "methodNotConfigured": "{method} ist nicht konfiguriert.",
+        "methodError": "Bei {method} ist ein Fehler aufgetreten.",
+        "failedToLoadMethod": "{method} konnte nicht geladen werden. Bitte versuchen Sie es erneut."
     },
     "payment": {
         "successTitle": "Zahlung erfolgreich",
@@ -374,7 +385,10 @@
         "contactSupport": "Kontaktieren Sie den Support",
         "thankYou": "Vielen Dank für Ihre großzügige Spende!",
         "amountLabel": "Betrag:",
-        "successful": "Ihre Zahlung war erfolgreich."
+        "successful": "Ihre Zahlung war erfolgreich.",
+        "methodLabel": "Zahlungsart",
+        "unverifiedTitle": "Ihre {method}-Zahlung war erfolgreich, wir konnten sie jedoch nicht automatisch überprüfen.",
+        "unverifiedMsg": "Ihre Spende wird in Kürze abgeschlossen. Bei Bedenken wenden Sie sich bitte an den Support."
     },
     "admin": {
         "panel": "Admin-Panel",
@@ -577,7 +591,20 @@
         "visitSite": "Besuchen Sie die Website",
         "createdAt": "Erstellt",
         "verifiedAt": "Verifiziert",
-        "unpaid": "Unbezahlt"
+        "unpaid": "Unbezahlt",
+        "invalidDateRange": "Das Startdatum muss vor dem Enddatum liegen.",
+        "stepTitleRequired": "Schritttitel ist erforderlich.",
+        "paypalEmailRequired": "Eine PayPal-Empfangs-E-Mail ist erforderlich.",
+        "searchPayoutsPlaceholder": "Suche nach Organisation",
+        "payDisabledUnverified": "Überprüfen Sie die Organisation, bevor Sie bezahlen",
+        "payoutAmountRequired": "Betrag ist erforderlich.",
+        "payoutAmountPositive": "Geben Sie einen Betrag größer als 0 ein.",
+        "fieldTooLong": "Darf höchstens 255 Zeichen lang sein.",
+        "payoutAmountExceeds": "Der Betrag übersteigt das Live-Guthaben von {balance}.",
+        "payoutFormulaCount": "{count} Formeln",
+        "paymentMethod": "Zahlungsart",
+        "allPaymentMethods": "Alle Zahlungsarten",
+        "paymentMethodLabel": "Zahlungsart"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle Rechte vorbehalten."

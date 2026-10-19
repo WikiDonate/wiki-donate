@@ -335,7 +335,12 @@
         "totalMustEqual100": "Ang kabuuang alokasyon ay dapat katumbas ng 100%",
         "update": "Update",
         "updateConfirmMsg": "Sigurado ka bang gusto mong i-update ang formula ng donasyon na ito?",
-        "updateConfirmTitle": "I-update ang Formula ng Donasyon"
+        "updateConfirmTitle": "I-update ang Formula ng Donasyon",
+        "verified": "Na-verify",
+        "verifiedHint": "Ang organisasyong ito ay na-verify para sa mga payout",
+        "needsVerification": "Kailangan ng verification",
+        "needsVerificationHint": "Custom na organisasyon — nakabinbing pag-verify ng admin",
+        "customOrgHint": "Custom na pangalan — ikaw at ang admin ay i-email para sa pag-verify."
     },
     "donate": {
         "title": "Mag-donate sa pamamagitan ng Formula",
@@ -355,7 +360,13 @@
         "failedToCapture": "Nabigong makuha ang bayad",
         "failedToProcess": "Nabigong iproseso ang donasyon",
         "paypalError": "Nagkaproblema sa PayPal.",
-        "failedToLoadPaypal": "Nabigong i-load ang PayPal. Pakisubukang muli."
+        "failedToLoadPaypal": "Nabigong i-load ang PayPal. Pakisubukang muli.",
+        "paymentMethod": "Paraan ng pagbabayad",
+        "selectPaymentMethod": "Pumili ng paraan ng pagbabayad",
+        "noPaymentMethods": "Walang available na paraan ng pagbabayad sa kasalukuyan.",
+        "methodNotConfigured": "Hindi naka-configure ang {method}.",
+        "methodError": "Nagkaproblema sa {method}.",
+        "failedToLoadMethod": "Nabigong i-load ang {method}. Pakisubukang muli."
     },
     "payment": {
         "successTitle": "Matagumpay ang Pagbabayad",
@@ -374,7 +385,10 @@
         "contactSupport": "Makipag-ugnayan sa suporta",
         "thankYou": "Salamat sa iyong mapagbigay na donasyon!",
         "amountLabel": "Halaga:",
-        "successful": "Ang iyong pagbabayad ay matagumpay."
+        "successful": "Ang iyong pagbabayad ay matagumpay.",
+        "methodLabel": "Paraan ng pagbabayad",
+        "unverifiedTitle": "Nagtagumpay ang iyong {method} na pagbabayad, ngunit hindi namin ito awtomatikong ma-verify.",
+        "unverifiedMsg": "Ang iyong donasyon ay matatapos sa ilang sandali. Mangyaring makipag-ugnayan sa suporta kung mayroon kang anumang mga alalahanin."
     },
     "admin": {
         "panel": "Admin Panel",
@@ -577,7 +591,20 @@
         "visitSite": "Bisitahin ang site",
         "createdAt": "Nilikha",
         "verifiedAt": "Na-verify",
-        "unpaid": "Walang bayad"
+        "unpaid": "Walang bayad",
+        "invalidDateRange": "Ang petsa ng pagsisimula ay dapat na bago ang petsa ng pagtatapos.",
+        "stepTitleRequired": "Kinakailangan ang pamagat ng hakbang.",
+        "paypalEmailRequired": "Kinakailangan ang pagtanggap ng email ng PayPal.",
+        "searchPayoutsPlaceholder": "Maghanap ayon sa organisasyon",
+        "payDisabledUnverified": "I-verify ang organisasyon bago magbayad",
+        "payoutAmountRequired": "Kinakailangan ang halaga.",
+        "payoutAmountPositive": "Maglagay ng halagang higit sa 0.",
+        "fieldTooLong": "Dapat ay hindi hihigit sa 255 character.",
+        "payoutAmountExceeds": "Ang halaga ay lumampas sa live na balanse ng {balance}.",
+        "payoutFormulaCount": "{count} na mga formula",
+        "paymentMethod": "Paraan ng pagbabayad",
+        "allPaymentMethods": "Lahat ng paraan ng pagbabayad",
+        "paymentMethodLabel": "Paraan ng pagbabayad"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

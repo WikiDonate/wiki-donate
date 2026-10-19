@@ -335,7 +335,12 @@
         "totalMustEqual100": "మొత్తం కేటాయింపు 100%కి సమానంగా ఉండాలి",
         "update": "నవీకరించు",
         "updateConfirmMsg": "మీరు ఖచ్చితంగా ఈ విరాళ సూత్రాన్ని అప్‌డేట్ చేయాలనుకుంటున్నారా?",
-        "updateConfirmTitle": "విరాళం ఫార్ములాను నవీకరించండి"
+        "updateConfirmTitle": "విరాళం ఫార్ములాను నవీకరించండి",
+        "verified": "ధృవీకరించబడింది",
+        "verifiedHint": "ఈ సంస్థ చెల్లింపుల కోసం ధృవీకరించబడింది",
+        "needsVerification": "ధృవీకరణ అవసరం",
+        "needsVerificationHint": "అనుకూల సంస్థ — పెండింగ్‌లో ఉన్న నిర్వాహక ధృవీకరణ",
+        "customOrgHint": "అనుకూల పేరు — మీకు మరియు నిర్వాహకులకు ధృవీకరణ కోసం ఇమెయిల్ పంపబడుతుంది."
     },
     "donate": {
         "title": "ఫార్ములా ద్వారా విరాళం ఇవ్వండి",
@@ -355,7 +360,13 @@
         "failedToCapture": "చెల్లింపును క్యాప్చర్ చేయడంలో విఫలమైంది",
         "failedToProcess": "విరాళాన్ని ప్రాసెస్ చేయడంలో విఫలమైంది",
         "paypalError": "PayPalలో ఏదో తప్పు జరిగింది.",
-        "failedToLoadPaypal": "PayPalని లోడ్ చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
+        "failedToLoadPaypal": "PayPalని లోడ్ చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.",
+        "paymentMethod": "చెల్లింపు పద్ధతి",
+        "selectPaymentMethod": "చెల్లింపు పద్ధతిని ఎంచుకోండి",
+        "noPaymentMethods": "ప్రస్తుతం చెల్లింపు పద్ధతులు ఏవీ అందుబాటులో లేవు.",
+        "methodNotConfigured": "{method} కాన్ఫిగర్ చేయబడలేదు.",
+        "methodError": "{method}లో ఏదో తప్పు జరిగింది.",
+        "failedToLoadMethod": "{method}ని లోడ్ చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
     },
     "payment": {
         "successTitle": "చెల్లింపు విజయవంతమైంది",
@@ -374,7 +385,10 @@
         "contactSupport": "మద్దతును సంప్రదించండి",
         "thankYou": "మీ ఉదార ​​విరాళానికి ధన్యవాదాలు!",
         "amountLabel": "మొత్తం:",
-        "successful": "మీ చెల్లింపు విజయవంతమైంది."
+        "successful": "మీ చెల్లింపు విజయవంతమైంది.",
+        "methodLabel": "చెల్లింపు పద్ధతి",
+        "unverifiedTitle": "మీ {method} చెల్లింపు విజయవంతమైంది, కానీ మేము దానిని స్వయంచాలకంగా ధృవీకరించలేకపోయాము.",
+        "unverifiedMsg": "మీ విరాళం త్వరలో ఖరారు చేయబడుతుంది. మీకు ఏవైనా ఆందోళనలు ఉంటే దయచేసి మద్దతును సంప్రదించండి."
     },
     "admin": {
         "panel": "అడ్మిన్ ప్యానెల్",
@@ -577,7 +591,20 @@
         "visitSite": "సైట్‌ని సందర్శించండి",
         "createdAt": "సృష్టించబడింది",
         "verifiedAt": "ధృవీకరించబడింది",
-        "unpaid": "చెల్లించని"
+        "unpaid": "చెల్లించని",
+        "invalidDateRange": "ప్రారంభ తేదీ తప్పనిసరిగా ముగింపు తేదీకి ముందు ఉండాలి.",
+        "stepTitleRequired": "దశ శీర్షిక అవసరం.",
+        "paypalEmailRequired": "PayPal ఇమెయిల్ స్వీకరించడం అవసరం.",
+        "searchPayoutsPlaceholder": "సంస్థ ద్వారా శోధించండి",
+        "payDisabledUnverified": "చెల్లించే ముందు సంస్థను ధృవీకరించండి",
+        "payoutAmountRequired": "మొత్తం అవసరం.",
+        "payoutAmountPositive": "0 కంటే ఎక్కువ మొత్తాన్ని నమోదు చేయండి.",
+        "fieldTooLong": "గరిష్టంగా 255 అక్షరాలు ఉండాలి.",
+        "payoutAmountExceeds": "మొత్తం లైవ్ బ్యాలెన్స్ {balance}ని మించిపోయింది.",
+        "payoutFormulaCount": "{count} సూత్రాలు",
+        "paymentMethod": "చెల్లింపు పద్ధతి",
+        "allPaymentMethods": "అన్ని చెల్లింపు పద్ధతులు",
+        "paymentMethodLabel": "చెల్లింపు పద్ధతి"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి."

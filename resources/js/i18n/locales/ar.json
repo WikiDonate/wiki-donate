@@ -335,7 +335,12 @@
         "totalMustEqual100": "إجمالي التخصيص يجب أن يساوي 100%",
         "update": "تحديث",
         "updateConfirmMsg": "هل أنت متأكد أنك تريد تحديث صيغة التبرع هذه؟",
-        "updateConfirmTitle": "تحديث صيغة التبرع"
+        "updateConfirmTitle": "تحديث صيغة التبرع",
+        "verified": "تم التحقق منه",
+        "verifiedHint": "تم التحقق من هذه المنظمة للحصول على دفعات",
+        "needsVerification": "يحتاج إلى التحقق",
+        "needsVerificationHint": "منظمة مخصصة - في انتظار التحقق من المسؤول",
+        "customOrgHint": "الاسم المخصص - سيتم إرسال بريد إلكتروني إليك وللمسؤول للتحقق."
     },
     "donate": {
         "title": "التبرع عبر الفورمولا",
@@ -355,7 +360,13 @@
         "failedToCapture": "فشل في التقاط الدفع",
         "failedToProcess": "فشلت معالجة التبرع",
         "paypalError": "حدث خطأ ما في PayPal.",
-        "failedToLoadPaypal": "فشل تحميل PayPal. يرجى المحاولة مرة أخرى."
+        "failedToLoadPaypal": "فشل تحميل PayPal. يرجى المحاولة مرة أخرى.",
+        "paymentMethod": "طريقة الدفع",
+        "selectPaymentMethod": "حدد طريقة الدفع",
+        "noPaymentMethods": "لا توجد طرق دفع متاحة حاليا.",
+        "methodNotConfigured": "لم يتم تكوين {method}.",
+        "methodError": "حدث خطأ ما في {method}.",
+        "failedToLoadMethod": "فشل تحميل {method}. يرجى المحاولة مرة أخرى."
     },
     "payment": {
         "successTitle": "تم الدفع بنجاح",
@@ -374,7 +385,10 @@
         "contactSupport": "اتصل بالدعم",
         "thankYou": "شكرا لتبرعك السخي!",
         "amountLabel": "المبلغ:",
-        "successful": "الدفع الخاص بك كان ناجحا."
+        "successful": "الدفع الخاص بك كان ناجحا.",
+        "methodLabel": "طريقة الدفع",
+        "unverifiedTitle": "نجح دفع {method} الخاص بك، ولكن لم نتمكن من التحقق منه تلقائيًا.",
+        "unverifiedMsg": "سيتم الانتهاء من تبرعك قريبًا. يرجى الاتصال بالدعم إذا كان لديك أي مخاوف."
     },
     "admin": {
         "panel": "لوحة الإدارة",
@@ -577,7 +591,20 @@
         "visitSite": "زيارة الموقع",
         "createdAt": "تم إنشاؤها",
         "verifiedAt": "تم التحقق منه",
-        "unpaid": "غير مدفوعة الأجر"
+        "unpaid": "غير مدفوعة الأجر",
+        "invalidDateRange": "يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء.",
+        "stepTitleRequired": "عنوان الخطوة مطلوب.",
+        "paypalEmailRequired": "مطلوب تلقي البريد الإلكتروني باي بال.",
+        "searchPayoutsPlaceholder": "البحث حسب المنظمة",
+        "payDisabledUnverified": "تحقق من المنظمة قبل الدفع",
+        "payoutAmountRequired": "المبلغ مطلوب.",
+        "payoutAmountPositive": "أدخل مبلغًا أكبر من 0.",
+        "fieldTooLong": "يجب أن يكون 255 حرفًا على الأكثر.",
+        "payoutAmountExceeds": "يتجاوز المبلغ الرصيد المباشر لـ {balance}.",
+        "payoutFormulaCount": "{عدد} الصيغ",
+        "paymentMethod": "طريقة الدفع",
+        "allPaymentMethods": "جميع طرق الدفع",
+        "paymentMethodLabel": "طريقة الدفع"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

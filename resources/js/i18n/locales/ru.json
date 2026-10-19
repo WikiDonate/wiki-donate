@@ -335,7 +335,12 @@
         "totalMustEqual100": "Общая сумма распределения должна равняться 100 %.",
         "update": "Обновить",
         "updateConfirmMsg": "Вы уверены, что хотите обновить эту формулу пожертвования?",
-        "updateConfirmTitle": "Обновить формулу пожертвования"
+        "updateConfirmTitle": "Обновить формулу пожертвования",
+        "verified": "Проверено",
+        "verifiedHint": "Эта организация проверена для выплат",
+        "needsVerification": "Требуется проверка",
+        "needsVerificationHint": "Пользовательская организация – ожидается проверка администратора",
+        "customOrgHint": "Пользовательское имя — вам и администратору будет отправлено электронное письмо для проверки."
     },
     "donate": {
         "title": "Пожертвовать через формулу",
@@ -355,7 +360,13 @@
         "failedToCapture": "Не удалось получить платеж",
         "failedToProcess": "Не удалось обработать пожертвование.",
         "paypalError": "Что-то пошло не так с PayPal.",
-        "failedToLoadPaypal": "Не удалось загрузить PayPal. Пожалуйста, попробуйте еще раз."
+        "failedToLoadPaypal": "Не удалось загрузить PayPal. Пожалуйста, попробуйте еще раз.",
+        "paymentMethod": "Способ оплаты",
+        "selectPaymentMethod": "Выберите способ оплаты",
+        "noPaymentMethods": "Способы оплаты на данный момент недоступны.",
+        "methodNotConfigured": "{method} не настроен.",
+        "methodError": "Что-то пошло не так с {method}.",
+        "failedToLoadMethod": "Не удалось загрузить {method}. Пожалуйста, попробуйте еще раз."
     },
     "payment": {
         "successTitle": "Платеж успешен",
@@ -374,7 +385,10 @@
         "contactSupport": "Связаться со службой поддержки",
         "thankYou": "Спасибо за ваше щедрое пожертвование!",
         "amountLabel": "Сумма:",
-        "successful": "Ваш платеж прошел успешно."
+        "successful": "Ваш платеж прошел успешно.",
+        "methodLabel": "Способ оплаты",
+        "unverifiedTitle": "Ваш платеж {method} прошел успешно, но нам не удалось проверить его автоматически.",
+        "unverifiedMsg": "Ваше пожертвование будет завершено в ближайшее время. Пожалуйста, свяжитесь со службой поддержки, если у вас есть какие-либо проблемы."
     },
     "admin": {
         "panel": "Панель администратора",
@@ -577,7 +591,20 @@
         "visitSite": "Посетите сайт",
         "createdAt": "Создано",
         "verifiedAt": "Проверено",
-        "unpaid": "Неоплачиваемый"
+        "unpaid": "Неоплачиваемый",
+        "invalidDateRange": "Дата начала должна предшествовать дате окончания.",
+        "stepTitleRequired": "Укажите название шага.",
+        "paypalEmailRequired": "Требуется получение электронной почты PayPal.",
+        "searchPayoutsPlaceholder": "Поиск по организации",
+        "payDisabledUnverified": "Проверьте организацию перед оплатой",
+        "payoutAmountRequired": "Требуется сумма.",
+        "payoutAmountPositive": "Введите сумму больше 0.",
+        "fieldTooLong": "Должно быть не более 255 символов.",
+        "payoutAmountExceeds": "Сумма превышает текущий баланс {balance}.",
+        "payoutFormulaCount": "{count} формулы",
+        "paymentMethod": "Способ оплаты",
+        "allPaymentMethods": "Все способы оплаты",
+        "paymentMethodLabel": "Способ оплаты"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Все права защищены."

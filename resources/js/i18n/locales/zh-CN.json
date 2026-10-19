@@ -335,7 +335,12 @@
         "totalMustEqual100": "总分配必须等于 100%",
         "update": "更新",
         "updateConfirmMsg": "您确定要更新此捐赠公式吗？",
-        "updateConfirmTitle": "更新捐赠公式"
+        "updateConfirmTitle": "更新捐赠公式",
+        "verified": "已验证",
+        "verifiedHint": "该组织已通过付款验证",
+        "needsVerification": "需要验证",
+        "needsVerificationHint": "自定义组织 — 等待管理员验证",
+        "customOrgHint": "自定义名称 - 您和管理员将收到电子邮件进行验证。"
     },
     "donate": {
         "title": "通过公式捐赠",
@@ -355,7 +360,13 @@
         "failedToCapture": "未能捕获付款",
         "failedToProcess": "无法处理捐赠",
         "paypalError": "PayPal 出了点问题。",
-        "failedToLoadPaypal": "无法加载贝宝。请再试一次。"
+        "failedToLoadPaypal": "无法加载贝宝。请再试一次。",
+        "paymentMethod": "付款方式",
+        "selectPaymentMethod": "选择付款方式",
+        "noPaymentMethods": "目前没有可用的付款方式。",
+        "methodNotConfigured": "{method} 未配置。",
+        "methodError": "{method} 出了点问题。",
+        "failedToLoadMethod": "无法加载 {method}。请再试一次。"
     },
     "payment": {
         "successTitle": "付款成功",
@@ -374,7 +385,10 @@
         "contactSupport": "联系支持人员",
         "thankYou": "感谢您的慷慨捐赠！",
         "amountLabel": "金额：",
-        "successful": "您的付款成功。"
+        "successful": "您的付款成功。",
+        "methodLabel": "付款方式",
+        "unverifiedTitle": "您的{method}付款成功，但我们无法自动验证。",
+        "unverifiedMsg": "您的捐款将很快完成。如果您有任何疑问，请联系支持人员。"
     },
     "admin": {
         "panel": "管理面板",
@@ -577,7 +591,20 @@
         "visitSite": "访问网站",
         "createdAt": "已创建",
         "verifiedAt": "已验证",
-        "unpaid": "未付"
+        "unpaid": "未付",
+        "invalidDateRange": "开始日期必须早于结束日期。",
+        "stepTitleRequired": "步骤标题为必填项。",
+        "paypalEmailRequired": "需要 PayPal 接收电子邮件。",
+        "searchPayoutsPlaceholder": "按组织搜索",
+        "payDisabledUnverified": "付款前验证组织",
+        "payoutAmountRequired": "金额为必填项。",
+        "payoutAmountPositive": "输入大于 0 的金额。",
+        "fieldTooLong": "最多不得超过 255 个字符。",
+        "payoutAmountExceeds": "金额超过 {balance} 的实时余额。",
+        "payoutFormulaCount": "{count} 个公式",
+        "paymentMethod": "付款方式",
+        "allPaymentMethods": "所有付款方式",
+        "paymentMethodLabel": "付款方式"
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"

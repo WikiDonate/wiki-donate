@@ -335,7 +335,12 @@
         "totalMustEqual100": "Tổng phân bổ phải bằng 100%",
         "update": "cập nhật",
         "updateConfirmMsg": "Bạn có chắc chắn muốn cập nhật công thức quyên góp này không?",
-        "updateConfirmTitle": "Cập nhật công thức quyên góp"
+        "updateConfirmTitle": "Cập nhật công thức quyên góp",
+        "verified": "Đã xác minh",
+        "verifiedHint": "Tổ chức này đã được xác minh để thanh toán",
+        "needsVerification": "Cần xác minh",
+        "needsVerificationHint": "Tổ chức tùy chỉnh — đang chờ xác minh của quản trị viên",
+        "customOrgHint": "Tên tùy chỉnh — bạn và quản trị viên sẽ được gửi email để xác minh."
     },
     "donate": {
         "title": "Đóng góp qua công thức",
@@ -355,7 +360,13 @@
         "failedToCapture": "Không thể thu hồi khoản thanh toán",
         "failedToProcess": "Không thể xử lý khoản quyên góp",
         "paypalError": "Đã xảy ra lỗi với PayPal.",
-        "failedToLoadPaypal": "Không tải được PayPal. Vui lòng thử lại."
+        "failedToLoadPaypal": "Không tải được PayPal. Vui lòng thử lại.",
+        "paymentMethod": "Phương thức thanh toán",
+        "selectPaymentMethod": "Chọn phương thức thanh toán",
+        "noPaymentMethods": "Hiện tại không có phương thức thanh toán nào khả dụng.",
+        "methodNotConfigured": "{method} chưa được định cấu hình.",
+        "methodError": "Đã xảy ra lỗi với {method}.",
+        "failedToLoadMethod": "Không tải được {method}. Vui lòng thử lại."
     },
     "payment": {
         "successTitle": "Thanh toán thành công",
@@ -374,7 +385,10 @@
         "contactSupport": "Liên hệ hỗ trợ",
         "thankYou": "Cảm ơn sự đóng góp hào phóng của bạn!",
         "amountLabel": "Số tiền:",
-        "successful": "Thanh toán của bạn đã thành công."
+        "successful": "Thanh toán của bạn đã thành công.",
+        "methodLabel": "Phương thức thanh toán",
+        "unverifiedTitle": "Thanh toán {method} của bạn đã thành công nhưng chúng tôi không thể tự động xác minh nó.",
+        "unverifiedMsg": "Khoản quyên góp của bạn sẽ sớm được hoàn tất. Vui lòng liên hệ với bộ phận hỗ trợ nếu bạn có bất kỳ mối quan tâm nào."
     },
     "admin": {
         "panel": "Bảng quản trị",
@@ -577,7 +591,20 @@
         "visitSite": "Truy cập trang web",
         "createdAt": "Đã tạo",
         "verifiedAt": "Đã xác minh",
-        "unpaid": "Chưa thanh toán"
+        "unpaid": "Chưa thanh toán",
+        "invalidDateRange": "Ngày bắt đầu phải trước ngày kết thúc.",
+        "stepTitleRequired": "Tiêu đề bước là bắt buộc.",
+        "paypalEmailRequired": "Email nhận PayPal là bắt buộc.",
+        "searchPayoutsPlaceholder": "Tìm kiếm theo tổ chức",
+        "payDisabledUnverified": "Xác minh tổ chức trước khi thanh toán",
+        "payoutAmountRequired": "Số tiền là bắt buộc.",
+        "payoutAmountPositive": "Nhập số tiền lớn hơn 0.",
+        "fieldTooLong": "Phải có tối đa 255 ký tự.",
+        "payoutAmountExceeds": "Số tiền vượt quá số dư trực tiếp của {balance}.",
+        "payoutFormulaCount": "công thức {đếm}",
+        "paymentMethod": "Phương thức thanh toán",
+        "allPaymentMethods": "Tất cả các phương thức thanh toán",
+        "paymentMethodLabel": "Phương thức thanh toán"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

@@ -335,7 +335,12 @@
         "totalMustEqual100": "A teljes allokációnak 100%-nak kell lennie",
         "update": "Frissítés",
         "updateConfirmMsg": "Biztosan frissíteni szeretné ezt az adományozási képletet?",
-        "updateConfirmTitle": "Frissítse az adományozási képletet"
+        "updateConfirmTitle": "Frissítse az adományozási képletet",
+        "verified": "Ellenőrzött",
+        "verifiedHint": "Ezt a szervezetet ellenőrizték a kifizetésekhez",
+        "needsVerification": "Ellenőrzés szükséges",
+        "needsVerificationHint": "Egyéni szervezet – adminisztrátori ellenőrzésre vár",
+        "customOrgHint": "Egyéni név – Önnek és az adminisztrátornak e-mailt küldünk ellenőrzés céljából."
     },
     "donate": {
         "title": "Adományozzon a Formulán keresztül",
@@ -355,7 +360,13 @@
         "failedToCapture": "Nem sikerült rögzíteni a fizetést",
         "failedToProcess": "Nem sikerült feldolgozni az adományt",
         "paypalError": "Valami hiba történt a PayPal-lal.",
-        "failedToLoadPaypal": "Nem sikerült betölteni a PayPal-t. Kérjük, próbálja újra."
+        "failedToLoadPaypal": "Nem sikerült betölteni a PayPal-t. Kérjük, próbálja újra.",
+        "paymentMethod": "Fizetési mód",
+        "selectPaymentMethod": "Válasszon fizetési módot",
+        "noPaymentMethods": "Jelenleg nem állnak rendelkezésre fizetési módok.",
+        "methodNotConfigured": "A(z) {method} nincs konfigurálva.",
+        "methodError": "Hiba történt a következővel: {method}.",
+        "failedToLoadMethod": "Nem sikerült betölteni a következőt: {method}. Kérjük, próbálja újra."
     },
     "payment": {
         "successTitle": "Sikeres fizetés",
@@ -374,7 +385,10 @@
         "contactSupport": "Lépjen kapcsolatba az ügyfélszolgálattal",
         "thankYou": "Köszönjük nagylelkű adományát!",
         "amountLabel": "Összeg:",
-        "successful": "Befizetése sikeres volt."
+        "successful": "Befizetése sikeres volt.",
+        "methodLabel": "Fizetési mód",
+        "unverifiedTitle": "A(z) {method} befizetése sikeres volt, de nem tudtuk automatikusan ellenőrizni.",
+        "unverifiedMsg": "Adományát hamarosan véglegesítjük. Ha bármilyen aggálya van, forduljon az ügyfélszolgálathoz."
     },
     "admin": {
         "panel": "Felügyeleti panel",
@@ -577,7 +591,20 @@
         "visitSite": "Látogassa meg a webhelyet",
         "createdAt": "Létrehozva",
         "verifiedAt": "Ellenőrzött",
-        "unpaid": "Kifizetetlen"
+        "unpaid": "Kifizetetlen",
+        "invalidDateRange": "A kezdő dátumnak a befejező dátum előtt kell lennie.",
+        "stepTitleRequired": "A lépés címe kötelező.",
+        "paypalEmailRequired": "PayPal fogadó e-mail szükséges.",
+        "searchPayoutsPlaceholder": "Keresés szervezet szerint",
+        "payDisabledUnverified": "Fizetés előtt ellenőrizze a szervezetet",
+        "payoutAmountRequired": "Összeg szükséges.",
+        "payoutAmountPositive": "Adjon meg egy 0-nál nagyobb összeget.",
+        "fieldTooLong": "Legfeljebb 255 karakterből állhat.",
+        "payoutAmountExceeds": "Az összeg meghaladja a(z) {balance} élő egyenleget.",
+        "payoutFormulaCount": "{count} képlet",
+        "paymentMethod": "Fizetési mód",
+        "allPaymentMethods": "Minden fizetési mód",
+        "paymentMethodLabel": "Fizetési mód"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

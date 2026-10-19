@@ -335,7 +335,12 @@
         "totalMustEqual100": "合計割り当ては 100% に等しくなければなりません",
         "update": "アップデート",
         "updateConfirmMsg": "この寄付の式を更新してもよろしいですか?",
-        "updateConfirmTitle": "寄付の計算式を更新"
+        "updateConfirmTitle": "寄付の計算式を更新",
+        "verified": "確認済み",
+        "verifiedHint": "この組織は支払いが確認されています",
+        "needsVerification": "検証が必要です",
+        "needsVerificationHint": "カスタム組織 — 管理者による検証待ち",
+        "customOrgHint": "カスタム名 — あなたと管理者に確認のため電子メールが送信されます。"
     },
     "donate": {
         "title": "フォーミュラ経由で寄付する",
@@ -355,7 +360,13 @@
         "failedToCapture": "支払いを取得できませんでした",
         "failedToProcess": "寄付の処理に失敗しました",
         "paypalError": "PayPal で問題が発生しました。",
-        "failedToLoadPaypal": "PayPal の読み込みに失敗しました。もう一度試してください。"
+        "failedToLoadPaypal": "PayPal の読み込みに失敗しました。もう一度試してください。",
+        "paymentMethod": "お支払い方法",
+        "selectPaymentMethod": "支払い方法を選択してください",
+        "noPaymentMethods": "現在ご利用いただけるお支払い方法はありません。",
+        "methodNotConfigured": "{method} は設定されていません。",
+        "methodError": "{method} で問題が発生しました。",
+        "failedToLoadMethod": "{method}のロードに失敗しました。もう一度試してください。"
     },
     "payment": {
         "successTitle": "支払いが成功しました",
@@ -374,7 +385,10 @@
         "contactSupport": "サポートに連絡する",
         "thankYou": "寛大なご寄付に感謝いたします!",
         "amountLabel": "金額:",
-        "successful": "お支払いは正常に完了しました。"
+        "successful": "お支払いは正常に完了しました。",
+        "methodLabel": "お支払い方法",
+        "unverifiedTitle": "{method} のお支払いは成功しましたが、自動的に検証できませんでした。",
+        "unverifiedMsg": "あなたの寄付はまもなく完了します。ご不明な点がございましたらサポートまでお問い合わせください。"
     },
     "admin": {
         "panel": "管理者パネル",
@@ -577,7 +591,20 @@
         "visitSite": "サイトにアクセス",
         "createdAt": "作成されました",
         "verifiedAt": "確認済み",
-        "unpaid": "未払い"
+        "unpaid": "未払い",
+        "invalidDateRange": "開始日は終了日より前である必要があります。",
+        "stepTitleRequired": "ステップのタイトルは必須です。",
+        "paypalEmailRequired": "PayPalの受信メールが必要です。",
+        "searchPayoutsPlaceholder": "組織から探す",
+        "payDisabledUnverified": "支払う前に組織を確認してください",
+        "payoutAmountRequired": "金額は必須です。",
+        "payoutAmountPositive": "0 より大きい金額を入力してください。",
+        "fieldTooLong": "最大 255 文字にする必要があります。",
+        "payoutAmountExceeds": "金額がライブ残高 {balance} を超えています。",
+        "payoutFormulaCount": "{count} 個の式",
+        "paymentMethod": "お支払い方法",
+        "allPaymentMethods": "すべての支払い方法",
+        "paymentMethodLabel": "お支払い方法"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

@@ -335,7 +335,12 @@
         "totalMustEqual100": "Total tildeling må være 100 %",
         "update": "Oppdater",
         "updateConfirmMsg": "Er du sikker på at du vil oppdatere denne donasjonsformelen?",
-        "updateConfirmTitle": "Oppdater donasjonsformelen"
+        "updateConfirmTitle": "Oppdater donasjonsformelen",
+        "verified": "Verifisert",
+        "verifiedHint": "Denne organisasjonen er verifisert for utbetalinger",
+        "needsVerification": "Trenger verifisering",
+        "needsVerificationHint": "Tilpasset organisasjon – venter på adminbekreftelse",
+        "customOrgHint": "Egendefinert navn - du og administratoren vil bli sendt på e-post for bekreftelse."
     },
     "donate": {
         "title": "Doner via Formula",
@@ -355,7 +360,13 @@
         "failedToCapture": "Kunne ikke hente betaling",
         "failedToProcess": "Kunne ikke behandle donasjonen",
         "paypalError": "Noe gikk galt med PayPal.",
-        "failedToLoadPaypal": "Kunne ikke laste inn PayPal. Vennligst prøv igjen."
+        "failedToLoadPaypal": "Kunne ikke laste inn PayPal. Vennligst prøv igjen.",
+        "paymentMethod": "Betalingsmåte",
+        "selectPaymentMethod": "Velg en betalingsmetode",
+        "noPaymentMethods": "Ingen betalingsmetoder er tilgjengelige for øyeblikket.",
+        "methodNotConfigured": "{method} er ikke konfigurert.",
+        "methodError": "Noe gikk galt med {method}.",
+        "failedToLoadMethod": "Kunne ikke laste inn {method}. Vennligst prøv igjen."
     },
     "payment": {
         "successTitle": "Betaling vellykket",
@@ -374,7 +385,10 @@
         "contactSupport": "Kontakt support",
         "thankYou": "Takk for din sjenerøse donasjon!",
         "amountLabel": "Beløp:",
-        "successful": "Betalingen din var vellykket."
+        "successful": "Betalingen din var vellykket.",
+        "methodLabel": "Betalingsmåte",
+        "unverifiedTitle": "{method}-betalingen din ble vellykket, men vi kunne ikke bekrefte den automatisk.",
+        "unverifiedMsg": "Donasjonen din vil bli ferdigstilt snart. Ta kontakt med brukerstøtten hvis du har noen bekymringer."
     },
     "admin": {
         "panel": "Administrasjonspanel",
@@ -577,7 +591,20 @@
         "visitSite": "Besøk nettstedet",
         "createdAt": "Opprettet",
         "verifiedAt": "Verifisert",
-        "unpaid": "Ubetalt"
+        "unpaid": "Ubetalt",
+        "invalidDateRange": "Startdatoen må være før sluttdatoen.",
+        "stepTitleRequired": "Trinntittel er påkrevd.",
+        "paypalEmailRequired": "PayPal-mottakende e-post er nødvendig.",
+        "searchPayoutsPlaceholder": "Søk etter organisasjon",
+        "payDisabledUnverified": "Bekreft organisasjonen før du betaler",
+        "payoutAmountRequired": "Beløp kreves.",
+        "payoutAmountPositive": "Angi et beløp større enn 0.",
+        "fieldTooLong": "Må være på maksimalt 255 tegn.",
+        "payoutAmountExceeds": "Beløpet overskrider den aktive saldoen på {balance}.",
+        "payoutFormulaCount": "{count} formler",
+        "paymentMethod": "Betalingsmåte",
+        "allPaymentMethods": "Alle betalingsmåter",
+        "paymentMethodLabel": "Betalingsmåte"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

@@ -335,7 +335,12 @@
         "totalMustEqual100": "አጠቃላይ ምደባ 100% እኩል መሆን አለበት",
         "update": "አዘምን",
         "updateConfirmMsg": "እርግጠኛ ነዎት ይህን የልገሳ ቀመር ማዘመን ይፈልጋሉ?",
-        "updateConfirmTitle": "የልገሳ ቀመር ያዘምኑ"
+        "updateConfirmTitle": "የልገሳ ቀመር ያዘምኑ",
+        "verified": "የተረጋገጠ",
+        "verifiedHint": "ይህ ድርጅት ለክፍያ የተረጋገጠ ነው።",
+        "needsVerification": "ማረጋገጫ ያስፈልገዋል",
+        "needsVerificationHint": "ብጁ ድርጅት - በመጠባበቅ ላይ ያለ የአስተዳዳሪ ማረጋገጫ",
+        "customOrgHint": "ብጁ ስም — እርስዎ እና አስተዳዳሪው ለማረጋገጥ ኢሜይል ይላካሉ።"
     },
     "donate": {
         "title": "በቀመር ይለግሱ",
@@ -355,7 +360,13 @@
         "failedToCapture": "ክፍያ ለመያዝ አልተሳካም።",
         "failedToProcess": "ልገሳን ማካሄድ አልተሳካም።",
         "paypalError": "በ PayPal ላይ የሆነ ችግር ተፈጥሯል።",
-        "failedToLoadPaypal": "PayPalን መጫን አልተሳካም። እባክህ እንደገና ሞክር።"
+        "failedToLoadPaypal": "PayPalን መጫን አልተሳካም። እባክህ እንደገና ሞክር።",
+        "paymentMethod": "የመክፈያ ዘዴ",
+        "selectPaymentMethod": "የመክፈያ ዘዴ ይምረጡ",
+        "noPaymentMethods": "በአሁኑ ጊዜ ምንም የመክፈያ ዘዴዎች አይገኙም።",
+        "methodNotConfigured": "{method} አልተዋቀረም።",
+        "methodError": "በ{method} ላይ የሆነ ችግር ተፈጥሯል።",
+        "failedToLoadMethod": "{method} መጫን አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
     },
     "payment": {
         "successTitle": "ክፍያ ተሳክቷል።",
@@ -374,7 +385,10 @@
         "contactSupport": "ድጋፍን ያነጋግሩ",
         "thankYou": "ለጋስ ልገሳዎ እናመሰግናለን!",
         "amountLabel": "መጠን፡",
-        "successful": "ክፍያዎ የተሳካ ነበር።"
+        "successful": "ክፍያዎ የተሳካ ነበር።",
+        "methodLabel": "የመክፈያ ዘዴ",
+        "unverifiedTitle": "የ{method} ክፍያዎ ተሳክቷል፣ ነገር ግን በራስ ሰር ማረጋገጥ አልቻልንም።",
+        "unverifiedMsg": "ልገሳዎ በቅርቡ ይጠናቀቃል። ማንኛውም ስጋት ካለዎት እባክዎ ድጋፍ ሰጪን ያነጋግሩ።"
     },
     "admin": {
         "panel": "የአስተዳዳሪ ፓነል",
@@ -577,7 +591,20 @@
         "visitSite": "ጣቢያን ጎብኝ",
         "createdAt": "ተፈጠረ",
         "verifiedAt": "የተረጋገጠ",
-        "unpaid": "ያልተከፈለ"
+        "unpaid": "ያልተከፈለ",
+        "invalidDateRange": "የመነሻ ቀን ከማብቂያ ቀን በፊት መሆን አለበት።",
+        "stepTitleRequired": "የእርምጃ ርዕስ ያስፈልጋል።",
+        "paypalEmailRequired": "የ PayPal መቀበል ኢሜይል ያስፈልጋል።",
+        "searchPayoutsPlaceholder": "በድርጅት ይፈልጉ",
+        "payDisabledUnverified": "ከመክፈልዎ በፊት ድርጅቱን ያረጋግጡ",
+        "payoutAmountRequired": "መጠን ያስፈልጋል።",
+        "payoutAmountPositive": "ከ0 በላይ የሆነ መጠን ያስገቡ።",
+        "fieldTooLong": "ቢበዛ 255 ቁምፊዎች መሆን አለበት።",
+        "payoutAmountExceeds": "መጠን የቀጥታ ቀሪ ሂሳብ {ሚዛን} ይበልጣል።",
+        "payoutFormulaCount": "{count} ቀመሮች",
+        "paymentMethod": "የመክፈያ ዘዴ",
+        "allPaymentMethods": "ሁሉም የመክፈያ ዘዴዎች",
+        "paymentMethodLabel": "የመክፈያ ዘዴ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

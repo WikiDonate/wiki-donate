@@ -20,6 +20,30 @@ ALL = [
 _UA = {'User-Agent': 'Mozilla/5.0'}
 _PH = re.compile(r'(\{[a-zA-Z0-9_]+\}|\[\[[^\]]+\]\])')
 
+# Placeholder masking: translation services happily localise the INSIDE of
+# {method}/{n}/{email}/... tokens (e.g. {method} -> {método}), which would break
+# vue-i18n interpolation. We swap every placeholder for an opaque ASCII token
+# before translating and splice the original tokens back afterwards.
+_MASK = 'X0PH0X'
+
+
+def mask_placeholders(text: str) -> str:
+    return _PH.sub(_MASK, text)
+
+
+def unmask_placeholders(translated: str, english: str) -> str:
+    original = _PH.findall(english)
+    if not original:
+        return translated.strip() or english
+    out, idx = translated, 0
+    while _MASK in out and idx < len(original):
+        out = out.replace(_MASK, original[idx], 1)
+        idx += 1
+    if _MASK in out or idx != len(original):
+        # Translation mangled/lost a token — keep the source string intact.
+        return english
+    return out.strip() or english
+
 
 def flat(d, p=''):
     out = {}
@@ -72,7 +96,7 @@ def main():
         missing = [k for k in en_flat if k not in cur]
         if not missing:
             continue
-        texts = [en_flat[k] for k in missing]
+        texts = [mask_placeholders(en_flat[k]) for k in missing]
         result = None
         for attempt in range(4):
             result = translate_batch(texts, lang)
@@ -83,17 +107,8 @@ def main():
         if result is None:
             result = texts
         for k, tr in zip(missing, result):
-            # restore placeholders
-            parts = _PH.split(en_flat[k])
-            if len(parts) > 1:
-                rebuilt = []
-                ti = 0
-                plain = [p for p in parts if not _PH.fullmatch(p or '')]
-                # simpler: if tr contains no placeholders, splice english placeholders back
-                rebuilt = re.sub(r'(\{[a-zA-Z0-9_]+\}|\[\[[^\]]+\]\])', lambda m: m.group(1), tr)
-                cur[k] = rebuilt if rebuilt.strip() else en_flat[k]
-            else:
-                cur[k] = tr.strip() or en_flat[k]
+            # restore the original {placeholder} tokens verbatim
+            cur[k] = unmask_placeholders(tr, en_flat[k])
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(nest(cur), f, ensure_ascii=False, indent=4)
             f.write('\n')

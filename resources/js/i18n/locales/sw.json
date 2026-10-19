@@ -335,7 +335,12 @@
         "totalMustEqual100": "Jumla ya mgao lazima iwe sawa na 100%",
         "update": "Sasisha",
         "updateConfirmMsg": "Je, una uhakika ungependa kusasisha fomula hii ya mchango?",
-        "updateConfirmTitle": "Sasisha Mfumo wa Uchangiaji"
+        "updateConfirmTitle": "Sasisha Mfumo wa Uchangiaji",
+        "verified": "Imethibitishwa",
+        "verifiedHint": "Shirika hili limethibitishwa kwa malipo",
+        "needsVerification": "Inahitaji uthibitisho",
+        "needsVerificationHint": "Shirika maalum - inasubiri uthibitishaji wa msimamizi",
+        "customOrgHint": "Jina maalum - wewe na msimamizi mtatumiwa barua pepe ili kuthibitishwa."
     },
     "donate": {
         "title": "Changia kupitia Mfumo",
@@ -355,7 +360,13 @@
         "failedToCapture": "Imeshindwa kunasa malipo",
         "failedToProcess": "Imeshindwa kuchakata mchango",
         "paypalError": "Hitilafu fulani imetokea kwenye PayPal.",
-        "failedToLoadPaypal": "Imeshindwa kupakia PayPal. Tafadhali jaribu tena."
+        "failedToLoadPaypal": "Imeshindwa kupakia PayPal. Tafadhali jaribu tena.",
+        "paymentMethod": "Njia ya malipo",
+        "selectPaymentMethod": "Chagua njia ya kulipa",
+        "noPaymentMethods": "Hakuna njia za kulipa zinazopatikana kwa sasa.",
+        "methodNotConfigured": "{method} haijasanidiwa.",
+        "methodError": "Hitilafu fulani imetokea kwa {method}.",
+        "failedToLoadMethod": "Imeshindwa kupakia {method}. Tafadhali jaribu tena."
     },
     "payment": {
         "successTitle": "Malipo Yamefaulu",
@@ -374,7 +385,10 @@
         "contactSupport": "Wasiliana na usaidizi",
         "thankYou": "Asante kwa mchango wako wa ukarimu!",
         "amountLabel": "Kiasi:",
-        "successful": "Malipo yako yamefaulu."
+        "successful": "Malipo yako yamefaulu.",
+        "methodLabel": "Njia ya malipo",
+        "unverifiedTitle": "Malipo yako ya {method} yamefaulu, lakini hatukuweza kuyathibitisha kiotomatiki.",
+        "unverifiedMsg": "Mchango wako utakamilika hivi karibuni. Tafadhali wasiliana na usaidizi ikiwa una wasiwasi wowote."
     },
     "admin": {
         "panel": "Paneli ya Msimamizi",
@@ -577,7 +591,20 @@
         "visitSite": "Tembelea tovuti",
         "createdAt": "Imeundwa",
         "verifiedAt": "Imethibitishwa",
-        "unpaid": "Haijalipwa"
+        "unpaid": "Haijalipwa",
+        "invalidDateRange": "Tarehe ya kuanza lazima iwe kabla ya tarehe ya mwisho.",
+        "stepTitleRequired": "Kichwa cha hatua kinahitajika.",
+        "paypalEmailRequired": "Barua pepe ya kupokea PayPal inahitajika.",
+        "searchPayoutsPlaceholder": "Tafuta kulingana na shirika",
+        "payDisabledUnverified": "Thibitisha shirika kabla ya kulipa",
+        "payoutAmountRequired": "Kiasi kinahitajika.",
+        "payoutAmountPositive": "Weka kiasi kikubwa zaidi ya 0.",
+        "fieldTooLong": "Lazima iwe na vibambo 255.",
+        "payoutAmountExceeds": "Kiasi kinazidi salio la moja kwa moja la {salio}.",
+        "payoutFormulaCount": "{count} fomula",
+        "paymentMethod": "Njia ya malipo",
+        "allPaymentMethods": "Njia zote za malipo",
+        "paymentMethodLabel": "Njia ya malipo"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

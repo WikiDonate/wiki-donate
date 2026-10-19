@@ -335,7 +335,12 @@
         "totalMustEqual100": "کل تخصیص باید 100٪ باشد",
         "update": "به روز رسانی",
         "updateConfirmMsg": "آیا مطمئن هستید که می خواهید این فرمول کمک مالی را به روز کنید؟",
-        "updateConfirmTitle": "به روز رسانی فرمول اهدا"
+        "updateConfirmTitle": "به روز رسانی فرمول اهدا",
+        "verified": "تایید شده است",
+        "verifiedHint": "این سازمان برای پرداخت ها تأیید شده است",
+        "needsVerification": "نیاز به تأیید دارد",
+        "needsVerificationHint": "سازمان سفارشی - در انتظار تأیید سرپرست",
+        "customOrgHint": "نام سفارشی - برای تأیید به شما و مدیر ایمیل ارسال می شود."
     },
     "donate": {
         "title": "کمک مالی از طریق فرمول",
@@ -355,7 +360,13 @@
         "failedToCapture": "پرداخت انجام نشد",
         "failedToProcess": "کمک مالی پردازش نشد",
         "paypalError": "مشکلی در پی پال رخ داد.",
-        "failedToLoadPaypal": "پی پال بارگیری نشد. لطفا دوباره امتحان کنید."
+        "failedToLoadPaypal": "پی پال بارگیری نشد. لطفا دوباره امتحان کنید.",
+        "paymentMethod": "روش پرداخت",
+        "selectPaymentMethod": "یک روش پرداخت را انتخاب کنید",
+        "noPaymentMethods": "هیچ روش پرداختی در حال حاضر موجود نیست.",
+        "methodNotConfigured": "{method} پیکربندی نشده است.",
+        "methodError": "مشکلی با {method} پیش آمد.",
+        "failedToLoadMethod": "{method} بارگیری نشد. لطفا دوباره امتحان کنید."
     },
     "payment": {
         "successTitle": "پرداخت با موفقیت انجام شد",
@@ -374,7 +385,10 @@
         "contactSupport": "با پشتیبانی تماس بگیرید",
         "thankYou": "از کمک سخاوتمندانه شما متشکرم!",
         "amountLabel": "مقدار:",
-        "successful": "پرداخت شما با موفقیت انجام شد."
+        "successful": "پرداخت شما با موفقیت انجام شد.",
+        "methodLabel": "روش پرداخت",
+        "unverifiedTitle": "پرداخت {method} شما با موفقیت انجام شد، اما نتوانستیم آن را به صورت خودکار تأیید کنیم.",
+        "unverifiedMsg": "کمک مالی شما به زودی نهایی می شود. لطفا در صورت داشتن هر گونه نگرانی با پشتیبانی تماس بگیرید."
     },
     "admin": {
         "panel": "پنل مدیریت",
@@ -577,7 +591,20 @@
         "visitSite": "به سایت مراجعه کنید",
         "createdAt": "ایجاد شد",
         "verifiedAt": "تایید شده است",
-        "unpaid": "پرداخت نشده"
+        "unpaid": "پرداخت نشده",
+        "invalidDateRange": "تاریخ شروع باید قبل از تاریخ پایان باشد.",
+        "stepTitleRequired": "عنوان مرحله الزامی است.",
+        "paypalEmailRequired": "ایمیل دریافت پی پال مورد نیاز است.",
+        "searchPayoutsPlaceholder": "جستجو بر اساس سازمان",
+        "payDisabledUnverified": "قبل از پرداخت، سازمان را تأیید کنید",
+        "payoutAmountRequired": "مبلغ مورد نیاز است.",
+        "payoutAmountPositive": "مقدار بزرگتر از 0 را وارد کنید.",
+        "fieldTooLong": "حداکثر باید 255 کاراکتر باشد.",
+        "payoutAmountExceeds": "مقدار از موجودی زنده {balance} بیشتر است.",
+        "payoutFormulaCount": "{count} فرمول",
+        "paymentMethod": "روش پرداخت",
+        "allPaymentMethods": "تمامی روش های پرداخت",
+        "paymentMethodLabel": "روش پرداخت"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

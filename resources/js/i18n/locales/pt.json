@@ -335,7 +335,12 @@
         "totalMustEqual100": "A alocação total deve ser igual a 100%",
         "update": "Atualizar",
         "updateConfirmMsg": "Tem certeza de que deseja atualizar esta fórmula de doação?",
-        "updateConfirmTitle": "Atualizar fórmula de doação"
+        "updateConfirmTitle": "Atualizar fórmula de doação",
+        "verified": "Verificado",
+        "verifiedHint": "Esta organização foi verificada para pagamentos",
+        "needsVerification": "Precisa de verificação",
+        "needsVerificationHint": "Organização personalizada – verificação do administrador pendente",
+        "customOrgHint": "Nome personalizado – você e o administrador receberão um e-mail para verificação."
     },
     "donate": {
         "title": "Doe via Fórmula",
@@ -355,7 +360,13 @@
         "failedToCapture": "Falha ao capturar o pagamento",
         "failedToProcess": "Falha ao processar a doação",
         "paypalError": "Algo deu errado com o PayPal.",
-        "failedToLoadPaypal": "Falha ao carregar o PayPal. Por favor, tente novamente."
+        "failedToLoadPaypal": "Falha ao carregar o PayPal. Por favor, tente novamente.",
+        "paymentMethod": "Método de pagamento",
+        "selectPaymentMethod": "Selecione um método de pagamento",
+        "noPaymentMethods": "Nenhum método de pagamento está disponível no momento.",
+        "methodNotConfigured": "{method} não está configurado.",
+        "methodError": "Algo deu errado com o {method}.",
+        "failedToLoadMethod": "Falha ao carregar {method}. Por favor, tente novamente."
     },
     "payment": {
         "successTitle": "Pagamento bem-sucedido",
@@ -374,7 +385,10 @@
         "contactSupport": "Contate o suporte",
         "thankYou": "Obrigado pela sua generosa doação!",
         "amountLabel": "Quantidade:",
-        "successful": "Seu pagamento foi realizado com sucesso."
+        "successful": "Seu pagamento foi realizado com sucesso.",
+        "methodLabel": "Método de pagamento",
+        "unverifiedTitle": "Seu pagamento com {method} foi bem-sucedido, mas não foi possível verificá-lo automaticamente.",
+        "unverifiedMsg": "Sua doação será finalizada em breve. Entre em contato com o suporte se tiver alguma dúvida."
     },
     "admin": {
         "panel": "Painel de administração",
@@ -577,7 +591,20 @@
         "visitSite": "Visite o site",
         "createdAt": "Criado",
         "verifiedAt": "Verificado",
-        "unpaid": "Não pago"
+        "unpaid": "Não pago",
+        "invalidDateRange": "A data de início deve ser anterior à data de término.",
+        "stepTitleRequired": "O título da etapa é obrigatório.",
+        "paypalEmailRequired": "É necessário receber e-mail de recebimento do PayPal.",
+        "searchPayoutsPlaceholder": "Pesquisar por organização",
+        "payDisabledUnverified": "Verifique a organização antes de pagar",
+        "payoutAmountRequired": "O valor é obrigatório.",
+        "payoutAmountPositive": "Insira um valor maior que 0.",
+        "fieldTooLong": "Deve ter no máximo 255 caracteres.",
+        "payoutAmountExceeds": "O valor excede o saldo ativo de {balance}.",
+        "payoutFormulaCount": "{contar} fórmulas",
+        "paymentMethod": "Método de pagamento",
+        "allPaymentMethods": "Todos os métodos de pagamento",
+        "paymentMethodLabel": "Método de pagamento"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Todos os direitos reservados."

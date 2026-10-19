@@ -335,7 +335,12 @@
         "totalMustEqual100": "Загальний розподіл має дорівнювати 100%",
         "update": "Оновлення",
         "updateConfirmMsg": "Ви впевнені, що бажаєте оновити цю формулу пожертви?",
-        "updateConfirmTitle": "Оновити формулу пожертви"
+        "updateConfirmTitle": "Оновити формулу пожертви",
+        "verified": "Перевірено",
+        "verifiedHint": "Ця організація підтверджена для виплат",
+        "needsVerification": "Потребує перевірки",
+        "needsVerificationHint": "Спеціальна організація — очікує перевірки адміністратора",
+        "customOrgHint": "Власне ім’я — ви та адміністратор отримаєте електронний лист для перевірки."
     },
     "donate": {
         "title": "Пожертвуйте через Формулу",
@@ -355,7 +360,13 @@
         "failedToCapture": "Не вдалося отримати платіж",
         "failedToProcess": "Не вдалося обробити пожертву",
         "paypalError": "Щось пішло не так із PayPal.",
-        "failedToLoadPaypal": "Не вдалося завантажити PayPal. Спробуйте ще раз."
+        "failedToLoadPaypal": "Не вдалося завантажити PayPal. Спробуйте ще раз.",
+        "paymentMethod": "Спосіб оплати",
+        "selectPaymentMethod": "Виберіть спосіб оплати",
+        "noPaymentMethods": "Зараз немає доступних способів оплати.",
+        "methodNotConfigured": "{method} не налаштовано.",
+        "methodError": "Щось пішло не так із {method}.",
+        "failedToLoadMethod": "Не вдалося завантажити {method}. Спробуйте ще раз."
     },
     "payment": {
         "successTitle": "Оплата успішна",
@@ -374,7 +385,10 @@
         "contactSupport": "Зверніться до служби підтримки",
         "thankYou": "Дякуємо за вашу щедру пожертву!",
         "amountLabel": "сума:",
-        "successful": "Ваш платіж пройшов успішно."
+        "successful": "Ваш платіж пройшов успішно.",
+        "methodLabel": "Спосіб оплати",
+        "unverifiedTitle": "Ваш {method} платіж успішно здійснено, але ми не змогли підтвердити його автоматично.",
+        "unverifiedMsg": "Незабаром ваша пожертва буде завершена. Зверніться до служби підтримки, якщо у вас виникли сумніви."
     },
     "admin": {
         "panel": "Панель адміністратора",
@@ -577,7 +591,20 @@
         "visitSite": "Відвідайте сайт",
         "createdAt": "Створено",
         "verifiedAt": "Перевірено",
-        "unpaid": "Неоплачений"
+        "unpaid": "Неоплачений",
+        "invalidDateRange": "Дата початку має передувати даті завершення.",
+        "stepTitleRequired": "Потрібно вказати назву кроку.",
+        "paypalEmailRequired": "Потрібна електронна адреса для отримання PayPal.",
+        "searchPayoutsPlaceholder": "Пошук по організації",
+        "payDisabledUnverified": "Перевірте організацію перед оплатою",
+        "payoutAmountRequired": "Необхідна сума.",
+        "payoutAmountPositive": "Введіть суму, більшу за 0.",
+        "fieldTooLong": "Має бути не більше 255 символів.",
+        "payoutAmountExceeds": "Сума перевищує активний баланс {balance}.",
+        "payoutFormulaCount": "{count} формул",
+        "paymentMethod": "Спосіб оплати",
+        "allPaymentMethods": "Всі способи оплати",
+        "paymentMethodLabel": "Спосіб оплати"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Всі права захищені."

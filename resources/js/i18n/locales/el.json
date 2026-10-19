@@ -335,7 +335,12 @@
         "totalMustEqual100": "Η συνολική κατανομή πρέπει να ισούται με 100%",
         "update": "Ενημέρωση",
         "updateConfirmMsg": "Είστε βέβαιοι ότι θέλετε να ενημερώσετε αυτόν τον τύπο δωρεάς;",
-        "updateConfirmTitle": "Ενημερώστε τη φόρμουλα δωρεών"
+        "updateConfirmTitle": "Ενημερώστε τη φόρμουλα δωρεών",
+        "verified": "Επαληθεύτηκε",
+        "verifiedHint": "Αυτός ο οργανισμός έχει επαληθευτεί για πληρωμές",
+        "needsVerification": "Χρειάζεται επαλήθευση",
+        "needsVerificationHint": "Προσαρμοσμένη οργάνωση — εκκρεμεί επαλήθευση διαχειριστή",
+        "customOrgHint": "Προσαρμοσμένο όνομα — εσείς και ο διαχειριστής θα λάβετε email για επαλήθευση."
     },
     "donate": {
         "title": "Δωρεά μέσω Formula",
@@ -355,7 +360,13 @@
         "failedToCapture": "Η καταγραφή της πληρωμής απέτυχε",
         "failedToProcess": "Απέτυχε η επεξεργασία της δωρεάς",
         "paypalError": "Κάτι πήγε στραβά με το PayPal.",
-        "failedToLoadPaypal": "Η φόρτωση του PayPal απέτυχε. Δοκιμάστε ξανά."
+        "failedToLoadPaypal": "Η φόρτωση του PayPal απέτυχε. Δοκιμάστε ξανά.",
+        "paymentMethod": "Τρόπος πληρωμής",
+        "selectPaymentMethod": "Επιλέξτε έναν τρόπο πληρωμής",
+        "noPaymentMethods": "Δεν υπάρχουν διαθέσιμες μέθοδοι πληρωμής αυτήν τη στιγμή.",
+        "methodNotConfigured": "Το {method} δεν έχει ρυθμιστεί.",
+        "methodError": "Κάτι πήγε στραβά με το {method}.",
+        "failedToLoadMethod": "Η φόρτωση του {method} απέτυχε. Δοκιμάστε ξανά."
     },
     "payment": {
         "successTitle": "Η πληρωμή ολοκληρώθηκε με επιτυχία",
@@ -374,7 +385,10 @@
         "contactSupport": "Επικοινωνήστε με την υποστήριξη",
         "thankYou": "Σας ευχαριστούμε για τη γενναιόδωρη δωρεά σας!",
         "amountLabel": "Ποσό:",
-        "successful": "Η πληρωμή σας ήταν επιτυχής."
+        "successful": "Η πληρωμή σας ήταν επιτυχής.",
+        "methodLabel": "Τρόπος πληρωμής",
+        "unverifiedTitle": "Η πληρωμή σας {method} πέτυχε, αλλά δεν μπορέσαμε να την επαληθεύσουμε αυτόματα.",
+        "unverifiedMsg": "Η δωρεά σας θα οριστικοποιηθεί σύντομα. Επικοινωνήστε με την υποστήριξη εάν έχετε οποιεσδήποτε ανησυχίες."
     },
     "admin": {
         "panel": "Πίνακας Διαχειριστή",
@@ -577,7 +591,20 @@
         "visitSite": "Επισκεφθείτε τον ιστότοπο",
         "createdAt": "Δημιουργήθηκε",
         "verifiedAt": "Επαληθεύτηκε",
-        "unpaid": "Απλήρωτος"
+        "unpaid": "Απλήρωτος",
+        "invalidDateRange": "Η ημερομηνία έναρξης πρέπει να είναι πριν από την ημερομηνία λήξης.",
+        "stepTitleRequired": "Απαιτείται ο τίτλος του βήματος.",
+        "paypalEmailRequired": "Απαιτείται email λήψης PayPal.",
+        "searchPayoutsPlaceholder": "Αναζήτηση ανά οργανισμό",
+        "payDisabledUnverified": "Επαληθεύστε τον οργανισμό πριν πληρώσετε",
+        "payoutAmountRequired": "Απαιτείται ποσό.",
+        "payoutAmountPositive": "Εισαγάγετε ένα ποσό μεγαλύτερο από 0.",
+        "fieldTooLong": "Πρέπει να είναι το πολύ 255 χαρακτήρες.",
+        "payoutAmountExceeds": "Το ποσό υπερβαίνει το ζωντανό υπόλοιπο του {balance}.",
+        "payoutFormulaCount": "{count} τύποι",
+        "paymentMethod": "Τρόπος πληρωμής",
+        "allPaymentMethods": "Όλοι οι τρόποι πληρωμής",
+        "paymentMethodLabel": "Τρόπος πληρωμής"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Με την επιφύλαξη παντός δικαιώματος."
