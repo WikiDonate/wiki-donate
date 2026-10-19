@@ -248,6 +248,11 @@
             state: org.state ?? null,
             website: org.website ?? null,
             rating: null,
+            // Registry identity + live verification state, so a picked row
+            // can carry organization_id and render the correct badge.
+            organization_id: org.id ?? null,
+            payout_status: org.payout_status ?? 'unverified',
+            is_verified: org.payout_status === 'verified',
         }))
     }
 

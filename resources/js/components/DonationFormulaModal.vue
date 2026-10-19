@@ -42,6 +42,23 @@
                                 @update:model-value="field.value.organization = $event"
                                 @select="onOrgSelect(index, $event)"
                             />
+                            <!--
+                                Three-state badge: registry orgs are green only
+                                when the live registry verified them; free-text
+                                (custom) names are always red and get the
+                                custom hint. Nothing about a typed name can
+                                make a row look verified on its own.
+                            -->
+                            <div
+                                v-if="field.value.organization"
+                                class="mt-1.5 flex items-center gap-2"
+                            >
+                                <OrganizationStatusBadge
+                                    :status="field.value.payout_status"
+                                    :verified="field.value.is_verified === true"
+                                    :custom="!field.value.organization_id"
+                                />
+                            </div>
                         </div>
                         <div class="col-span-10 sm:col-span-4">
                             <label class="block sm:hidden text-xs font-medium text-gray-600 mb-1">
@@ -175,6 +192,7 @@
     import FormTextarea from '~/components/FormTextarea.vue'
     import ConfirmModal from '~/components/ConfirmModal.vue'
     import OrganizationSelect from '~/components/OrganizationSelect.vue'
+    import OrganizationStatusBadge from '~/components/OrganizationStatusBadge.vue'
 
     const { t } = useI18n()
 
@@ -248,13 +266,21 @@
     const showSaveConfirm = ref(false)
     const pendingSaveData = ref(null)
 
-    // Organization selection is delegated to OrganizationSelect (dropdown-only,
-    // verified charities with valid EIN). Only the EIN write-back lives here.
+    // Organization selection is delegated to OrganizationSelect (registry-
+    // backed). Selecting a row carries its registry identity (id + live
+    // verification state) so the row badge and the saved organization_id
+    // reflect the curated registry, not a guess from the typed text.
     const onOrgSelect = (index, suggestion) => {
         const row = fields.value[index]?.value
         if (row) {
             row.ein = suggestion.ein ?? null
             row.website = suggestion.website ?? null
+            row.organization_id = suggestion.organization_id ?? suggestion.id ?? null
+            // Registry is the source of truth: a picked registry row is only
+            // green when the registry says verified.
+            row.payout_status = suggestion.payout_status ?? 'unverified'
+            row.is_verified =
+                suggestion.is_verified === true || suggestion.payout_status === 'verified'
         }
     }
 
@@ -263,6 +289,12 @@
             organization: row.organization ?? '',
             ein: row.ein ?? null,
             website: row.website ?? null,
+            // Additive: rows saved before the registry became the search
+            // source may have no organization_id — they stay valid as
+            // custom entries (no backfill).
+            organization_id: row.organization_id ?? null,
+            payout_status: row.payout_status ?? 'unverified',
+            is_verified: row.is_verified === true,
             percentage: row.percentage ?? 0,
         }))
 
@@ -285,7 +317,14 @@
                         ? JSON.parse(
                               JSON.stringify(normalizeFormulaRows(props.initialData.formula)),
                           )
-                        : [{ organization: '', ein: null, percentage: 0 }]
+                        : [
+                              {
+                                  organization: '',
+                                  ein: null,
+                                  organization_id: null,
+                                  percentage: 0,
+                              },
+                          ]
 
                 resetForm({
                     values: {
@@ -347,7 +386,7 @@
      * Adds a new empty row to the charity list
      */
     const addRow = () => {
-        push({ organization: '', ein: null, percentage: 0 })
+        push({ organization: '', ein: null, organization_id: null, percentage: 0 })
     }
 
     const removeRow = (index) => {
@@ -361,6 +400,7 @@
             organization: String(row.organization).trim(),
             ein: row.ein ? String(row.ein).trim() : null,
             website: row.website ? String(row.website).trim().slice(0, 500) : null,
+            organization_id: row.organization_id ?? null,
             percentage: parseFloat(row.percentage),
         }))
 

@@ -132,7 +132,8 @@
                                         }}</span>
                                         <OrganizationStatusBadge
                                             :status="item.payout_status"
-                                            :verified="item.is_verified ?? !!item.ein"
+                                            :verified="item.is_verified === true"
+                                            :custom="!item.organization_id"
                                         />
                                     </span>
                                     <span class="font-semibold text-indigo-600 shrink-0"
