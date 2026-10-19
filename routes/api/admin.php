@@ -7,8 +7,21 @@ use App\Http\Controllers\v1\Admin\OrganizationPayoutController;
 use App\Http\Controllers\v1\Admin\PageContentController;
 use App\Http\Controllers\v1\Admin\TransactionController;
 use App\Http\Controllers\v1\Admin\TransactionLogController;
+use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Middleware\FreshAuthGuard;
 use Illuminate\Support\Facades\Route;
+
+// External charity-directory autocomplete (Charity Navigator / ProPublica).
+//
+// Admin-only by design: this is identity lookup used by the admin
+// "Add organization" modal to seed the curated `organizations` registry.
+// Donor/editor formula autocomplete must never call external charity APIs —
+// it searches the registry instead (see the admin `organizations` index).
+// The path deliberately stays `v1/charities/search` (no `admin/` prefix) so
+// the existing client service keeps working; the authorization, not the URL,
+// is what restricts access.
+Route::get('charities/search', [CharitySearchController::class, 'search'])
+    ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin', 'throttle:30,1']);
 
 Route::prefix('admin')
     ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin'])

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\OrganizationConfirmationController;
@@ -30,9 +29,10 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
-    // Verified US-charity autocomplete (valid EIN only, cached server-side)
-    Route::get('charities/search', [CharitySearchController::class, 'search'])
-        ->middleware('throttle:30,1');
+    // NOTE: `charities/search` (external charity-directory autocomplete) is
+    // deliberately NOT public any more. It is admin-only and lives in
+    // routes/api/admin.php — the donor/editor formula autocomplete reads the
+    // admin-curated `organizations` registry instead.
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
 
     // Organization PayPal-email confirmation (public: recipient is not a user)

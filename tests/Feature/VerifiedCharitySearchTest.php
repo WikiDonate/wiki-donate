@@ -2,12 +2,41 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class VerifiedCharitySearchTest extends TestCase
 {
+    use RefreshDatabase;
+
+    private User $admin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Role::firstOrCreate(['name' => 'Admin']);
+
+        $this->admin = User::factory()->create();
+        $this->admin->assignRole('Admin');
+    }
+
+    /**
+     * /charities/search is admin-only (used by the admin add-org modal), so
+     * every request in this suite authenticates as an admin.
+     */
+    private function search(string $query)
+    {
+        $token = $this->admin->createToken('test')->plainTextToken;
+
+        return $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/v1/charities/search?q='.urlencode($query));
+    }
+
     private function cnPayload(): array
     {
         return [
@@ -36,7 +65,7 @@ class VerifiedCharitySearchTest extends TestCase
             'api.data.charitynavigator.org/*' => Http::response($this->cnPayload(), 200),
         ]);
 
-        $data = $this->getJson('/api/v1/charities/search?q=top%20rated')->json('data');
+        $data = $this->search('top rated')->json('data');
 
         $this->assertCount(2, $data);
         // Popular first: 4 stars before 2 stars; EIN-less rows dropped.
@@ -57,7 +86,7 @@ class VerifiedCharitySearchTest extends TestCase
             'projects.propublica.org/*' => Http::response($this->ppPayload(), 200),
         ]);
 
-        $data = $this->getJson('/api/v1/charities/search?q=red%20cross')->json('data');
+        $data = $this->search('red cross')->json('data');
 
         $this->assertCount(1, $data);
         $this->assertSame('American National Red Cross', $data[0]['name']);
@@ -73,7 +102,7 @@ class VerifiedCharitySearchTest extends TestCase
             'projects.propublica.org/*' => Http::response($this->ppPayload(), 200),
         ]);
 
-        $data = $this->getJson('/api/v1/charities/search?q=red%20cross')->json('data');
+        $data = $this->search('red cross')->json('data');
 
         $this->assertCount(1, $data);
         Http::assertSentCount(1);
@@ -88,8 +117,8 @@ class VerifiedCharitySearchTest extends TestCase
             'projects.propublica.org/*' => Http::response($this->ppPayload(), 200),
         ]);
 
-        $this->getJson('/api/v1/charities/search?q=red%20cross')->assertOk();
-        $this->getJson('/api/v1/charities/search?q=Red%20Cross')->assertOk();
+        $this->search('red cross')->assertOk();
+        $this->search('Red Cross')->assertOk();
 
         Http::assertSentCount(1);
     }
@@ -98,9 +127,9 @@ class VerifiedCharitySearchTest extends TestCase
     {
         Http::fake(['projects.propublica.org/*' => Http::response(null, 500)]);
 
-        $this->getJson('/api/v1/charities/search?q=red%20cross')->assertOk()
+        $this->search('red cross')->assertOk()
             ->assertJsonPath('data', []);
-        $this->getJson('/api/v1/charities/search?q=red%20cross')->assertOk()
+        $this->search('red cross')->assertOk()
             ->assertJsonPath('data', []);
 
         Http::assertSentCount(2);
@@ -110,8 +139,33 @@ class VerifiedCharitySearchTest extends TestCase
     {
         Http::fake();
 
-        $this->getJson('/api/v1/charities/search?q=x')->assertOk()
+        $this->search('x')->assertOk()
             ->assertJsonPath('data', []);
+        Http::assertNothingSent();
+    }
+
+    public function test_guest_cannot_reach_external_directory_search(): void
+    {
+        Http::fake();
+
+        // The route is no longer public — no token means unauthorized.
+        $this->getJson('/api/v1/charities/search?q=red%20cross')
+            ->assertUnauthorized();
+
+        Http::assertNothingSent();
+    }
+
+    public function test_non_admin_user_is_forbidden_from_external_directory_search(): void
+    {
+        Http::fake();
+
+        $donor = User::factory()->create();
+        $token = $donor->createToken('test')->plainTextToken;
+
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/v1/charities/search?q=red%20cross')
+            ->assertForbidden();
+
         Http::assertNothingSent();
     }
 
