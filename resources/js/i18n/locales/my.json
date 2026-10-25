@@ -335,7 +335,12 @@
         "totalMustEqual100": "စုစုပေါင်းခွဲဝေမှုသည် 100% ညီမျှရမည်",
         "update": "မွမ်းမံ",
         "updateConfirmMsg": "ဤလှူဒါန်းမှုဖော်မြူလာကို အပ်ဒိတ်လုပ်လိုသည်မှာ သေချာပါသလား။",
-        "updateConfirmTitle": "လှူဒါန်းမှုဖော်မြူလာကို အပ်ဒိတ်လုပ်ပါ။"
+        "updateConfirmTitle": "လှူဒါန်းမှုဖော်မြူလာကို အပ်ဒိတ်လုပ်ပါ။",
+        "verified": "စိစစ်ပြီး",
+        "verifiedHint": "ဤအဖွဲ့အစည်းသည် ပေးချေမှုများအတွက် အတည်ပြုထားသည်။",
+        "needsVerification": "အတည်ပြုချက် လိုအပ်ပါသည်။",
+        "needsVerificationHint": "စိတ်ကြိုက်အဖွဲ့အစည်း — စောင့်ဆိုင်းနေသော စီမံခန့်ခွဲသူ အတည်ပြုချက်",
+        "customOrgHint": "စိတ်ကြိုက်အမည် — သင်နှင့် စီမံခန့်ခွဲသူကို အတည်ပြုရန်အတွက် အီးမေးလ်ပို့ပါမည်။"
     },
     "donate": {
         "title": "Formula မှတဆင့်လှူဒါန်းပါ။",
@@ -349,13 +354,20 @@
         "enterAmount": "ပမာဏကို ထည့်ပါ။",
         "operationalCosts": "* လုပ်ငန်းလည်ပတ်မှုကုန်ကျစရိတ်အတွက် 0.1% အထိ။",
         "enterAmountToDonate": "လှူဒါန်းရန် ပမာဏကို ထည့်ပါ။",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal ကို စီစဉ်မထားပါ။",
         "enterValidAmount": "ကျေးဇူးပြု၍ မှန်ကန်သော အလှူငွေပမာဏကို ထည့်ပါ။",
         "failedToCreateOrder": "PayPal အမှာစာကို ဖန်တီး၍မရပါ။",
         "failedToCapture": "ငွေပေးချေမှုကို ဖမ်းယူ၍မရပါ။",
         "failedToProcess": "လှူဒါန်းမှုလုပ်ဆောင်ရန် မအောင်မြင်ပါ။",
         "paypalError": "PayPal တွင် တစ်ခုခုမှားသွားသည်။",
-        "failedToLoadPaypal": "PayPal ကို ဖွင့်၍မရပါ။ ထပ်စမ်းကြည့်ပါ။"
+        "failedToLoadPaypal": "PayPal ကို ဖွင့်၍မရပါ။ ထပ်စမ်းကြည့်ပါ။",
+        "paymentMethod": "ငွေပေးချေမှုနည်းလမ်း",
+        "selectPaymentMethod": "ငွေပေးချေမှုနည်းလမ်းကို ရွေးချယ်ပါ။",
+        "noPaymentMethods": "ငွေပေးချေမှုနည်းလမ်းများကို လောလောဆယ် မရရှိနိုင်ပါ။",
+        "methodNotConfigured": "{method} ကို သတ်မှတ်မထားပါ။",
+        "methodError": "{method} တွင် တစ်စုံတစ်ခု မှားယွင်းသွားပါသည်။",
+        "failedToLoadMethod": "{method} ကို တင်ရန် မအောင်မြင်ပါ။ ထပ်စမ်းကြည့်ပါ။"
     },
     "payment": {
         "successTitle": "ငွေပေးချေမှု အောင်မြင်သည်။",
@@ -374,7 +386,10 @@
         "contactSupport": "အကူအညီကို ဆက်သွယ်ပါ။",
         "thankYou": "စေတနာဖြင့် လှူဒါန်းမှုအတွက် ကျေးဇူးတင်ပါသည်။",
         "amountLabel": "ပမာဏ-",
-        "successful": "သင့်ငွေပေးချေမှု အောင်မြင်ပါသည်။"
+        "successful": "သင့်ငွေပေးချေမှု အောင်မြင်ပါသည်။",
+        "methodLabel": "ငွေပေးချေမှုနည်းလမ်း",
+        "unverifiedTitle": "သင်၏ {method} ငွေပေးချေမှု အောင်မြင်သော်လည်း ၎င်းကို ကျွန်ုပ်တို့ အလိုအလျောက် အတည်မပြုနိုင်ပါ။",
+        "unverifiedMsg": "သင်၏လှူဒါန်းမှုကို မကြာမီ အပြီးသတ်ပါမည်။ သင့်တွင် စိုးရိမ်မှုများရှိပါက ပံ့ပိုးကူညီမှုထံ ဆက်သွယ်ပါ။"
     },
     "admin": {
         "panel": "စီမံခန့်ခွဲရေးအဖွဲ့",
@@ -577,7 +592,20 @@
         "visitSite": "ဆိုက်ကို ဝင်ကြည့်ပါ။",
         "createdAt": "ဖန်တီးခဲ့သည်။",
         "verifiedAt": "စိစစ်ပြီး",
-        "unpaid": "အခကြေးငွေမယူရသေး"
+        "unpaid": "အခကြေးငွေမယူရသေး",
+        "invalidDateRange": "စတင်သည့်ရက်စွဲသည် ပြီးဆုံးရက်မတိုင်မီ ဖြစ်ရပါမည်။",
+        "stepTitleRequired": "အဆင့်ခေါင်းစဉ် လိုအပ်ပါသည်။",
+        "paypalEmailRequired": "PayPal လက်ခံရရှိသည့် အီးမေးလ် လိုအပ်သည်။",
+        "searchPayoutsPlaceholder": "အဖွဲ့အစည်းအလိုက်ရှာဖွေပါ။",
+        "payDisabledUnverified": "ငွေမပေးမီ အဖွဲ့အစည်းကို စစ်ဆေးပါ။",
+        "payoutAmountRequired": "ပမာဏ လိုအပ်ပါသည်။",
+        "payoutAmountPositive": "0 ထက်ကြီးသောပမာဏကိုထည့်ပါ။",
+        "fieldTooLong": "အများဆုံး စာလုံး 255 လုံး ရှိရပါမည်။",
+        "payoutAmountExceeds": "ပမာဏသည် {balance} ၏ တိုက်ရိုက်လက်ကျန်ကို ကျော်လွန်နေပါသည်။",
+        "payoutFormulaCount": "ဖော်မြူလာ {count} ခု",
+        "paymentMethod": "ငွေပေးချေမှုနည်းလမ်း",
+        "allPaymentMethods": "ငွေပေးချေမှုနည်းလမ်းအားလုံး",
+        "paymentMethodLabel": "ငွေပေးချေမှုနည်းလမ်း"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

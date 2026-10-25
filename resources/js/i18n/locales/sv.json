@@ -335,7 +335,12 @@
         "totalMustEqual100": "Total tilldelning måste vara 100 %",
         "update": "Uppdatering",
         "updateConfirmMsg": "Är du säker på att du vill uppdatera denna donationsformel?",
-        "updateConfirmTitle": "Uppdatera donationsformel"
+        "updateConfirmTitle": "Uppdatera donationsformel",
+        "verified": "Verifierad",
+        "verifiedHint": "Denna organisation är verifierad för utbetalningar",
+        "needsVerification": "Behöver verifiering",
+        "needsVerificationHint": "Anpassad organisation – väntar på administratörsverifiering",
+        "customOrgHint": "Anpassat namn – du och administratören kommer att skickas via e-post för verifiering."
     },
     "donate": {
         "title": "Donera via Formula",
@@ -349,13 +354,20 @@
         "enterAmount": "Ange belopp",
         "operationalCosts": "* Upp till 0,1 % för driftskostnader.",
         "enterAmountToDonate": "Ange ett belopp att donera",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal är inte konfigurerat.",
         "enterValidAmount": "Ange ett giltigt donationsbelopp.",
         "failedToCreateOrder": "Det gick inte att skapa PayPal-order",
         "failedToCapture": "Det gick inte att hämta betalningen",
         "failedToProcess": "Det gick inte att behandla donationen",
         "paypalError": "Något gick fel med PayPal.",
-        "failedToLoadPaypal": "Det gick inte att ladda PayPal. Försök igen."
+        "failedToLoadPaypal": "Det gick inte att ladda PayPal. Försök igen.",
+        "paymentMethod": "Betalningsmetod",
+        "selectPaymentMethod": "Välj en betalningsmetod",
+        "noPaymentMethods": "Inga betalningsmetoder är tillgängliga för närvarande.",
+        "methodNotConfigured": "{method} är inte konfigurerad.",
+        "methodError": "Något gick fel med {method}.",
+        "failedToLoadMethod": "Det gick inte att ladda {method}. Försök igen."
     },
     "payment": {
         "successTitle": "Betalning lyckad",
@@ -374,7 +386,10 @@
         "contactSupport": "Kontakta supporten",
         "thankYou": "Tack för din generösa donation!",
         "amountLabel": "Belopp:",
-        "successful": "Din betalning lyckades."
+        "successful": "Din betalning lyckades.",
+        "methodLabel": "Betalningsmetod",
+        "unverifiedTitle": "Din {method}-betalning lyckades, men vi kunde inte verifiera den automatiskt.",
+        "unverifiedMsg": "Din donation kommer att slutföras inom kort. Kontakta supporten om du har några funderingar."
     },
     "admin": {
         "panel": "Adminpanel",
@@ -577,7 +592,20 @@
         "visitSite": "Besök webbplatsen",
         "createdAt": "Skapad",
         "verifiedAt": "Verifierad",
-        "unpaid": "Obetald"
+        "unpaid": "Obetald",
+        "invalidDateRange": "Startdatumet måste vara före slutdatumet.",
+        "stepTitleRequired": "Stegtitel krävs.",
+        "paypalEmailRequired": "PayPal måste ta emot e-post.",
+        "searchPayoutsPlaceholder": "Sök efter organisation",
+        "payDisabledUnverified": "Verifiera organisationen innan du betalar",
+        "payoutAmountRequired": "Belopp krävs.",
+        "payoutAmountPositive": "Ange ett belopp som är större än 0.",
+        "fieldTooLong": "Måste vara högst 255 tecken.",
+        "payoutAmountExceeds": "Beloppet överstiger det aktiva saldot på {balance}.",
+        "payoutFormulaCount": "{count} formler",
+        "paymentMethod": "Betalningsmetod",
+        "allPaymentMethods": "Alla betalningsmetoder",
+        "paymentMethodLabel": "Betalningsmetod"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

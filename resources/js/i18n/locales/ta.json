@@ -335,7 +335,12 @@
         "totalMustEqual100": "மொத்த ஒதுக்கீடு 100% சமமாக இருக்க வேண்டும்",
         "update": "புதுப்பிக்கவும்",
         "updateConfirmMsg": "இந்த நன்கொடை சூத்திரத்தை நிச்சயமாகப் புதுப்பிக்க விரும்புகிறீர்களா?",
-        "updateConfirmTitle": "நன்கொடை சூத்திரத்தைப் புதுப்பிக்கவும்"
+        "updateConfirmTitle": "நன்கொடை சூத்திரத்தைப் புதுப்பிக்கவும்",
+        "verified": "சரிபார்க்கப்பட்டது",
+        "verifiedHint": "பணம் செலுத்துவதற்காக இந்த நிறுவனம் சரிபார்க்கப்பட்டது",
+        "needsVerification": "சரிபார்ப்பு தேவை",
+        "needsVerificationHint": "தனிப்பயன் அமைப்பு — நிலுவையில் உள்ள நிர்வாகி சரிபார்ப்பு",
+        "customOrgHint": "தனிப்பயன் பெயர் - சரிபார்ப்பிற்காக உங்களுக்கும் நிர்வாகிக்கும் மின்னஞ்சல் அனுப்பப்படும்."
     },
     "donate": {
         "title": "ஃபார்முலா மூலம் நன்கொடை அளிக்கவும்",
@@ -349,13 +354,20 @@
         "enterAmount": "தொகையை உள்ளிடவும்",
         "operationalCosts": "* செயல்பாட்டுச் செலவுகளுக்கு 0.1% வரை.",
         "enterAmountToDonate": "நன்கொடைக்கான தொகையை உள்ளிடவும்",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal கட்டமைக்கப்படவில்லை.",
         "enterValidAmount": "சரியான நன்கொடைத் தொகையை உள்ளிடவும்.",
         "failedToCreateOrder": "PayPal ஆர்டரை உருவாக்க முடியவில்லை",
         "failedToCapture": "கட்டணத்தைப் பிடிக்க முடியவில்லை",
         "failedToProcess": "நன்கொடையைச் செயல்படுத்துவதில் தோல்வி",
         "paypalError": "PayPal இல் ஏதோ தவறாகிவிட்டது.",
-        "failedToLoadPaypal": "PayPalஐ ஏற்றுவதில் தோல்வி. மீண்டும் முயற்சிக்கவும்."
+        "failedToLoadPaypal": "PayPalஐ ஏற்றுவதில் தோல்வி. மீண்டும் முயற்சிக்கவும்.",
+        "paymentMethod": "பணம் செலுத்தும் முறை",
+        "selectPaymentMethod": "கட்டண முறையைத் தேர்ந்தெடுக்கவும்",
+        "noPaymentMethods": "தற்போது கட்டணம் செலுத்தும் முறைகள் எதுவும் இல்லை.",
+        "methodNotConfigured": "{method} கட்டமைக்கப்படவில்லை.",
+        "methodError": "{method} இல் ஏதோ தவறாகிவிட்டது.",
+        "failedToLoadMethod": "{method} ஐ ஏற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
     },
     "payment": {
         "successTitle": "பணம் செலுத்துதல் வெற்றிகரமாக உள்ளது",
@@ -374,7 +386,10 @@
         "contactSupport": "ஆதரவைத் தொடர்பு கொள்ளவும்",
         "thankYou": "உங்கள் தாராள நன்கொடைக்கு நன்றி!",
         "amountLabel": "தொகை:",
-        "successful": "உங்கள் பணம் செலுத்தப்பட்டது."
+        "successful": "உங்கள் பணம் செலுத்தப்பட்டது.",
+        "methodLabel": "பணம் செலுத்தும் முறை",
+        "unverifiedTitle": "உங்கள் {method} பேமெண்ட் வெற்றியடைந்தது, ஆனால் அதை எங்களால் தானாகச் சரிபார்க்க முடியவில்லை.",
+        "unverifiedMsg": "உங்கள் நன்கொடை விரைவில் முடிக்கப்படும். உங்களுக்கு ஏதேனும் கவலைகள் இருந்தால், ஆதரவைத் தொடர்பு கொள்ளவும்."
     },
     "admin": {
         "panel": "நிர்வாக குழு",
@@ -577,7 +592,20 @@
         "visitSite": "தளத்தைப் பார்வையிடவும்",
         "createdAt": "உருவாக்கப்பட்டது",
         "verifiedAt": "சரிபார்க்கப்பட்டது",
-        "unpaid": "செலுத்தப்படாதது"
+        "unpaid": "செலுத்தப்படாதது",
+        "invalidDateRange": "தொடக்கத் தேதி இறுதித் தேதிக்கு முன்னதாக இருக்க வேண்டும்.",
+        "stepTitleRequired": "படி தலைப்பு தேவை.",
+        "paypalEmailRequired": "PayPal பெறுதல் மின்னஞ்சல் தேவை.",
+        "searchPayoutsPlaceholder": "அமைப்பின்படி தேடுங்கள்",
+        "payDisabledUnverified": "பணம் செலுத்தும் முன் நிறுவனத்தைச் சரிபார்க்கவும்",
+        "payoutAmountRequired": "தொகை தேவைப்படுகிறது.",
+        "payoutAmountPositive": "0 ஐ விட அதிகமான தொகையை உள்ளிடவும்.",
+        "fieldTooLong": "அதிகபட்சம் 255 எழுத்துகள் இருக்க வேண்டும்.",
+        "payoutAmountExceeds": "லைவ் பேலன்ஸ் {balance}ஐ விட அதிகமாக உள்ளது.",
+        "payoutFormulaCount": "{count} சூத்திரங்கள்",
+        "paymentMethod": "பணம் செலுத்தும் முறை",
+        "allPaymentMethods": "அனைத்து கட்டண முறைகள்",
+        "paymentMethodLabel": "பணம் செலுத்தும் முறை"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."

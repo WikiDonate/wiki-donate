@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('queue:prune-failed --hours=48')->daily();
 // Remove expired Sanctum API tokens
 Schedule::command('sanctum:prune-expired')->daily();
-// Remove abandoned PayPal pending orders (48h TTL)
-Schedule::command('paypal:cleanup-pending-orders --hours=48')->daily();
+// Remove abandoned payment pending orders (48h TTL)
+Schedule::command('payments:cleanup-pending-orders --hours=48')->daily();

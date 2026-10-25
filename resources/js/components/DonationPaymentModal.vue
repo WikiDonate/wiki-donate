@@ -121,9 +121,45 @@
                     </button>
                 </div>
 
-                <!-- PayPal buttons (disabled until an amount is entered) -->
+                <!-- Payment-method picker: options come from GET /v1/payment-methods,
+                     so enabling a new method in the registry surfaces it here with
+                     no front-end change. -->
+                <div v-if="methods.length > 1">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        {{ t('donate.paymentMethod') }}
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button
+                            v-for="method in methods"
+                            :key="method.code"
+                            type="button"
+                            class="flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors"
+                            :class="
+                                selectedMethod === method.code
+                                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                            "
+                            :disabled="isDonating"
+                            @click="selectMethod(method.code)"
+                        >
+                            <font-awesome-icon
+                                v-if="methodIcon(method.code)"
+                                :icon="methodIcon(method.code)"
+                                class="w-4 h-4"
+                            />
+                            {{ method.label }}
+                        </button>
+                    </div>
+                </div>
+
+                <p v-else-if="!loadingMethods && !methods.length" class="text-sm text-amber-700">
+                    {{ t('donate.noPaymentMethods') }}
+                </p>
+
+                <!-- PayPal Smart Buttons (disabled until an amount is entered) -->
                 <div
-                    v-if="hasValidAmount"
+                    v-if="selectedMethod === 'paypal'"
+                    v-show="hasValidAmount"
                     id="paypal-button-container"
                     class="paypal-buttons min-h-11.25"
                 >
@@ -131,13 +167,31 @@
                         <LoadingSpinner class="w-6 h-6" />
                     </div>
                 </div>
-                <div v-else class="paypal-buttons min-h-11.25">
+
+                <!-- Any non-PayPal method is a hosted-checkout redirect. The
+                     gateway difference lives on the server, so a newly enabled
+                     method works here with no template change. -->
+                <button
+                    v-else-if="hasValidAmount"
+                    type="button"
+                    class="w-full h-11.25 flex items-center justify-center gap-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-60"
+                    :disabled="isDonating"
+                    @click="startHostedCheckout"
+                >
+                    <font-awesome-icon
+                        :icon="methodIcon(selectedMethod) || ['fas', 'credit-card']"
+                        class="w-4 h-4"
+                    />
+                    {{ t('donate.continueToCheckout') }}
+                </button>
+
+                <!-- Placeholder while no valid amount has been entered -->
+                <div v-if="!hasValidAmount" class="paypal-buttons min-h-11.25">
                     <button
                         type="button"
                         disabled
                         class="w-full h-11.25 flex items-center justify-center gap-2 rounded-lg bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed"
                     >
-                        <font-awesome-icon :icon="['fab', 'paypal']" class="w-4 h-4" />
                         {{ t('donate.enterAmountToDonate') }}
                     </button>
                 </div>
@@ -160,8 +214,16 @@
     import { ref, watch, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
     import { useI18n } from 'vue-i18n'
     import { donateService } from '~/services/donateService'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
+    const {
+        methods,
+        loading: loadingMethods,
+        loadPaymentMethods,
+        methodLabel,
+        hasMethod,
+    } = usePaymentMethods()
     const authStore = useAuthStore()
     const route = useRoute()
 
@@ -194,9 +256,35 @@
     const alertVariant = ref('error')
     const showFormula = ref(false)
 
+    // Active income methods from the registry; 'paypal' is the safe default
+    // while the list is still loading so the flow never dead-ends.
+    const selectedMethod = ref('paypal')
     const paypalSdkLoaded = ref(false)
     const paypalButtonsRendered = ref(false)
     let paypalButtonsInstance = null
+
+    /** Branded icon per known method code; unknown codes render text only. */
+    const methodIcons = {
+        paypal: ['fab', 'paypal'],
+        stripe: ['fas', 'credit-card'],
+    }
+    const methodIcon = (code) => methodIcons[String(code ?? '').toLowerCase()] || null
+
+    // Fail-open: if the registry has not loaded (or failed to), keep the legacy
+    // PayPal rail available rather than dead-ending the donor. Only a loaded
+    // registry that explicitly omits PayPal disables it.
+    const paypalEnabled = computed(() => !methods.value.length || hasMethod('paypal'))
+
+    // Keep the selection valid: never leave a code selected that the registry
+    // no longer offers (e.g. a method was disabled between page loads).
+    watch(methods, (list) => {
+        const codes = (list || []).map((method) => method.code)
+        if (!codes.length) return
+        if (!codes.includes(selectedMethod.value)) {
+            // Prefer PayPal (the historical default) when it is still active.
+            selectedMethod.value = codes.includes('paypal') ? 'paypal' : codes[0]
+        }
+    })
 
     const alertClass = computed(() => {
         const map = {
@@ -258,6 +346,9 @@
     }
 
     async function renderPaypalButtons() {
+        // Guard: the user may have switched methods while the SDK was loading.
+        if (selectedMethod.value !== 'paypal' || !paypalEnabled.value) return
+
         // Clear any previously rendered buttons before re-rendering.
         const container = document.getElementById('paypal-button-container')
         if (!container) return
@@ -304,7 +395,7 @@
                             formula_id: props.formulaId || null,
                             details: props.details,
                         }
-                        const response = await donateService.createPaypalOrder(params)
+                        const response = await donateService.createOrder('paypal', params)
 
                         if (response.success && response.data?.order_id) {
                             return response.data.order_id
@@ -320,7 +411,7 @@
                         isDonating.value = true
                         alertMessage.value = ''
                         try {
-                            const response = await donateService.capturePaypalOrder({
+                            const response = await donateService.captureOrder('paypal', {
                                 order_id: data.orderID,
                             })
 
@@ -361,7 +452,63 @@
         }
     }
 
+    // Switching methods must tear the PayPal buttons down so we never leave a
+    // stale button set behind the newly selected method.
+    function selectMethod(code) {
+        if (code === selectedMethod.value) return
+        selectedMethod.value = code
+        alertMessage.value = ''
+        destroyPaypalButtons()
+        if (code === 'paypal') loadPayPalSdkPreload()
+    }
+
+    /**
+     * Hosted-checkout handoff for any non-PayPal method. The generic endpoint
+     * returns `checkout_url`/`approval_url` plus a normalised `reference`.
+     */
+    async function startHostedCheckout() {
+        if (!amount.value || Number(amount.value) <= 0) {
+            alertVariant.value = 'error'
+            alertMessage.value = t('donate.enterValidAmount')
+            return
+        }
+
+        isDonating.value = true
+        alertMessage.value = ''
+
+        try {
+            const response = await donateService.createOrder(selectedMethod.value, {
+                amount: Number(amount.value),
+                donor_name: authStore.user?.username || '',
+                donor_email: authStore.user?.email || '',
+                formula_id: props.formulaId || null,
+                details: props.details,
+            })
+
+            const target = response.data?.checkout_url || response.data?.approval_url
+            if (response.success && target) {
+                window.location.href = target
+                return
+            }
+
+            alertVariant.value = 'error'
+            alertMessage.value =
+                response.errors?.[0] ||
+                response.message ||
+                t('donate.methodError', { method: methodLabel(selectedMethod.value) })
+            isDonating.value = false
+        } catch (error) {
+            alertVariant.value = 'error'
+            alertMessage.value =
+                error?.errors?.[0] ||
+                error?.message ||
+                t('donate.methodError', { method: methodLabel(selectedMethod.value) })
+            isDonating.value = false
+        }
+    }
+
     onMounted(() => {
+        loadPaymentMethods()
         if (props.modelValue) {
             loadPayPalSdkPreload()
         }
@@ -386,7 +533,8 @@
                 isDonating.value = false
                 showFormula.value = false
                 destroyPaypalButtons()
-                loadPayPalSdkPreload()
+                loadPaymentMethods()
+                if (selectedMethod.value === 'paypal') loadPayPalSdkPreload()
             }
         },
     )
@@ -395,6 +543,11 @@
     // tear them down again if the amount is cleared or becomes invalid.
     watch(amount, (val) => {
         if (!props.modelValue) return
+
+        // Only the PayPal rail uses in-page buttons; Stripe is a redirect.
+        // Also require paypal to be an actually-enabled registry method before
+        // rendering its SDK buttons.
+        if (selectedMethod.value !== 'paypal' || !paypalEnabled.value) return
 
         if (Number(val) > 0 && !paypalButtonsRendered.value) {
             nextTick(() => renderPaypalButtons())

@@ -20,10 +20,9 @@ class DashboardController extends Controller
         return Donation::with('user:id,uuid,username', 'formula.article:id,slug,title')
             ->latest()
             ->take(10)
-            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'stripe_session_id', 'paypal_order_id', 'metadata'])
+            ->get(['id', 'amount', 'currency', 'status', 'created_at', 'user_id', 'donor_email', 'payment_method', 'gateway_reference', 'metadata'])
             ->map(function ($donation) {
                 $metadata = $donation->metadata ?? [];
-                $source = $donation->paypal_order_id ? 'paypal' : 'stripe_checkout';
                 $formula = $donation->formula;
                 $article = $formula?->article;
                 $snapshot = $metadata['formula_snapshot'] ?? null;
@@ -34,7 +33,7 @@ class DashboardController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $source,
+                    'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
@@ -42,8 +41,7 @@ class DashboardController extends Controller
                     'date_raw' => $donation->created_at->toISOString(),
                     'user' => $donation->user?->username ?? 'Guest',
                     'email' => $donation->donor_email ?? $donation->user?->email,
-                    'stripe_session_id' => $donation->stripe_session_id,
-                    'paypal_order_id' => $donation->paypal_order_id,
+                    'gateway_reference' => $donation->gateway_reference,
                     'formula_id' => $metadata['formula_id'] ?? $formula?->id,
                     'formula' => $snapshot ?? $metadata['formula'] ?? $formula?->formula,
                     'formula_snapshot_used' => $usesSnapshot,
@@ -124,14 +122,16 @@ class DashboardController extends Controller
                     $q->where(function ($sq) use ($search) {
                         $sq->whereHas('user', fn ($uq) => $uq->where('username', 'like', "%{$search}%"))
                             ->orWhere('donor_email', 'like', "%{$search}%")
-                            ->orWhere('stripe_session_id', 'like', "%{$search}%")
-                            ->orWhere('stripe_payment_intent_id', 'like', "%{$search}%")
-                            ->orWhere('paypal_order_id', 'like', "%{$search}%")
+                            ->orWhere('gateway_reference', 'like', "%{$search}%")
+                            ->orWhere('payment_method', 'like', "%{$search}%")
                             ->orWhere('metadata->payment_id', 'like', "%{$search}%");
                     });
                 })
                 ->when($request->filled('status'), function ($q) use ($request) {
                     $q->where('status', $request->input('status'));
+                })
+                ->when($request->filled('method'), function ($q) use ($request) {
+                    $q->where('payment_method', $request->input('method'));
                 })
                 ->latest()
                 ->paginate($perPage);
@@ -146,10 +146,8 @@ class DashboardController extends Controller
 
                     return [
                         'id' => $donation->id,
-                        'source' => $donation->paypal_order_id ? 'paypal' : 'stripe_checkout',
-                        'payment_id' => $donation->paypal_order_id
-                            ? ($donation->metadata['payment_id'] ?? null)
-                            : $donation->stripe_payment_intent_id,
+                        'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
+                        'payment_id' => $donation->metadata['payment_id'] ?? $donation->gateway_reference,
                         'amount' => $donation->amount,
                         'currency' => $donation->currency,
                         'status' => $donation->status,
@@ -157,8 +155,7 @@ class DashboardController extends Controller
                         'date_raw' => $donation->created_at->toISOString(),
                         'user' => $donation->user?->username ?? 'Guest',
                         'email' => $donation->donor_email ?? $donation->user?->email,
-                        'stripe_session_id' => $donation->stripe_session_id,
-                        'paypal_order_id' => $donation->paypal_order_id,
+                        'gateway_reference' => $donation->gateway_reference,
                         'formula_id' => $donation->metadata['formula_id'] ?? $formula?->id,
                         'formula' => $donation->metadata['formula_snapshot']
                             ?? $donation->metadata['formula']

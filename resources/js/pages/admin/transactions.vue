@@ -64,8 +64,13 @@
                         class="flex-1 sm:flex-initial px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     >
                         <option value="">{{ t('admin.allMethods') }}</option>
-                        <option value="stripe">{{ t('admin.stripe') }}</option>
-                        <option value="paypal">{{ t('admin.paypal') }}</option>
+                        <option
+                            v-for="method in allMethods"
+                            :key="method.code"
+                            :value="method.code"
+                        >
+                            {{ method.label }}
+                        </option>
                     </select>
                     <OrganizationSelect
                         :model-value="filterOrg"
@@ -152,8 +157,8 @@
                             </span>
                         </template>
                         <template #cell-method="{ row }">
-                            <span v-if="row.type === 'income'" class="text-xs capitalize">{{
-                                row.method
+                            <span v-if="row.type === 'income'" class="text-xs">{{
+                                methodLabel(row.method)
                             }}</span>
                             <template v-else>
                                 <AdminBadge
@@ -213,6 +218,7 @@
     import api from '~/config/apiConfig'
     import { useToastify } from '~/composables/useToastify'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import AdminBadge from '~/components/admin/AdminBadge.vue'
@@ -224,6 +230,7 @@
     const { notifyError } = useToastify()
 
     const { t } = useI18n()
+    const { allMethods, loadPaymentMethods, methodLabel } = usePaymentMethods()
 
     useHead({ title: t('admin.transactions') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -344,5 +351,8 @@
         }
     }
 
-    onMounted(loadPage)
+    onMounted(() => {
+        loadPaymentMethods()
+        loadPage()
+    })
 </script>

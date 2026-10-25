@@ -335,7 +335,12 @@
         "totalMustEqual100": "کل رقم 100% کے برابر ہونی چاہیے",
         "update": "اپڈیٹ کریں۔",
         "updateConfirmMsg": "کیا آپ واقعی عطیہ کے اس فارمولے کو اپ ڈیٹ کرنا چاہتے ہیں؟",
-        "updateConfirmTitle": "عطیہ کے فارمولے کو اپ ڈیٹ کریں۔"
+        "updateConfirmTitle": "عطیہ کے فارمولے کو اپ ڈیٹ کریں۔",
+        "verified": "تصدیق شدہ",
+        "verifiedHint": "یہ تنظیم ادائیگیوں کے لیے تصدیق شدہ ہے۔",
+        "needsVerification": "تصدیق کی ضرورت ہے۔",
+        "needsVerificationHint": "حسب ضرورت تنظیم - زیر التوا منتظم کی توثیق",
+        "customOrgHint": "حسب ضرورت نام — آپ اور منتظم کو تصدیق کے لیے ای میل کیا جائے گا۔"
     },
     "donate": {
         "title": "فارمولہ کے ذریعے عطیہ کریں۔",
@@ -349,13 +354,20 @@
         "enterAmount": "رقم درج کریں۔",
         "operationalCosts": "* آپریشنل اخراجات کے لیے 0.1% تک۔",
         "enterAmountToDonate": "عطیہ کرنے کے لیے رقم درج کریں۔",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "پے پال کنفیگر نہیں ہے۔",
         "enterValidAmount": "براہ کرم ایک درست عطیہ کی رقم درج کریں۔",
         "failedToCreateOrder": "پے پال آرڈر بنانے میں ناکام",
         "failedToCapture": "ادائیگی کیپچر کرنے میں ناکام",
         "failedToProcess": "عطیہ پر کارروائی کرنے میں ناکام",
         "paypalError": "PayPal کے ساتھ کچھ غلط ہو گیا۔",
-        "failedToLoadPaypal": "PayPal لوڈ کرنے میں ناکام۔ براہ کرم دوبارہ کوشش کریں۔"
+        "failedToLoadPaypal": "PayPal لوڈ کرنے میں ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+        "paymentMethod": "ادائیگی کا طریقہ",
+        "selectPaymentMethod": "ادائیگی کا طریقہ منتخب کریں۔",
+        "noPaymentMethods": "فی الحال ادائیگی کے کوئی طریقے دستیاب نہیں ہیں۔",
+        "methodNotConfigured": "{method} کنفیگر نہیں ہے۔",
+        "methodError": "{method} میں کچھ غلط ہو گیا۔",
+        "failedToLoadMethod": "{method} لوڈ کرنے میں ناکام۔ براہ کرم دوبارہ کوشش کریں۔"
     },
     "payment": {
         "successTitle": "ادائیگی کامیاب",
@@ -374,7 +386,10 @@
         "contactSupport": "سپورٹ سے رابطہ کریں۔",
         "thankYou": "آپ کے فراخدلانہ عطیہ کے لئے آپ کا شکریہ!",
         "amountLabel": "رقم:",
-        "successful": "آپ کی ادائیگی کامیاب ہو گئی۔"
+        "successful": "آپ کی ادائیگی کامیاب ہو گئی۔",
+        "methodLabel": "ادائیگی کا طریقہ",
+        "unverifiedTitle": "آپ کی {method} ادائیگی کامیاب ہو گئی، لیکن ہم خود بخود اس کی تصدیق نہیں کر سکے۔",
+        "unverifiedMsg": "آپ کے عطیہ کو جلد ہی حتمی شکل دی جائے گی۔ اگر آپ کو کوئی خدشات ہیں تو براہ کرم سپورٹ سے رابطہ کریں۔"
     },
     "admin": {
         "panel": "ایڈمن پینل",
@@ -577,7 +592,20 @@
         "visitSite": "سائٹ ملاحظہ کریں۔",
         "createdAt": "بنایا",
         "verifiedAt": "تصدیق شدہ",
-        "unpaid": "بلا معاوضہ"
+        "unpaid": "بلا معاوضہ",
+        "invalidDateRange": "آغاز کی تاریخ اختتامی تاریخ سے پہلے ہونی چاہیے۔",
+        "stepTitleRequired": "مرحلہ کا عنوان درکار ہے۔",
+        "paypalEmailRequired": "پے پال وصول کرنے والا ای میل درکار ہے۔",
+        "searchPayoutsPlaceholder": "تنظیم کے لحاظ سے تلاش کریں۔",
+        "payDisabledUnverified": "ادائیگی کرنے سے پہلے تنظیم کی تصدیق کریں۔",
+        "payoutAmountRequired": "رقم درکار ہے۔",
+        "payoutAmountPositive": "0 سے بڑی رقم درج کریں۔",
+        "fieldTooLong": "زیادہ سے زیادہ 255 حروف کا ہونا ضروری ہے۔",
+        "payoutAmountExceeds": "رقم {balance} کے لائیو بیلنس سے زیادہ ہے۔",
+        "payoutFormulaCount": "{count} فارمولے",
+        "paymentMethod": "ادائیگی کا طریقہ",
+        "allPaymentMethods": "ادائیگی کے تمام طریقے",
+        "paymentMethodLabel": "ادائیگی کا طریقہ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

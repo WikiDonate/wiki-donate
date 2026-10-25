@@ -335,7 +335,12 @@
         "totalMustEqual100": "कुल आवंटन 100% के बराबर होना चाहिए",
         "update": "अद्यतन करें",
         "updateConfirmMsg": "क्या आप वाकई इस दान फ़ॉर्मूले को अपडेट करना चाहते हैं?",
-        "updateConfirmTitle": "दान फॉर्मूला अपडेट करें"
+        "updateConfirmTitle": "दान फॉर्मूला अपडेट करें",
+        "verified": "सत्यापित",
+        "verifiedHint": "यह संगठन भुगतान के लिए सत्यापित है",
+        "needsVerification": "सत्यापन की आवश्यकता है",
+        "needsVerificationHint": "कस्टम संगठन - लंबित व्यवस्थापक सत्यापन",
+        "customOrgHint": "कस्टम नाम - आपको और व्यवस्थापक को सत्यापन के लिए ईमेल किया जाएगा।"
     },
     "donate": {
         "title": "फ़ॉर्मूला के माध्यम से दान करें",
@@ -349,13 +354,20 @@
         "enterAmount": "राशि दर्ज करें",
         "operationalCosts": "*परिचालन लागत के लिए 0.1% तक।",
         "enterAmountToDonate": "दान करने के लिए राशि दर्ज करें",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "पेपैल कॉन्फ़िगर नहीं है.",
         "enterValidAmount": "कृपया एक वैध दान राशि दर्ज करें।",
         "failedToCreateOrder": "PayPal ऑर्डर बनाने में विफल",
         "failedToCapture": "भुगतान प्राप्त करने में विफल",
         "failedToProcess": "दान संसाधित करने में विफल",
         "paypalError": "पेपैल के साथ कुछ गलत हो गया.",
-        "failedToLoadPaypal": "पेपैल लोड करने में विफल. कृपया पुन: प्रयास करें।"
+        "failedToLoadPaypal": "पेपैल लोड करने में विफल. कृपया पुन: प्रयास करें।",
+        "paymentMethod": "भुगतान विधि",
+        "selectPaymentMethod": "एक भुगतान विधि चुनें",
+        "noPaymentMethods": "वर्तमान में कोई भुगतान विधि उपलब्ध नहीं है.",
+        "methodNotConfigured": "{method} कॉन्फ़िगर नहीं है.",
+        "methodError": "{method} के साथ कुछ गलत हो गया।",
+        "failedToLoadMethod": "{method} लोड करने में विफल. कृपया पुन: प्रयास करें।"
     },
     "payment": {
         "successTitle": "भुगतान सफल",
@@ -374,7 +386,10 @@
         "contactSupport": "समर्थन से संपर्क करें",
         "thankYou": "आपके उदार दान के लिए धन्यवाद!",
         "amountLabel": "राशि:",
-        "successful": "आपका भुगतान सफल रहा."
+        "successful": "आपका भुगतान सफल रहा.",
+        "methodLabel": "भुगतान विधि",
+        "unverifiedTitle": "आपका {method} भुगतान सफल हो गया, लेकिन हम इसे स्वचालित रूप से सत्यापित नहीं कर सके।",
+        "unverifiedMsg": "आपके दान को शीघ्र ही अंतिम रूप दे दिया जाएगा। यदि आपको कोई चिंता है तो कृपया सहायता से संपर्क करें।"
     },
     "admin": {
         "panel": "व्यवस्थापक पैनल",
@@ -577,7 +592,20 @@
         "visitSite": "साइट पर जाएँ",
         "createdAt": "बनाया गया",
         "verifiedAt": "सत्यापित",
-        "unpaid": "अवैतनिक"
+        "unpaid": "अवैतनिक",
+        "invalidDateRange": "आरंभ तिथि समाप्ति तिथि से पहले की होनी चाहिए.",
+        "stepTitleRequired": "चरण शीर्षक आवश्यक है.",
+        "paypalEmailRequired": "PayPal द्वारा ईमेल प्राप्त करना आवश्यक है.",
+        "searchPayoutsPlaceholder": "संगठन द्वारा खोजें",
+        "payDisabledUnverified": "भुगतान करने से पहले संगठन को सत्यापित करें",
+        "payoutAmountRequired": "राशि आवश्यक है.",
+        "payoutAmountPositive": "0 से अधिक राशि दर्ज करें.",
+        "fieldTooLong": "अधिकतम 255 अक्षर होने चाहिए.",
+        "payoutAmountExceeds": "राशि {बैलेंस} के लाइव बैलेंस से अधिक है.",
+        "payoutFormulaCount": "{गिनती} सूत्र",
+        "paymentMethod": "भुगतान विधि",
+        "allPaymentMethods": "सभी भुगतान विधियाँ",
+        "paymentMethodLabel": "भुगतान विधि"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्वाधिकार सुरक्षित।"

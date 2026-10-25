@@ -335,7 +335,12 @@
         "totalMustEqual100": "एकूण वाटप 100% सारखे असणे आवश्यक आहे",
         "update": "अपडेट करा",
         "updateConfirmMsg": "तुमची खात्री आहे की तुम्ही हे देणगी सूत्र अपडेट करू इच्छिता?",
-        "updateConfirmTitle": "देणगी फॉर्म्युला अद्यतनित करा"
+        "updateConfirmTitle": "देणगी फॉर्म्युला अद्यतनित करा",
+        "verified": "सत्यापित",
+        "verifiedHint": "ही संस्था पेआउटसाठी सत्यापित आहे",
+        "needsVerification": "पडताळणी आवश्यक आहे",
+        "needsVerificationHint": "सानुकूल संस्था — प्रलंबित प्रशासक सत्यापन",
+        "customOrgHint": "सानुकूल नाव — तुम्हाला आणि प्रशासकाला पडताळणीसाठी ईमेल केले जाईल."
     },
     "donate": {
         "title": "फॉर्म्युलाद्वारे देणगी द्या",
@@ -349,13 +354,20 @@
         "enterAmount": "रक्कम प्रविष्ट करा",
         "operationalCosts": "* ऑपरेशनल खर्चासाठी 0.1% पर्यंत.",
         "enterAmountToDonate": "देणगी देण्यासाठी रक्कम प्रविष्ट करा",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal कॉन्फिगर केलेले नाही.",
         "enterValidAmount": "कृपया वैध देणगी रक्कम प्रविष्ट करा.",
         "failedToCreateOrder": "PayPal ऑर्डर तयार करण्यात अयशस्वी",
         "failedToCapture": "पेमेंट कॅप्चर करण्यात अयशस्वी",
         "failedToProcess": "देणगी प्रक्रिया करण्यात अयशस्वी",
         "paypalError": "PayPal मध्ये काहीतरी चूक झाली.",
-        "failedToLoadPaypal": "PayPal लोड करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
+        "failedToLoadPaypal": "PayPal लोड करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+        "paymentMethod": "पेमेंट पद्धत",
+        "selectPaymentMethod": "पेमेंट पद्धत निवडा",
+        "noPaymentMethods": "सध्या कोणत्याही पेमेंट पद्धती उपलब्ध नाहीत.",
+        "methodNotConfigured": "{method} कॉन्फिगर केलेले नाही.",
+        "methodError": "{method} मध्ये काहीतरी चूक झाली.",
+        "failedToLoadMethod": "{method} लोड करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
     },
     "payment": {
         "successTitle": "पेमेंट यशस्वी",
@@ -374,7 +386,10 @@
         "contactSupport": "समर्थनाशी संपर्क साधा",
         "thankYou": "तुमच्या उदार देणगीबद्दल धन्यवाद!",
         "amountLabel": "रक्कम:",
-        "successful": "तुमचे पेमेंट यशस्वी झाले."
+        "successful": "तुमचे पेमेंट यशस्वी झाले.",
+        "methodLabel": "पेमेंट पद्धत",
+        "unverifiedTitle": "तुमचे {method} पेमेंट यशस्वी झाले, परंतु आम्ही ते स्वयंचलितपणे सत्यापित करू शकलो नाही.",
+        "unverifiedMsg": "तुमची देणगी लवकरच निश्चित केली जाईल. तुम्हाला काही चिंता असल्यास कृपया समर्थनाशी संपर्क साधा."
     },
     "admin": {
         "panel": "प्रशासन पॅनेल",
@@ -577,7 +592,20 @@
         "visitSite": "साइटला भेट द्या",
         "createdAt": "तयार केले",
         "verifiedAt": "सत्यापित",
-        "unpaid": "न भरलेले"
+        "unpaid": "न भरलेले",
+        "invalidDateRange": "प्रारंभ तारीख समाप्ती तारखेपूर्वीची असणे आवश्यक आहे.",
+        "stepTitleRequired": "चरण शीर्षक आवश्यक आहे.",
+        "paypalEmailRequired": "PayPal ईमेल प्राप्त करणे आवश्यक आहे.",
+        "searchPayoutsPlaceholder": "संस्थेनुसार शोधा",
+        "payDisabledUnverified": "पैसे देण्यापूर्वी संस्थेची पडताळणी करा",
+        "payoutAmountRequired": "रक्कम आवश्यक आहे.",
+        "payoutAmountPositive": "0 पेक्षा जास्त रक्कम प्रविष्ट करा.",
+        "fieldTooLong": "कमाल २५५ वर्ण असणे आवश्यक आहे.",
+        "payoutAmountExceeds": "रक्कम {balance} च्या थेट शिल्लकपेक्षा जास्त आहे.",
+        "payoutFormulaCount": "{count} सूत्रे",
+        "paymentMethod": "पेमेंट पद्धत",
+        "allPaymentMethods": "सर्व पेमेंट पद्धती",
+        "paymentMethodLabel": "पेमेंट पद्धत"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."

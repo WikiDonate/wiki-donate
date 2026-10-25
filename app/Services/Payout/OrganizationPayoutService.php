@@ -7,7 +7,9 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
+use App\Services\Payment\PaymentProviderRegistry;
 use App\Services\PayPalClient;
 use Exception;
 use Illuminate\Http\Client\RequestException;
@@ -142,6 +144,13 @@ class OrganizationPayoutService
         // Normalize once at the boundary: donations store mixed case
         // (Stripe `usd`, PayPal `USD`) and callers send either form.
         $data['currency'] = strtoupper(trim((string) ($data['currency'] ?? '')));
+        // Payout rail is data-driven: the caller (admin UI) sends the chosen
+        // payout-capable method code; PayPal stays the default for legacy
+        // callers that predate the registry. Resolution happens BEFORE the
+        // ledger write so a method with no payout rail can never leave a
+        // pending row behind that we are unable to pay.
+        $paymentMethod = app(PaymentProviderRegistry::class)
+            ->resolvePayoutMethod($data['payment_method'] ?? null);
 
         // Resolve the formula's row outside the transaction (read-only) so we
         // can run the destination guard — and persist its audit log — even
@@ -158,7 +167,7 @@ class OrganizationPayoutService
                 ->guardPayoutDestination($probeMatch['organization_id'] ?? null, $orgName, $actorId);
         }
 
-        $payout = DB::transaction(function () use ($data, $actorId) {
+        $payout = DB::transaction(function () use ($data, $actorId, $paymentMethod) {
             $formula = DonationFormula::whereKey($data['donation_formula_id'])->lockForUpdate()->first();
             if (! $formula) {
                 throw new UserFacingException('Donation formula not found.');
@@ -210,7 +219,7 @@ class OrganizationPayoutService
                 'type' => $type,
                 'status' => 'pending',
                 'actor_id' => $actorId,
-                'method' => 'paypal',
+                'payment_method' => $paymentMethod,
                 'destination_paypal_email' => $destination->paypal_email,
                 'note' => $data['note'] ?? null,
             ]);
@@ -221,12 +230,12 @@ class OrganizationPayoutService
         /** @var OrganizationPayout $payout */
         [$payout, $amount, $type, $key, $formula] = $payout;
 
-        // Phase 2 — outside the DB lock: submit the real PayPal transfer.
+        // Phase 2 — outside the DB lock: submit the real provider transfer.
         // A provider failure marks the row failed (off the balance) instead
         // of rolling back and losing the audit trail. The log records the
-        // PayPal-response status in every outcome — including rejections.
+        // provider-response status in every outcome — including rejections.
         try {
-            $this->submitToPayPal($payout, $amount, $type);
+            $this->submitToProvider($payout, $amount, $type);
         } finally {
             $this->recordLog($payout->refresh(), $amount, $type, $actorId);
         }
@@ -235,7 +244,7 @@ class OrganizationPayoutService
     }
 
     /**
-     * Push a ledger row to the real PayPal Payouts API.
+     * Push a ledger row through the payout rail bound to its method code.
      *
      * Sets payout_batch_id / payout_item_id / provider_status and flips the
      * row: pending → paid (funds moved) or pending → failed (rejected with
@@ -243,21 +252,23 @@ class OrganizationPayoutService
      * surfaces it; transient network errors leave the row pending for a
      * later sync call.
      */
-    private function submitToPayPal(OrganizationPayout $payout, float $amount, string $type): void
+    private function submitToProvider(OrganizationPayout $payout, float $amount, string $type): void
     {
         try {
-            $batch = app(PayPalClient::class)->createBatchPayout(
-                [[
-                    'recipient_email' => $payout->destination_paypal_email,
-                    'amount' => $amount,
-                    'currency' => $payout->currency,
-                    'note' => sprintf('WikiDonate payout (%s)', $type),
-                    'sender_item_id' => $payout->uuid,
-                ]],
-                (string) $payout->uuid,
-                'WikiDonate payout',
-                'Your payout from WikiDonate is on the way.',
-            );
+            $batch = app(PaymentProviderRegistry::class)
+                ->payoutClient($payout->payment_method ?: 'paypal')
+                ->payout(
+                    [[
+                        'recipient_email' => $payout->destination_paypal_email,
+                        'amount' => $amount,
+                        'currency' => $payout->currency,
+                        'note' => sprintf('WikiDonate payout (%s)', $type),
+                        'sender_item_id' => $payout->uuid,
+                    ]],
+                    (string) $payout->uuid,
+                    'WikiDonate payout',
+                    'Your payout from WikiDonate is on the way.',
+                );
 
             $item = (array) ($batch['items'][0] ?? []);
             $header = (array) ($batch['batch_header'] ?? []);
@@ -282,7 +293,7 @@ class OrganizationPayoutService
             }
 
             if ($effective === 'FAILED' || in_array($itemStatus, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
-                $reason = (string) ($item['errors']['message'] ?? ($item['errors']['description'] ?? 'PayPal rejected the payout item'));
+                $reason = (string) ($item['errors']['message'] ?? ($item['errors']['description'] ?? 'Provider rejected the payout item'));
                 $payout->forceFill([
                     'status' => 'failed',
                     'payout_batch_id' => $header['payout_batch_id'] ?? null,
@@ -353,6 +364,18 @@ class OrganizationPayoutService
         $changed = collect();
 
         foreach ($pending as $payout) {
+            // Only methods with a bound payout-status rail can be synced.
+            // Today that is PayPal alone; a row from any other rail keeps
+            // its status untouched rather than being guessed at.
+            if (($payout->payment_method ?: 'paypal') !== PaymentMethod::CODE_PAYPAL) {
+                Log::warning('Payout sync skipped: method has no status rail.', [
+                    'payout_id' => $payout->id,
+                    'payment_method' => $payout->payment_method,
+                ]);
+
+                continue;
+            }
+
             try {
                 $batch = app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id);
                 $statuses = PayPalClient::extractBatchItemStatuses($batch);
@@ -385,6 +408,7 @@ class OrganizationPayoutService
                             $payout->organization_name
                         ),
                         'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                        'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
                     ]);
                 } elseif (in_array($effective, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
                     $payout->forceFill([
@@ -400,13 +424,15 @@ class OrganizationPayoutService
                         'subject_type' => OrganizationPayout::class,
                         'subject_id' => $payout->id,
                         'message' => sprintf(
-                            'PayPal rejected payout of %.2f %s to %s — %s',
+                            'Payout of %.2f %s to %s via %s rejected — %s',
                             $payout->amount,
                             strtoupper($payout->currency),
                             $payout->organization_name,
+                            $payout->payment_method ?: 'paypal',
                             $payout->failure_reason
                         ),
                         'after' => ['status' => 'failed', 'provider_status' => $effective],
+                        'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
                     ]);
                 }
             } catch (Exception $e) {
@@ -425,12 +451,13 @@ class OrganizationPayoutService
             'actor_id' => $actorId,
             'actor_role' => 'Admin',
             'message' => sprintf(
-                '%s payout of %.2f %s to %s (%s) via PayPal',
+                '%s payout of %.2f %s to %s (%s) via %s',
                 $type,
                 $amount,
                 strtoupper($payout->currency),
                 $payout->organization_name,
-                $payout->destination_paypal_email
+                $payout->destination_paypal_email,
+                $payout->payment_method ?: 'paypal'
             ),
             'after' => [
                 'organization_id' => $payout->organization_id,
@@ -445,6 +472,7 @@ class OrganizationPayoutService
                 'provider_status' => $payout->provider_status,
                 'failure_reason' => $payout->failure_reason,
             ],
+            'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
         ]);
     }
 

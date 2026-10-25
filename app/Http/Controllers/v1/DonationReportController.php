@@ -38,9 +38,8 @@ class DonationReportController extends Controller
                 ->when($request->filled('search'), function ($q) use ($request) {
                     $search = $request->input('search');
                     $q->where(function ($sq) use ($search) {
-                        $sq->where('paypal_order_id', 'like', "%{$search}%")
-                            ->orWhere('stripe_session_id', 'like', "%{$search}%")
-                            ->orWhere('stripe_payment_intent_id', 'like', "%{$search}%")
+                        $sq->where('gateway_reference', 'like', "%{$search}%")
+                            ->orWhere('payment_method', 'like', "%{$search}%")
                             ->orWhere('metadata->payment_id', 'like', "%{$search}%")
                             ->orWhere('donor_email', 'like', "%{$search}%");
                     });
@@ -59,13 +58,14 @@ class DonationReportController extends Controller
                 'totalDonations' => (int) ($completed->count ?? 0),
                 'pendingDonations' => (int) ($statusStats['pending']->count ?? 0),
                 'failedDonations' => (int) ($statusStats['failed']->count ?? 0),
-                'bySource' => (clone $base)
+                // Data-driven: group on the generic payment_method column.
+                'byPaymentMethod' => (clone $base)
                     ->selectRaw(
-                        "CASE WHEN paypal_order_id IS NOT NULL THEN 'paypal' ELSE 'stripe' END as source, "
+                        "COALESCE(payment_method, 'stripe') as payment_method, "
                         .'COUNT(*) as count, SUM(amount) as total'
                     )
                     ->where('status', 'completed')
-                    ->groupBy('source')
+                    ->groupBy('payment_method')
                     ->get(),
             ];
 
@@ -89,15 +89,13 @@ class DonationReportController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $donation->paypal_order_id ? 'paypal' : 'stripe',
+                    'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
                     'date' => $donation->created_at->format('d M, Y'),
                     'donor_email' => $donation->donor_email,
-                    'payment_id' => $donation->paypal_order_id
-                        ? ($metadata['payment_id'] ?? $donation->paypal_order_id)
-                        : ($donation->stripe_payment_intent_id ?? $donation->stripe_session_id),
+                    'payment_id' => $metadata['payment_id'] ?? $donation->gateway_reference,
                     'formula_id' => $metadata['formula_id'] ?? $formula?->id,
                     'formula' => $snapshot ?? $formula?->formula,
                     'formula_snapshot_used' => $usesSnapshot,

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class OrganizationPayoutController extends Controller
 {
@@ -95,6 +96,10 @@ class OrganizationPayoutController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'currency' => 'required|string|size:3',
             'note' => 'nullable|string|max:65535',
+            // Payout rail is data-driven: only an active, payout-capable
+            // registry code may be used. Omitted => the historical default.
+            'payment_method' => ['nullable', 'string', Rule::exists('payment_methods', 'code')
+                ->where(fn ($q) => $q->where('active', true)->whereIn('type', ['payout', 'both']))],
         ]);
 
         if ($validator->fails()) {
@@ -106,13 +111,14 @@ class OrganizationPayoutController extends Controller
                 [
                     ...$request->only(['donation_formula_id', 'organization_name', 'amount', 'note']),
                     'currency' => strtolower($request->input('currency')),
+                    'payment_method' => $request->input('payment_method'),
                 ],
                 $request->user()->id,
             );
 
             return response()->json([
                 'success' => true,
-                'message' => 'Payout submitted to PayPal',
+                'message' => 'Payout submitted',
                 'data' => $this->transform($payout->load('actor:id,uuid,username', 'formula:id,uuid,name')),
             ], Response::HTTP_CREATED);
         } catch (Exception $e) {
@@ -160,6 +166,7 @@ class OrganizationPayoutController extends Controller
             'currency' => $payout->currency,
             'type' => $payout->type,
             'status' => $payout->status,
+            'payment_method' => $payout->payment_method,
             'provider_status' => $payout->provider_status,
             'failure_reason' => $payout->failure_reason,
             'payout_batch_id' => $payout->payout_batch_id,

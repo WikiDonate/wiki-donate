@@ -166,8 +166,11 @@
                             :rows="stats.recentDonations"
                             empty-text="admin.noDonationsYet"
                         >
-                            <template #cell-source>
-                                <AdminBadge variant="info" :text="t('admin.checkout')" />
+                            <template #cell-payment_method="{ row }">
+                                <AdminBadge
+                                    :variant="methodVariant(row.payment_method)"
+                                    :text="methodLabel(row.payment_method)"
+                                />
                             </template>
                             <template #cell-amount="{ row }"
                                 >{{ row.currency }} {{ Number(row.amount).toFixed(2) }}</template
@@ -256,9 +259,11 @@
     import StatCard from '~/components/admin/StatCard.vue'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
     const { notifyError } = useToastify()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     const selectedDonation = ref(null)
     const selectedFormulaUrl = ref('')
@@ -291,7 +296,7 @@
     const donationColumns = [
         { key: 'date', label: t('admin.date') },
         { key: 'user', label: t('admin.donor') },
-        { key: 'source', label: t('admin.source') },
+        { key: 'payment_method', label: t('admin.paymentMethod') },
         { key: 'amount', label: t('admin.amount') },
         { key: 'status', label: t('admin.status') },
         { key: 'article', label: t('admin.article') },
@@ -329,6 +334,7 @@
     }
 
     onMounted(async () => {
+        loadPaymentMethods()
         try {
             const response = await adminService.getDashboard()
             if (response.success) {

@@ -335,7 +335,12 @@
         "totalMustEqual100": "การจัดสรรทั้งหมดจะต้องเท่ากับ 100%",
         "update": "อัปเดต",
         "updateConfirmMsg": "คุณแน่ใจหรือไม่ว่าต้องการอัปเดตสูตรการบริจาคนี้",
-        "updateConfirmTitle": "อัพเดทสูตรการบริจาค"
+        "updateConfirmTitle": "อัพเดทสูตรการบริจาค",
+        "verified": "ตรวจสอบแล้ว",
+        "verifiedHint": "องค์กรนี้ได้รับการยืนยันสำหรับการจ่ายเงินแล้ว",
+        "needsVerification": "จำเป็นต้องมีการตรวจสอบ",
+        "needsVerificationHint": "องค์กรที่กำหนดเอง — รอการตรวจสอบผู้ดูแลระบบ",
+        "customOrgHint": "ชื่อที่กำหนดเอง — คุณและผู้ดูแลระบบจะได้รับอีเมลเพื่อตรวจสอบ"
     },
     "donate": {
         "title": "บริจาคผ่านสูตร",
@@ -349,13 +354,20 @@
         "enterAmount": "ใส่จำนวนเงิน",
         "operationalCosts": "* สูงถึง 0.1% สำหรับค่าใช้จ่ายในการดำเนินงาน",
         "enterAmountToDonate": "ป้อนจำนวนเงินที่จะบริจาค",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "ไม่ได้กำหนดค่า PayPal",
         "enterValidAmount": "กรุณากรอกจำนวนเงินบริจาคที่ถูกต้อง",
         "failedToCreateOrder": "ไม่สามารถสร้างคำสั่งซื้อ PayPal",
         "failedToCapture": "ไม่สามารถบันทึกการชำระเงินได้",
         "failedToProcess": "ล้มเหลวในการดำเนินการบริจาค",
         "paypalError": "เกิดข้อผิดพลาดกับ PayPal",
-        "failedToLoadPaypal": "โหลด PayPal ไม่สำเร็จ โปรดลองอีกครั้ง"
+        "failedToLoadPaypal": "โหลด PayPal ไม่สำเร็จ โปรดลองอีกครั้ง",
+        "paymentMethod": "วิธีการชำระเงิน",
+        "selectPaymentMethod": "เลือกวิธีการชำระเงิน",
+        "noPaymentMethods": "ไม่มีวิธีการชำระเงินที่ใช้ได้ในขณะนี้",
+        "methodNotConfigured": "{method} ไม่ได้รับการกำหนดค่า",
+        "methodError": "มีข้อผิดพลาดเกิดขึ้นกับ {method}",
+        "failedToLoadMethod": "โหลด {method} ไม่สำเร็จ โปรดลองอีกครั้ง"
     },
     "payment": {
         "successTitle": "ชำระเงินสำเร็จ",
@@ -374,7 +386,10 @@
         "contactSupport": "ติดต่อฝ่ายสนับสนุน",
         "thankYou": "ขอบคุณสำหรับการบริจาคอันมีน้ำใจของคุณ!",
         "amountLabel": "จำนวน:",
-        "successful": "การชำระเงินของคุณสำเร็จแล้ว"
+        "successful": "การชำระเงินของคุณสำเร็จแล้ว",
+        "methodLabel": "วิธีการชำระเงิน",
+        "unverifiedTitle": "การชำระเงิน {method} ของคุณสำเร็จแล้ว แต่เราไม่สามารถยืนยันได้โดยอัตโนมัติ",
+        "unverifiedMsg": "การบริจาคของคุณจะเสร็จสิ้นในไม่ช้า โปรดติดต่อฝ่ายสนับสนุนหากคุณมีข้อกังวลใดๆ"
     },
     "admin": {
         "panel": "แผงผู้ดูแลระบบ",
@@ -577,7 +592,20 @@
         "visitSite": "เยี่ยมชมเว็บไซต์",
         "createdAt": "สร้างแล้ว",
         "verifiedAt": "ตรวจสอบแล้ว",
-        "unpaid": "ค้างชำระ"
+        "unpaid": "ค้างชำระ",
+        "invalidDateRange": "วันที่เริ่มต้นจะต้องอยู่ก่อนวันที่สิ้นสุด",
+        "stepTitleRequired": "ต้องระบุชื่อขั้นตอน",
+        "paypalEmailRequired": "จำเป็นต้องมีอีเมลรับ PayPal",
+        "searchPayoutsPlaceholder": "ค้นหาตามองค์กร",
+        "payDisabledUnverified": "ตรวจสอบองค์กรก่อนชำระเงิน",
+        "payoutAmountRequired": "ต้องระบุจำนวนเงิน",
+        "payoutAmountPositive": "ป้อนจำนวนเงินที่มากกว่า 0",
+        "fieldTooLong": "ต้องมีความยาวไม่เกิน 255 อักขระ",
+        "payoutAmountExceeds": "จำนวนเงินเกินยอดคงเหลือปัจจุบันของ {balance}",
+        "payoutFormulaCount": "{count} สูตร",
+        "paymentMethod": "วิธีการชำระเงิน",
+        "allPaymentMethods": "วิธีการชำระเงินทั้งหมด",
+        "paymentMethodLabel": "วิธีการชำระเงิน"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org สงวนลิขสิทธิ์."

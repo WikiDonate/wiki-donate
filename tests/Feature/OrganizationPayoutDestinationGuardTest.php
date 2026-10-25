@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
+use App\Models\TransactionLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -134,6 +135,7 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
             'subject_id' => $organization->id,
             'actor_id' => $this->admin->id,
         ]);
+        $this->assertEquals('paypal', TransactionLog::where('event', 'payout.blocked')->latest('id')->first()->meta['payment_method']);
     }
 
     public function test_payout_blocked_when_paypal_email_missing(): void

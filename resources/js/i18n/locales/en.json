@@ -354,13 +354,20 @@
         "enterAmount": "Enter amount",
         "operationalCosts": "* Up to 0.1% for operational costs.",
         "enterAmountToDonate": "Enter an amount to donate",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal is not configured.",
         "enterValidAmount": "Please enter a valid donation amount.",
         "failedToCreateOrder": "Failed to create PayPal order",
         "failedToCapture": "Failed to capture payment",
         "failedToProcess": "Failed to process donation",
         "paypalError": "Something went wrong with PayPal.",
-        "failedToLoadPaypal": "Failed to load PayPal. Please try again."
+        "failedToLoadPaypal": "Failed to load PayPal. Please try again.",
+        "paymentMethod": "Payment method",
+        "selectPaymentMethod": "Select a payment method",
+        "noPaymentMethods": "No payment methods are currently available.",
+        "methodNotConfigured": "{method} is not configured.",
+        "methodError": "Something went wrong with {method}.",
+        "failedToLoadMethod": "Failed to load {method}. Please try again."
     },
     "payment": {
         "successTitle": "Payment Successful",
@@ -379,7 +386,10 @@
         "contactSupport": "Contact support",
         "thankYou": "Thank you for your generous donation!",
         "amountLabel": "Amount:",
-        "successful": "Your payment was successful."
+        "successful": "Your payment was successful.",
+        "methodLabel": "Payment method",
+        "unverifiedTitle": "Your {method} payment succeeded, but we could not verify it automatically.",
+        "unverifiedMsg": "Your donation will be finalized shortly. Please contact support if you have any concerns."
     },
     "admin": {
         "panel": "Admin Panel",
@@ -592,7 +602,10 @@
         "visitSite": "Visit site",
         "createdAt": "Created",
         "verifiedAt": "Verified",
-        "unpaid": "Unpaid"
+        "unpaid": "Unpaid",
+        "paymentMethod": "Payment method",
+        "allPaymentMethods": "All payment methods",
+        "paymentMethodLabel": "Payment method"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. All rights reserved."

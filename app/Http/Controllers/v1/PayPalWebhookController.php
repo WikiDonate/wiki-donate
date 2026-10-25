@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Services\PayPalClient;
 use Illuminate\Http\JsonResponse;
@@ -204,6 +204,7 @@ class PayPalWebhookController extends Controller
                     $payout->organization_name
                 ),
                 'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
             ]);
 
             return;
@@ -249,13 +250,15 @@ class PayPalWebhookController extends Controller
             'subject_type' => OrganizationPayout::class,
             'subject_id' => $payout->id,
             'message' => sprintf(
-                'PayPal rejected payout of %.2f %s to %s — %s',
+                'Payout of %.2f %s to %s via %s rejected — %s',
                 $payout->amount,
                 strtoupper($payout->currency),
                 $payout->organization_name,
+                $payout->payment_method ?: 'paypal',
                 $reason
             ),
             'after' => ['status' => 'failed', 'provider_status' => 'FAILED', 'failure_reason' => $reason],
+            'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
         ]);
     }
 
@@ -297,7 +300,7 @@ class PayPalWebhookController extends Controller
         }
 
         // Idempotency: skip if already recorded
-        $existing = Donation::where('paypal_order_id', $orderId)
+        $existing = Donation::gateway('paypal', $orderId)
             ->where('status', 'completed')
             ->first();
 
@@ -311,7 +314,9 @@ class PayPalWebhookController extends Controller
         }
 
         // Look up the pending order
-        $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)->first();
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+            ->where('gateway_reference', $orderId)
+            ->first();
 
         // The capture webhook resource contains the merchant (payee), not the
         // buyer (payer). Pull payer details from the pending order if present,
@@ -340,7 +345,8 @@ class PayPalWebhookController extends Controller
         $formula = $pending?->donation_formula_id ? DonationFormula::find($pending->donation_formula_id) : null;
 
         $donation = Donation::create([
-            'paypal_order_id' => $orderId,
+            'payment_method' => 'paypal',
+            'gateway_reference' => $orderId,
             'user_id' => $pending?->user_id,
             'donation_formula_id' => $pending?->donation_formula_id,
             'donor_name' => $donorName,
@@ -382,6 +388,7 @@ class PayPalWebhookController extends Controller
                 'order_id' => $orderId,
                 'status' => 'completed',
             ],
+            'meta' => ['payment_method' => 'paypal'],
         ]);
 
         Log::info('PayPal donation recorded via webhook', [
@@ -401,7 +408,9 @@ class PayPalWebhookController extends Controller
         $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? $resource['custom_id'] ?? null;
 
         if ($orderId) {
-            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
+            PaymentPendingOrder::where('payment_method', 'paypal')
+                ->where('gateway_reference', $orderId)
+                ->delete();
             Log::info('PayPal capture denied, pending order removed', ['order_id' => $orderId]);
         }
     }
@@ -415,7 +424,9 @@ class PayPalWebhookController extends Controller
         $orderId = $event['resource']['id'] ?? null;
 
         if ($orderId) {
-            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
+            PaymentPendingOrder::where('payment_method', 'paypal')
+                ->where('gateway_reference', $orderId)
+                ->delete();
             Log::info('PayPal order cancelled, pending order removed', ['order_id' => $orderId]);
         }
     }

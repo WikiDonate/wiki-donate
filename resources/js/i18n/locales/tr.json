@@ -335,7 +335,12 @@
         "totalMustEqual100": "Toplam tahsis %100'e eşit olmalıdır",
         "update": "Güncelleme",
         "updateConfirmMsg": "Bu bağış formülünü güncellemek istediğinizden emin misiniz?",
-        "updateConfirmTitle": "Bağış Formülünü Güncelle"
+        "updateConfirmTitle": "Bağış Formülünü Güncelle",
+        "verified": "Doğrulandı",
+        "verifiedHint": "Bu kuruluş ödemeler için doğrulandı",
+        "needsVerification": "Doğrulama gerekiyor",
+        "needsVerificationHint": "Özel organizasyon — yönetici doğrulaması bekleniyor",
+        "customOrgHint": "Özel ad — doğrulama için size ve yöneticiye e-posta gönderilecektir."
     },
     "donate": {
         "title": "Formül aracılığıyla bağış yapın",
@@ -349,13 +354,20 @@
         "enterAmount": "Tutarı girin",
         "operationalCosts": "* Operasyonel maliyetler için %0,1'e kadar.",
         "enterAmountToDonate": "Bağış yapmak için bir miktar girin",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal yapılandırılmamış.",
         "enterValidAmount": "Lütfen geçerli bir bağış tutarı girin.",
         "failedToCreateOrder": "PayPal siparişi oluşturulamadı",
         "failedToCapture": "Ödeme alınamadı",
         "failedToProcess": "Bağış işlenemedi",
         "paypalError": "PayPal'da bir şeyler ters gitti.",
-        "failedToLoadPaypal": "PayPal yüklenemedi. Lütfen tekrar deneyin."
+        "failedToLoadPaypal": "PayPal yüklenemedi. Lütfen tekrar deneyin.",
+        "paymentMethod": "Ödeme yöntemi",
+        "selectPaymentMethod": "Bir ödeme yöntemi seçin",
+        "noPaymentMethods": "Şu anda herhangi bir ödeme yöntemi mevcut değil.",
+        "methodNotConfigured": "{method} yapılandırılmadı.",
+        "methodError": "{method} ile ilgili bir şeyler ters gitti.",
+        "failedToLoadMethod": "{method} yüklenemedi. Lütfen tekrar deneyin."
     },
     "payment": {
         "successTitle": "Ödeme Başarılı",
@@ -374,7 +386,10 @@
         "contactSupport": "Desteğe başvurun",
         "thankYou": "Cömert bağışınız için teşekkür ederiz!",
         "amountLabel": "Tutar:",
-        "successful": "Ödemeniz başarılı oldu."
+        "successful": "Ödemeniz başarılı oldu.",
+        "methodLabel": "Ödeme yöntemi",
+        "unverifiedTitle": "{method} ödemeniz başarılı oldu ancak bunu otomatik olarak doğrulayamadık.",
+        "unverifiedMsg": "Bağışınız kısa sürede tamamlanacaktır. Herhangi bir endişeniz varsa lütfen destek ekibiyle iletişime geçin."
     },
     "admin": {
         "panel": "Yönetici Paneli",
@@ -577,7 +592,20 @@
         "visitSite": "Siteyi ziyaret edin",
         "createdAt": "Oluşturuldu",
         "verifiedAt": "Doğrulandı",
-        "unpaid": "ödenmemiş"
+        "unpaid": "ödenmemiş",
+        "invalidDateRange": "Başlangıç ​​tarihi bitiş tarihinden önce olmalıdır.",
+        "stepTitleRequired": "Adım başlığı gerekli.",
+        "paypalEmailRequired": "PayPal alma e-postası gereklidir.",
+        "searchPayoutsPlaceholder": "Kuruluşa göre ara",
+        "payDisabledUnverified": "Ödeme yapmadan önce kuruluşu doğrulayın",
+        "payoutAmountRequired": "Tutar gerekli.",
+        "payoutAmountPositive": "0'dan büyük bir miktar girin.",
+        "fieldTooLong": "En fazla 255 karakter olmalıdır.",
+        "payoutAmountExceeds": "Tutar, {balance} tutarındaki canlı bakiyeyi aşıyor.",
+        "payoutFormulaCount": "{count} formüller",
+        "paymentMethod": "Ödeme yöntemi",
+        "allPaymentMethods": "Tüm ödeme yöntemleri",
+        "paymentMethodLabel": "Ödeme yöntemi"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."

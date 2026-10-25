@@ -38,6 +38,7 @@ return [
         'secret' => env('STRIPE_SECRET_KEY'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
         'publishable_key' => env('STRIPE_PUBLISHABLE_KEY'),
+        'mode' => env('STRIPE_MODE', 'test'),
     ],
 
     'paypal' => [

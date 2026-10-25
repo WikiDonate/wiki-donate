@@ -335,7 +335,12 @@
         "totalMustEqual100": "Kokonaismäärän on oltava 100 %",
         "update": "Päivitä",
         "updateConfirmMsg": "Haluatko varmasti päivittää tämän lahjoituskaavan?",
-        "updateConfirmTitle": "Päivitä lahjoituskaava"
+        "updateConfirmTitle": "Päivitä lahjoituskaava",
+        "verified": "Vahvistettu",
+        "verifiedHint": "Tämä organisaatio on vahvistettu maksuja varten",
+        "needsVerification": "Vaatii vahvistuksen",
+        "needsVerificationHint": "Muokattu organisaatio – odottaa järjestelmänvalvojan vahvistusta",
+        "customOrgHint": "Muokattu nimi – sinulle ja järjestelmänvalvojalle lähetetään sähköposti vahvistusta varten."
     },
     "donate": {
         "title": "Lahjoita Formulan kautta",
@@ -349,13 +354,20 @@
         "enterAmount": "Syötä summa",
         "operationalCosts": "* Jopa 0,1 % toimintakuluihin.",
         "enterAmountToDonate": "Anna lahjoitettava summa",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPalia ei ole määritetty.",
         "enterValidAmount": "Anna kelvollinen lahjoitussumma.",
         "failedToCreateOrder": "PayPal-tilauksen luominen epäonnistui",
         "failedToCapture": "Maksun tallentaminen epäonnistui",
         "failedToProcess": "Lahjoituksen käsittely epäonnistui",
         "paypalError": "Jotain meni vikaan PayPalissa.",
-        "failedToLoadPaypal": "PayPalin lataaminen epäonnistui. Yritä uudelleen."
+        "failedToLoadPaypal": "PayPalin lataaminen epäonnistui. Yritä uudelleen.",
+        "paymentMethod": "Maksutapa",
+        "selectPaymentMethod": "Valitse maksutapa",
+        "noPaymentMethods": "Maksutapoja ei ole tällä hetkellä saatavilla.",
+        "methodNotConfigured": "{method} ei ole määritetty.",
+        "methodError": "Jotain meni pieleen menetelmässä {method}.",
+        "failedToLoadMethod": "{method} lataus epäonnistui. Yritä uudelleen."
     },
     "payment": {
         "successTitle": "Maksu onnistui",
@@ -374,7 +386,10 @@
         "contactSupport": "Ota yhteyttä tukeen",
         "thankYou": "Kiitos runsaasta lahjoituksestasi!",
         "amountLabel": "Summa:",
-        "successful": "Maksusi onnistui."
+        "successful": "Maksusi onnistui.",
+        "methodLabel": "Maksutapa",
+        "unverifiedTitle": "Maksusi {method} onnistui, mutta emme voineet vahvistaa sitä automaattisesti.",
+        "unverifiedMsg": "Lahjoituksesi viimeistellään pian. Ota yhteyttä tukeen, jos sinulla on kysyttävää."
     },
     "admin": {
         "panel": "Hallintapaneeli",
@@ -577,7 +592,20 @@
         "visitSite": "Vieraile sivustolla",
         "createdAt": "Luotu",
         "verifiedAt": "Vahvistettu",
-        "unpaid": "Palkaton"
+        "unpaid": "Palkaton",
+        "invalidDateRange": "Aloituspäivän on oltava ennen lopetuspäivää.",
+        "stepTitleRequired": "Vaiheen otsikko vaaditaan.",
+        "paypalEmailRequired": "PayPal vastaanottava sähköposti vaaditaan.",
+        "searchPayoutsPlaceholder": "Hae organisaation mukaan",
+        "payDisabledUnverified": "Tarkista organisaatio ennen maksamista",
+        "payoutAmountRequired": "Määrä vaaditaan.",
+        "payoutAmountPositive": "Anna summa, joka on suurempi kuin 0.",
+        "fieldTooLong": "Saa olla enintään 255 merkkiä.",
+        "payoutAmountExceeds": "Summa ylittää live-saldon {saldo}.",
+        "payoutFormulaCount": "{count} kaavaa",
+        "paymentMethod": "Maksutapa",
+        "allPaymentMethods": "Kaikki maksutavat",
+        "paymentMethodLabel": "Maksutapa"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Kaikki oikeudet pidätetään."

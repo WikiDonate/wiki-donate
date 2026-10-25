@@ -335,7 +335,12 @@
         "totalMustEqual100": "Alocarea totală trebuie să fie egală cu 100%",
         "update": "Actualizare",
         "updateConfirmMsg": "Sigur doriți să actualizați această formulă de donație?",
-        "updateConfirmTitle": "Actualizați formula de donație"
+        "updateConfirmTitle": "Actualizați formula de donație",
+        "verified": "Verificat",
+        "verifiedHint": "Această organizație este verificată pentru plăți",
+        "needsVerification": "Necesita verificare",
+        "needsVerificationHint": "Organizație personalizată – în așteptarea verificării de către administrator",
+        "customOrgHint": "Nume personalizat — dvs. și administratorul veți primi un e-mail pentru verificare."
     },
     "donate": {
         "title": "Donează prin Formula",
@@ -349,13 +354,20 @@
         "enterAmount": "Introduceți suma",
         "operationalCosts": "* Până la 0,1% pentru costurile operaționale.",
         "enterAmountToDonate": "Introduceți o sumă de donat",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal nu este configurat.",
         "enterValidAmount": "Vă rugăm să introduceți o sumă de donație validă.",
         "failedToCreateOrder": "Nu s-a putut crea comanda PayPal",
         "failedToCapture": "Nu s-a putut captura plata",
         "failedToProcess": "Nu s-a procesat donația",
         "paypalError": "Ceva a mers prost cu PayPal.",
-        "failedToLoadPaypal": "Nu s-a încărcat PayPal. Vă rugăm să încercați din nou."
+        "failedToLoadPaypal": "Nu s-a încărcat PayPal. Vă rugăm să încercați din nou.",
+        "paymentMethod": "Metoda de plata",
+        "selectPaymentMethod": "Selectați o metodă de plată",
+        "noPaymentMethods": "Nu sunt disponibile metode de plată momentan.",
+        "methodNotConfigured": "{method} nu este configurat.",
+        "methodError": "Ceva a mers prost cu {method}.",
+        "failedToLoadMethod": "Nu s-a încărcat {method}. Vă rugăm să încercați din nou."
     },
     "payment": {
         "successTitle": "Plata reușită",
@@ -374,7 +386,10 @@
         "contactSupport": "Contactați asistența",
         "thankYou": "Vă mulțumim pentru donația dumneavoastră generoasă!",
         "amountLabel": "Suma:",
-        "successful": "Plata dvs. a avut succes."
+        "successful": "Plata dvs. a avut succes.",
+        "methodLabel": "Metoda de plata",
+        "unverifiedTitle": "Plata dvs. {method} a reușit, dar nu am putut-o verifica automat.",
+        "unverifiedMsg": "Donația ta va fi finalizată în curând. Vă rugăm să contactați asistența dacă aveți nelămuriri."
     },
     "admin": {
         "panel": "Panoul de administrare",
@@ -577,7 +592,20 @@
         "visitSite": "Vizitați site-ul",
         "createdAt": "Creat",
         "verifiedAt": "Verificat",
-        "unpaid": "Neplătit"
+        "unpaid": "Neplătit",
+        "invalidDateRange": "Data de început trebuie să fie anterioară datei de încheiere.",
+        "stepTitleRequired": "Titlul pasului este necesar.",
+        "paypalEmailRequired": "Este necesară primirea e-mailului PayPal.",
+        "searchPayoutsPlaceholder": "Căutați după organizație",
+        "payDisabledUnverified": "Verificați organizația înainte de a plăti",
+        "payoutAmountRequired": "Este necesară suma.",
+        "payoutAmountPositive": "Introduceți o sumă mai mare de 0.",
+        "fieldTooLong": "Trebuie să aibă cel mult 255 de caractere.",
+        "payoutAmountExceeds": "Suma depășește soldul activ al {balance}.",
+        "payoutFormulaCount": "{count} formule",
+        "paymentMethod": "Metoda de plata",
+        "allPaymentMethods": "Toate metodele de plată",
+        "paymentMethodLabel": "Metoda de plata"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

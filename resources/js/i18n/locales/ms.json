@@ -335,7 +335,12 @@
         "totalMustEqual100": "Jumlah peruntukan mestilah sama dengan 100%",
         "update": "Kemas kini",
         "updateConfirmMsg": "Adakah anda pasti mahu mengemas kini formula derma ini?",
-        "updateConfirmTitle": "Kemas kini Formula Derma"
+        "updateConfirmTitle": "Kemas kini Formula Derma",
+        "verified": "Disahkan",
+        "verifiedHint": "Organisasi ini disahkan untuk pembayaran",
+        "needsVerification": "Perlu pengesahan",
+        "needsVerificationHint": "Organisasi tersuai — menunggu pengesahan pentadbir",
+        "customOrgHint": "Nama tersuai — anda dan pentadbir akan dihantar melalui e-mel untuk pengesahan."
     },
     "donate": {
         "title": "Menderma melalui Formula",
@@ -349,13 +354,20 @@
         "enterAmount": "Masukkan jumlah",
         "operationalCosts": "* Sehingga 0.1% untuk kos operasi.",
         "enterAmountToDonate": "Masukkan jumlah untuk didermakan",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal tidak dikonfigurasikan.",
         "enterValidAmount": "Sila masukkan jumlah derma yang sah.",
         "failedToCreateOrder": "Gagal membuat pesanan PayPal",
         "failedToCapture": "Gagal menangkap pembayaran",
         "failedToProcess": "Gagal memproses derma",
         "paypalError": "Kesilapan telah berlaku dengan PayPal.",
-        "failedToLoadPaypal": "Gagal memuatkan PayPal. Sila cuba lagi."
+        "failedToLoadPaypal": "Gagal memuatkan PayPal. Sila cuba lagi.",
+        "paymentMethod": "Kaedah pembayaran",
+        "selectPaymentMethod": "Pilih kaedah pembayaran",
+        "noPaymentMethods": "Tiada kaedah pembayaran tersedia pada masa ini.",
+        "methodNotConfigured": "{method} tidak dikonfigurasikan.",
+        "methodError": "Sesuatu telah berlaku dengan {method}.",
+        "failedToLoadMethod": "Gagal memuatkan {method}. Sila cuba lagi."
     },
     "payment": {
         "successTitle": "Pembayaran Berjaya",
@@ -374,7 +386,10 @@
         "contactSupport": "Hubungi sokongan",
         "thankYou": "Terima kasih atas sumbangan murah hati anda!",
         "amountLabel": "Jumlah:",
-        "successful": "Pembayaran anda berjaya."
+        "successful": "Pembayaran anda berjaya.",
+        "methodLabel": "Kaedah pembayaran",
+        "unverifiedTitle": "Pembayaran {method} anda berjaya, tetapi kami tidak dapat mengesahkannya secara automatik.",
+        "unverifiedMsg": "Derma anda akan dimuktamadkan tidak lama lagi. Sila hubungi sokongan jika anda mempunyai sebarang kebimbangan."
     },
     "admin": {
         "panel": "Panel Pentadbir",
@@ -577,7 +592,20 @@
         "visitSite": "Lawati tapak",
         "createdAt": "Dicipta",
         "verifiedAt": "Disahkan",
-        "unpaid": "Tak bergaji"
+        "unpaid": "Tak bergaji",
+        "invalidDateRange": "Tarikh mula mestilah sebelum tarikh tamat.",
+        "stepTitleRequired": "Tajuk langkah diperlukan.",
+        "paypalEmailRequired": "PayPal menerima e-mel diperlukan.",
+        "searchPayoutsPlaceholder": "Cari mengikut organisasi",
+        "payDisabledUnverified": "Sahkan organisasi sebelum membayar",
+        "payoutAmountRequired": "Jumlah diperlukan.",
+        "payoutAmountPositive": "Masukkan jumlah yang lebih besar daripada 0.",
+        "fieldTooLong": "Mesti paling banyak 255 aksara.",
+        "payoutAmountExceeds": "Amaun melebihi baki hidup {balance}.",
+        "payoutFormulaCount": "{count} formula",
+        "paymentMethod": "Kaedah pembayaran",
+        "allPaymentMethods": "Semua kaedah pembayaran",
+        "paymentMethodLabel": "Kaedah pembayaran"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

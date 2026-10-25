@@ -335,7 +335,12 @@
         "totalMustEqual100": "ההקצאה הכוללת חייבת להיות 100%",
         "update": "עדכון",
         "updateConfirmMsg": "האם אתה בטוח שברצונך לעדכן את נוסחת התרומה הזו?",
-        "updateConfirmTitle": "עדכון נוסחת התרומה"
+        "updateConfirmTitle": "עדכון נוסחת התרומה",
+        "verified": "מאומת",
+        "verifiedHint": "ארגון זה מאומת לתשלומים",
+        "needsVerification": "צריך אימות",
+        "needsVerificationHint": "ארגון מותאם אישית - בהמתנה לאימות מנהל מערכת",
+        "customOrgHint": "שם מותאם אישית - אתה והמנהל יישלחו בדוא\"ל לאימות."
     },
     "donate": {
         "title": "תרומה באמצעות פורמולה",
@@ -349,13 +354,20 @@
         "enterAmount": "הזן סכום",
         "operationalCosts": "* עד 0.1% עבור עלויות תפעול.",
         "enterAmountToDonate": "הזן סכום לתרומה",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal לא מוגדר.",
         "enterValidAmount": "נא להזין סכום תרומה חוקי.",
         "failedToCreateOrder": "יצירת הזמנת PayPal נכשלה",
         "failedToCapture": "לא הצליח ללכוד את התשלום",
         "failedToProcess": "עיבוד התרומה נכשל",
         "paypalError": "משהו השתבש עם PayPal.",
-        "failedToLoadPaypal": "טעינת PayPal נכשלה. אנא נסה שוב."
+        "failedToLoadPaypal": "טעינת PayPal נכשלה. אנא נסה שוב.",
+        "paymentMethod": "אמצעי תשלום",
+        "selectPaymentMethod": "בחר אמצעי תשלום",
+        "noPaymentMethods": "אין אמצעי תשלום זמינים כרגע.",
+        "methodNotConfigured": "{method} אינו מוגדר.",
+        "methodError": "משהו השתבש ב-{method}.",
+        "failedToLoadMethod": "טעינת {method} נכשלה. אנא נסה שוב."
     },
     "payment": {
         "successTitle": "התשלום הצליח",
@@ -374,7 +386,10 @@
         "contactSupport": "צור קשר עם התמיכה",
         "thankYou": "תודה על תרומתך הנדיבה!",
         "amountLabel": "כמות:",
-        "successful": "התשלום שלך הצליח."
+        "successful": "התשלום שלך הצליח.",
+        "methodLabel": "אמצעי תשלום",
+        "unverifiedTitle": "התשלום שלך ב-{method} הצליח, אך לא הצלחנו לאמת אותו באופן אוטומטי.",
+        "unverifiedMsg": "התרומה שלך תושלם בקרוב. אנא צור קשר עם התמיכה אם יש לך חששות."
     },
     "admin": {
         "panel": "פאנל ניהול",
@@ -577,7 +592,20 @@
         "visitSite": "בקר באתר",
         "createdAt": "נוצר",
         "verifiedAt": "מאומת",
-        "unpaid": "ללא תשלום"
+        "unpaid": "ללא תשלום",
+        "invalidDateRange": "תאריך ההתחלה חייב להיות לפני תאריך הסיום.",
+        "stepTitleRequired": "נדרשת כותרת שלב.",
+        "paypalEmailRequired": "נדרשת קבלת דוא\"ל בפייפאל.",
+        "searchPayoutsPlaceholder": "חיפוש לפי ארגון",
+        "payDisabledUnverified": "אמת את הארגון לפני התשלום",
+        "payoutAmountRequired": "נדרש סכום.",
+        "payoutAmountPositive": "הזן סכום גדול מ-0.",
+        "fieldTooLong": "חייב להיות 255 תווים לכל היותר.",
+        "payoutAmountExceeds": "הסכום חורג מהיתרה בזמן אמת של {balance}.",
+        "payoutFormulaCount": "{count} נוסחאות",
+        "paymentMethod": "אמצעי תשלום",
+        "allPaymentMethods": "כל אמצעי התשלום",
+        "paymentMethodLabel": "אמצעי תשלום"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. כֹּל הַזְכוּיוֹת שְׁמוּרוֹת."

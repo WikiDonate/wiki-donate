@@ -335,7 +335,12 @@
         "totalMustEqual100": "Celková alokace se musí rovnat 100 %",
         "update": "Aktualizovat",
         "updateConfirmMsg": "Opravdu chcete aktualizovat tento darovací vzorec?",
-        "updateConfirmTitle": "Aktualizujte darovací vzorec"
+        "updateConfirmTitle": "Aktualizujte darovací vzorec",
+        "verified": "Ověřeno",
+        "verifiedHint": "Tato organizace je ověřena pro platby",
+        "needsVerification": "Vyžaduje ověření",
+        "needsVerificationHint": "Vlastní organizace – čeká se na ověření správce",
+        "customOrgHint": "Vlastní jméno – vám a administrátorovi bude zaslán e-mail pro ověření."
     },
     "donate": {
         "title": "Darujte prostřednictvím Formule",
@@ -349,13 +354,20 @@
         "enterAmount": "Zadejte částku",
         "operationalCosts": "* Až 0,1 % na provozní náklady.",
         "enterAmountToDonate": "Zadejte částku, kterou chcete darovat",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal není nakonfigurován.",
         "enterValidAmount": "Zadejte platnou částku daru.",
         "failedToCreateOrder": "Vytvoření objednávky PayPal se nezdařilo",
         "failedToCapture": "Platbu se nepodařilo zachytit",
         "failedToProcess": "Dar se nepodařilo zpracovat",
         "paypalError": "S PayPalem se něco pokazilo.",
-        "failedToLoadPaypal": "PayPal se nepodařilo načíst. Zkuste to prosím znovu."
+        "failedToLoadPaypal": "PayPal se nepodařilo načíst. Zkuste to prosím znovu.",
+        "paymentMethod": "Způsob platby",
+        "selectPaymentMethod": "Vyberte způsob platby",
+        "noPaymentMethods": "Momentálně nejsou k dispozici žádné platební metody.",
+        "methodNotConfigured": "{method} není nakonfigurován.",
+        "methodError": "S {method} se něco pokazilo.",
+        "failedToLoadMethod": "Nepodařilo se načíst {method}. Zkuste to prosím znovu."
     },
     "payment": {
         "successTitle": "Platba úspěšná",
@@ -374,7 +386,10 @@
         "contactSupport": "Kontaktujte podporu",
         "thankYou": "Děkujeme za váš štědrý dar!",
         "amountLabel": "Částka:",
-        "successful": "Vaše platba proběhla úspěšně."
+        "successful": "Vaše platba proběhla úspěšně.",
+        "methodLabel": "Způsob platby",
+        "unverifiedTitle": "Vaše platba {method} byla úspěšná, ale nepodařilo se nám ji automaticky ověřit.",
+        "unverifiedMsg": "Váš dar bude brzy dokončen. Máte-li jakékoli obavy, kontaktujte podporu."
     },
     "admin": {
         "panel": "Panel administrátora",
@@ -577,7 +592,20 @@
         "visitSite": "Navštivte web",
         "createdAt": "Vytvořeno",
         "verifiedAt": "Ověřeno",
-        "unpaid": "Nezaplaceno"
+        "unpaid": "Nezaplaceno",
+        "invalidDateRange": "Datum zahájení musí předcházet datu ukončení.",
+        "stepTitleRequired": "Název kroku je povinný.",
+        "paypalEmailRequired": "Vyžaduje se příjem e-mailu přes PayPal.",
+        "searchPayoutsPlaceholder": "Vyhledávání podle organizace",
+        "payDisabledUnverified": "Před zaplacením ověřte organizaci",
+        "payoutAmountRequired": "Částka je povinná.",
+        "payoutAmountPositive": "Zadejte částku větší než 0.",
+        "fieldTooLong": "Musí mít maximálně 255 znaků.",
+        "payoutAmountExceeds": "Částka přesahuje aktuální zůstatek {balance}.",
+        "payoutFormulaCount": "{count} vzorců",
+        "paymentMethod": "Způsob platby",
+        "allPaymentMethods": "Všechny způsoby platby",
+        "paymentMethodLabel": "Způsob platby"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

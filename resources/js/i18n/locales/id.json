@@ -335,7 +335,12 @@
         "totalMustEqual100": "Total alokasi harus sama dengan 100%",
         "update": "Pembaruan",
         "updateConfirmMsg": "Apakah Anda yakin ingin memperbarui formula donasi ini?",
-        "updateConfirmTitle": "Perbarui Formula Donasi"
+        "updateConfirmTitle": "Perbarui Formula Donasi",
+        "verified": "Terverifikasi",
+        "verifiedHint": "Organisasi ini diverifikasi untuk pembayaran",
+        "needsVerification": "Perlu verifikasi",
+        "needsVerificationHint": "Organisasi khusus — menunggu verifikasi admin",
+        "customOrgHint": "Nama khusus — Anda dan admin akan dikirimi email untuk verifikasi."
     },
     "donate": {
         "title": "Donasi melalui Formula",
@@ -349,13 +354,20 @@
         "enterAmount": "Masukkan jumlah",
         "operationalCosts": "* Hingga 0,1% untuk biaya operasional.",
         "enterAmountToDonate": "Masukkan jumlah yang akan disumbangkan",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal tidak dikonfigurasi.",
         "enterValidAmount": "Silakan masukkan jumlah donasi yang valid.",
         "failedToCreateOrder": "Gagal membuat pesanan PayPal",
         "failedToCapture": "Gagal menangkap pembayaran",
         "failedToProcess": "Gagal memproses donasi",
         "paypalError": "Ada yang tidak beres dengan PayPal.",
-        "failedToLoadPaypal": "Gagal memuat PayPal. Silakan coba lagi."
+        "failedToLoadPaypal": "Gagal memuat PayPal. Silakan coba lagi.",
+        "paymentMethod": "Metode pembayaran",
+        "selectPaymentMethod": "Pilih metode pembayaran",
+        "noPaymentMethods": "Tidak ada metode pembayaran yang tersedia saat ini.",
+        "methodNotConfigured": "{method} tidak dikonfigurasi.",
+        "methodError": "Ada yang tidak beres dengan {method}.",
+        "failedToLoadMethod": "Gagal memuat {method}. Silakan coba lagi."
     },
     "payment": {
         "successTitle": "Pembayaran Berhasil",
@@ -374,7 +386,10 @@
         "contactSupport": "Hubungi dukungan",
         "thankYou": "Terima kasih atas donasi Anda yang murah hati!",
         "amountLabel": "Jumlah:",
-        "successful": "Pembayaran Anda berhasil."
+        "successful": "Pembayaran Anda berhasil.",
+        "methodLabel": "Metode pembayaran",
+        "unverifiedTitle": "Pembayaran {method} Anda berhasil, namun kami tidak dapat memverifikasinya secara otomatis.",
+        "unverifiedMsg": "Donasi Anda akan segera diselesaikan. Silakan hubungi dukungan jika Anda memiliki kekhawatiran."
     },
     "admin": {
         "panel": "Panel Admin",
@@ -577,7 +592,20 @@
         "visitSite": "Kunjungi situs",
         "createdAt": "Dibuat",
         "verifiedAt": "Terverifikasi",
-        "unpaid": "Tidak dibayar"
+        "unpaid": "Tidak dibayar",
+        "invalidDateRange": "Tanggal mulai harus sebelum tanggal akhir.",
+        "stepTitleRequired": "Judul langkah wajib diisi.",
+        "paypalEmailRequired": "Diperlukan email penerimaan PayPal.",
+        "searchPayoutsPlaceholder": "Cari berdasarkan organisasi",
+        "payDisabledUnverified": "Verifikasi organisasi sebelum membayar",
+        "payoutAmountRequired": "Jumlah diperlukan.",
+        "payoutAmountPositive": "Masukkan jumlah yang lebih besar dari 0.",
+        "fieldTooLong": "Harus berisi maksimal 255 karakter.",
+        "payoutAmountExceeds": "Jumlahnya melebihi saldo langsung sebesar {balance}.",
+        "payoutFormulaCount": "{hitungan} rumus",
+        "paymentMethod": "Metode pembayaran",
+        "allPaymentMethods": "Semua metode pembayaran",
+        "paymentMethodLabel": "Metode pembayaran"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak dilindungi undang-undang."

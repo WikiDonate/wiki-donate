@@ -104,10 +104,10 @@
                     <template #cell-date="{ row }">
                         <span class="text-gray-600 text-xs">{{ row.date }}</span>
                     </template>
-                    <template #cell-source="{ row }">
+                    <template #cell-payment_method="{ row }">
                         <AdminBadge
-                            :variant="row.source === 'paypal' ? 'info' : 'success'"
-                            :text="row.source === 'paypal' ? 'PayPal' : 'Stripe'"
+                            :variant="methodVariant(row.payment_method)"
+                            :text="methodLabel(row.payment_method)"
                         />
                     </template>
                     <template #cell-amount="{ row }">
@@ -181,11 +181,13 @@
     import { useI18n } from 'vue-i18n'
     import { userService } from '~/services/userService'
     import { useToastify } from '~/composables/useToastify'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
 
     const { notifyError } = useToastify()
 
     const { t } = useI18n()
+    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     useHead({ title: t('report.title') })
     definePageMeta({ middleware: 'auth' })
@@ -197,7 +199,7 @@
         totalDonations: 0,
         pendingDonations: 0,
         failedDonations: 0,
-        bySource: [],
+        byPaymentMethod: [],
     })
     const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
     const searchQuery = ref('')
@@ -211,7 +213,7 @@
 
     const columns = [
         { key: 'date', label: t('report.date') },
-        { key: 'source', label: t('report.source') },
+        { key: 'payment_method', label: t('payment.methodLabel') },
         { key: 'amount', label: t('report.amount') },
         { key: 'status', label: t('report.status') },
         { key: 'paymentId', label: t('report.paymentId') },
@@ -272,5 +274,8 @@
         searchTimeout = setTimeout(() => loadPage(1), 400)
     })
 
-    onMounted(() => loadPage())
+    onMounted(() => {
+        loadPaymentMethods()
+        loadPage()
+    })
 </script>

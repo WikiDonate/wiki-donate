@@ -335,7 +335,12 @@
         "totalMustEqual100": "Całkowita alokacja musi wynosić 100%",
         "update": "Aktualizacja",
         "updateConfirmMsg": "Czy na pewno chcesz zaktualizować tę formułę darowizny?",
-        "updateConfirmTitle": "Zaktualizuj formułę darowizny"
+        "updateConfirmTitle": "Zaktualizuj formułę darowizny",
+        "verified": "Zweryfikowano",
+        "verifiedHint": "Ta organizacja została zweryfikowana pod kątem wypłat",
+        "needsVerification": "Wymaga weryfikacji",
+        "needsVerificationHint": "Organizacja niestandardowa — oczekuje na weryfikację administratora",
+        "customOrgHint": "Nazwa niestandardowa — Ty i administrator zostaniecie wysłani e-mailem w celu weryfikacji."
     },
     "donate": {
         "title": "Przekaż darowiznę za pośrednictwem Formuły",
@@ -349,13 +354,20 @@
         "enterAmount": "Wpisz kwotę",
         "operationalCosts": "* Do 0,1% na koszty operacyjne.",
         "enterAmountToDonate": "Wpisz kwotę do przekazania",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal nie jest skonfigurowany.",
         "enterValidAmount": "Wprowadź prawidłową kwotę darowizny.",
         "failedToCreateOrder": "Nie udało się utworzyć zamówienia PayPal",
         "failedToCapture": "Nie udało się przechwycić płatności",
         "failedToProcess": "Nie udało się przetworzyć darowizny",
         "paypalError": "Coś poszło nie tak z PayPalem.",
-        "failedToLoadPaypal": "Nie udało się załadować PayPala. Spróbuj ponownie."
+        "failedToLoadPaypal": "Nie udało się załadować PayPala. Spróbuj ponownie.",
+        "paymentMethod": "Metoda płatności",
+        "selectPaymentMethod": "Wybierz metodę płatności",
+        "noPaymentMethods": "Obecnie nie są dostępne żadne metody płatności.",
+        "methodNotConfigured": "Metoda {method} nie jest skonfigurowana.",
+        "methodError": "Coś poszło nie tak z metodą {method}.",
+        "failedToLoadMethod": "Nie udało się załadować metody {method}. Spróbuj ponownie."
     },
     "payment": {
         "successTitle": "Płatność pomyślna",
@@ -374,7 +386,10 @@
         "contactSupport": "Skontaktuj się z pomocą techniczną",
         "thankYou": "Dziękujemy za hojną darowiznę!",
         "amountLabel": "Kwota:",
-        "successful": "Twoja płatność została zrealizowana."
+        "successful": "Twoja płatność została zrealizowana.",
+        "methodLabel": "Metoda płatności",
+        "unverifiedTitle": "Twoja płatność metodą {method} powiodła się, ale nie mogliśmy jej automatycznie zweryfikować.",
+        "unverifiedMsg": "Twoja darowizna zostanie wkrótce sfinalizowana. Jeśli masz jakiekolwiek wątpliwości, skontaktuj się z pomocą techniczną."
     },
     "admin": {
         "panel": "Panel administracyjny",
@@ -577,7 +592,20 @@
         "visitSite": "Odwiedź witrynę",
         "createdAt": "Utworzono",
         "verifiedAt": "Zweryfikowano",
-        "unpaid": "Nie zapłacony"
+        "unpaid": "Nie zapłacony",
+        "invalidDateRange": "Data rozpoczęcia musi być wcześniejsza niż data zakończenia.",
+        "stepTitleRequired": "Tytuł kroku jest wymagany.",
+        "paypalEmailRequired": "Wymagany jest odbiór wiadomości e-mail w systemie PayPal.",
+        "searchPayoutsPlaceholder": "Szukaj według organizacji",
+        "payDisabledUnverified": "Przed dokonaniem płatności zweryfikuj organizację",
+        "payoutAmountRequired": "Kwota jest wymagana.",
+        "payoutAmountPositive": "Wprowadź kwotę większą niż 0.",
+        "fieldTooLong": "Musi mieć maksymalnie 255 znaków.",
+        "payoutAmountExceeds": "Kwota przekracza aktualne saldo {balance}.",
+        "payoutFormulaCount": "{count} formuł",
+        "paymentMethod": "Metoda płatności",
+        "allPaymentMethods": "Wszystkie metody płatności",
+        "paymentMethodLabel": "Metoda płatności"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Wszelkie prawa zastrzeżone."

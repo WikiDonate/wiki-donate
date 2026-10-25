@@ -335,7 +335,12 @@
         "totalMustEqual100": "L'allocazione totale deve essere pari al 100%",
         "update": "Aggiorna",
         "updateConfirmMsg": "Sei sicuro di voler aggiornare questa formula di donazione?",
-        "updateConfirmTitle": "Aggiorna la formula di donazione"
+        "updateConfirmTitle": "Aggiorna la formula di donazione",
+        "verified": "Verificato",
+        "verifiedHint": "Questa organizzazione è verificata per i pagamenti",
+        "needsVerification": "Necessita di verifica",
+        "needsVerificationHint": "Organizzazione personalizzata: in attesa di verifica da parte dell'amministratore",
+        "customOrgHint": "Nome personalizzato: tu e l'amministratore riceverete un'e-mail per la verifica."
     },
     "donate": {
         "title": "Dona tramite Formula",
@@ -349,13 +354,20 @@
         "enterAmount": "Inserisci l'importo",
         "operationalCosts": "* Fino allo 0,1% per i costi operativi.",
         "enterAmountToDonate": "Inserisci un importo da donare",
+        "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal non è configurato.",
         "enterValidAmount": "Inserisci un importo di donazione valido.",
         "failedToCreateOrder": "Impossibile creare un ordine PayPal",
         "failedToCapture": "Impossibile acquisire il pagamento",
         "failedToProcess": "Impossibile elaborare la donazione",
         "paypalError": "Qualcosa è andato storto con PayPal.",
-        "failedToLoadPaypal": "Impossibile caricare PayPal. Per favore riprova."
+        "failedToLoadPaypal": "Impossibile caricare PayPal. Per favore riprova.",
+        "paymentMethod": "Metodo di pagamento",
+        "selectPaymentMethod": "Seleziona un metodo di pagamento",
+        "noPaymentMethods": "Nessun metodo di pagamento è attualmente disponibile.",
+        "methodNotConfigured": "{method} non è configurato.",
+        "methodError": "Qualcosa è andato storto con {method}.",
+        "failedToLoadMethod": "Impossibile caricare {method}. Per favore riprova."
     },
     "payment": {
         "successTitle": "Pagamento riuscito",
@@ -374,7 +386,10 @@
         "contactSupport": "Contatta l'assistenza",
         "thankYou": "Grazie per la tua generosa donazione!",
         "amountLabel": "Importo:",
-        "successful": "Il tuo pagamento è andato a buon fine."
+        "successful": "Il tuo pagamento è andato a buon fine.",
+        "methodLabel": "Metodo di pagamento",
+        "unverifiedTitle": "Il tuo pagamento {method} è andato a buon fine, ma non siamo riusciti a verificarlo automaticamente.",
+        "unverifiedMsg": "La tua donazione sarà finalizzata a breve. Si prega di contattare l'assistenza in caso di dubbi."
     },
     "admin": {
         "panel": "Pannello di amministrazione",
@@ -577,7 +592,20 @@
         "visitSite": "Visita il sito",
         "createdAt": "Creato",
         "verifiedAt": "Verificato",
-        "unpaid": "Non pagato"
+        "unpaid": "Non pagato",
+        "invalidDateRange": "La data di inizio deve essere antecedente alla data di fine.",
+        "stepTitleRequired": "Il titolo del passaggio è obbligatorio.",
+        "paypalEmailRequired": "È richiesta la ricezione dell'e-mail da parte di PayPal.",
+        "searchPayoutsPlaceholder": "Cerca per organizzazione",
+        "payDisabledUnverified": "Verificare l'organizzazione prima di pagare",
+        "payoutAmountRequired": "L'importo è obbligatorio.",
+        "payoutAmountPositive": "Inserisci un importo maggiore di 0.",
+        "fieldTooLong": "Deve contenere al massimo 255 caratteri.",
+        "payoutAmountExceeds": "L'importo supera il saldo attuale di {balance}.",
+        "payoutFormulaCount": "{count} formule",
+        "paymentMethod": "Metodo di pagamento",
+        "allPaymentMethods": "Tutti i metodi di pagamento",
+        "paymentMethodLabel": "Metodo di pagamento"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tutti i diritti riservati."
