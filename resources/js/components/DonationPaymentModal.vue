@@ -262,6 +262,9 @@
     const paypalSdkLoaded = ref(false)
     const paypalButtonsRendered = ref(false)
     let paypalButtonsInstance = null
+    // Invalidates an in-flight render when the donor switches methods while the
+    // SDK is still loading (otherwise a late render can target a dead node).
+    let paypalRenderToken = 0
 
     /** Branded icon per known method code; unknown codes render text only. */
     const methodIcons = {
@@ -287,7 +290,7 @@
         // The client id only exists once the registry has loaded, so the
         // preload has to be retried here (onMounted fires too early).
         if (props.modelValue && selectedMethod.value === 'paypal') {
-            loadPayPalSdkPreload()
+            activatePaypal()
         }
     })
 
@@ -338,6 +341,10 @@
     }
 
     function destroyPaypalButtons() {
+        // Bump the token first: any render still awaiting the SDK must not
+        // resurrect buttons after this teardown.
+        paypalRenderToken++
+
         const container = document.getElementById('paypal-button-container')
         if (paypalButtonsInstance && typeof paypalButtonsInstance.close === 'function') {
             try {
@@ -378,9 +385,22 @@
             return
         }
 
+        // Newest render wins; older in-flight ones bail after the SDK await.
+        // Set AFTER the teardown above so its token bump doesn't cancel us.
+        const renderToken = ++paypalRenderToken
+
         try {
             const paypal = await loadPayPalSdk()
             paypalSdkLoaded.value = true
+
+            // The donor may have switched methods (or closed the modal) while
+            // the SDK was loading; the v-if has since replaced the container.
+            if (renderToken !== paypalRenderToken || selectedMethod.value !== 'paypal') {
+                return
+            }
+
+            const target = document.getElementById('paypal-button-container')
+            if (!target) return
 
             paypalButtonsInstance = paypal
                 .Buttons({
@@ -453,7 +473,7 @@
                         alertMessage.value = err?.message || t('donate.paypalError')
                     },
                 })
-                .render('#paypal-button-container')
+                .render(target)
 
             paypalButtonsRendered.value = true
         } catch (error) {
@@ -465,11 +485,31 @@
     // Switching methods must tear the PayPal buttons down so we never leave a
     // stale button set behind the newly selected method.
     function selectMethod(code) {
-        if (code === selectedMethod.value) return
+        if (code === selectedMethod.value) {
+            // Re-clicking the selected PayPal chip should recover an empty
+            // button area (e.g. after an SDK hiccup) instead of doing nothing.
+            if (code === 'paypal' && !paypalButtonsRendered.value) activatePaypal()
+            return
+        }
         selectedMethod.value = code
         alertMessage.value = ''
         destroyPaypalButtons()
-        if (code === 'paypal') loadPayPalSdkPreload()
+        if (code === 'paypal') activatePaypal()
+    }
+
+    /**
+     * Re-arm the in-page PayPal buttons after returning to that rail.
+     *
+     * Switching methods swaps the `v-if` container, so the render has to wait
+     * for the DOM patch — otherwise the donor comes back to an empty button
+     * area (the amount watcher only fires when the amount itself changes).
+     */
+    function activatePaypal() {
+        loadPayPalSdkPreload()
+        nextTick(() => {
+            if (selectedMethod.value !== 'paypal' || !hasValidAmount.value) return
+            renderPaypalButtons()
+        })
     }
 
     /**

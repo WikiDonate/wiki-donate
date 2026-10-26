@@ -179,8 +179,9 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-6 py-4">
+                <!-- Recent Activity: full-width stacked cards; the donations
+                     table has seven columns and needs the room. -->
+                <div class="grid grid-cols-1 gap-4 px-4 sm:px-6 py-4">
                     <div
                         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                     >
