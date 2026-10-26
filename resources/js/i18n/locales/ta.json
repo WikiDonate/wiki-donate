@@ -183,6 +183,7 @@
         "validationError": "சரிபார்ப்பு பிழை",
         "failedToSaveCard": "கார்டைச் சேமிப்பதில் தோல்வி",
         "failedToLoadCard": "கார்டு விவரங்களை ஏற்றுவதில் தோல்வி",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "ரத்து செய்",
         "saving": "சேமிக்கிறது..."
     },

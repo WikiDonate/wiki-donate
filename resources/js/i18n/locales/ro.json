@@ -183,6 +183,7 @@
         "validationError": "Eroare de validare",
         "failedToSaveCard": "Cardul nu a putut fi salvat",
         "failedToLoadCard": "Nu s-au încărcat detaliile cardului",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Anulează",
         "saving": "Se salvează..."
     },

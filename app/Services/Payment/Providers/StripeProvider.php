@@ -5,8 +5,10 @@ namespace App\Services\Payment\Providers;
 use App\Contracts\PaymentProvider;
 use App\Exceptions\PaymentProviderException;
 use App\Models\PaymentMethod;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -18,13 +20,61 @@ use Stripe\Webhook;
  * stays inside this class so generic code only ever sees references and
  * normalised payloads.
  *
- * Credentials come from config('services.stripe.*').
+ * Credentials come from the encrypted payment_methods registry row
+ * (App\Services\Payment\PaymentCredentials), never from .env.
  */
 class StripeProvider implements PaymentProvider
 {
-    public function __construct()
+    public function __construct(private PaymentCredentials $credentials)
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        // Never fatal here: webhook verification does not need the API key, and
+        // the registry resolves providers even for methods whose credentials
+        // are not configured yet. Operations that do need it guard below.
+        if ($key = $this->credentials->get(PaymentMethod::CODE_STRIPE, 'secret_key')) {
+            Stripe::setApiKey($key);
+        } else {
+            Log::warning('Stripe secret key is not configured in the payment_methods registry.');
+        }
+    }
+
+    /**
+     * Fail as a controlled PaymentProviderException (never a 500 leaking the
+     * Stripe SDK error), and require the credential before any API call.
+     */
+    private function applyApiKey(): void
+    {
+        Stripe::setApiKey(
+            $this->credentials->get(PaymentMethod::CODE_STRIPE, 'secret_key')
+                ?? throw PaymentProviderException::forMissingCredentials(
+                    PaymentMethod::CODE_STRIPE,
+                    'secret_key'
+                )
+        );
+    }
+
+    /**
+     * Run one Stripe API call, translating SDK errors into the provider
+     * boundary's 502. The detail stays in the log — never in the response.
+     *
+     * @template T
+     *
+     * @param  callable(): T  $callback
+     * @return T
+     *
+     * @throws PaymentProviderException
+     */
+    private function gatewayCall(callable $callback)
+    {
+        try {
+            return $callback();
+        } catch (ApiErrorException $e) {
+            Log::error('Stripe API request failed.', [
+                'method' => PaymentMethod::CODE_STRIPE,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw PaymentProviderException::gatewayError(PaymentMethod::CODE_STRIPE);
+        }
     }
 
     public function code(): string
@@ -54,6 +104,8 @@ class StripeProvider implements PaymentProvider
      */
     public function createCheckout(array $payload): array
     {
+        $this->applyApiKey();
+
         $amount = (float) ($payload['amount'] ?? 0);
         $currency = strtolower((string) ($payload['currency'] ?? 'usd'));
 
@@ -80,7 +132,7 @@ class StripeProvider implements PaymentProvider
             $config['customer_email'] = (string) $payload['donor_email'];
         }
 
-        $session = Session::create($config);
+        $session = $this->gatewayCall(fn () => Session::create($config));
 
         return [
             'reference' => (string) $session->id,
@@ -98,7 +150,9 @@ class StripeProvider implements PaymentProvider
      */
     public function capture(string $reference): array
     {
-        $session = Session::retrieve($reference);
+        $this->applyApiKey();
+
+        $session = $this->gatewayCall(fn () => Session::retrieve($reference));
 
         $details = $session->customer_details ?? null;
 
@@ -120,9 +174,33 @@ class StripeProvider implements PaymentProvider
         ];
     }
 
+    public function retrieve(string $reference): array
+    {
+        // Stripe's confirmation step is a fetch, so capture() is side-effect free.
+        return $this->capture($reference);
+    }
+
+    public function isCaptured(?string $status): bool
+    {
+        return in_array((string) $status, ['paid', 'no_payment_required'], true);
+    }
+
+    public function supportsClientCapture(): bool
+    {
+        // Hosted Checkout: Stripe confirms out-of-band (webhook), never by a
+        // client-side capture call.
+        return false;
+    }
+
+    public function returnUrl(string $frontendUrl, string $code): string
+    {
+        return rtrim($frontendUrl, '/').'/payment/success?method='.$code
+            .'&session_id={CHECKOUT_SESSION_ID}';
+    }
+
     public function verifyWebhook(array $headers, string $body): bool
     {
-        $secret = config('services.stripe.webhook_secret');
+        $secret = $this->credentials->get(PaymentMethod::CODE_STRIPE, 'webhook_secret');
 
         if (! $secret) {
             Log::error('Stripe webhook secret not configured — rejecting event.');

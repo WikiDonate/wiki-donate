@@ -13,8 +13,10 @@ use Illuminate\Database\Eloquent\Model;
  * Provider implementations are bound by `code`; see
  * App\Services\Payment\PaymentProviderRegistry.
  *
- * The `config` column holds NON-SECRET metadata only. Credentials live in
- * .env / config('services.*') and are referenced by env-var NAME.
+ * The `config` column holds NON-SECRET metadata only (mode, currencies,
+ * webhook route/events, limits). Gateway credentials live in the encrypted
+ * `credentials` column (APP_KEY) and are read through
+ * App\Services\Payment\PaymentCredentials.
  */
 class PaymentMethod extends Model
 {
@@ -37,9 +39,19 @@ class PaymentMethod extends Model
         'sort_order',
     ];
 
+    /**
+     * `credentials` is intentionally not fillable and never serialised: it is
+     * written through forceFill()/credential setters only, and must not leak
+     * through model->toArray()/JSON responses.
+     *
+     * @var list<string>
+     */
+    protected $hidden = ['credentials'];
+
     protected $casts = [
         'active' => 'boolean',
         'config' => 'array',
+        'credentials' => 'encrypted:array',
         'sort_order' => 'integer',
     ];
 
@@ -87,10 +99,29 @@ class PaymentMethod extends Model
         return data_get($this->config, $key, $default);
     }
 
-    /** Name of the env var holding this method's webhook secret, if any. */
-    public function webhookSecretRef(): ?string
+    /**
+     * Gateway mode for this method (e.g. sandbox|live).
+     *
+     * The registry row is the single source of truth: the mode is no longer
+     * read from .env (PAYPAL_MODE was removed), so admins can switch a method
+     * between sandbox and live without touching deployment secrets.
+     */
+    public function mode(): ?string
     {
-        return $this->configValue('webhook.secret_ref');
+        return $this->configValue('mode');
+    }
+
+    /**
+     * A single credential from the encrypted `credentials` column.
+     *
+     * Prefer App\Services\Payment\PaymentCredentials in application code (it
+     * caches per request); never log or serialise the return value.
+     */
+    public function credential(string $key, ?string $default = null): ?string
+    {
+        $value = data_get($this->credentials, $key);
+
+        return ($value === null || $value === '') ? $default : (string) $value;
     }
 
     /** Route path (relative to /webhooks/{code}) for this method's webhook. */

@@ -124,7 +124,7 @@ class DonationReportFormulaSnapshotTest extends TestCase
 
         // Capture — the formula snapshot is frozen into donations.metadata here
         $this->withHeaders($auth)
-            ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_123'])
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_123'])
             ->assertOk()
             ->assertJsonPath('data.status', 'completed');
 

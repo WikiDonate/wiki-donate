@@ -183,6 +183,7 @@
         "validationError": "驗證錯誤",
         "failedToSaveCard": "保存卡失敗",
         "failedToLoadCard": "無法加載卡片詳細信息",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "取消",
         "saving": "正在儲存..."
     },

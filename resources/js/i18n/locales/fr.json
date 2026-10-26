@@ -183,6 +183,7 @@
         "validationError": "Erreur de validation",
         "failedToSaveCard": "Échec de l'enregistrement de la carte",
         "failedToLoadCard": "Échec du chargement des détails de la carte",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Annuler",
         "saving": "Sauvegarde..."
     },

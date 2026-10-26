@@ -183,6 +183,7 @@
         "validationError": "Błąd walidacji",
         "failedToSaveCard": "Nie udało się zapisać karty",
         "failedToLoadCard": "Nie udało się wczytać szczegółów karty",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Anuluj",
         "saving": "Zapisywanie..."
     },

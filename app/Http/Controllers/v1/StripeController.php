@@ -4,9 +4,9 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Stripe\Checkout\Session;
 use Stripe\Customer;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentMethod;
@@ -14,9 +14,9 @@ use Stripe\Stripe;
 
 class StripeController extends Controller
 {
-    public function __construct()
+    public function __construct(PaymentCredentials $credentials)
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        Stripe::setApiKey($credentials->get('stripe', 'secret_key'));
     }
 
     public function addCard(Request $request)
@@ -79,114 +79,6 @@ class StripeController extends Controller
         }
     }
 
-    /**
-     * Create a Stripe Checkout Session for one-time donations.
-     */
-    public function createCheckoutSession(Request $request)
-    {
-        $request->validate([
-            'amount' => 'required|numeric|min:0.50|max:500000',
-            'currency' => 'nullable|string|size:3',
-            'success_url' => 'nullable|url',
-            'cancel_url' => 'nullable|url',
-            'donor_name' => 'nullable|string|max:255',
-            'donor_email' => 'nullable|email|max:255',
-        ]);
-
-        try {
-            $amount = $request->input('amount');
-            $currency = $request->input('currency', 'usd');
-            $userId = auth()->check() ? auth()->id() : null;
-
-            $frontendUrl = config('app.url');
-            // Open-redirect guard: Stripe redirects the donor's browser to
-            // these URLs, so only same-host destinations are accepted.
-            $allowedHost = (string) parse_url($frontendUrl, PHP_URL_HOST);
-            foreach (['success_url', 'cancel_url'] as $urlKey) {
-                $candidate = $request->input($urlKey);
-                if ($candidate && mb_strtolower((string) parse_url($candidate, PHP_URL_HOST)) !== mb_strtolower($allowedHost)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Validation error',
-                        'errors' => ["{$urlKey} must point to this application."],
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-            }
-            $successUrl = $request->input('success_url', $frontendUrl.'/payment/success?session_id={CHECKOUT_SESSION_ID}');
-            $cancelUrl = $request->input('cancel_url', $frontendUrl.'/payment/cancel');
-
-            $lineItems = [[
-                'price_data' => [
-                    'currency' => $currency,
-                    'product_data' => [
-                        'name' => 'Donation to WikiDonate',
-                    ],
-                    'unit_amount' => (int) round($amount * 100),
-                ],
-                'quantity' => 1,
-            ]];
-
-            // Build metadata — Stripe only accepts string values, so encode arrays as JSON
-            $metadata = [
-                'source' => 'wikidonate',
-                'user_id' => $userId,
-            ];
-
-            if ($request->has('formula') && is_array($request->input('formula'))) {
-                $metadata['formula'] = json_encode($request->input('formula'));
-            }
-
-            if ($request->filled('formula_id')) {
-                $metadata['formula_id'] = $request->input('formula_id');
-            }
-
-            if ($request->filled('formula_uuid')) {
-                $metadata['formula_uuid'] = $request->input('formula_uuid');
-            }
-
-            if ($request->filled('details')) {
-                $metadata['details'] = $request->input('details');
-            }
-
-            $sessionConfig = [
-                'payment_method_types' => ['card'],
-                'line_items' => $lineItems,
-                'mode' => 'payment',
-                'success_url' => $successUrl,
-                'cancel_url' => $cancelUrl,
-                'metadata' => $metadata,
-            ];
-
-            // Optionally pre-fill customer email
-            if ($request->filled('donor_email')) {
-                $sessionConfig['customer_email'] = $request->input('donor_email');
-            } elseif ($userId) {
-                $user = $request->user();
-                if ($user->email) {
-                    $sessionConfig['customer_email'] = $user->email;
-                }
-            }
-
-            $session = Session::create($sessionConfig);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Checkout session created',
-                'data' => [
-                    'checkout_url' => $session->url,
-                    'session_id' => $session->id,
-                ],
-            ]);
-
-        } catch (ApiErrorException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Stripe API error',
-                'errors' => [$this->apiErrorMessage($e)],
-            ], Response::HTTP_EXPECTATION_FAILED);
-        }
-    }
-
     public function getCard()
     {
         $user = auth()->user();
@@ -214,62 +106,6 @@ class StripeController extends Controller
                 'message' => 'Stripe API errors',
                 'errors' => [$this->apiErrorMessage($e)],
             ], Response::HTTP_EXPECTATION_FAILED);
-        }
-    }
-
-    /**
-     * Retrieve a Stripe Checkout Session by ID for the success page.
-     */
-    public function getCheckoutSession(string $sessionId)
-    {
-        try {
-            $session = Session::retrieve($sessionId);
-
-            // Session not found or invalid ID
-            if (! $session || ! isset($session->id)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Session not found',
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            // Extract donor info
-            $donorName = null;
-            $donorEmail = null;
-
-            if (! empty($session->customer_details)) {
-                $donorName = $session->customer_details->name ?? null;
-                $donorEmail = $session->customer_details->email ?? null;
-            }
-
-            if (! $donorEmail && ! empty($session->customer_email)) {
-                $donorEmail = $session->customer_email;
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'session_id' => $session->id,
-                    'amount' => ($session->amount_total ?? 0) / 100,
-                    'currency' => strtoupper($session->currency ?? 'usd'),
-                    'payment_status' => $session->payment_status ?? 'unknown',
-                    'status' => $session->status ?? 'unknown',
-                    'donor_name' => $donorName,
-                    'donor_email' => $donorEmail,
-                    'mode' => $session->mode ?? 'payment',
-                ],
-            ]);
-
-        } catch (ApiErrorException $e) {
-            $statusCode = $e->getHttpStatus() === 404
-                ? Response::HTTP_NOT_FOUND
-                : Response::HTTP_INTERNAL_SERVER_ERROR;
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Session not found',
-                'errors' => [$this->apiErrorMessage($e)],
-            ], $statusCode);
         }
     }
 

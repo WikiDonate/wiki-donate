@@ -50,13 +50,15 @@ return new class extends Migration
                     'webhook' => [
                         'route' => 'webhooks/paypal',
                         'events' => ['PAYMENT.CAPTURE.COMPLETED', 'PAYOUTS.BATCH.*', 'PAYOUTS.ITEM.*'],
-                        'secret_ref' => 'PAYPAL_WEBHOOK_ID',
                     ],
                     'currencies' => ['USD', 'EUR', 'GBP', 'AUD', 'CAD'],
                     // NB: resolved through config() (not env()) so the value is
                     // correct when config is cached; env() only returns the real
                     // value in a non-cached boot.
-                    'mode' => config('services.paypal.mode', 'sandbox'),
+                    // DB is the source of truth for the gateway mode; .env no
+                    // longer carries PAYPAL_MODE. Flip this row to 'live' when
+                    // the live PayPal app is ready (see PaymentMethod::mode()).
+                    'mode' => 'sandbox',
                     'min_amount' => 1,
                 ]),
                 'sort_order' => 1,
@@ -73,10 +75,9 @@ return new class extends Migration
                     'webhook' => [
                         'route' => 'webhooks/stripe',
                         'events' => ['checkout.session.completed', 'payment_intent.succeeded'],
-                        'secret_ref' => 'STRIPE_WEBHOOK_SECRET',
                     ],
                     'currencies' => ['USD', 'EUR', 'GBP'],
-                    'mode' => config('services.stripe.mode', 'test'),
+                    'mode' => 'test',
                     'min_amount' => 1,
                 ]),
                 'sort_order' => 2,

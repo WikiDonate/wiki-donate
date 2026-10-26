@@ -183,6 +183,7 @@
         "validationError": "Érvényesítési hiba",
         "failedToSaveCard": "Nem sikerült menteni a kártyát",
         "failedToLoadCard": "Nem sikerült betölteni a kártya adatait",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Mégsem",
         "saving": "Mentés..."
     },

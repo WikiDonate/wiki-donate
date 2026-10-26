@@ -183,6 +183,7 @@
         "validationError": "Vahvistusvirhe",
         "failedToSaveCard": "Kortin tallentaminen epäonnistui",
         "failedToLoadCard": "Kortin tietojen lataaminen epäonnistui",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Peruuta",
         "saving": "Tallennetaan..."
     },

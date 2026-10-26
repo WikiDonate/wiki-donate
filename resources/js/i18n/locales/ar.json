@@ -183,6 +183,7 @@
         "validationError": "خطأ في التحقق",
         "failedToSaveCard": "فشل حفظ البطاقة",
         "failedToLoadCard": "فشل تحميل تفاصيل البطاقة",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "إلغاء",
         "saving": "جارٍ الحفظ..."
     },

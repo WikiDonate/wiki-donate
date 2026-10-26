@@ -284,6 +284,11 @@
             // Prefer PayPal (the historical default) when it is still active.
             selectedMethod.value = codes.includes('paypal') ? 'paypal' : codes[0]
         }
+        // The client id only exists once the registry has loaded, so the
+        // preload has to be retried here (onMounted fires too early).
+        if (props.modelValue && selectedMethod.value === 'paypal') {
+            loadPayPalSdkPreload()
+        }
     })
 
     const alertClass = computed(() => {
@@ -299,7 +304,10 @@
         () => Number(amount.value) >= 0.5 && Number(amount.value) <= 500000 && props.modelValue,
     )
 
-    const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || ''
+    // Browser-safe PayPal client id comes from the registry (no VITE_ build var).
+    const clientId = computed(
+        () => methods.value.find((method) => method.code === 'paypal')?.public_key || '',
+    )
 
     function loadPayPalSdk() {
         return new Promise((resolve, reject) => {
@@ -320,7 +328,7 @@
             const script = document.createElement('script')
             script.id = 'paypal-js-sdk'
             script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
-                clientId,
+                clientId.value,
             )}&currency=USD`
             script.async = true
             script.onload = () => resolve(window.paypal)
@@ -363,7 +371,7 @@
             return
         }
 
-        if (!clientId) {
+        if (!clientId.value) {
             alertVariant.value = 'error'
             alertMessage.value = t('donate.paypalNotConfigured')
             paypalSdkLoaded.value = true
@@ -416,10 +424,12 @@
                             })
 
                             if (response.success) {
-                                const donationId = response.data?.donation_id || ''
-                                const amt = response.data?.amount ?? amount.value ?? ''
-                                const cur = response.data?.currency || 'USD'
-                                window.location.href = `/payment/success?paypal=1&donation_id=${donationId}&amount=${amt}&currency=${cur}&back=${encodeURIComponent(route.fullPath)}`
+                                // Pass the gateway reference, not the amount:
+                                // the success page re-reads the facts from our
+                                // own records so query values can't spoof the
+                                // displayed total.
+                                const reference = response.data?.reference || data.orderID
+                                window.location.href = `/payment/success?method=paypal&reference=${encodeURIComponent(reference)}&back=${encodeURIComponent(route.fullPath)}`
                             } else {
                                 alertVariant.value = 'error'
                                 alertMessage.value =
@@ -517,7 +527,7 @@
     // Preload the SDK in the background while the user is still choosing an amount,
     // so buttons render quickly once they select PayPal.
     function loadPayPalSdkPreload() {
-        if (clientId && !window.paypal && !document.getElementById('paypal-js-sdk')) {
+        if (clientId.value && !window.paypal && !document.getElementById('paypal-js-sdk')) {
             loadPayPalSdk().catch(() => {
                 // Swallow preload errors — the synchronous render path will surface them.
             })

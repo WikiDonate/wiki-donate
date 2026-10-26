@@ -183,6 +183,7 @@
         "validationError": "Помилка підтвердження",
         "failedToSaveCard": "Не вдалося зберегти картку",
         "failedToLoadCard": "Не вдалося завантажити дані картки",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Скасувати",
         "saving": "Збереження..."
     },

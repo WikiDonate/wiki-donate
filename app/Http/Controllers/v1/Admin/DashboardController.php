@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -33,7 +34,7 @@ class DashboardController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
+                    'payment_method' => $donation->paymentMethodCode() ?? 'unknown',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
@@ -92,6 +93,19 @@ class DashboardController extends Controller
                             ->orderBy('month')
                             ->get(),
                     ],
+
+                    // Completed donations split by the generic method code.
+                    // Data-driven: a new gateway shows up here with no code
+                    // change. Unclassified rows are "unknown", never inferred
+                    // to be Stripe.
+                    'donationsByMethod' => Donation::where('status', 'completed')
+                        ->selectRaw(
+                            "COALESCE(payment_method, 'unknown') as payment_method, "
+                            .'COUNT(*) as count, SUM(amount) as total'
+                        )
+                        ->groupBy(DB::raw("COALESCE(payment_method, 'unknown')"))
+                        ->orderByDesc('total')
+                        ->get(),
                 ];
             });
 
@@ -146,7 +160,7 @@ class DashboardController extends Controller
 
                     return [
                         'id' => $donation->id,
-                        'payment_method' => $donation->paymentMethodCode() ?? 'stripe',
+                        'payment_method' => $donation->paymentMethodCode() ?? 'unknown',
                         'payment_id' => $donation->metadata['payment_id'] ?? $donation->gateway_reference,
                         'amount' => $donation->amount,
                         'currency' => $donation->currency,

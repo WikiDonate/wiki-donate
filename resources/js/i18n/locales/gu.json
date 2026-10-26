@@ -183,6 +183,7 @@
         "validationError": "માન્યતા ભૂલ",
         "failedToSaveCard": "કાર્ડ સાચવવામાં નિષ્ફળ",
         "failedToLoadCard": "કાર્ડ વિગતો લોડ કરવામાં નિષ્ફળ",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "રદ કરો",
         "saving": "સાચવી રહ્યું છે..."
     },

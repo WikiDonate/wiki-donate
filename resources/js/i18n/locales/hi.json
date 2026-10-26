@@ -183,6 +183,7 @@
         "validationError": "सत्यापन त्रुटि",
         "failedToSaveCard": "कार्ड सहेजने में विफल",
         "failedToLoadCard": "कार्ड विवरण लोड करने में विफल",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "रद्द करें",
         "saving": "सहेजा जा रहा है..."
     },

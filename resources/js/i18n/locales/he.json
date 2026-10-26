@@ -183,6 +183,7 @@
         "validationError": "שגיאת אימות",
         "failedToSaveCard": "שמירת הכרטיס נכשלה",
         "failedToLoadCard": "טעינת פרטי הכרטיס נכשלה",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "בטל",
         "saving": "שומר..."
     },

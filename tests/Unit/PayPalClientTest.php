@@ -2,24 +2,49 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\PaymentProviderException;
+use App\Services\Payment\PaymentCredentials;
 use App\Services\PayPalClient;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 /**
  * Unit tests for the PayPalClient service.
+ *
+ * Credentials come from the payment_methods registry (encrypted column), so
+ * these tests bind an in-memory PaymentCredentials double — no database, no
+ * .env keys.
  */
 class PayPalClientTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        config([
-            'services.paypal.client_id' => 'test-client-id',
-            'services.paypal.client_secret' => 'test-client-secret',
-            'services.paypal.mode' => 'sandbox',
-            'services.paypal.webhook_id' => 'test-webhook-id',
+
+        $this->fakeCredentials([
+            'client_id' => 'test-client-id',
+            'client_secret' => 'test-client-secret',
+            'webhook_id' => 'test-webhook-id',
         ]);
+    }
+
+    /**
+     * @param  array<string, string>  $credentials
+     */
+    private function fakeCredentials(array $credentials): void
+    {
+        $this->app->instance(PaymentCredentials::class, new class($credentials) extends PaymentCredentials
+        {
+            /** @param array<string, string> $credentials */
+            public function __construct(private array $credentials) {}
+
+            public function for(string $code): array
+            {
+                return $code === 'paypal' ? $this->credentials : [];
+            }
+
+            public function flush(): void {}
+        });
     }
 
     // -------------------------------------------------------------------------
@@ -35,7 +60,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $token = $client->getAccessToken();
 
         $this->assertEquals('test-access-token', $token);
@@ -50,7 +75,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
 
         // First call
         $token1 = $client->getAccessToken();
@@ -64,13 +89,11 @@ class PayPalClientTest extends TestCase
 
     public function test_get_access_token_uses_sandbox_url_in_sandbox_mode(): void
     {
-        config(['services.paypal.mode' => 'sandbox']);
-
         Http::fake([
             'api-m.sandbox.paypal.com/*' => Http::response(['access_token' => 'token'], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $client->getAccessToken();
 
         Http::assertSent(function ($request) {
@@ -80,13 +103,11 @@ class PayPalClientTest extends TestCase
 
     public function test_get_access_token_uses_live_url_in_live_mode(): void
     {
-        config(['services.paypal.mode' => 'live']);
-
         Http::fake([
             'api-m.paypal.com/*' => Http::response(['access_token' => 'token'], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('live');
         $client->getAccessToken();
 
         Http::assertSent(function ($request) {
@@ -112,7 +133,7 @@ class PayPalClientTest extends TestCase
             ], 201),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $order = $client->createOrder(
             amount: 25.00,
             currency: 'USD',
@@ -144,7 +165,7 @@ class PayPalClientTest extends TestCase
             'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::response(['id' => 'ORDER_123', 'status' => 'CREATED', 'links' => []], 201),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $client->createOrder(10.00, 'EUR', '', '');
 
         Http::assertSent(function ($request) {
@@ -166,7 +187,7 @@ class PayPalClientTest extends TestCase
             ], 201),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $result = $client->captureOrder('ORDER_123');
 
         $this->assertEquals('COMPLETED', $result['status']);
@@ -191,7 +212,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
         $order = $client->showOrder('ORDER_123');
 
         $this->assertEquals('ORDER_123', $order['id']);
@@ -208,13 +229,28 @@ class PayPalClientTest extends TestCase
 
     public function test_verify_webhook_returns_false_when_no_webhook_id(): void
     {
-        config(['services.paypal.webhook_id' => null]);
+        $this->fakeCredentials([
+            'client_id' => 'test-client-id',
+            'client_secret' => 'test-client-secret',
+        ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
 
         $result = $client->verifyWebhook([], '{}');
 
         $this->assertFalse($result);
+    }
+
+    public function test_missing_credentials_raise_a_user_facing_exception(): void
+    {
+        $this->fakeCredentials([]);
+
+        $client = new PayPalClient('sandbox');
+
+        $this->expectException(PaymentProviderException::class);
+        $this->expectExceptionMessage('missing the \'client_id\' credential');
+
+        $client->getAccessToken();
     }
 
     public function test_verify_webhook_returns_true_when_payload_valid(): void
@@ -226,7 +262,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
 
         $headers = [
             'paypal-auth-algo' => ['SHA256withRSA'],
@@ -256,7 +292,7 @@ class PayPalClientTest extends TestCase
             ], 200),
         ]);
 
-        $client = new PayPalClient;
+        $client = new PayPalClient('sandbox');
 
         $result = $client->verifyWebhook(
             [

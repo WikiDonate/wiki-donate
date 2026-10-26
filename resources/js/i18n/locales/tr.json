@@ -183,6 +183,7 @@
         "validationError": "Doğrulama hatası",
         "failedToSaveCard": "Kart kaydedilemedi",
         "failedToLoadCard": "Kart ayrıntıları yüklenemedi",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "İptal",
         "saving": "Kaydediliyor..."
     },

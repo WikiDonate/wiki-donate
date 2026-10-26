@@ -11,9 +11,12 @@ use App\Exceptions\PaymentProviderException;
  * App\Services\Payment\PaymentProviderRegistry); a code with no bound provider
  * class must never be reachable through the donor or payout flows.
  *
- * Credentials are never passed in: implementations read them from
- * config('services.*') / env, using the env-var NAME recorded in the row's
- * non-secret `config` JSON only when they need to distinguish environments.
+ * Credentials are never passed in: implementations read them through
+ * App\Services\Payment\PaymentCredentials (the encrypted `credentials` column
+ * of the method's registry row) — never from .env.
+ *
+ * Adding a method = insert a `payment_methods` row + deploy a class that
+ * implements this contract and register it in PaymentProviderRegistry.
  */
 interface PaymentProvider
 {
@@ -45,6 +48,36 @@ interface PaymentProvider
      * @return array<string, mixed> normalised capture data
      */
     public function capture(string $reference): array;
+
+    /**
+     * Fetch the current gateway state WITHOUT moving money.
+     *
+     * Used by return pages that poll a hosted checkout while the webhook is
+     * still in flight.
+     *
+     * @return array<string, mixed> same shape as capture()
+     */
+    public function retrieve(string $reference): array;
+
+    /**
+     * Whether a gateway status means the money actually moved.
+     *
+     * Providers differ (PayPal `COMPLETED`, Stripe `paid`), so the generic
+     * checkout service asks the provider instead of hardcoding statuses.
+     */
+    public function isCaptured(?string $status): bool;
+
+    /**
+     * Whether the donor approves on this site (Smart Buttons) or on a hosted
+     * checkout page. Client capture is only offered for the former.
+     */
+    public function supportsClientCapture(): bool;
+
+    /**
+     * Return URL for this gateway, including any placeholder it expands
+     * (Stripe appends `{CHECKOUT_SESSION_ID}`).
+     */
+    public function returnUrl(string $frontendUrl, string $code): string;
 
     /**
      * Verify an inbound webhook for this method.

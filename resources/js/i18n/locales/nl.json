@@ -183,6 +183,7 @@
         "validationError": "Validatiefout",
         "failedToSaveCard": "Kan de kaart niet opslaan",
         "failedToLoadCard": "Kan kaartgegevens niet laden",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Annuleer",
         "saving": "Opslaan..."
     },

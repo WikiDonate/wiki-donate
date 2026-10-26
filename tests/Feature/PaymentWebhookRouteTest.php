@@ -5,9 +5,11 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\PaymentMethod;
 use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
 use App\Models\User;
+use App\Services\Payment\PaymentCredentials;
 use App\Services\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -136,7 +138,10 @@ class PaymentWebhookRouteTest extends TestCase
         // generic /webhooks/{method} pattern. Stripe's own signature check runs
         // (not PayPal's), so a bogus signature is rejected with 401 — proving
         // dispatch reached StripeWebhookController and did not 404.
-        config(['services.stripe.webhook_secret' => 'whsec_test']);
+        // The webhook secret comes from the registry, not .env.
+        $stripe = PaymentMethod::query()->where('code', PaymentMethod::CODE_STRIPE)->firstOrFail();
+        $stripe->forceFill(['credentials' => ['webhook_secret' => 'whsec_test']])->save();
+        app(PaymentCredentials::class)->flush();
 
         $response = $this->postJson(
             '/api/v1/webhooks/stripe',
@@ -146,6 +151,27 @@ class PaymentWebhookRouteTest extends TestCase
 
         $response->assertStatus(401);
         $this->assertSame('Invalid signature', $response->json('message'));
+    }
+
+    public function test_stripe_webhook_without_a_secret_is_a_generic_503(): void
+    {
+        PaymentMethod::query()->where('code', PaymentMethod::CODE_STRIPE)->firstOrFail()
+            ->forceFill(['credentials' => null])->save();
+        app(PaymentCredentials::class)->flush();
+
+        $response = $this->postJson(
+            '/api/v1/webhooks/stripe',
+            [],
+            ['Stripe-Signature' => 't=1700000000,v1=bogus']
+        );
+
+        // A config error is not the sender's fault: Stripe should retry, and
+        // the body must not reveal which secret is missing.
+        $response->assertStatus(503)->assertJsonPath('success', false);
+
+        $body = json_encode($response->json());
+        $this->assertStringNotContainsString('Webhook secret not configured', $body);
+        $this->assertStringNotContainsString('secret', $body);
     }
 
     public function test_unknown_method_is_rejected_without_a_500(): void

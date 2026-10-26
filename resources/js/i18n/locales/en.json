@@ -183,6 +183,7 @@
         "validationError": "Validation error",
         "failedToSaveCard": "Failed to save card",
         "failedToLoadCard": "Failed to load card details",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Cancel",
         "saving": "Saving..."
     },

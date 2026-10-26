@@ -183,6 +183,7 @@
         "validationError": "Hitilafu ya uthibitishaji",
         "failedToSaveCard": "Imeshindwa kuhifadhi kadi",
         "failedToLoadCard": "Imeshindwa kupakia maelezo ya kadi",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Ghairi",
         "saving": "Inahifadhi..."
     },

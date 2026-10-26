@@ -96,7 +96,7 @@ class PaymentCheckoutQaTest extends TestCase
         $this->mockPayPalClient();
 
         $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 40.00,
                 'currency' => 'USD',
                 'donor_name' => 'QA Donor',
@@ -113,7 +113,7 @@ class PaymentCheckoutQaTest extends TestCase
         ]);
 
         $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
             ->assertOk()
             ->assertJsonPath('data.status', 'completed');
 
@@ -139,7 +139,7 @@ class PaymentCheckoutQaTest extends TestCase
         $this->mockPayPalClient();
 
         $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 40.00,
                 'formula_id' => $formula->id,
             ])->assertOk();
@@ -147,12 +147,12 @@ class PaymentCheckoutQaTest extends TestCase
         $headers = ['Authorization' => "Bearer {$token}"];
 
         $this->withHeaders($headers)
-            ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
             ->assertOk();
 
         // Second capture: no pending row left, existing donation is returned.
         $this->withHeaders($headers)
-            ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_QA'])
             ->assertOk();
 
         $this->assertSame(1, Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_QA')->count());

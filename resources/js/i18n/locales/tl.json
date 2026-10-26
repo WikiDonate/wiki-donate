@@ -183,6 +183,7 @@
         "validationError": "Error sa pagpapatunay",
         "failedToSaveCard": "Nabigong i-save ang card",
         "failedToLoadCard": "Nabigong i-load ang mga detalye ng card",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Kanselahin",
         "saving": "Nagse-save..."
     },

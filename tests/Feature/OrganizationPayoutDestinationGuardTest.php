@@ -6,8 +6,10 @@ use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
+use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use App\Models\User;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -27,6 +29,8 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
         parent::setUp();
 
         Role::firstOrCreate(['name' => 'Admin']);
+
+        $this->seedPayPalRegistryCredentials();
 
         $this->admin = User::factory()->create();
         $this->admin->assignRole('Admin');
@@ -59,6 +63,23 @@ class OrganizationPayoutDestinationGuardTest extends TestCase
         $token = $this->admin->createToken('test')->plainTextToken;
 
         return $this->withHeader('Authorization', "Bearer {$token}");
+    }
+
+    /** PayPal credentials come from the registry (not .env). */
+    private function seedPayPalRegistryCredentials(): void
+    {
+        PaymentMethod::query()
+            ->where('code', PaymentMethod::CODE_PAYPAL)
+            ->firstOrFail()
+            ->forceFill([
+                'credentials' => [
+                    'client_id' => 'fake-client-id',
+                    'client_secret' => 'fake-client-secret',
+                ],
+            ])
+            ->save();
+
+        app(PaymentCredentials::class)->flush();
     }
 
     /**

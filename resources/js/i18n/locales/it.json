@@ -183,6 +183,7 @@
         "validationError": "Errore di convalida",
         "failedToSaveCard": "Impossibile salvare la carta",
         "failedToLoadCard": "Impossibile caricare i dettagli della carta",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Annulla",
         "saving": "Salvataggio..."
     },

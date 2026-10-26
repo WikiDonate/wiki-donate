@@ -155,7 +155,7 @@ class PaymentReportRegressionTest extends TestCase
         $this->assertSame('stripe', $byMethod[0]['payment_method']);
     }
 
-    public function test_legacy_rows_without_a_payment_method_still_default_to_stripe(): void
+    public function test_legacy_rows_without_a_payment_method_report_as_unknown(): void
     {
         $donor = User::factory()->create();
         $formula = $this->formula();
@@ -171,9 +171,12 @@ class PaymentReportRegressionTest extends TestCase
         $res = $this->withHeaders($this->userToken($donor))->getJson('/api/v1/report/donations');
 
         $res->assertOk();
-        $this->assertSame('stripe', $res->json('data.donations.0.payment_method'));
+        // No inference: an unclassified row is 'unknown', never attributed to
+        // Stripe (which would silently inflate that gateway's totals).
+        $this->assertSame('unknown', $res->json('data.donations.0.payment_method'));
         $this->assertSame(1, (int) $res->json('data.summary.byPaymentMethod.0.count'));
-        $this->assertSame('stripe', $res->json('data.summary.byPaymentMethod.0.payment_method'));
+        $this->assertSame('unknown', $res->json('data.summary.byPaymentMethod.0.payment_method'));
+        $this->assertCount(1, $res->json('data.summary.byPaymentMethod'));
     }
 
     // -------------------------------------------------------------------------

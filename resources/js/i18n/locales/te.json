@@ -183,6 +183,7 @@
         "validationError": "ధృవీకరణ లోపం",
         "failedToSaveCard": "కార్డ్‌ని సేవ్ చేయడంలో విఫలమైంది",
         "failedToLoadCard": "కార్డ్ వివరాలను లోడ్ చేయడంలో విఫలమైంది",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "రద్దు చేయి",
         "saving": "సేవ్ చేస్తోంది..."
     },

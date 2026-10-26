@@ -183,6 +183,7 @@
         "validationError": "Chyba ověření",
         "failedToSaveCard": "Kartu se nepodařilo uložit",
         "failedToLoadCard": "Podrobnosti o kartě se nepodařilo načíst",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Zrušit",
         "saving": "Ukládání..."
     },

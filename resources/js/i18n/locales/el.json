@@ -183,6 +183,7 @@
         "validationError": "Σφάλμα επικύρωσης",
         "failedToSaveCard": "Αποτυχία αποθήκευσης κάρτας",
         "failedToLoadCard": "Η φόρτωση των στοιχείων της κάρτας απέτυχε",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Ακύρωση",
         "saving": "Αποθήκευση..."
     },

@@ -183,6 +183,7 @@
         "validationError": "Lỗi xác thực",
         "failedToSaveCard": "Không lưu được thẻ",
         "failedToLoadCard": "Không thể tải chi tiết thẻ",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Hủy bỏ",
         "saving": "Đang lưu..."
     },

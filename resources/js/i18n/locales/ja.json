@@ -183,6 +183,7 @@
         "validationError": "検証エラー",
         "failedToSaveCard": "カードの保存に失敗しました",
         "failedToLoadCard": "カード詳細のロードに失敗しました",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "キャンセル",
         "saving": "保存中..."
     },

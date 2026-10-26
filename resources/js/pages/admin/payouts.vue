@@ -299,7 +299,8 @@
     const paying = ref(false)
 
     // Payout rail is data-driven from the registry's payout-capable methods.
-    const { payoutMethods, loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
+    const { payoutMethods, loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } =
+        usePaymentMethods()
     const payMethod = ref('')
 
     const syncing = ref(false)
@@ -493,4 +494,5 @@
 
     fetchAllocations()
     loadPaymentMethods()
+    loadAdminMethods()
 </script>

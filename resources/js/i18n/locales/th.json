@@ -183,6 +183,7 @@
         "validationError": "ข้อผิดพลาดในการตรวจสอบ",
         "failedToSaveCard": "ไม่สามารถบันทึกบัตรได้",
         "failedToLoadCard": "โหลดรายละเอียดการ์ดไม่สำเร็จ",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "ยกเลิก",
         "saving": "กำลังบันทึก..."
     },

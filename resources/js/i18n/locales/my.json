@@ -183,6 +183,7 @@
         "validationError": "အတည်ပြုချက် အမှား",
         "failedToSaveCard": "ကတ်ကို သိမ်းဆည်းရန် မအောင်မြင်ပါ။",
         "failedToLoadCard": "ကတ်အသေးစိတ်အချက်အလက်များကို ဖွင့်၍မရပါ။",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "မလုပ်တော့",
         "saving": "သိမ်းဆည်းနေသည်..."
     },

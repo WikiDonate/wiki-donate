@@ -225,6 +225,8 @@ class AdminTransactionLogTest extends TestCase
         $donation = Donation::create([
             'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
+            'payment_method' => 'stripe',
+            'gateway_reference' => 'cs_test_fields',
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
             'amount' => 100,

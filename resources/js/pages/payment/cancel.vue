@@ -53,6 +53,7 @@
 
 <script setup>
     import { useI18n } from 'vue-i18n'
+    import { safeInternalPath } from '~/utils/safeRedirect'
 
     const { t } = useI18n()
 
@@ -65,8 +66,7 @@
     const route = useRoute()
 
     const backUrl = computed(() => {
-        const back = route.query.back
-        return back && back.startsWith('/') ? back : '/'
+        return safeInternalPath(route.query.back)
     })
 
     const backLabel = computed(() =>

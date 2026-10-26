@@ -183,6 +183,7 @@
         "validationError": "Kesalahan validasi",
         "failedToSaveCard": "Gagal menyimpan kartu",
         "failedToLoadCard": "Gagal memuat detail kartu",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Batalkan",
         "saving": "Menyimpan..."
     },

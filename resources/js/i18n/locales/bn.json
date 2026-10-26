@@ -183,6 +183,7 @@
         "validationError": "বৈধতা ত্রুটি",
         "failedToSaveCard": "কার্ড সংরক্ষণ করতে ব্যর্থ হয়েছে",
         "failedToLoadCard": "কার্ডের বিবরণ লোড করা যায়নি",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "বাতিল করুন",
         "saving": "সংরক্ষণ করা হচ্ছে..."
     },

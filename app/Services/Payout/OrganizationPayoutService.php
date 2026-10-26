@@ -322,6 +322,18 @@ class OrganizationPayoutService
                 throw $e;
             }
 
+            // A configuration error (e.g. missing registry credentials) is a
+            // definite "no request was sent" failure: never leave the balance
+            // reserved on a row sync can't reconcile.
+            if ($e instanceof UserFacingException) {
+                $payout->forceFill([
+                    'status' => 'failed',
+                    'failure_reason' => mb_substr($e->getMessage(), 0, 1000),
+                ])->save();
+
+                throw $e;
+            }
+
             // The batch call itself was rejected (401 bad credentials, 403
             // Payouts not enabled, 422 validation): PayPal moved no money,
             // so record the row as failed instead of leaving it pending

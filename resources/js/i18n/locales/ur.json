@@ -183,6 +183,7 @@
         "validationError": "توثیق کی خرابی۔",
         "failedToSaveCard": "کارڈ محفوظ کرنے میں ناکام",
         "failedToLoadCard": "کارڈ کی تفصیلات لوڈ کرنے میں ناکام",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "منسوخ کریں۔",
         "saving": "محفوظ کر رہا ہے..."
     },

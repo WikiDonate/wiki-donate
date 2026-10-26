@@ -183,6 +183,7 @@
         "validationError": "Ralat pengesahan",
         "failedToSaveCard": "Gagal menyimpan kad",
         "failedToLoadCard": "Gagal memuatkan butiran kad",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Batal",
         "saving": "Menyimpan..."
     },

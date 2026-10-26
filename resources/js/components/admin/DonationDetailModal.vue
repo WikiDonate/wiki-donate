@@ -144,9 +144,10 @@
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
-    const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
+    const { loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     loadPaymentMethods()
+    loadAdminMethods()
 
     defineProps({
         modelValue: {

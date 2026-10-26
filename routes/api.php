@@ -10,10 +10,6 @@ use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PaymentController;
 use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Controllers\v1\PaymentWebhookController;
-use App\Http\Controllers\v1\PayPalController;
-use App\Http\Controllers\v1\PayPalWebhookController;
-use App\Http\Controllers\v1\StripeController;
-use App\Http\Controllers\v1\StripeWebhookController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
@@ -65,31 +61,10 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    // Stripe Checkout (public)
-    Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession'])
-        ->middleware('auth:sanctum');
-    Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
-
-    // Stripe Webhook (public, no auth — verified by signature; throttled
-    // so attackers can't force expensive signature checks at will)
-    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
-        ->middleware('throttle:60,1');
-
-    // PayPal Checkout (create + capture are callable without an authenticated
-    // user so guest donations and the post-redirect success-page flow work)
-    //
-    // Legacy per-gateway routes: kept for in-flight clients and the PayPal
-    // dashboard until it is repointed at the generic /payment/{method} routes
-    // below. Both paths share the same handlers.
-    Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
-        ->middleware(['throttle:10,1', OptionalAuth::class]);
-    Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
-        ->middleware(['throttle:20,1', OptionalAuth::class]);
-
     // Generic donor checkout: /payment/{method}/create-order + /capture-order,
     // where {method} is a payment_methods.code. Resolution enforces `active`
-    // and fails loudly for methods with no checkout handler, so enabling a new
-    // method needs no front-end change.
+    // and fails loudly for unknown/unbound methods, so enabling a new method
+    // needs no controller, route, or front-end change.
     Route::post('payment/{method}/create-order', [PaymentController::class, 'createOrder'])
         ->where('method', '[a-z0-9_-]+')
         ->middleware(['throttle:10,1', OptionalAuth::class]);
@@ -97,18 +72,14 @@ Route::prefix('v1')->group(function () {
         ->where('method', '[a-z0-9_-]+')
         ->middleware(['throttle:20,1', OptionalAuth::class]);
 
-    // PayPal Webhook (public, no auth — verified by signature; throttled
-    // so attackers can't force expensive verification calls at will)
-    //
-    // Legacy alias: kept until the PayPal dashboard is repointed at the generic
-    // /webhooks/{method} route below; both accept identical payloads and share
-    // the same handler, so removal is a one-line change.
-    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook'])
+    // Read-only status poll for hosted-checkout return pages (Stripe).
+    Route::get('payment/{method}/status/{reference}', [PaymentController::class, 'status'])
+        ->where('method', '[a-z0-9_-]+')
         ->middleware('throttle:60,1');
 
-    // Generic method-parameterised webhook: /webhooks/{method}, where {method}
-    // is a payment_methods.code (e.g. /webhooks/stripe). Resolution ignores
-    // `active` so in-flight events for a just-disabled method are still handled.
+    // Method-parameterised webhooks: /webhooks/{method} (e.g. /webhooks/paypal,
+    // /webhooks/stripe). Resolution ignores `active` so in-flight events for a
+    // just-disabled method are still verified and processed.
     Route::post('webhooks/{method}', [PaymentWebhookController::class, 'handle'])
         ->where('method', '[a-z0-9_-]+')
         ->middleware('throttle:60,1');
@@ -116,6 +87,13 @@ Route::prefix('v1')->group(function () {
     // Active payment-method registry (public): drives donor checkout pickers
     // and the admin filters/badges/payout rail. Only active=1 rows are exposed.
     Route::get('payment-methods', [PaymentMethodController::class, 'index'])
+        ->middleware('throttle:60,1');
+
+    // Browser-safe credential for a registered method (PayPal client ID /
+    // Stripe publishable key). Ignores `active` so billing can still load
+    // Stripe.js while Stripe is disabled for donations.
+    Route::get('payment-methods/{code}/public-key', [PaymentMethodController::class, 'publicKey'])
+        ->where('code', '[a-z0-9_-]+')
         ->middleware('throttle:60,1');
 
     // Public page content

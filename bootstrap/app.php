@@ -20,6 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
         ]);
         $middleware->append(SecurityHeaders::class);
+
+        // API-only app: guests must always get the JSON 401 below, never a
+        // redirect to the non-existent `login` route. Without this, any client
+        // that omits `Accept: application/json` got a 500 (RouteNotFoundException).
+        $middleware->redirectGuestsTo(fn () => null);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $e) {

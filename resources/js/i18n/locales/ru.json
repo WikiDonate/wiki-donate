@@ -183,6 +183,7 @@
         "validationError": "Ошибка проверки",
         "failedToSaveCard": "Не удалось сохранить карту",
         "failedToLoadCard": "Не удалось загрузить данные карты.",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Отмена",
         "saving": "Сохранение..."
     },

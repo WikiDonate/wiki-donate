@@ -5,6 +5,8 @@ namespace App\Services\Payment\Providers;
 use App\Contracts\PaymentProvider;
 use App\Models\PaymentMethod;
 use App\Services\PayPalClient;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Log;
 
 /**
  * PayPal implementation of the payment-provider boundary.
@@ -13,8 +15,9 @@ use App\Services\PayPalClient;
  * generic controllers/services above it (PaymentController, registry) deal in
  * codes, references and normalised payloads.
  *
- * Credentials come from config('services.paypal.*') — never from the registry
- * row (which records non-secret metadata only).
+ * Credentials come from the encrypted payment_methods registry row (see
+ * App\Services\Payment\PaymentCredentials) — never from .env. The row's
+ * non-secret `config` column only carries metadata such as the gateway mode.
  */
 class PayPalProvider implements PaymentProvider
 {
@@ -69,7 +72,22 @@ class PayPalProvider implements PaymentProvider
      */
     public function capture(string $reference): array
     {
-        $order = $this->client->captureOrder($reference);
+        try {
+            $order = $this->client->captureOrder($reference);
+        } catch (RequestException $e) {
+            // A capture race (double click, webhook ahead of the client) makes
+            // PayPal answer ORDER_ALREADY_CAPTURED. The money moved, so read
+            // the order back instead of losing the donation.
+            if (! $this->alreadyCaptured($e)) {
+                throw $e;
+            }
+
+            Log::info('PayPal order already captured — reading it back.', [
+                'reference' => $reference,
+            ]);
+
+            $order = $this->client->showOrder($reference);
+        }
 
         return [
             'reference' => $reference,
@@ -77,6 +95,55 @@ class PayPalProvider implements PaymentProvider
             'capture' => PayPalClient::extractCaptureData($order),
             'raw' => $order,
         ];
+    }
+
+    /**
+     * Read the order without capturing it (return-page polling).
+     */
+    public function retrieve(string $reference): array
+    {
+        $order = $this->client->showOrder($reference);
+
+        return [
+            'reference' => $reference,
+            'status' => $order['status'] ?? null,
+            'capture' => PayPalClient::extractCaptureData($order),
+            'raw' => $order,
+        ];
+    }
+
+    public function isCaptured(?string $status): bool
+    {
+        return strtoupper((string) $status) === 'COMPLETED';
+    }
+
+    public function supportsClientCapture(): bool
+    {
+        // The donor approves inside PayPal's Smart Buttons on our page.
+        return true;
+    }
+
+    public function returnUrl(string $frontendUrl, string $code): string
+    {
+        return rtrim($frontendUrl, '/').'/payment/success?method='.$code;
+    }
+
+    /**
+     * Detect PayPal's ORDER_ALREADY_CAPTURED error family.
+     */
+    private function alreadyCaptured(RequestException $e): bool
+    {
+        $details = $e->response?->json('details') ?? [];
+
+        foreach ($details as $detail) {
+            $issue = strtoupper((string) ($detail['issue'] ?? ''));
+
+            if (str_contains($issue, 'ALREADY_CAPTURED')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function verifyWebhook(array $headers, string $body): bool

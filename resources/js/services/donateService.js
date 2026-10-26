@@ -25,9 +25,4 @@ export const donateService = {
     methodPath,
     createOrder,
     captureOrder,
-
-    // Back-compat shims for callers that predate the generic endpoints.
-    createCheckoutSession: (params) => createOrder('stripe', params),
-    createPaypalOrder: (params) => createOrder('paypal', params),
-    capturePaypalOrder: (params) => captureOrder('paypal', params),
 }

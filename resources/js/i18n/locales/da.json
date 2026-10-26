@@ -183,6 +183,7 @@
         "validationError": "Valideringsfejl",
         "failedToSaveCard": "Kortet kunne ikke gemmes",
         "failedToLoadCard": "Kortoplysningerne kunne ikke indlæses",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Annuller",
         "saving": "Gemmer..."
     },

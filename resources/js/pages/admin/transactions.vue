@@ -230,7 +230,7 @@
     const { notifyError } = useToastify()
 
     const { t } = useI18n()
-    const { allMethods, loadPaymentMethods, methodLabel } = usePaymentMethods()
+    const { allMethods, loadPaymentMethods, loadAdminMethods, methodLabel } = usePaymentMethods()
 
     useHead({ title: t('admin.transactions') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -353,6 +353,7 @@
 
     onMounted(() => {
         loadPaymentMethods()
+        loadAdminMethods()
         loadPage()
     })
 </script>

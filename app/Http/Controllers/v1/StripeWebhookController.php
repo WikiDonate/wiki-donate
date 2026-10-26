@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\TransactionLog;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -15,9 +16,9 @@ use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
-    public function __construct()
+    public function __construct(private PaymentCredentials $credentials)
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        Stripe::setApiKey($this->credentials->get('stripe', 'secret_key'));
     }
 
     /**
@@ -27,15 +28,20 @@ class StripeWebhookController extends Controller
     {
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
-        $webhookSecret = config('services.stripe.webhook_secret');
+        $webhookSecret = $this->credentials->get('stripe', 'webhook_secret');
 
         if (! $webhookSecret) {
-            Log::error('Stripe webhook secret not configured');
+            // Deployment/config problem, not a client error: answer 503 so
+            // Stripe retries later instead of treating the event as delivered,
+            // and never reveal which secret is missing to the caller.
+            Log::critical('Stripe webhook secret is not configured — rejecting event.', [
+                'event_id' => $request->header('Stripe-Event-Id'),
+            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Webhook secret not configured',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => 'Webhook temporarily unavailable',
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
         try {

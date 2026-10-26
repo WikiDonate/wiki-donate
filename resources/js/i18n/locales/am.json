@@ -183,6 +183,7 @@
         "validationError": "የማረጋገጫ ስህተት",
         "failedToSaveCard": "ካርድ ማስቀመጥ አልተሳካም።",
         "failedToLoadCard": "የካርድ ዝርዝሮችን መጫን አልተሳካም።",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "ሰርዝ",
         "saving": "በማስቀመጥ ላይ..."
     },

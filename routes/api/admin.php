@@ -7,6 +7,7 @@ use App\Http\Controllers\v1\Admin\OrganizationPayoutController;
 use App\Http\Controllers\v1\Admin\PageContentController;
 use App\Http\Controllers\v1\Admin\TransactionController;
 use App\Http\Controllers\v1\Admin\TransactionLogController;
+use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Middleware\FreshAuthGuard;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,10 @@ Route::prefix('admin')
     ->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index']);
         Route::get('donations', [DashboardController::class, 'donations']);
+
+        // Full payment-method registry (includes inactive methods) for admin
+        // filters/labels — the public endpoint exposes active+servable only.
+        Route::get('payment-methods', [PaymentMethodController::class, 'adminIndex']);
 
         // Organization payouts (append-only ledger, live computed balances)
         Route::get('payouts', [OrganizationPayoutController::class, 'index']);

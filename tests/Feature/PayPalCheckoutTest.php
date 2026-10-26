@@ -166,7 +166,7 @@ class PayPalCheckoutTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 0.25, // below minimum of 0.50
             ]);
 
@@ -180,7 +180,7 @@ class PayPalCheckoutTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 25.00,
                 'currency' => 'INVALID',
             ]);
@@ -212,7 +212,7 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 25.00,
                 'currency' => 'USD',
                 'donor_name' => 'Test Donor',
@@ -224,7 +224,7 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'PayPal order created',
+                'message' => 'Payment order created',
             ])
             ->assertJsonPath('data.order_id', 'PAYPAL_ORDER_123')
             ->assertJsonPath('data.approval_url', 'https://www.sandbox.paypal.com/checkoutnow?token=PAYPAL_ORDER_123');
@@ -250,7 +250,7 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/create-order', [
+            ->postJson('/api/v1/payment/paypal/create-order', [
                 'amount' => 25.00,
                 'formula_id' => 999999,
             ]);
@@ -263,7 +263,7 @@ class PayPalCheckoutTest extends TestCase
     {
         $this->mockPayPalClient();
 
-        $response = $this->postJson('/api/v1/paypal/create-order', [
+        $response = $this->postJson('/api/v1/payment/paypal/create-order', [
             'amount' => 25.00,
             'donor_email' => 'anon@example.com',
         ]);
@@ -288,7 +288,7 @@ class PayPalCheckoutTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', []);
+            ->postJson('/api/v1/payment/paypal/capture-order', []);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['order_id']);
@@ -302,7 +302,7 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'UNKNOWN_ORDER',
             ]);
 
@@ -341,14 +341,14 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'PAYPAL_ORDER_123',
             ]);
 
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Order already captured',
+                'message' => 'Payment already captured',
             ])
             ->assertJsonPath('data.donation_id', $existing->id)
             ->assertJsonPath('data.status', 'completed');
@@ -390,7 +390,7 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'PAYPAL_ORDER_123',
             ]);
 
@@ -447,7 +447,7 @@ class PayPalCheckoutTest extends TestCase
         $this->mockPayPalClient();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'PAYPAL_ORDER_123',
             ]);
 
@@ -495,7 +495,7 @@ class PayPalCheckoutTest extends TestCase
         ]);
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'PAYPAL_ORDER_123',
             ]);
 
@@ -755,14 +755,14 @@ class PayPalCheckoutTest extends TestCase
         $this->app->instance(PayPalClient::class, $mock);
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
-            ->postJson('/api/v1/paypal/capture-order', [
+            ->postJson('/api/v1/payment/paypal/capture-order', [
                 'order_id' => 'EXPIRED_ORDER',
             ]);
 
         $response->assertStatus(400)
             ->assertJson([
                 'success' => false,
-                'message' => 'PayPal capture failed',
+                'message' => 'Payment provider error',
             ]);
     }
 

@@ -183,6 +183,7 @@
         "validationError": "កំហុសក្នុងការផ្ទៀងផ្ទាត់",
         "failedToSaveCard": "បរាជ័យក្នុងការរក្សាទុកកាត",
         "failedToLoadCard": "បរាជ័យក្នុងការផ្ទុកព័ត៌មានលម្អិតកាត",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "បោះបង់",
         "saving": "កំពុងរក្សាទុក..."
     },

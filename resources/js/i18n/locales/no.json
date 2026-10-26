@@ -183,6 +183,7 @@
         "validationError": "Valideringsfeil",
         "failedToSaveCard": "Kunne ikke lagre kortet",
         "failedToLoadCard": "Kunne ikke laste inn kortdetaljer",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Avbryt",
         "saving": "Lagrer..."
     },

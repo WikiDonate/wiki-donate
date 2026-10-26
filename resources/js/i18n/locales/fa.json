@@ -183,6 +183,7 @@
         "validationError": "خطای اعتبارسنجی",
         "failedToSaveCard": "کارت ذخیره نشد",
         "failedToLoadCard": "جزئیات کارت بارگیری نشد",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "لغو کنید",
         "saving": "در حال ذخیره..."
     },

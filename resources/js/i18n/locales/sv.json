@@ -183,6 +183,7 @@
         "validationError": "Valideringsfel",
         "failedToSaveCard": "Det gick inte att spara kortet",
         "failedToLoadCard": "Det gick inte att läsa in kortuppgifter",
+        "stripeUnavailable": "Card payments are not configured right now. Please contact support.",
         "cancel": "Avbryt",
         "saving": "Sparar..."
     },

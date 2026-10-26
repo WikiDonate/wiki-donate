@@ -4,48 +4,28 @@ namespace App\Http\Controllers\v1;
 
 use App\Exceptions\PaymentProviderException;
 use App\Http\Controllers\Controller;
-use App\Services\Payment\PaymentProviderRegistry;
+use App\Services\Payment\PaymentCheckoutService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 /**
- * Generic, method-parameterised donor checkout entrypoint:
+ * Generic, method-parameterised donor checkout entrypoint.
  *
  *   POST /payment/{method}/create-order
  *   POST /payment/{method}/capture-order
+ *   GET  /payment/{method}/status/{reference}
  *
  * `{method}` is a `payment_methods.code`. Resolution goes through
- * PaymentProviderRegistry::forCode(), which enforces `active` for new flows and
- * fails LOUDLY (never a donor-facing 500) when a code has no provider bound.
- *
- * Transitional dispatch: the gateway controllers still hold the per-gateway
- * implementation detail. This controller resolves the method, delegates, and
- * normalises the result into one shape the SPA can consume regardless of
- * gateway — so adding a method is a registry row + a provider class, with no
- * front-end change.
- *
- * The legacy per-gateway routes (/paypal/create-order, /stripe/checkout, ...)
- * remain wired for in-flight clients and the PayPal dashboard until it is
- * repointed; both paths share the same handler code.
+ * PaymentProviderRegistry, so adding a method is a registry row + a provider
+ * class — no controller or route changes.
  */
 class PaymentController extends Controller
 {
-    public function __construct(private PaymentProviderRegistry $registry) {}
-
-    /**
-     * code => [controller class, create method, capture method|null].
-     *
-     * A null capture method means the gateway confirms out-of-band (a webhook),
-     * so client-side capture is not offered for it.
-     *
-     * @var array<string, array{0: class-string, 1: string, 2: ?string}>
-     */
-    private const HANDLERS = [
-        'paypal' => [PayPalController::class, 'createOrder', 'captureOrder'],
-        'stripe' => [StripeController::class, 'createCheckoutSession', null],
-    ];
+    public function __construct(private PaymentCheckoutService $checkout) {}
 
     /**
      * POST /payment/{method}/create-order
@@ -54,17 +34,38 @@ class PaymentController extends Controller
     {
         $code = strtolower($method);
 
-        $handler = $this->handler($code);
-        if ($handler instanceof JsonResponse) {
-            return $handler;
+        $request->validate([
+            'amount' => 'required|numeric|min:0.50|max:500000',
+            'currency' => 'nullable|string|size:3',
+            'donor_name' => 'nullable|string|max:255',
+            'donor_email' => 'nullable|email|max:255',
+            'formula_id' => 'nullable|integer|exists:donation_formulas,id',
+            'details' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            $data = $this->checkout->create($code, $request->all(), $request->user()?->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment order created',
+                'data' => $data,
+            ], Response::HTTP_OK);
+        } catch (PaymentProviderException $e) {
+            return $this->providerError($code, $e);
+        } catch (RequestException $e) {
+            Log::error('Payment provider rejected order creation', [
+                'method' => $code,
+                'error' => $e->getMessage(),
+                'body' => $e->response?->json(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment provider error',
+                'errors' => ['The payment provider could not start this payment.'],
+            ], Response::HTTP_BAD_REQUEST);
         }
-
-        [$class, $createMethod] = $handler;
-
-        /** @var JsonResponse $delegated */
-        $delegated = app($class)->{$createMethod}($request);
-
-        return $this->normalise($delegated, $code, $request);
     }
 
     /**
@@ -74,100 +75,105 @@ class PaymentController extends Controller
     {
         $code = strtolower($method);
 
-        $handler = $this->handler($code);
-        if ($handler instanceof JsonResponse) {
-            return $handler;
+        $validated = $request->validate([
+            'order_id' => 'nullable|string|max:255',
+            'reference' => 'nullable|string|max:255',
+        ]);
+
+        $reference = (string) ($validated['order_id'] ?? $validated['reference'] ?? '');
+
+        if ($reference === '') {
+            throw ValidationException::withMessages([
+                'order_id' => 'A gateway reference (order_id) is required.',
+            ]);
         }
 
-        [, , $captureMethod] = $handler;
+        try {
+            $result = $this->checkout->capture($code, $reference);
+        } catch (PaymentProviderException $e) {
+            return $this->providerError($code, $e);
+        } catch (RequestException $e) {
+            Log::error('Payment provider rejected capture', [
+                'method' => $code,
+                'error' => $e->getMessage(),
+                'body' => $e->response?->json(),
+            ]);
 
-        if ($captureMethod === null) {
             return response()->json([
                 'success' => false,
-                'message' => 'This payment method is confirmed by the provider, not by client capture.',
-                'errors' => ['Capture is not supported for this payment method.'],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                'message' => 'Payment provider error',
+                'errors' => ['The payment provider could not confirm this payment.'],
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        /** @var JsonResponse $delegated */
-        $delegated = app($handler[0])->{$captureMethod}($request);
+        $status = (int) ($result['status'] ?? Response::HTTP_OK);
+        unset($result['status']);
 
-        return $this->normalise($delegated, $code, $request);
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Payment status unavailable',
+            'errors' => $result['errors'] ?? [],
+        ] + (isset($result['data']) ? ['data' => $result['data']] : []), $status);
     }
 
     /**
-     * Resolve the method to its handler, or return the error response.
+     * GET /payment/{method}/status/{reference}
      *
-     * @return array{0: class-string, 1: string, 2: ?string}|JsonResponse
+     * Read-only poll for hosted-checkout return pages. Never moves money and
+     * never writes a donation (the webhook owns completion).
      */
-    private function handler(string $code): array|JsonResponse
+    public function status(string $method, string $reference): JsonResponse
     {
+        $code = strtolower($method);
+
         try {
-            // Enforces `active` for new donor flows and throws loudly for an
-            // unknown / unbound code with no provider class.
-            $this->registry->forCode($code);
+            $data = $this->checkout->status($code, $reference);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment status retrieved',
+                'data' => $data,
+            ], Response::HTTP_OK);
         } catch (PaymentProviderException $e) {
-            // A deployment mistake (unbound provider, missing class, disabled
-            // method). Log the diagnostic detail; never echo it to the donor.
-            Log::warning('Generic payment endpoint rejected: unresolvable method.', [
+            return $this->providerError($code, $e);
+        } catch (RequestException $e) {
+            Log::warning('Payment status lookup failed', [
                 'method' => $code,
                 'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'This payment method is not available.',
-                'errors' => ['This payment method is not available.'],
-            ], Response::HTTP_NOT_FOUND);
+                'message' => 'Payment status unavailable',
+                'errors' => ['The payment provider could not return this payment.'],
+            ], Response::HTTP_BAD_REQUEST);
         }
-
-        $handler = self::HANDLERS[$code] ?? null;
-
-        if ($handler === null) {
-            // Registry row + provider exist but no checkout flow is wired yet:
-            // a deployment gap, not a donor error. Detail stays in the log.
-            Log::critical('Payment method has no checkout handler wired.', ['method' => $code]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'This payment method is not available for checkout.',
-                'errors' => ['This payment method is not available for checkout.'],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        return $handler;
     }
 
     /**
-     * Add the generic fields every caller can rely on, leaving the
-     * gateway-specific ones intact for back-compat.
+     * Never leak deployment detail (provider class names, retry hints,
+     * credential names) to a donor; the actionable text stays in the log.
      */
-    private function normalise(JsonResponse $delegated, string $code, Request $request): JsonResponse
+    private function providerError(string $code, PaymentProviderException $e): JsonResponse
     {
-        $payload = json_decode($delegated->getContent(), true);
+        $status = $e->httpStatus();
 
-        if (! is_array($payload)) {
-            return $delegated;
-        }
+        Log::log(
+            $status >= 500 ? 'critical' : 'warning',
+            'Generic payment endpoint rejected a payment method.',
+            ['method' => $code, 'status' => $status, 'error' => $e->getMessage()]
+        );
 
-        if (($payload['success'] ?? false) !== true) {
-            return $delegated;
-        }
+        $message = match ($status) {
+            Response::HTTP_UNPROCESSABLE_ENTITY => 'This operation is not supported for this payment method.',
+            Response::HTTP_SERVICE_UNAVAILABLE, Response::HTTP_BAD_GATEWAY => 'This payment method is temporarily unavailable.',
+            default => 'This payment method is not available.',
+        };
 
-        $data = $payload['data'] ?? [];
-
-        // One reference field regardless of gateway: a PayPal order id, a
-        // Stripe checkout session id, or — on capture — the reference the
-        // caller sent in. The SPA only ever needs `reference`.
-        $data['payment_method'] = $code;
-        $data['reference'] = $data['order_id']
-            ?? $data['session_id']
-            ?? $data['reference']
-            ?? $request->input('order_id')
-            ?? null;
-
-        $payload['data'] = $data;
-
-        return response()->json($payload, $delegated->getStatusCode(), $delegated->headers->all());
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'errors' => [$message],
+        ], $status);
     }
 }
