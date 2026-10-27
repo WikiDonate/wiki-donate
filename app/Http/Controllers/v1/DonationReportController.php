@@ -98,6 +98,10 @@ class DonationReportController extends Controller
                     'currency' => $donation->currency,
                     'status' => $donation->status,
                     'date' => $donation->created_at->format('d M, Y'),
+                    // Exact instant (UTC, ISO 8601) so the SPA can render the
+                    // donor's own local date *and time*. `date` stays for
+                    // older clients that only understand the written form.
+                    'date_raw' => $donation->created_at->toISOString(),
                     'donor_email' => $donation->donor_email,
                     'payment_id' => $metadata['payment_id'] ?? $donation->gateway_reference,
                     'formula_id' => $metadata['formula_id'] ?? $formula?->id,

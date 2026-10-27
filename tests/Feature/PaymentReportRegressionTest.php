@@ -124,6 +124,27 @@ class PaymentReportRegressionTest extends TestCase
         $this->assertSame('cs_report_2', $rows['stripe']['payment_id'], 'falls back to gateway_reference');
     }
 
+    public function test_donor_report_exposes_an_iso_instant_for_local_date_and_time(): void
+    {
+        $donor = User::factory()->create();
+
+        $donation = $this->donation([
+            'user_id' => $donor->id,
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL-DATE-1',
+        ]);
+        // 16:58 UTC = 22:58 in UTC+6: the SPA renders this in the donor's zone,
+        // so the API must ship the instant, not a server-formatted string.
+        $donation->forceFill(['created_at' => '2026-10-26 16:58:21'])->saveQuietly();
+
+        $row = collect($this->withHeaders($this->userToken($donor))
+            ->getJson('/api/v1/report/donations')
+            ->json('data.donations'))->first();
+
+        $this->assertSame('2026-10-26T16:58:21.000000Z', $row['date_raw']);
+        $this->assertSame('26 Oct, 2026', $row['date']);
+    }
+
     public function test_donor_report_search_matches_the_generic_pair(): void
     {
         $donor = User::factory()->create();

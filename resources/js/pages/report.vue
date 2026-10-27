@@ -102,7 +102,9 @@
                     :empty-text="t('report.noDonations')"
                 >
                     <template #cell-date="{ row }">
-                        <span class="text-gray-600 text-xs">{{ row.date }}</span>
+                        <span class="text-gray-600 text-xs whitespace-nowrap">{{
+                            formatDateUTC(row.date_raw || row.date)
+                        }}</span>
                     </template>
                     <template #cell-payment_method="{ row }">
                         <AdminBadge
@@ -183,6 +185,7 @@
     import { useToastify } from '~/composables/useToastify'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import DonationDetailModal from '~/components/admin/DonationDetailModal.vue'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
 
     const { notifyError } = useToastify()
 
