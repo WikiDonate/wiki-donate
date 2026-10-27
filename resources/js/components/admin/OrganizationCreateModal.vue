@@ -248,7 +248,6 @@
     import AdminModal from '~/components/admin/AdminModal.vue'
     import AdminBadge from '~/components/admin/AdminBadge.vue'
     import { adminService } from '~/services/adminService'
-    import { charityService } from '~/services/charityService'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import { useToastify } from '~/composables/useToastify'
 
@@ -350,7 +349,12 @@
         abortController = new AbortController()
         searching.value = true
         try {
-            const response = await charityService.searchCharities(query, abortController.signal)
+            // Admin search: already-registered orgs are filtered out server-side
+            // so the same charity cannot be added twice.
+            const response = await adminService.searchOrganizationDirectory(
+                query,
+                abortController.signal,
+            )
             suggestions.value = (response.data ?? []).slice(0, 10)
         } catch {
             suggestions.value = []

@@ -164,13 +164,7 @@ class OrganizationRegistryService
 
     private static function cleanEin(?string $ein): ?string
     {
-        if ($ein === null) {
-            return null;
-        }
-
-        $clean = preg_replace('/[^a-zA-Z0-9]/u', '', $ein);
-
-        return $clean === '' || $clean === false ? null : strtoupper($clean);
+        return Organization::normalizeEin($ein);
     }
 
     /**

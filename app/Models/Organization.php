@@ -43,14 +43,33 @@ class Organization extends Model
      */
     public function setEinAttribute(?string $value): void
     {
-        if ($value === null) {
-            $this->attributes['ein'] = null;
+        $this->attributes['ein'] = self::normalizeEin($value);
+    }
 
-            return;
+    /**
+     * Canonical EIN form: alphanumerics only, uppercased. Directory APIs
+     * (ProPublica) return the EIN as an integer, dropping the leading zero of
+     * an eight-digit EIN (06-0726487 arrives as 60726487), so those get the
+     * zero back. Longer/shorter values are left as typed rather than silently
+     * rewritten — validation is responsible for rejecting them.
+     */
+    public static function normalizeEin(mixed $ein): ?string
+    {
+        if (! is_string($ein) && ! is_int($ein)) {
+            return null;
         }
 
-        $clean = preg_replace('/[^a-zA-Z0-9]/u', '', $value);
-        $this->attributes['ein'] = ($clean === '' || $clean === false) ? null : strtoupper($clean);
+        $clean = strtoupper((string) preg_replace('/[^a-zA-Z0-9]/u', '', (string) $ein));
+
+        if ($clean === '') {
+            return null;
+        }
+
+        if (ctype_digit($clean) && strlen($clean) === 8) {
+            $clean = '0'.$clean;
+        }
+
+        return $clean;
     }
 
     protected static function boot()

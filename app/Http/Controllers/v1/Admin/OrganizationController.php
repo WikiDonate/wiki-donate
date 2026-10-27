@@ -9,6 +9,7 @@ use App\Models\Organization;
 use App\Models\OrganizationPayout;
 use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
+use App\Services\Charity\VerifiedCharitySearchService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -52,6 +53,32 @@ class OrganizationController extends Controller
             'success' => true,
             'message' => 'Organizations retrieved successfully',
             'data' => $query->latest('id')->paginate($perPage),
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Directory search for the Add-organization modal.
+     *
+     * Same charity directory as the public autocomplete, but every hit that is
+     * already in the registry is removed — verified or unverified. An admin must
+     * edit the existing row instead of creating a duplicate.
+     */
+    public function search(Request $request, VerifiedCharitySearchService $service): JsonResponse
+    {
+        $query = trim((string) $request->query('q', ''));
+
+        if (mb_strlen($query) < 2) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Query too short',
+                'data' => [],
+            ], Response::HTTP_OK);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Charity directory retrieved successfully',
+            'data' => $service->search($query, excludeExisting: true),
         ], Response::HTTP_OK);
     }
 
@@ -226,8 +253,14 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Update an organization (PayPal email and basic fields). Changing the
-     * PayPal email resets verification so the new destination is re-confirmed.
+     * Update an organization.
+     *
+     * Every registry field is editable — name, EIN, website, location, PayPal
+     * email and payout rails — because admins routinely correct details donors
+     * submitted or that the directory had wrong. `normalized_name` is always
+     * derived here (never trusted from the client) and both it and the EIN stay
+     * unique. Changing the PayPal email resets verification so the new
+     * destination is re-confirmed.
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -242,6 +275,11 @@ class OrganizationController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            // `sometimes` keeps partial updates (payout rails only, email only)
+            // working for existing clients.
+            'name' => 'sometimes|required|string|max:255',
+            'ein' => 'nullable|string|max:20',
+            'website' => 'nullable|string|max:255',
             'paypal_email' => 'nullable|email|max:255',
             'city' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
@@ -255,27 +293,74 @@ class OrganizationController extends Controller
                 'success' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors()->all(),
+                'field_errors' => $validator->errors()->toArray(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Payout rails must reference active, payout-capable payment methods —
         // the registry is the single source of truth (never client free-text).
         if ($request->has('payout_methods') && $error = $this->payoutMethodError($request->input('payout_methods'))) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => [$error],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->validationError(['payout_methods' => $error]);
         }
 
-        $before = $org->only(['paypal_email', 'payout_methods', 'payout_status', 'verified_at']);
+        $normalizedName = null;
+        $name = null;
+        if ($request->has('name')) {
+            $name = trim(preg_replace('/\s+/u', ' ', (string) $request->input('name')));
+
+            if ($name === '') {
+                return $this->validationError(['name' => 'The organization name is required.']);
+            }
+
+            $normalizedName = Organization::normalizeName($name);
+
+            if (Organization::where('normalized_name', $normalizedName)
+                ->where('id', '!=', $org->id)
+                ->exists()) {
+                return $this->validationError(['name' => 'An organization with this name already exists.']);
+            }
+        }
+
+        $ein = null;
+        if ($request->has('ein')) {
+            $ein = $this->normalizeEin($request->input('ein'));
+
+            if ($ein !== null && Organization::where('ein', $ein)
+                ->where('id', '!=', $org->id)
+                ->exists()) {
+                return $this->validationError(['ein' => 'An organization with this EIN already exists.']);
+            }
+        }
+
+        $tracked = [
+            'name', 'normalized_name', 'ein', 'city', 'state', 'country',
+            'website', 'paypal_email', 'payout_methods', 'payout_status', 'verified_at',
+        ];
+        $before = $org->only($tracked);
+
         $paypalChanged = $request->has('paypal_email')
             && mb_strtolower(trim((string) $request->input('paypal_email') ?? '')) !== mb_strtolower(trim((string) $org->paypal_email ?? ''));
 
+        if ($normalizedName !== null) {
+            $org->name = $name;
+            $org->normalized_name = $normalizedName;
+        }
+
+        if ($request->has('ein')) {
+            $org->ein = $ein;
+        }
+
+        if ($request->has('website')) {
+            $org->website = $request->filled('website')
+                ? trim((string) $request->input('website'))
+                : null;
+        }
+
         $org->fill($request->only(['city', 'state', 'country']));
+
         if ($request->has('paypal_email')) {
             $org->paypal_email = $request->filled('paypal_email')
-                ? mb_strtolower(trim($request->input('paypal_email')))
+                ? mb_strtolower(trim((string) $request->input('paypal_email')))
                 : null;
         }
 
@@ -298,7 +383,7 @@ class OrganizationController extends Controller
             'actor_role' => 'Admin',
             'message' => "Organization updated: {$org->name}",
             'before' => $before,
-            'after' => $org->only(['paypal_email', 'payout_methods', 'payout_status', 'verified_at']),
+            'after' => $org->only($tracked),
         ]);
 
         if ($paypalChanged) {
@@ -573,13 +658,7 @@ class OrganizationController extends Controller
      */
     private function normalizeEin($ein): ?string
     {
-        if (! is_string($ein) || trim($ein) === '') {
-            return null;
-        }
-
-        $clean = preg_replace('/[^a-zA-Z0-9]/u', '', $ein);
-
-        return ($clean === '' || $clean === false) ? null : strtoupper($clean);
+        return Organization::normalizeEin($ein);
     }
 
     /**

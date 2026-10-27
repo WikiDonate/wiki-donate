@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Models\TransactionLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
@@ -18,6 +19,8 @@ use Tests\TestCase;
  *  - POST /admin/organizations validates name/EIN/email/methods
  *  - normalized_name is always derived server-side
  *  - EIN and normalized-name uniqueness return field errors
+ *  - PUT /admin/organizations/{id} can edit every registry field, keeping
+ *    uniqueness (excluding the row itself) and re-deriving normalized_name
  *  - DELETE refuses orgs with payout/formula history, allows clean deletes
  *  - both mutations are audited
  */
@@ -175,6 +178,159 @@ class AdminOrganizationCrudTest extends TestCase
         $response->assertStatus(422);
         $this->assertArrayHasKey('payout_methods', $response->json('field_errors'));
         $this->assertSame(0, Organization::count());
+    }
+
+    public function test_admin_can_update_every_registry_field(): void
+    {
+        $org = Organization::create([
+            'name' => 'Old Name',
+            'ein' => '111111111',
+            'website' => 'https://old.example',
+            'city' => 'Old City',
+            'state' => 'NY',
+            'country' => 'US',
+            'paypal_email' => 'old@example.org',
+            'payout_methods' => ['paypal'],
+        ]);
+
+        $response = $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", [
+                'name' => '  New   Name ',
+                'ein' => '22-2222222',
+                'website' => 'https://new.example',
+                'city' => 'Austin',
+                'state' => 'TX',
+                'country' => 'US',
+                'paypal_email' => 'NEW@EXAMPLE.ORG',
+                'payout_methods' => ['paypal'],
+            ]);
+
+        $response->assertOk();
+
+        $org->refresh();
+        $this->assertSame('New Name', $org->name);
+        $this->assertSame('new name', $org->normalized_name);
+        $this->assertSame('222222222', $org->ein);
+        $this->assertSame('https://new.example', $org->website);
+        $this->assertSame('Austin', $org->city);
+        $this->assertSame('TX', $org->state);
+        $this->assertSame('new@example.org', $org->paypal_email);
+        $this->assertSame($this->admin->id, $org->updated_by_id);
+
+        // The audit row carries the full before/after, not just the email.
+        $log = TransactionLog::where('event', 'organization.updated')->latest('id')->first();
+        $this->assertNotNull($log);
+        $this->assertSame('Old Name', $log->before['name']);
+        $this->assertSame('New Name', $log->after['name']);
+        $this->assertSame('111111111', $log->before['ein']);
+        $this->assertSame('222222222', $log->after['ein']);
+        $this->assertSame('https://old.example', $log->before['website']);
+    }
+
+    public function test_update_can_clear_optional_fields(): void
+    {
+        $org = Organization::create([
+            'name' => 'Clearable Org',
+            'ein' => '121212121',
+            'website' => 'https://clear.example',
+            'city' => 'Miami',
+            'payout_methods' => ['paypal'],
+        ]);
+
+        $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", [
+                'ein' => '',
+                'website' => '',
+                'city' => null,
+            ])
+            ->assertOk();
+
+        $org->refresh();
+        $this->assertNull($org->ein);
+        $this->assertNull($org->website);
+        $this->assertNull($org->city);
+        // Name is untouched by a partial update.
+        $this->assertSame('Clearable Org', $org->name);
+    }
+
+    public function test_update_rejects_duplicate_name_and_ein_but_allows_its_own_values(): void
+    {
+        Organization::create(['name' => 'Taken Org', 'ein' => '333333333']);
+
+        $org = Organization::create(['name' => 'Mine Org', 'ein' => '444444444']);
+
+        // Name collision is compared on the normalized form (case + spacing).
+        $byName = $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", ['name' => ' taken   org ']);
+        $byName->assertStatus(422);
+        $this->assertArrayHasKey('name', $byName->json('field_errors'));
+
+        // EIN collision ignores formatting: stored 33-3333333 vs typed 333333333.
+        $byEin = $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", ['ein' => '33-3333333']);
+        $byEin->assertStatus(422);
+        $this->assertArrayHasKey('ein', $byEin->json('field_errors'));
+
+        // Resubmitting the row's own identity must not trip the checks.
+        $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", [
+                'name' => 'Mine Org',
+                'ein' => '44-4444444',
+            ])
+            ->assertOk();
+
+        $this->assertSame('Mine Org', $org->refresh()->name);
+        $this->assertSame('444444444', $org->ein);
+    }
+
+    public function test_renaming_keeps_verification_but_email_change_resets_it(): void
+    {
+        $org = Organization::create([
+            'name' => 'Verified Org',
+            'ein' => '555555555',
+            'paypal_email' => 'pay@example.org',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+        ]);
+
+        $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", [
+                'name' => 'Renamed Verified Org',
+                'website' => 'https://renamed.example',
+            ])
+            ->assertOk();
+
+        $org->refresh();
+        $this->assertSame('verified', $org->payout_status);
+        $this->assertNotNull($org->verified_at);
+
+        // The destination changed, so verification must be re-earned.
+        $this->withHeaders($this->headersFor($this->admin))
+            ->putJson("/api/v1/admin/organizations/{$org->id}", [
+                'paypal_email' => 'other@example.org',
+            ])
+            ->assertOk();
+
+        $org->refresh();
+        $this->assertSame('unverified', $org->payout_status);
+        $this->assertNull($org->verified_at);
+    }
+
+    public function test_create_rejects_ein_that_only_differs_by_a_leading_zero(): void
+    {
+        Organization::create([
+            'name' => 'Save the Children Federation',
+            'ein' => '060726487',
+        ]);
+
+        $response = $this->withHeaders($this->headersFor($this->admin))
+            ->postJson('/api/v1/admin/organizations', [
+                'name' => 'Save The Children Federation Inc',
+                'ein' => '60726487',
+            ]);
+
+        $response->assertStatus(422);
+        $this->assertArrayHasKey('ein', $response->json('field_errors'));
     }
 
     public function test_delete_refuses_when_payout_history_exists(): void

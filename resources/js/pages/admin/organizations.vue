@@ -170,35 +170,61 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                             {{ t('admin.organizationNameLabel') }}
+                            <span class="text-red-500">*</span>
                         </label>
                         <input
-                            :value="editTarget.name"
+                            v-model="editName"
+                            v-bind="editNameProps"
                             type="text"
-                            disabled
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.name
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
                         />
+                        <p v-if="orgFieldErrors.name" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.name }}
+                        </p>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                             {{ t('admin.einLabel') }}
                         </label>
                         <input
-                            :value="editTarget.ein || '—'"
+                            v-model="editEin"
+                            v-bind="editEinProps"
                             type="text"
-                            disabled
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                            placeholder="12-3456789"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.ein
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
                         />
+                        <p v-if="orgFieldErrors.ein" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.ein }}
+                        </p>
                     </div>
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                             {{ t('admin.websiteLabel') }}
                         </label>
                         <input
-                            :value="editTarget.website || '—'"
+                            v-model="editWebsite"
+                            v-bind="editWebsiteProps"
                             type="text"
-                            disabled
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.website
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
                         />
+                        <p v-if="orgFieldErrors.website" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.website }}
+                        </p>
                     </div>
                 </div>
                 <div>
@@ -308,8 +334,11 @@
                             {{ method.label }}
                         </label>
                     </div>
-                    <p v-if="editMethodError" class="text-xs text-red-600 mt-1">
-                        {{ editMethodError }}
+                    <p
+                        v-if="editMethodError || orgFieldErrors.payout_methods"
+                        class="text-xs text-red-600 mt-1"
+                    >
+                        {{ editMethodError || orgFieldErrors.payout_methods }}
                     </p>
                 </div>
                 <p v-if="editError" class="text-xs text-red-600">{{ editError }}</p>
@@ -372,12 +401,27 @@
     const { payoutMethods, loadPaymentMethods } = usePaymentMethods()
 
     // vee-validate + yup, same stack as the rest of the app. Mirrors the
-    // backend rules in Admin\OrganizationController::update.
+    // backend rules in Admin\OrganizationController::update. Every registry
+    // field is editable so admins can correct donor- or directory-sourced data.
     const orgSchema = yup.object({
+        name: yup
+            .string()
+            .trim()
+            .required(t('admin.nameRequired'))
+            .max(255, t('admin.fieldTooLong')),
+        ein: yup
+            .string()
+            .nullable()
+            .transform((v) => (v === '' ? null : v))
+            .matches(/^\d{2}-?\d{7}$/, {
+                message: t('admin.einInvalid'),
+                excludeEmptyString: true,
+            }),
+        website: yup.string().nullable().max(255, t('admin.fieldTooLong')),
         paypal_email: yup
             .string()
+            .nullable()
             .transform((v) => (v === '' ? null : v))
-            .required(t('admin.paypalEmailRequired'))
             .email(t('auth.emailInvalid'))
             .max(255, t('admin.fieldTooLong')),
         city: yup.string().nullable().max(255, t('admin.fieldTooLong')),
@@ -394,7 +438,11 @@
         resetForm: resetOrgForm,
     } = useForm({ validationSchema: orgSchema })
 
+    const [editName, editNameProps] = defineOrgField('name')
+    const [editEin, editEinProps] = defineOrgField('ein')
+    const [editWebsite, editWebsiteProps] = defineOrgField('website')
     const [editPaypalEmail, editPaypalEmailProps] = defineOrgField('paypal_email')
+
     const [editCity, editCityProps] = defineOrgField('city')
     const [editState, editStateProps] = defineOrgField('state')
     const [editCountry, editCountryProps] = defineOrgField('country')
@@ -469,6 +517,9 @@
         editTarget.value = row
         resetOrgForm({
             values: {
+                name: row.name || '',
+                ein: row.ein || '',
+                website: row.website || '',
                 paypal_email: row.paypal_email || '',
                 city: row.city || '',
                 state: row.state || '',
@@ -482,16 +533,24 @@
     }
 
     const saveEdit = handleOrgSubmit(async (values) => {
-        saving.value = true
         editError.value = ''
         editMethodError.value = ''
         if (!values.payout_methods?.length) {
             editMethodError.value = t('admin.payoutMethodsRequired')
-            saving.value = false
             return
         }
+        // A PayPal rail without a receiving address can never be paid out, so
+        // require the email only when PayPal is actually selected.
+        if (values.payout_methods.includes('paypal') && !values.paypal_email) {
+            setOrgErrors({ paypal_email: t('admin.paypalEmailRequired') })
+            return
+        }
+        saving.value = true
         try {
             const res = await adminService.updateOrganization(editTarget.value.id, {
+                name: values.name,
+                ein: values.ein || null,
+                website: values.website || null,
                 paypal_email: values.paypal_email || null,
                 city: values.city || null,
                 state: values.state || null,
