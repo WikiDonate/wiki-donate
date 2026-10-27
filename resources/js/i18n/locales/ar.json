@@ -617,7 +617,7 @@
         "payoutAmountPositive": "أدخل مبلغًا أكبر من 0.",
         "fieldTooLong": "يجب أن يكون 255 حرفًا على الأكثر.",
         "payoutAmountExceeds": "يتجاوز المبلغ الرصيد المباشر لـ {balance}.",
-        "payoutFormulaCount": "{عدد} الصيغ",
+        "payoutFormulaCount": "{count} الصيغ",
         "paymentMethod": "طريقة الدفع",
         "allPaymentMethods": "جميع طرق الدفع",
         "paymentMethodLabel": "طريقة الدفع",

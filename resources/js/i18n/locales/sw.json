@@ -616,7 +616,7 @@
         "payoutAmountRequired": "Kiasi kinahitajika.",
         "payoutAmountPositive": "Weka kiasi kikubwa zaidi ya 0.",
         "fieldTooLong": "Lazima iwe na vibambo 255.",
-        "payoutAmountExceeds": "Kiasi kinazidi salio la moja kwa moja la {salio}.",
+        "payoutAmountExceeds": "Kiasi kinazidi salio la moja kwa moja la {balance}.",
         "payoutFormulaCount": "{count} fomula",
         "paymentMethod": "Njia ya malipo",
         "allPaymentMethods": "Njia zote za malipo",

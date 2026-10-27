@@ -616,7 +616,7 @@
         "payoutAmountRequired": "Määrä vaaditaan.",
         "payoutAmountPositive": "Anna summa, joka on suurempi kuin 0.",
         "fieldTooLong": "Saa olla enintään 255 merkkiä.",
-        "payoutAmountExceeds": "Summa ylittää live-saldon {saldo}.",
+        "payoutAmountExceeds": "Summa ylittää live-saldon {balance}.",
         "payoutFormulaCount": "{count} kaavaa",
         "paymentMethod": "Maksutapa",
         "allPaymentMethods": "Kaikki maksutavat",

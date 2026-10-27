@@ -617,7 +617,7 @@
         "payoutAmountPositive": "Insira um valor maior que 0.",
         "fieldTooLong": "Deve ter no máximo 255 caracteres.",
         "payoutAmountExceeds": "O valor excede o saldo ativo de {balance}.",
-        "payoutFormulaCount": "{contar} fórmulas",
+        "payoutFormulaCount": "{count} fórmulas",
         "paymentMethod": "Método de pagamento",
         "allPaymentMethods": "Todos os métodos de pagamento",
         "paymentMethodLabel": "Método de pagamento",

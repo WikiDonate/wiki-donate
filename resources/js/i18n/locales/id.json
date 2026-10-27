@@ -617,7 +617,7 @@
         "payoutAmountPositive": "Masukkan jumlah yang lebih besar dari 0.",
         "fieldTooLong": "Harus berisi maksimal 255 karakter.",
         "payoutAmountExceeds": "Jumlahnya melebihi saldo langsung sebesar {balance}.",
-        "payoutFormulaCount": "{hitungan} rumus",
+        "payoutFormulaCount": "{count} rumus",
         "paymentMethod": "Metode pembayaran",
         "allPaymentMethods": "Semua metode pembayaran",
         "paymentMethodLabel": "Metode pembayaran",

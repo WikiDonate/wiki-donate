@@ -616,7 +616,7 @@
         "payoutAmountRequired": "መጠን ያስፈልጋል።",
         "payoutAmountPositive": "ከ0 በላይ የሆነ መጠን ያስገቡ።",
         "fieldTooLong": "ቢበዛ 255 ቁምፊዎች መሆን አለበት።",
-        "payoutAmountExceeds": "መጠን የቀጥታ ቀሪ ሂሳብ {ሚዛን} ይበልጣል።",
+        "payoutAmountExceeds": "መጠን የቀጥታ ቀሪ ሂሳብ {balance} ይበልጣል።",
         "payoutFormulaCount": "{count} ቀመሮች",
         "paymentMethod": "የመክፈያ ዘዴ",
         "allPaymentMethods": "ሁሉም የመክፈያ ዘዴዎች",
