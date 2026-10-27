@@ -164,7 +164,7 @@ class OrganizationPayoutService
         // receiving email. Blocks the payout and logs the attempt.
         if ($probeMatch) {
             app(OrganizationPayoutDestinationService::class)
-                ->guardPayoutDestination($probeMatch['organization_id'] ?? null, $orgName, $actorId);
+                ->guardPayoutDestination($probeMatch['organization_id'] ?? null, $orgName, $actorId, $paymentMethod);
         }
 
         $payout = DB::transaction(function () use ($data, $actorId, $paymentMethod) {
@@ -185,7 +185,7 @@ class OrganizationPayoutService
             // Re-check inside the lock — belt and braces against an org being
             // unverified between the guard and the write.
             $destination = app(OrganizationPayoutDestinationService::class)
-                ->guardPayoutDestination($match['organization_id'] ?? null, $orgName, $actorId);
+                ->guardPayoutDestination($match['organization_id'] ?? null, $orgName, $actorId, $paymentMethod);
 
             $balance = $this->owedFor($formula, $key);
             if ($balance->currency && $data['currency'] !== strtoupper($balance->currency)) {

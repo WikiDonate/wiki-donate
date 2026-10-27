@@ -33,7 +33,8 @@
         "pagination": "Pagbilang ng pahina",
         "previousPage": "Nakaraang pahina",
         "nextPage": "Susunod na pahina",
-        "clear": "Maaliwalas"
+        "clear": "Maaliwalas",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "Mag-login sa Iyong Account",
@@ -619,7 +620,30 @@
         "payoutFormulaCount": "{count} na mga formula",
         "paymentMethod": "Paraan ng pagbabayad",
         "allPaymentMethods": "Lahat ng paraan ng pagbabayad",
-        "paymentMethodLabel": "Paraan ng pagbabayad"
+        "paymentMethodLabel": "Paraan ng pagbabayad",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

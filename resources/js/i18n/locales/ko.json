@@ -33,7 +33,8 @@
         "pagination": "페이지 매김",
         "previousPage": "이전 페이지",
         "nextPage": "다음 페이지",
-        "clear": "지우기"
+        "clear": "지우기",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "귀하의 계정에 로그인하십시오",
@@ -619,7 +620,30 @@
         "payoutFormulaCount": "{count} 수식",
         "paymentMethod": "결제수단",
         "allPaymentMethods": "모든 결제 수단",
-        "paymentMethodLabel": "결제수단"
+        "paymentMethodLabel": "결제수단",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

@@ -5,7 +5,16 @@
                 :title="t('admin.organizations')"
                 :subtitle="t('admin.organizationsSubtitle')"
                 :card="true"
-            />
+            >
+                <template #actions>
+                    <button
+                        class="px-4 py-2 text-sm font-medium rounded-lg bg-white text-indigo-700 hover:bg-indigo-50 transition-colors"
+                        @click="createOpen = true"
+                    >
+                        {{ t('admin.addOrganization') }}
+                    </button>
+                </template>
+            </AdminPageHeader>
 
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
@@ -68,6 +77,11 @@
                         <template #cell-paypal_email="{ row }">
                             <span class="text-sm text-gray-600">{{ row.paypal_email || '—' }}</span>
                         </template>
+                        <template #cell-payout_methods="{ row }">
+                            <span class="text-sm text-gray-600">{{
+                                payoutMethodLabels(row.payout_methods)
+                            }}</span>
+                        </template>
                         <template #cell-status="{ row }">
                             <AdminBadge
                                 :variant="row.payout_status === 'verified' ? 'success' : 'danger'"
@@ -111,6 +125,12 @@
                                 >
                                     {{ t('admin.unverify') }}
                                 </button>
+                                <button
+                                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                                    @click="openDelete(row)"
+                                >
+                                    {{ t('common.delete') }}
+                                </button>
                             </div>
                         </template>
                     </AdminTable>
@@ -139,13 +159,74 @@
         </div>
 
         <!-- Edit modal -->
-        <!-- Edit modal -->
         <AdminModal
             :model-value="!!editTarget"
             :title="t('admin.editOrganization')"
+            size="lg"
             @close="editTarget = null"
         >
             <template v-if="editTarget">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.organizationNameLabel') }}
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model="editName"
+                            v-bind="editNameProps"
+                            type="text"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.name
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
+                        />
+                        <p v-if="orgFieldErrors.name" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.name }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.einLabel') }}
+                        </label>
+                        <input
+                            v-model="editEin"
+                            v-bind="editEinProps"
+                            type="text"
+                            placeholder="12-3456789"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.ein
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
+                        />
+                        <p v-if="orgFieldErrors.ein" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.ein }}
+                        </p>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                            {{ t('admin.websiteLabel') }}
+                        </label>
+                        <input
+                            v-model="editWebsite"
+                            v-bind="editWebsiteProps"
+                            type="text"
+                            :class="[
+                                'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none',
+                                orgFieldErrors.website
+                                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                    : 'border-gray-300',
+                            ]"
+                        />
+                        <p v-if="orgFieldErrors.website" class="text-xs text-red-600 mt-1">
+                            {{ orgFieldErrors.website }}
+                        </p>
+                    </div>
+                </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         {{ t('admin.paypalEmailLabel') }}
@@ -228,6 +309,38 @@
                         {{ orgFieldErrors.country }}
                     </p>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                        {{ t('admin.payoutMethodsLabel') }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex flex-wrap gap-3">
+                        <label
+                            v-for="method in payoutMethods"
+                            :key="method.code"
+                            class="inline-flex items-center gap-2 px-3 py-2 border rounded-lg text-sm cursor-pointer"
+                            :class="
+                                editPayoutMethods.includes(method.code)
+                                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                                    : 'border-gray-300 text-gray-700'
+                            "
+                        >
+                            <input
+                                v-model="editPayoutMethods"
+                                type="checkbox"
+                                :value="method.code"
+                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            {{ method.label }}
+                        </label>
+                    </div>
+                    <p
+                        v-if="editMethodError || orgFieldErrors.payout_methods"
+                        class="text-xs text-red-600 mt-1"
+                    >
+                        {{ editMethodError || orgFieldErrors.payout_methods }}
+                    </p>
+                </div>
                 <p v-if="editError" class="text-xs text-red-600">{{ editError }}</p>
             </template>
             <template #footer>
@@ -246,11 +359,25 @@
                 </button>
             </template>
         </AdminModal>
+
+        <OrganizationCreateModal v-model="createOpen" @created="onCreated" />
+
+        <ConfirmModal
+            :model-value="deleteOpen"
+            :title="t('admin.deleteOrganizationTitle')"
+            :message-title="t('admin.deleteOrganizationTitle')"
+            :message="deleteMessage"
+            :confirm-text="t('common.delete')"
+            :cancel-text="t('common.cancel')"
+            :is-loading="deleting"
+            @update:model-value="(open) => !open && (deleteTarget = null)"
+            @confirm="confirmDelete"
+        />
     </main>
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { computed, ref, onMounted } from 'vue'
     import { useI18n } from 'vue-i18n'
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
@@ -263,37 +390,63 @@
     import AdminModal from '~/components/admin/AdminModal.vue'
     import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'
+    import ConfirmModal from '~/components/ConfirmModal.vue'
+    import OrganizationCreateModal from '~/components/admin/OrganizationCreateModal.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import Pagination from '~/components/Pagination.vue'
     import Button from '~/components/Button.vue'
 
     const { notifySuccess, notifyError } = useToastify()
     const { t } = useI18n()
+    const { payoutMethods, loadPaymentMethods } = usePaymentMethods()
 
     // vee-validate + yup, same stack as the rest of the app. Mirrors the
-    // backend rules in Admin\OrganizationController::update.
+    // backend rules in Admin\OrganizationController::update. Every registry
+    // field is editable so admins can correct donor- or directory-sourced data.
     const orgSchema = yup.object({
+        name: yup
+            .string()
+            .trim()
+            .required(t('admin.nameRequired'))
+            .max(255, t('admin.fieldTooLong')),
+        ein: yup
+            .string()
+            .nullable()
+            .transform((v) => (v === '' ? null : v))
+            .matches(/^\d{2}-?\d{7}$/, {
+                message: t('admin.einInvalid'),
+                excludeEmptyString: true,
+            }),
+        website: yup.string().nullable().max(255, t('admin.fieldTooLong')),
         paypal_email: yup
             .string()
+            .nullable()
             .transform((v) => (v === '' ? null : v))
-            .required(t('admin.paypalEmailRequired'))
             .email(t('auth.emailInvalid'))
             .max(255, t('admin.fieldTooLong')),
         city: yup.string().nullable().max(255, t('admin.fieldTooLong')),
         state: yup.string().nullable().max(255, t('admin.fieldTooLong')),
         country: yup.string().nullable().max(255, t('admin.fieldTooLong')),
+        payout_methods: yup.array().of(yup.string()).min(1, t('admin.payoutMethodsRequired')),
     })
 
     const {
         handleSubmit: handleOrgSubmit,
         defineField: defineOrgField,
         errors: orgFieldErrors,
+        setErrors: setOrgErrors,
         resetForm: resetOrgForm,
     } = useForm({ validationSchema: orgSchema })
 
+    const [editName, editNameProps] = defineOrgField('name')
+    const [editEin, editEinProps] = defineOrgField('ein')
+    const [editWebsite, editWebsiteProps] = defineOrgField('website')
     const [editPaypalEmail, editPaypalEmailProps] = defineOrgField('paypal_email')
+
     const [editCity, editCityProps] = defineOrgField('city')
     const [editState, editStateProps] = defineOrgField('state')
     const [editCountry, editCountryProps] = defineOrgField('country')
+    const [editPayoutMethods] = defineOrgField('payout_methods')
 
     useHead({ title: t('admin.organizations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
@@ -310,6 +463,7 @@
         { key: 'location', label: t('admin.location') },
         { key: 'website', label: t('admin.website') },
         { key: 'paypal_email', label: t('admin.paypalEmail') },
+        { key: 'payout_methods', label: t('admin.payoutMethodsLabel') },
         { key: 'status', label: t('admin.status') },
         { key: 'created_at', label: t('admin.createdAt') },
         { key: 'verified_at', label: t('admin.verifiedAt') },
@@ -319,6 +473,26 @@
     const editTarget = ref(null)
     const saving = ref(false)
     const editError = ref('')
+    const editMethodError = ref('')
+
+    const createOpen = ref(false)
+    const deleteTarget = ref(null)
+    const deleteOpen = computed(() => !!deleteTarget.value)
+    const deleting = ref(false)
+    const deleteMessage = computed(() =>
+        deleteTarget.value
+            ? `${t('admin.deleteOrganizationMsg', { name: deleteTarget.value.name })} ${t('admin.deleteOrganizationHistoryHint')}`
+            : '',
+    )
+
+    // Map stored method codes to the registry labels; unknown codes (e.g. a
+    // rail retired after the org was created) still show so admins spot them.
+    const payoutMethodLabels = (codes) => {
+        if (!Array.isArray(codes) || codes.length === 0) return '—'
+        return codes
+            .map((code) => payoutMethods.value.find((m) => m.code === code)?.label || code)
+            .join(', ')
+    }
 
     const loadPage = async (page = 1) => {
         loading.value = true
@@ -343,24 +517,45 @@
         editTarget.value = row
         resetOrgForm({
             values: {
+                name: row.name || '',
+                ein: row.ein || '',
+                website: row.website || '',
                 paypal_email: row.paypal_email || '',
                 city: row.city || '',
                 state: row.state || '',
                 country: row.country || '',
+                payout_methods: row.payout_methods?.length ? row.payout_methods : ['paypal'],
             },
         })
         editError.value = ''
+        editMethodError.value = ''
+        loadPaymentMethods()
     }
 
     const saveEdit = handleOrgSubmit(async (values) => {
-        saving.value = true
         editError.value = ''
+        editMethodError.value = ''
+        if (!values.payout_methods?.length) {
+            editMethodError.value = t('admin.payoutMethodsRequired')
+            return
+        }
+        // A PayPal rail without a receiving address can never be paid out, so
+        // require the email only when PayPal is actually selected.
+        if (values.payout_methods.includes('paypal') && !values.paypal_email) {
+            setOrgErrors({ paypal_email: t('admin.paypalEmailRequired') })
+            return
+        }
+        saving.value = true
         try {
             const res = await adminService.updateOrganization(editTarget.value.id, {
+                name: values.name,
+                ein: values.ein || null,
+                website: values.website || null,
                 paypal_email: values.paypal_email || null,
                 city: values.city || null,
                 state: values.state || null,
                 country: values.country || null,
+                payout_methods: values.payout_methods,
             })
             if (res.success) {
                 notifySuccess(t('admin.organizationUpdated'))
@@ -368,10 +563,16 @@
                 await loadPage(meta.value.currentPage)
             }
         } catch (error) {
+            const serverErrors = error.field_errors || {}
+            const mapped = {}
+            for (const [field, messages] of Object.entries(serverErrors)) {
+                mapped[field] = Array.isArray(messages) ? messages[0] : String(messages)
+            }
+            if (Object.keys(mapped).length > 0) {
+                setOrgErrors(mapped)
+            }
             editError.value =
-                error.errors?.paypal_email?.[0] ||
-                error.message ||
-                t('admin.failedToUpdateOrganization')
+                error.errors?.[0] || error.message || t('admin.failedToUpdateOrganization')
         } finally {
             saving.value = false
         }
@@ -401,5 +602,35 @@
         }
     }
 
-    onMounted(() => loadPage(1))
+    const onCreated = async () => {
+        await loadPage(1)
+    }
+
+    const openDelete = (row) => {
+        deleteTarget.value = row
+    }
+
+    const confirmDelete = async () => {
+        if (!deleteTarget.value) return
+        deleting.value = true
+        try {
+            const res = await adminService.deleteOrganization(deleteTarget.value.id)
+            if (res.success) {
+                notifySuccess(t('admin.organizationDeleted'))
+                deleteTarget.value = null
+                await loadPage(1)
+            }
+        } catch (error) {
+            // 409 = history guard: keep the row, surface the server reason.
+            notifyError(error.errors?.[0] || error.message || t('admin.failedToDeleteOrganization'))
+            deleteTarget.value = null
+        } finally {
+            deleting.value = false
+        }
+    }
+
+    onMounted(() => {
+        loadPage(1)
+        loadPaymentMethods()
+    })
 </script>

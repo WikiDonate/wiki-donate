@@ -22,12 +22,12 @@ class PayPalClient
 
     public function __construct(?string $mode = null, ?PaymentCredentials $credentials = null)
     {
-        $this->credentials = $credentials ?? app(PaymentCredentials::class);
-
-        // Gateway mode lives in the payment_methods registry, not .env
-        // (PAYPAL_MODE was removed). An explicit $mode keeps the client
-        // unit-testable without touching the database.
-        $this->baseUrl = ($mode ?? $this->registryMode()) === 'live'
+        // Missing credentials must not fatal the request: PayPal answers 401
+        // and the caller reports a payment error, which is diagnosable. A
+        // TypeError here would take the whole endpoint down.
+        $this->clientId = (string) (config('services.paypal.client_id') ?? '');
+        $this->clientSecret = (string) (config('services.paypal.client_secret') ?? '');
+        $this->baseUrl = config('services.paypal.mode') === 'live'
             ? 'https://api-m.paypal.com'
             : 'https://api-m.sandbox.paypal.com';
     }

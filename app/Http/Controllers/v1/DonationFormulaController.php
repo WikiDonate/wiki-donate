@@ -166,13 +166,11 @@ class DonationFormulaController extends Controller
      */
     private function normalizeEin(mixed $ein): ?string
     {
-        if ($ein === null || $ein === '') {
-            return null;
-        }
+        // Pads directory integers that lost their leading zero (60726487 →
+        // 060726487), then still requires a full nine-digit EIN.
+        $clean = Organization::normalizeEin($ein);
 
-        $clean = strtoupper((string) preg_replace('/[^A-Z0-9]/i', '', (string) $ein));
-
-        return preg_match('/^[0-9]{9}$/', $clean) ? $clean : null;
+        return $clean !== null && preg_match('/^[0-9]{9}$/', $clean) ? $clean : null;
     }
 
     private function identityError(string $message)

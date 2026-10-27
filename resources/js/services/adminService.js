@@ -32,9 +32,18 @@ const getTransactionSummary = (params) => api.get('/admin/transactions/summary',
 // Organization registry
 const getOrganizations = (params, signal) => api.get('/admin/organizations', { params, signal })
 
+// Directory autocomplete for the Add-organization modal. The server removes
+// every hit already in the registry (verified or not).
+const searchOrganizationDirectory = (query, signal) =>
+    api.get('/admin/organizations/search', { params: { q: query }, signal })
+
 const getOrganization = (id) => api.get(`/admin/organizations/${id}`)
 
+const createOrganization = (payload) => api.post('/admin/organizations', payload)
+
 const updateOrganization = (id, payload) => api.put(`/admin/organizations/${id}`, payload)
+
+const deleteOrganization = (id) => api.delete(`/admin/organizations/${id}`)
 
 const verifyOrganization = (id) => api.post(`/admin/organizations/${id}/verify`)
 
@@ -58,8 +67,11 @@ export const adminService = {
     createPayout,
     syncPayouts,
     getOrganizations,
+    searchOrganizationDirectory,
     getOrganization,
+    createOrganization,
     updateOrganization,
+    deleteOrganization,
     verifyOrganization,
     unverifyOrganization,
     getTransactionLogs,

@@ -33,7 +33,8 @@
         "pagination": "पेजिनेशन",
         "previousPage": "पिछला पृष्ठ",
         "nextPage": "अगला पेज",
-        "clear": "स्पष्ट"
+        "clear": "स्पष्ट",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "अपने खाते में लॉगिन करें",
@@ -619,7 +620,30 @@
         "payoutFormulaCount": "{गिनती} सूत्र",
         "paymentMethod": "भुगतान विधि",
         "allPaymentMethods": "सभी भुगतान विधियाँ",
-        "paymentMethodLabel": "भुगतान विधि"
+        "paymentMethodLabel": "भुगतान विधि",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्वाधिकार सुरक्षित।"

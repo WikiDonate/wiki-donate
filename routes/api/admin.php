@@ -30,8 +30,12 @@ Route::prefix('admin')
 
         // Organization registry (charity directory + payout destinations)
         Route::get('organizations', [OrganizationController::class, 'index']);
+        // Before organizations/{id}: "search" must not be parsed as an id.
+        Route::get('organizations/search', [OrganizationController::class, 'search']);
+        Route::post('organizations', [OrganizationController::class, 'store']);
         Route::get('organizations/{id}', [OrganizationController::class, 'show']);
         Route::put('organizations/{id}', [OrganizationController::class, 'update']);
+        Route::delete('organizations/{id}', [OrganizationController::class, 'destroy']);
         Route::put('organizations/{id}/paypal-email', [OrganizationController::class, 'updatePaypalEmail']);
         Route::post('organizations/{id}/verify', [OrganizationController::class, 'verify']);
         Route::post('organizations/{id}/unverify', [OrganizationController::class, 'unverify']);

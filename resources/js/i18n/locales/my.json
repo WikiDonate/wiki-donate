@@ -33,7 +33,8 @@
         "pagination": "Pagination",
         "previousPage": "ယခင်စာမျက်နှာ",
         "nextPage": "နောက်စာမျက်နှာ",
-        "clear": "ရှင်းပါတယ်။"
+        "clear": "ရှင်းပါတယ်။",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "သင့်အကောင့်သို့ ဝင်ရောက်ပါ။",
@@ -619,7 +620,30 @@
         "payoutFormulaCount": "ဖော်မြူလာ {count} ခု",
         "paymentMethod": "ငွေပေးချေမှုနည်းလမ်း",
         "allPaymentMethods": "ငွေပေးချေမှုနည်းလမ်းအားလုံး",
-        "paymentMethodLabel": "ငွေပေးချေမှုနည်းလမ်း"
+        "paymentMethodLabel": "ငွေပေးချေမှုနည်းလမ်း",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

@@ -33,7 +33,8 @@
         "pagination": "ページネーション",
         "previousPage": "前のページへ",
         "nextPage": "次のページ",
-        "clear": "クリア"
+        "clear": "クリア",
+        "create": "Create"
     },
     "auth": {
         "loginTitle": "アカウントにログイン",
@@ -619,7 +620,30 @@
         "payoutFormulaCount": "{count} 個の式",
         "paymentMethod": "お支払い方法",
         "allPaymentMethods": "すべての支払い方法",
-        "paymentMethodLabel": "お支払い方法"
+        "paymentMethodLabel": "お支払い方法",
+        "createOrganization": "Add Organization",
+        "addOrganization": "Add organization",
+        "searchRegistryPlaceholder": "Search organizations by name or EIN...",
+        "manualEntryHint": "Pick a match to prefill the fields, or type the details manually to add an unverified organization.",
+        "searchingRegistry": "Searching organizations...",
+        "noRegistryResults": "No matching organizations",
+        "sourceRegistry": "Verified registry",
+        "sourceExternal": "Directory",
+        "organizationNameLabel": "Organization name",
+        "einLabel": "EIN",
+        "websiteLabel": "Website",
+        "nameRequired": "Organization name is required.",
+        "einInvalid": "EIN must look like 12-3456789.",
+        "payoutMethodsLabel": "Payout methods",
+        "payoutMethodsRequired": "Select at least one payout method.",
+        "noPayoutMethods": "No active payout methods are configured.",
+        "organizationCreated": "Organization created",
+        "failedToCreateOrganization": "Failed to create organization",
+        "deleteOrganizationTitle": "Delete organization",
+        "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
+        "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
+        "organizationDeleted": "Organization deleted",
+        "failedToDeleteOrganization": "Failed to delete organization"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"
