@@ -390,7 +390,20 @@
         "successful": "Su pago fue exitoso.",
         "methodLabel": "Método de pago",
         "unverifiedTitle": "Su pago {method} se realizó correctamente, pero no pudimos verificarlo automáticamente.",
-        "unverifiedMsg": "Su donación finalizará en breve. Comuníquese con el soporte si tiene alguna inquietud."
+        "unverifiedMsg": "Su donación finalizará en breve. Comuníquese con el soporte si tiene alguna inquietud.",
+        "referenceLabel": "Referencia",
+        "statePendingTitle": "Confirmando tu pago",
+        "statePendingSubtitle": "Esto suele tardar unos segundos.",
+        "statePendingMsg": "Estamos esperando que el proveedor de pagos lo confirme. Esta página se actualiza automáticamente.",
+        "stateFailedTitle": "Pago no completado",
+        "stateFailedSubtitle": "No se hizo ningún cargo.",
+        "stateFailedMsg": "El pago fue rechazado o cancelado. Puedes volver a intentarlo cuando estés listo.",
+        "stateRefundedTitle": "Pago reembolsado",
+        "stateRefundedSubtitle": "Este pago ha sido devuelto.",
+        "stateRefundedMsg": "Este pago ha sido reembolsado. Póngase en contacto con el soporte si tiene alguna pregunta.",
+        "stateUnknownTitle": "Pago no encontrado",
+        "stateUnknownSubtitle": "No pudimos relacionar este enlace con un pago.",
+        "stateUnknownMsg": "Si salió dinero de su cuenta, comuníquese con el soporte con la referencia a continuación."
     },
     "admin": {
         "panel": "Panel de administración",

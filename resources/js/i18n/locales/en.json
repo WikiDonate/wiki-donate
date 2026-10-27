@@ -390,7 +390,20 @@
         "successful": "Your payment was successful.",
         "methodLabel": "Payment method",
         "unverifiedTitle": "Your {method} payment succeeded, but we could not verify it automatically.",
-        "unverifiedMsg": "Your donation will be finalized shortly. Please contact support if you have any concerns."
+        "unverifiedMsg": "Your donation will be finalized shortly. Please contact support if you have any concerns.",
+        "referenceLabel": "Reference",
+        "statePendingTitle": "Confirming your payment",
+        "statePendingSubtitle": "This usually takes a few seconds.",
+        "statePendingMsg": "We're waiting for the payment provider to confirm. This page updates automatically.",
+        "stateFailedTitle": "Payment not completed",
+        "stateFailedSubtitle": "No charge was made.",
+        "stateFailedMsg": "The payment was declined or cancelled. You can try again whenever you're ready.",
+        "stateRefundedTitle": "Payment refunded",
+        "stateRefundedSubtitle": "This payment has been returned.",
+        "stateRefundedMsg": "This payment has been refunded. Contact support if you have any questions.",
+        "stateUnknownTitle": "Payment not found",
+        "stateUnknownSubtitle": "We couldn't match this link to a payment.",
+        "stateUnknownMsg": "If money left your account, contact support with the reference below."
     },
     "admin": {
         "panel": "Admin Panel",

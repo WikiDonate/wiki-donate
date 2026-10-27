@@ -132,6 +132,18 @@ class PaymentCheckoutService
                 ];
             }
 
+            // A declined/cancelled checkout can never be captured: the gateway
+            // has already voided the order. Tell the donor instead of letting
+            // the capture call fail with a provider error.
+            if (! $pending->isOpen()) {
+                return [
+                    'success' => false,
+                    'status' => Response::HTTP_CONFLICT,
+                    'message' => 'This checkout is no longer active.',
+                    'errors' => ['This checkout was closed. Please start a new donation.'],
+                ];
+            }
+
             $captured = $provider->capture($reference);
 
             if (! $provider->isCaptured($captured['status'] ?? null)) {
@@ -214,7 +226,12 @@ class PaymentCheckoutService
     }
 
     /**
-     * Read-only gateway state for return pages (no donation is written).
+     * Read-only state for return pages (no donation is written).
+     *
+     * Answers from our own records first: a recorded donation or a closed
+     * checkout is final, so only an open checkout talks to the provider. That
+     * keeps a gateway outage from turning a known outcome into "unknown", and
+     * keeps the donor's page honest for declined/cancelled checkouts.
      *
      * Uses forWebhook() so a donor who was redirected moments before an admin
      * disabled the method can still see a success page.
@@ -229,33 +246,87 @@ class PaymentCheckoutService
         // guard the public status route would be an oracle: anyone could ask us
         // to fetch arbitrary PayPal order ids / Stripe session ids with our
         // secret credentials, and learn whether they exist.
-        $known = Donation::gateway($code, $reference)->exists()
-            || PaymentPendingOrder::query()
-                ->where('payment_method', $code)
-                ->where('gateway_reference', $reference)
-                ->exists();
+        $donation = Donation::gateway($code, $reference)->latest('id')->first();
 
-        if (! $known) {
+        $pending = PaymentPendingOrder::query()
+            ->where('payment_method', $code)
+            ->where('gateway_reference', $reference)
+            ->latest('id')
+            ->first();
+
+        if ($donation === null && $pending === null) {
             throw PaymentProviderException::forUnknownReference($code);
         }
 
-        $provider = $this->registry->forWebhook($code);
-        $state = $provider->retrieve($reference);
-        $donation = Donation::gateway($code, $reference)->first();
+        $state = $this->resolveState($donation, $pending);
+        $providerStatus = null;
+
+        if ($state === 'pending') {
+            try {
+                $provider = $this->registry->forWebhook($code);
+                $providerStatus = $provider->retrieve($reference)['status'] ?? null;
+
+                // Money moved but our record has not landed yet (webhook lag or
+                // no webhook configured): report the gateway's truth to the
+                // donor while `donation_id` stays null until we record it.
+                if ($provider->isCaptured($providerStatus) && $donation === null) {
+                    $state = 'completed';
+                }
+            } catch (PaymentProviderException $e) {
+                throw $e;
+            } catch (\Throwable $e) {
+                // Gateway unreachable: answer from stored state instead of
+                // failing the page for a checkout that may still be fine.
+                Log::warning('Payment status lookup failed; answering from stored state.', [
+                    'method' => $code,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $amount = $donation?->amount ?? $pending?->amount;
+        $currency = $donation?->currency ?? $pending?->currency ?? 'USD';
 
         return [
             'payment_method' => $code,
             'reference' => $reference,
-            'status' => $state['status'] ?? null,
-            'payment_status' => $state['status'] ?? null,
-            'completed' => $provider->isCaptured($state['status'] ?? null) || $donation?->isCompleted(),
-            'amount' => ($amount = $donation?->amount ?? ($state['capture']['amount'] ?? null)) === null
-                ? null
-                : (float) $amount,
-            'currency' => $donation?->currency
-                ?? strtoupper((string) ($state['capture']['currency'] ?? 'USD')),
+            // Normalised lifecycle the return page renders directly.
+            'state' => $state,
+            // Kept for existing clients: gateway status when we asked for it.
+            'status' => $providerStatus ?? strtoupper($state),
+            'payment_status' => $providerStatus ?? strtoupper($state),
+            'completed' => $state === 'completed',
+            'amount' => $amount === null ? null : (float) $amount,
+            'currency' => strtoupper((string) $currency),
+            'reason' => $pending?->status_reason,
             'donation_id' => $donation?->id,
         ];
+    }
+
+    /**
+     * Map a recorded donation (or a closed checkout) to the donor-facing state.
+     *
+     * Terminal values are never inferred from the gateway — they were decided
+     * when the event arrived and must stay stable.
+     */
+    private function resolveState(?Donation $donation, ?PaymentPendingOrder $pending): string
+    {
+        if ($donation !== null) {
+            return match ($donation->status) {
+                'completed' => 'completed',
+                'refunded' => 'refunded',
+                'failed' => 'failed',
+                'expired' => 'expired',
+                default => 'pending',
+            };
+        }
+
+        return match ($pending?->status) {
+            PaymentPendingOrder::STATUS_FAILED => 'failed',
+            PaymentPendingOrder::STATUS_CANCELLED => 'cancelled',
+            PaymentPendingOrder::STATUS_EXPIRED => 'expired',
+            default => 'pending',
+        };
     }
 
     /**

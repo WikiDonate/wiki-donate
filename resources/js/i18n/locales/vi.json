@@ -390,7 +390,20 @@
         "successful": "Thanh toán của bạn đã thành công.",
         "methodLabel": "Phương thức thanh toán",
         "unverifiedTitle": "Thanh toán {method} của bạn đã thành công nhưng chúng tôi không thể tự động xác minh nó.",
-        "unverifiedMsg": "Khoản quyên góp của bạn sẽ sớm được hoàn tất. Vui lòng liên hệ với bộ phận hỗ trợ nếu bạn có bất kỳ mối quan tâm nào."
+        "unverifiedMsg": "Khoản quyên góp của bạn sẽ sớm được hoàn tất. Vui lòng liên hệ với bộ phận hỗ trợ nếu bạn có bất kỳ mối quan tâm nào.",
+        "referenceLabel": "Tài liệu tham khảo",
+        "statePendingTitle": "Xác nhận thanh toán của bạn",
+        "statePendingSubtitle": "Việc này thường mất vài giây.",
+        "statePendingMsg": "Chúng tôi đang chờ nhà cung cấp thanh toán xác nhận. Trang này cập nhật tự động.",
+        "stateFailedTitle": "Thanh toán chưa hoàn tất",
+        "stateFailedSubtitle": "Không có khoản phí nào được thực hiện.",
+        "stateFailedMsg": "Thanh toán đã bị từ chối hoặc hủy bỏ. Bạn có thể thử lại bất cứ khi nào bạn sẵn sàng.",
+        "stateRefundedTitle": "Đã hoàn lại khoản thanh toán",
+        "stateRefundedSubtitle": "Khoản thanh toán này đã được trả lại.",
+        "stateRefundedMsg": "Khoản thanh toán này đã được hoàn lại. Liên hệ với bộ phận hỗ trợ nếu bạn có bất kỳ câu hỏi nào.",
+        "stateUnknownTitle": "Không tìm thấy thanh toán",
+        "stateUnknownSubtitle": "Chúng tôi không thể khớp liên kết này với một khoản thanh toán.",
+        "stateUnknownMsg": "Nếu tiền đã rời khỏi tài khoản của bạn, hãy liên hệ với bộ phận hỗ trợ bằng thông tin tham khảo bên dưới."
     },
     "admin": {
         "panel": "Bảng quản trị",

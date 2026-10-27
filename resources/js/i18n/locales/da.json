@@ -390,7 +390,20 @@
         "successful": "Din betaling blev gennemført.",
         "methodLabel": "Betalingsmetode",
         "unverifiedTitle": "Din {method}-betaling lykkedes, men vi kunne ikke bekræfte den automatisk.",
-        "unverifiedMsg": "Din donation vil snart blive afsluttet. Kontakt venligst support, hvis du har nogen bekymringer."
+        "unverifiedMsg": "Din donation vil snart blive afsluttet. Kontakt venligst support, hvis du har nogen bekymringer.",
+        "referenceLabel": "Reference",
+        "statePendingTitle": "Bekræfter din betaling",
+        "statePendingSubtitle": "Dette tager normalt et par sekunder.",
+        "statePendingMsg": "Vi venter på, at betalingsudbyderen bekræfter. Denne side opdateres automatisk.",
+        "stateFailedTitle": "Betaling ikke gennemført",
+        "stateFailedSubtitle": "Der blev ikke foretaget nogen afgift.",
+        "stateFailedMsg": "Betalingen blev afvist eller annulleret. Du kan prøve igen, når du er klar.",
+        "stateRefundedTitle": "Betaling refunderet",
+        "stateRefundedSubtitle": "Denne betaling er blevet returneret.",
+        "stateRefundedMsg": "Denne betaling er blevet refunderet. Kontakt support, hvis du har spørgsmål.",
+        "stateUnknownTitle": "Betaling ikke fundet",
+        "stateUnknownSubtitle": "Vi kunne ikke matche dette link med en betaling.",
+        "stateUnknownMsg": "Hvis penge forlod din konto, skal du kontakte support med referencen nedenfor."
     },
     "admin": {
         "panel": "Admin panel",

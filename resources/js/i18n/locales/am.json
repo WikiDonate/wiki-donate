@@ -390,7 +390,20 @@
         "successful": "ክፍያዎ የተሳካ ነበር።",
         "methodLabel": "የመክፈያ ዘዴ",
         "unverifiedTitle": "የ{method} ክፍያዎ ተሳክቷል፣ ነገር ግን በራስ ሰር ማረጋገጥ አልቻልንም።",
-        "unverifiedMsg": "ልገሳዎ በቅርቡ ይጠናቀቃል። ማንኛውም ስጋት ካለዎት እባክዎ ድጋፍ ሰጪን ያነጋግሩ።"
+        "unverifiedMsg": "ልገሳዎ በቅርቡ ይጠናቀቃል። ማንኛውም ስጋት ካለዎት እባክዎ ድጋፍ ሰጪን ያነጋግሩ።",
+        "referenceLabel": "ማጣቀሻ",
+        "statePendingTitle": "ክፍያዎን በማረጋገጥ ላይ",
+        "statePendingSubtitle": "ይሄ አብዛኛውን ጊዜ ጥቂት ሰከንዶች ይወስዳል.",
+        "statePendingMsg": "ክፍያ አቅራቢው እንዲያረጋግጥ እየጠበቅን ነው። ይህ ገጽ በራስ-ሰር ይዘምናል።",
+        "stateFailedTitle": "ክፍያ አልተጠናቀቀም።",
+        "stateFailedSubtitle": "ምንም አይነት ክፍያ አልተፈጸመም።",
+        "stateFailedMsg": "ክፍያው ተቀባይነት አላገኘም ወይም ተሰርዟል። ዝግጁ በሚሆኑበት ጊዜ እንደገና መሞከር ይችላሉ።",
+        "stateRefundedTitle": "ክፍያ ተመላሽ ተደርጓል",
+        "stateRefundedSubtitle": "ይህ ክፍያ ተመልሷል።",
+        "stateRefundedMsg": "ይህ ክፍያ ተመላሽ ተደርጓል። ማንኛውም ጥያቄ ካለዎት ድጋፍ ሰጪን ያነጋግሩ።",
+        "stateUnknownTitle": "ክፍያ አልተገኘም።",
+        "stateUnknownSubtitle": "ይህን አገናኝ ከክፍያ ጋር ማዛመድ አልቻልንም።",
+        "stateUnknownMsg": "ገንዘብ ከሂሳብዎ ከወጣ፣ ከታች ካለው ማጣቀሻ ጋር ድጋፍን ያግኙ።"
     },
     "admin": {
         "panel": "የአስተዳዳሪ ፓነል",

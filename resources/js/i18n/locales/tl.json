@@ -390,7 +390,20 @@
         "successful": "Ang iyong pagbabayad ay matagumpay.",
         "methodLabel": "Paraan ng pagbabayad",
         "unverifiedTitle": "Nagtagumpay ang iyong {method} na pagbabayad, ngunit hindi namin ito awtomatikong ma-verify.",
-        "unverifiedMsg": "Ang iyong donasyon ay matatapos sa ilang sandali. Mangyaring makipag-ugnayan sa suporta kung mayroon kang anumang mga alalahanin."
+        "unverifiedMsg": "Ang iyong donasyon ay matatapos sa ilang sandali. Mangyaring makipag-ugnayan sa suporta kung mayroon kang anumang mga alalahanin.",
+        "referenceLabel": "Sanggunian",
+        "statePendingTitle": "Kinukumpirma ang iyong pagbabayad",
+        "statePendingSubtitle": "Karaniwan itong tumatagal ng ilang segundo.",
+        "statePendingMsg": "Hinihintay namin na kumpirmahin ng provider ng pagbabayad. Awtomatikong nag-a-update ang page na ito.",
+        "stateFailedTitle": "Hindi nakumpleto ang pagbabayad",
+        "stateFailedSubtitle": "Walang sinisingil.",
+        "stateFailedMsg": "Tinanggihan o kinansela ang pagbabayad. Maaari mong subukang muli kapag handa ka na.",
+        "stateRefundedTitle": "Na-refund ang bayad",
+        "stateRefundedSubtitle": "Ibinalik ang bayad na ito.",
+        "stateRefundedMsg": "Na-refund na ang bayad na ito. Makipag-ugnayan sa suporta kung mayroon kang anumang mga tanong.",
+        "stateUnknownTitle": "Hindi nakita ang pagbabayad",
+        "stateUnknownSubtitle": "Hindi namin maitugma ang link na ito sa isang pagbabayad.",
+        "stateUnknownMsg": "Kung umalis ang pera sa iyong account, makipag-ugnayan sa suporta gamit ang reference sa ibaba."
     },
     "admin": {
         "panel": "Admin Panel",

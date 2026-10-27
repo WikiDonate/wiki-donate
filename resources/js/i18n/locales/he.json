@@ -390,7 +390,20 @@
         "successful": "התשלום שלך הצליח.",
         "methodLabel": "אמצעי תשלום",
         "unverifiedTitle": "התשלום שלך ב-{method} הצליח, אך לא הצלחנו לאמת אותו באופן אוטומטי.",
-        "unverifiedMsg": "התרומה שלך תושלם בקרוב. אנא צור קשר עם התמיכה אם יש לך חששות."
+        "unverifiedMsg": "התרומה שלך תושלם בקרוב. אנא צור קשר עם התמיכה אם יש לך חששות.",
+        "referenceLabel": "הפניה",
+        "statePendingTitle": "אישור התשלום שלך",
+        "statePendingSubtitle": "זה בדרך כלל לוקח כמה שניות.",
+        "statePendingMsg": "אנו ממתינים לספק התשלום שיאשר. דף זה מתעדכן אוטומטית.",
+        "stateFailedTitle": "התשלום לא הושלם",
+        "stateFailedSubtitle": "לא הוגש אישום.",
+        "stateFailedMsg": "התשלום נדחה או בוטל. אתה יכול לנסות שוב בכל פעם שאתה מוכן.",
+        "stateRefundedTitle": "התשלום הוחזר",
+        "stateRefundedSubtitle": "תשלום זה הוחזר.",
+        "stateRefundedMsg": "תשלום זה הוחזר. צור קשר עם התמיכה אם יש לך שאלות כלשהן.",
+        "stateUnknownTitle": "התשלום לא נמצא",
+        "stateUnknownSubtitle": "לא הצלחנו להתאים את הקישור הזה לתשלום.",
+        "stateUnknownMsg": "אם כסף עזב את חשבונך, צור קשר עם התמיכה באמצעות הפניה למטה."
     },
     "admin": {
         "panel": "פאנל ניהול",

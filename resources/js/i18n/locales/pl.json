@@ -390,7 +390,20 @@
         "successful": "Twoja płatność została zrealizowana.",
         "methodLabel": "Metoda płatności",
         "unverifiedTitle": "Twoja płatność metodą {method} powiodła się, ale nie mogliśmy jej automatycznie zweryfikować.",
-        "unverifiedMsg": "Twoja darowizna zostanie wkrótce sfinalizowana. Jeśli masz jakiekolwiek wątpliwości, skontaktuj się z pomocą techniczną."
+        "unverifiedMsg": "Twoja darowizna zostanie wkrótce sfinalizowana. Jeśli masz jakiekolwiek wątpliwości, skontaktuj się z pomocą techniczną.",
+        "referenceLabel": "Odniesienie",
+        "statePendingTitle": "Potwierdzenie płatności",
+        "statePendingSubtitle": "Zwykle zajmuje to kilka sekund.",
+        "statePendingMsg": "Czekamy na potwierdzenie dostawcy płatności. Ta strona aktualizuje się automatycznie.",
+        "stateFailedTitle": "Płatność nie została ukończona",
+        "stateFailedSubtitle": "Nie pobrano żadnych opłat.",
+        "stateFailedMsg": "Płatność została odrzucona lub anulowana. Możesz spróbować ponownie, kiedy tylko będziesz gotowy.",
+        "stateRefundedTitle": "Płatność zwrócona",
+        "stateRefundedSubtitle": "Ta płatność została zwrócona.",
+        "stateRefundedMsg": "Ta płatność została zwrócona. Jeśli masz jakiekolwiek pytania, skontaktuj się z pomocą techniczną.",
+        "stateUnknownTitle": "Nie znaleziono płatności",
+        "stateUnknownSubtitle": "Nie udało się dopasować tego linku do płatności.",
+        "stateUnknownMsg": "Jeśli pieniądze opuściły Twoje konto, skontaktuj się z pomocą techniczną, korzystając z poniższego odnośnika."
     },
     "admin": {
         "panel": "Panel administracyjny",

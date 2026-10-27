@@ -390,7 +390,20 @@
         "successful": "Vaše platba proběhla úspěšně.",
         "methodLabel": "Způsob platby",
         "unverifiedTitle": "Vaše platba {method} byla úspěšná, ale nepodařilo se nám ji automaticky ověřit.",
-        "unverifiedMsg": "Váš dar bude brzy dokončen. Máte-li jakékoli obavy, kontaktujte podporu."
+        "unverifiedMsg": "Váš dar bude brzy dokončen. Máte-li jakékoli obavy, kontaktujte podporu.",
+        "referenceLabel": "Reference",
+        "statePendingTitle": "Potvrzení platby",
+        "statePendingSubtitle": "Obvykle to trvá několik sekund.",
+        "statePendingMsg": "Čekáme na potvrzení poskytovatele platby. Tato stránka se automaticky aktualizuje.",
+        "stateFailedTitle": "Platba nebyla dokončena",
+        "stateFailedSubtitle": "Nebyl vznesen žádný poplatek.",
+        "stateFailedMsg": "Platba byla odmítnuta nebo zrušena. Můžete to zkusit znovu, kdykoli budete připraveni.",
+        "stateRefundedTitle": "Platba vrácena",
+        "stateRefundedSubtitle": "Tato platba byla vrácena.",
+        "stateRefundedMsg": "Tato platba byla vrácena. Pokud máte nějaké dotazy, kontaktujte podporu.",
+        "stateUnknownTitle": "Platba nenalezena",
+        "stateUnknownSubtitle": "Tento odkaz se nám nepodařilo přiřadit k platbě.",
+        "stateUnknownMsg": "Pokud z vašeho účtu odešly peníze, kontaktujte podporu pomocí níže uvedeného odkazu."
     },
     "admin": {
         "panel": "Panel administrátora",

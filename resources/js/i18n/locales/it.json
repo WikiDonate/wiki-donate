@@ -390,7 +390,20 @@
         "successful": "Il tuo pagamento è andato a buon fine.",
         "methodLabel": "Metodo di pagamento",
         "unverifiedTitle": "Il tuo pagamento {method} è andato a buon fine, ma non siamo riusciti a verificarlo automaticamente.",
-        "unverifiedMsg": "La tua donazione sarà finalizzata a breve. Si prega di contattare l'assistenza in caso di dubbi."
+        "unverifiedMsg": "La tua donazione sarà finalizzata a breve. Si prega di contattare l'assistenza in caso di dubbi.",
+        "referenceLabel": "Riferimento",
+        "statePendingTitle": "Conferma del pagamento",
+        "statePendingSubtitle": "Solitamente l'operazione richiede alcuni secondi.",
+        "statePendingMsg": "Stiamo aspettando la conferma da parte del fornitore del pagamento. Questa pagina si aggiorna automaticamente.",
+        "stateFailedTitle": "Pagamento non completato",
+        "stateFailedSubtitle": "Non è stato effettuato alcun addebito.",
+        "stateFailedMsg": "Il pagamento è stato rifiutato o annullato. Puoi riprovare quando sei pronto.",
+        "stateRefundedTitle": "Pagamento rimborsato",
+        "stateRefundedSubtitle": "Questo pagamento è stato restituito.",
+        "stateRefundedMsg": "Questo pagamento è stato rimborsato. Contatta l'assistenza in caso di domande.",
+        "stateUnknownTitle": "Pagamento non trovato",
+        "stateUnknownSubtitle": "Non è stato possibile abbinare questo collegamento a un pagamento.",
+        "stateUnknownMsg": "Se il denaro ha lasciato il tuo conto, contatta l'assistenza con il riferimento riportato di seguito."
     },
     "admin": {
         "panel": "Pannello di amministrazione",

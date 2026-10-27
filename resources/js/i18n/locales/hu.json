@@ -390,7 +390,20 @@
         "successful": "Befizetése sikeres volt.",
         "methodLabel": "Fizetési mód",
         "unverifiedTitle": "A(z) {method} befizetése sikeres volt, de nem tudtuk automatikusan ellenőrizni.",
-        "unverifiedMsg": "Adományát hamarosan véglegesítjük. Ha bármilyen aggálya van, forduljon az ügyfélszolgálathoz."
+        "unverifiedMsg": "Adományát hamarosan véglegesítjük. Ha bármilyen aggálya van, forduljon az ügyfélszolgálathoz.",
+        "referenceLabel": "Hivatkozás",
+        "statePendingTitle": "Fizetés megerősítése",
+        "statePendingSubtitle": "Ez általában néhány másodpercet vesz igénybe.",
+        "statePendingMsg": "Várjuk a fizetési szolgáltató megerősítését. Ez az oldal automatikusan frissül.",
+        "stateFailedTitle": "A fizetés nem fejeződött be",
+        "stateFailedSubtitle": "Nem tettek fel díjat.",
+        "stateFailedMsg": "A fizetést elutasították vagy törölték. Megpróbálhatja újra, amikor készen áll.",
+        "stateRefundedTitle": "Fizetés visszatérítve",
+        "stateRefundedSubtitle": "Ezt a fizetést visszaküldtük.",
+        "stateRefundedMsg": "Ezt a befizetést visszatérítettük. Ha bármilyen kérdése van, lépjen kapcsolatba az ügyfélszolgálattal.",
+        "stateUnknownTitle": "Fizetés nem található",
+        "stateUnknownSubtitle": "Nem tudtuk ezt a linket fizetéshez társítani.",
+        "stateUnknownMsg": "Ha pénz távozott a számlájáról, lépjen kapcsolatba az ügyfélszolgálattal az alábbi hivatkozás segítségével."
     },
     "admin": {
         "panel": "Felügyeleti panel",

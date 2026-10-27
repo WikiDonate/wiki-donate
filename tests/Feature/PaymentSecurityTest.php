@@ -91,15 +91,77 @@ class PaymentSecurityTest extends TestCase
             'status' => 'completed',
         ]);
 
-        $this->paypalMock()->shouldReceive('showOrder')->once()->andReturn([
-            'id' => 'DONE_REF_1',
-            'status' => 'CREATED', // webhook/gateway lag; the DB is authoritative
-        ]);
+        // A recorded donation is final: no gateway round-trip, so a provider
+        // outage can never turn a confirmed payment into "unknown".
+        $this->paypalMock()->shouldReceive('showOrder')->never();
 
         $this->getJson('/api/v1/payment/paypal/status/DONE_REF_1')
             ->assertOk()
+            ->assertJsonPath('data.state', 'completed')
             ->assertJsonPath('data.completed', true)
             ->assertJsonPath('data.amount', 40);
+    }
+
+    public function test_status_endpoint_reports_a_declined_checkout_instead_of_a_404(): void
+    {
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'DECLINED_REF_1',
+            'amount' => 25.00,
+            'currency' => 'USD',
+            'status' => PaymentPendingOrder::STATUS_FAILED,
+            'status_reason' => 'INSTRUMENT_DECLINED',
+        ]);
+
+        // Closed checkouts are answered from our records; asking the gateway
+        // again could 404 for a voided order and defeat the whole point.
+        $this->paypalMock()->shouldReceive('showOrder')->never();
+
+        $this->getJson('/api/v1/payment/paypal/status/DECLINED_REF_1')
+            ->assertOk()
+            ->assertJsonPath('data.state', 'failed')
+            ->assertJsonPath('data.completed', false)
+            ->assertJsonPath('data.reason', 'INSTRUMENT_DECLINED')
+            ->assertJsonPath('data.amount', 25);
+    }
+
+    public function test_status_endpoint_reports_a_cancelled_checkout(): void
+    {
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'CANCELLED_REF_1',
+            'amount' => 10.00,
+            'currency' => 'USD',
+            'status' => PaymentPendingOrder::STATUS_CANCELLED,
+        ]);
+
+        $this->paypalMock()->shouldReceive('showOrder')->never();
+
+        $this->getJson('/api/v1/payment/paypal/status/CANCELLED_REF_1')
+            ->assertOk()
+            ->assertJsonPath('data.state', 'cancelled')
+            ->assertJsonPath('data.completed', false);
+    }
+
+    public function test_capture_on_a_closed_checkout_is_rejected_without_calling_the_gateway(): void
+    {
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'CLOSED_REF_1',
+            'amount' => 15.00,
+            'currency' => 'USD',
+            'status' => PaymentPendingOrder::STATUS_FAILED,
+        ]);
+
+        $this->paypalMock()->shouldReceive('captureOrder')->never();
+
+        $this->postJson('/api/v1/payment/paypal/capture-order', [
+            'order_id' => 'CLOSED_REF_1',
+        ])
+            ->assertStatus(409)
+            ->assertJsonPath('success', false);
+
+        $this->assertSame(0, Donation::count());
     }
 
     // ---------------------------------------------------------------------

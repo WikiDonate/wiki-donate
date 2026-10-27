@@ -390,7 +390,20 @@
         "successful": "Pembayaran anda berjaya.",
         "methodLabel": "Kaedah pembayaran",
         "unverifiedTitle": "Pembayaran {method} anda berjaya, tetapi kami tidak dapat mengesahkannya secara automatik.",
-        "unverifiedMsg": "Derma anda akan dimuktamadkan tidak lama lagi. Sila hubungi sokongan jika anda mempunyai sebarang kebimbangan."
+        "unverifiedMsg": "Derma anda akan dimuktamadkan tidak lama lagi. Sila hubungi sokongan jika anda mempunyai sebarang kebimbangan.",
+        "referenceLabel": "Rujukan",
+        "statePendingTitle": "Mengesahkan pembayaran anda",
+        "statePendingSubtitle": "Ini biasanya mengambil masa beberapa saat.",
+        "statePendingMsg": "Kami sedang menunggu penyedia pembayaran mengesahkan. Halaman ini dikemas kini secara automatik.",
+        "stateFailedTitle": "Pembayaran tidak selesai",
+        "stateFailedSubtitle": "Tiada caj dibuat.",
+        "stateFailedMsg": "Pembayaran telah ditolak atau dibatalkan. Anda boleh mencuba lagi apabila anda sudah bersedia.",
+        "stateRefundedTitle": "Bayaran dikembalikan",
+        "stateRefundedSubtitle": "Bayaran ini telah dikembalikan.",
+        "stateRefundedMsg": "Bayaran ini telah dikembalikan. Hubungi sokongan jika anda mempunyai sebarang pertanyaan.",
+        "stateUnknownTitle": "Bayaran tidak ditemui",
+        "stateUnknownSubtitle": "Kami tidak dapat memadankan pautan ini dengan pembayaran.",
+        "stateUnknownMsg": "Jika wang meninggalkan akaun anda, hubungi sokongan dengan rujukan di bawah."
     },
     "admin": {
         "panel": "Panel Pentadbir",

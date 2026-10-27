@@ -390,7 +390,20 @@
         "successful": "Maksusi onnistui.",
         "methodLabel": "Maksutapa",
         "unverifiedTitle": "Maksusi {method} onnistui, mutta emme voineet vahvistaa sitä automaattisesti.",
-        "unverifiedMsg": "Lahjoituksesi viimeistellään pian. Ota yhteyttä tukeen, jos sinulla on kysyttävää."
+        "unverifiedMsg": "Lahjoituksesi viimeistellään pian. Ota yhteyttä tukeen, jos sinulla on kysyttävää.",
+        "referenceLabel": "Viite",
+        "statePendingTitle": "Vahvistaa maksuasi",
+        "statePendingSubtitle": "Tämä kestää yleensä muutaman sekunnin.",
+        "statePendingMsg": "Odotamme maksupalveluntarjoajan vahvistusta. Tämä sivu päivittyy automaattisesti.",
+        "stateFailedTitle": "Maksua ei suoritettu",
+        "stateFailedSubtitle": "Maksua ei tehty.",
+        "stateFailedMsg": "Maksu hylättiin tai peruutettiin. Voit yrittää uudelleen, kun olet valmis.",
+        "stateRefundedTitle": "Maksu palautettu",
+        "stateRefundedSubtitle": "Tämä maksu on palautettu.",
+        "stateRefundedMsg": "Tämä maksu on palautettu. Ota yhteyttä tukeen, jos sinulla on kysyttävää.",
+        "stateUnknownTitle": "Maksua ei löydy",
+        "stateUnknownSubtitle": "Emme voineet yhdistää tätä linkkiä maksuun.",
+        "stateUnknownMsg": "Jos tilillesi jäi rahaa, ota yhteyttä tukeen alla olevalla viitteellä."
     },
     "admin": {
         "panel": "Hallintapaneeli",

@@ -390,7 +390,20 @@
         "successful": "Plata dvs. a avut succes.",
         "methodLabel": "Metoda de plata",
         "unverifiedTitle": "Plata dvs. {method} a reușit, dar nu am putut-o verifica automat.",
-        "unverifiedMsg": "Donația ta va fi finalizată în curând. Vă rugăm să contactați asistența dacă aveți nelămuriri."
+        "unverifiedMsg": "Donația ta va fi finalizată în curând. Vă rugăm să contactați asistența dacă aveți nelămuriri.",
+        "referenceLabel": "Referință",
+        "statePendingTitle": "Confirmarea plății dvs",
+        "statePendingSubtitle": "Acest lucru durează de obicei câteva secunde.",
+        "statePendingMsg": "Așteptăm confirmarea furnizorului de plăți. Această pagină se actualizează automat.",
+        "stateFailedTitle": "Plata nu a fost finalizată",
+        "stateFailedSubtitle": "Nu s-a făcut nicio taxă.",
+        "stateFailedMsg": "Plata a fost refuzată sau anulată. Puteți încerca din nou ori de câte ori sunteți gata.",
+        "stateRefundedTitle": "Plata rambursată",
+        "stateRefundedSubtitle": "Această plată a fost returnată.",
+        "stateRefundedMsg": "Această plată a fost rambursată. Contactați asistența dacă aveți întrebări.",
+        "stateUnknownTitle": "Plata nu a fost găsită",
+        "stateUnknownSubtitle": "Nu am putut potrivi acest link cu o plată.",
+        "stateUnknownMsg": "Dacă banii au părăsit contul dvs., contactați asistența cu referința de mai jos."
     },
     "admin": {
         "panel": "Panoul de administrare",

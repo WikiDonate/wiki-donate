@@ -390,7 +390,20 @@
         "successful": "您的付款成功。",
         "methodLabel": "付款方式",
         "unverifiedTitle": "您的{method}付款成功，但我們無法自動驗證。",
-        "unverifiedMsg": "您的捐款將很快完成。如果您有任何疑問，請聯絡支援人員。"
+        "unverifiedMsg": "您的捐款將很快完成。如果您有任何疑問，請聯絡支援人員。",
+        "referenceLabel": "參考",
+        "statePendingTitle": "確認您的付款",
+        "statePendingSubtitle": "這通常需要幾秒鐘。",
+        "statePendingMsg": "我們正在等待付款提供者確認。此頁面會自動更新。",
+        "stateFailedTitle": "付款未完成",
+        "stateFailedSubtitle": "沒有提出任何指控。",
+        "stateFailedMsg": "付款被拒絕或取消。當你準備好時，你可以再試一次。",
+        "stateRefundedTitle": "付款已退回",
+        "stateRefundedSubtitle": "這筆款項已被退回。",
+        "stateRefundedMsg": "這筆款項已退還。如果您有任何疑問，請聯絡支援人員。",
+        "stateUnknownTitle": "未找到付款",
+        "stateUnknownSubtitle": "我們無法將此連結與付款相匹配。",
+        "stateUnknownMsg": "如果資金離開您的帳戶，請透過以下參考資訊聯絡支援人員。"
     },
     "admin": {
         "panel": "管理面板",

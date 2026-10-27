@@ -390,7 +390,20 @@
         "successful": "Malipo yako yamefaulu.",
         "methodLabel": "Njia ya malipo",
         "unverifiedTitle": "Malipo yako ya {method} yamefaulu, lakini hatukuweza kuyathibitisha kiotomatiki.",
-        "unverifiedMsg": "Mchango wako utakamilika hivi karibuni. Tafadhali wasiliana na usaidizi ikiwa una wasiwasi wowote."
+        "unverifiedMsg": "Mchango wako utakamilika hivi karibuni. Tafadhali wasiliana na usaidizi ikiwa una wasiwasi wowote.",
+        "referenceLabel": "Rejea",
+        "statePendingTitle": "Inathibitisha malipo yako",
+        "statePendingSubtitle": "Hii kawaida huchukua sekunde chache.",
+        "statePendingMsg": "Tunasubiri mtoa huduma wa malipo athibitishe. Ukurasa huu unasasishwa kiotomatiki.",
+        "stateFailedTitle": "Malipo hayajakamilika",
+        "stateFailedSubtitle": "Hakuna malipo yaliyofanywa.",
+        "stateFailedMsg": "Malipo yamekataliwa au kughairiwa. Unaweza kujaribu tena wakati wowote ukiwa tayari.",
+        "stateRefundedTitle": "Malipo yamerejeshwa",
+        "stateRefundedSubtitle": "Malipo haya yamerejeshwa.",
+        "stateRefundedMsg": "Malipo haya yamerejeshwa. Wasiliana na usaidizi ikiwa una maswali yoyote.",
+        "stateUnknownTitle": "Malipo hayajapatikana",
+        "stateUnknownSubtitle": "Hatukuweza kulinganisha kiungo hiki na malipo.",
+        "stateUnknownMsg": "Ikiwa pesa ziliondoka kwenye akaunti yako, wasiliana na usaidizi kwa marejeleo yaliyo hapa chini."
     },
     "admin": {
         "panel": "Paneli ya Msimamizi",

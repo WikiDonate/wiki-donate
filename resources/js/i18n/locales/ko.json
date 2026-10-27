@@ -390,7 +390,20 @@
         "successful": "결제가 완료되었습니다.",
         "methodLabel": "결제수단",
         "unverifiedTitle": "귀하의 {method} 결제가 성공했지만 자동으로 확인할 수 없습니다.",
-        "unverifiedMsg": "귀하의 기부가 곧 완료될 예정입니다. 우려사항이 있는 경우 지원팀에 문의하세요."
+        "unverifiedMsg": "귀하의 기부가 곧 완료될 예정입니다. 우려사항이 있는 경우 지원팀에 문의하세요.",
+        "referenceLabel": "참고자료",
+        "statePendingTitle": "결제 확인 중",
+        "statePendingSubtitle": "이 작업은 일반적으로 몇 초 정도 걸립니다.",
+        "statePendingMsg": "결제 제공업체의 확인을 기다리고 있습니다. 이 페이지는 자동으로 업데이트됩니다.",
+        "stateFailedTitle": "결제가 완료되지 않았습니다.",
+        "stateFailedSubtitle": "요금이 청구되지 않았습니다.",
+        "stateFailedMsg": "결제가 거부되거나 취소되었습니다. 준비가 되면 언제든지 다시 시도할 수 있습니다.",
+        "stateRefundedTitle": "결제 금액이 환불됨",
+        "stateRefundedSubtitle": "이 지불금이 반환되었습니다.",
+        "stateRefundedMsg": "이 결제 금액은 환불되었습니다. 질문이 있는 경우 지원팀에 문의하세요.",
+        "stateUnknownTitle": "결제를 찾을 수 없습니다.",
+        "stateUnknownSubtitle": "이 링크를 결제와 일치시킬 수 없습니다.",
+        "stateUnknownMsg": "계좌에서 돈이 빠져나간 경우 아래 참조 번호를 사용하여 지원팀에 문의하세요."
     },
     "admin": {
         "panel": "관리자 패널",

@@ -390,7 +390,20 @@
         "successful": "Uw betaling is gelukt.",
         "methodLabel": "Betaalmethode",
         "unverifiedTitle": "Uw {method}-betaling is gelukt, maar we kunnen deze niet automatisch verifiëren.",
-        "unverifiedMsg": "Uw donatie wordt binnenkort afgerond. Neem contact op met de ondersteuning als u zich zorgen maakt."
+        "unverifiedMsg": "Uw donatie wordt binnenkort afgerond. Neem contact op met de ondersteuning als u zich zorgen maakt.",
+        "referenceLabel": "Referentie",
+        "statePendingTitle": "Bevestiging van uw betaling",
+        "statePendingSubtitle": "Dit duurt meestal enkele seconden.",
+        "statePendingMsg": "We wachten op bevestiging van de betalingsprovider. Deze pagina wordt automatisch bijgewerkt.",
+        "stateFailedTitle": "Betaling niet voltooid",
+        "stateFailedSubtitle": "Er zijn geen kosten in rekening gebracht.",
+        "stateFailedMsg": "De betaling is geweigerd of geannuleerd. Je kunt het opnieuw proberen wanneer je er klaar voor bent.",
+        "stateRefundedTitle": "Betaling terugbetaald",
+        "stateRefundedSubtitle": "Deze betaling is geretourneerd.",
+        "stateRefundedMsg": "Deze betaling is terugbetaald. Neem contact op met de ondersteuning als u vragen heeft.",
+        "stateUnknownTitle": "Betaling niet gevonden",
+        "stateUnknownSubtitle": "We kunnen deze link niet koppelen aan een betaling.",
+        "stateUnknownMsg": "Als het geld uw account heeft verlaten, neemt u contact op met de ondersteuning via de onderstaande referentie."
     },
     "admin": {
         "panel": "Beheerderspaneel",

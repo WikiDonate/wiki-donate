@@ -14,6 +14,9 @@ use Illuminate\Console\Command;
  */
 class CleanupPaymentPendingOrders extends Command
 {
+    /** How long a closed (declined/cancelled) checkout stays queryable. */
+    private const CLOSED_RETENTION_DAYS = 30;
+
     /**
      * The name and signature of the console command.
      *
@@ -36,9 +39,21 @@ class CleanupPaymentPendingOrders extends Command
         $hours = (int) $this->option('hours');
         $cutoff = now()->subHours($hours);
 
-        $deleted = PaymentPendingOrder::where('created_at', '<', $cutoff)->delete();
+        // Open checkouts are abandoned payloads: nothing will ever read them
+        // again once the gateway order expires.
+        $deleted = PaymentPendingOrder::where('status', PaymentPendingOrder::STATUS_PENDING)
+            ->where('created_at', '<', $cutoff)
+            ->delete();
+
+        // Closed checkouts (declined/cancelled/expired) are answers for the
+        // donor's return page and a small audit trail, so they are kept much
+        // longer than the gateway's retry window.
+        $pruned = PaymentPendingOrder::whereIn('status', PaymentPendingOrder::terminalStatuses())
+            ->where('updated_at', '<', now()->subDays(self::CLOSED_RETENTION_DAYS))
+            ->delete();
 
         $this->info("Deleted {$deleted} abandoned payment pending order(s) older than {$hours} hours.");
+        $this->info("Pruned {$pruned} closed checkout(s) older than ".self::CLOSED_RETENTION_DAYS.' days.');
 
         return self::SUCCESS;
     }

@@ -390,7 +390,20 @@
         "successful": "お支払いは正常に完了しました。",
         "methodLabel": "お支払い方法",
         "unverifiedTitle": "{method} のお支払いは成功しましたが、自動的に検証できませんでした。",
-        "unverifiedMsg": "あなたの寄付はまもなく完了します。ご不明な点がございましたらサポートまでお問い合わせください。"
+        "unverifiedMsg": "あなたの寄付はまもなく完了します。ご不明な点がございましたらサポートまでお問い合わせください。",
+        "referenceLabel": "参考資料",
+        "statePendingTitle": "支払いの確認",
+        "statePendingSubtitle": "通常、これには数秒かかります。",
+        "statePendingMsg": "決済プロバイダーの確認を待っています。このページは自動的に更新されます。",
+        "stateFailedTitle": "支払いが完了していません",
+        "stateFailedSubtitle": "料金は請求されませんでした。",
+        "stateFailedMsg": "支払いが拒否またはキャンセルされました。準備ができたらいつでも再試行できます。",
+        "stateRefundedTitle": "支払いが返金されました",
+        "stateRefundedSubtitle": "この支払いは返金されました。",
+        "stateRefundedMsg": "この支払いは返金されました。ご質問がある場合はサポートにお問い合わせください。",
+        "stateUnknownTitle": "支払いが見つかりません",
+        "stateUnknownSubtitle": "このリンクを支払いに照合できませんでした。",
+        "stateUnknownMsg": "アカウントにお金が残っている場合は、以下の問い合わせ先を使用してサポートにお問い合わせください。"
     },
     "admin": {
         "panel": "管理者パネル",

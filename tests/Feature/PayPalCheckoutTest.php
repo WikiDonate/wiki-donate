@@ -722,6 +722,80 @@ class PayPalCheckoutTest extends TestCase
             ->assertJson(['success' => true]);
     }
 
+    /**
+     * The donor approves at PayPal and closes the tab before the SPA captures.
+     * The approval webhook must take the money itself, otherwise the
+     * authorisation expires and the donation is silently lost.
+     */
+    public function test_webhook_order_approved_captures_the_order_and_records_the_donation(): void
+    {
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL_ORDER_123',
+            'user_id' => null,
+            'donor_email' => 'donor@example.com',
+            'donor_name' => 'Test Donor',
+            'amount' => 25.00,
+            'currency' => 'USD',
+        ]);
+
+        $this->mockPayPalClient();
+
+        $payload = [
+            'id' => 'WH_APPROVED_CAPTURE_'.uniqid(),
+            'event_type' => 'CHECKOUT.ORDER.APPROVED',
+            'resource' => ['id' => 'PAYPAL_ORDER_123'],
+        ];
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/paypal',
+            [],
+            [],
+            [],
+            array_merge(['HTTP_ACCEPT' => 'application/json'], $this->paypalWebhookHeaders()),
+            json_encode($payload)
+        );
+
+        $response->assertStatus(200)->assertJson(['success' => true]);
+
+        $donation = Donation::where('payment_method', 'paypal')
+            ->where('gateway_reference', 'PAYPAL_ORDER_123')
+            ->first();
+
+        $this->assertNotNull($donation);
+        $this->assertSame('completed', $donation->status);
+        $this->assertEquals(25.00, (float) $donation->amount);
+        $this->assertNull(
+            PaymentPendingOrder::where('payment_method', 'paypal')
+                ->where('gateway_reference', 'PAYPAL_ORDER_123')
+                ->first()
+        );
+    }
+
+    public function test_webhook_order_approved_without_a_pending_order_does_nothing(): void
+    {
+        $this->mockPayPalClient()->shouldReceive('captureOrder')->never();
+
+        $payload = [
+            'id' => 'WH_APPROVED_NO_PENDING_'.uniqid(),
+            'event_type' => 'CHECKOUT.ORDER.APPROVED',
+            'resource' => ['id' => 'UNKNOWN_ORDER_999'],
+        ];
+
+        $this->call(
+            'POST',
+            '/api/v1/webhooks/paypal',
+            [],
+            [],
+            [],
+            array_merge(['HTTP_ACCEPT' => 'application/json'], $this->paypalWebhookHeaders()),
+            json_encode($payload)
+        )->assertStatus(200);
+
+        $this->assertSame(0, Donation::count());
+    }
+
     // -------------------------------------------------------------------------
     // TEST: Edge Cases
     // -------------------------------------------------------------------------
@@ -811,7 +885,7 @@ class PayPalCheckoutTest extends TestCase
             ->assertJson(['success' => true]);
     }
 
-    public function test_webhook_capture_denied_removes_pending_order(): void
+    public function test_webhook_capture_denied_closes_the_pending_order_as_failed(): void
     {
         PaymentPendingOrder::create([
             'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
@@ -827,6 +901,7 @@ class PayPalCheckoutTest extends TestCase
             'event_type' => 'PAYMENT.CAPTURE.DENIED',
             'resource' => [
                 'id' => 'CAPTURE_ABC',
+                'status_details' => ['reason' => 'INSTRUMENT_DECLINED'],
                 'supplementary_data' => [
                     'related_ids' => ['order_id' => 'PAYPAL_ORDER_123'],
                 ],
@@ -846,10 +921,17 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
+        // Closed, not deleted: the donor's status page must be able to answer.
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+            ->where('gateway_reference', 'PAYPAL_ORDER_123')
+            ->first();
+
+        $this->assertNotNull($pending);
+        $this->assertSame(PaymentPendingOrder::STATUS_FAILED, $pending->status);
+        $this->assertSame('INSTRUMENT_DECLINED', $pending->status_reason);
     }
 
-    public function test_webhook_order_cancelled_removes_pending_order(): void
+    public function test_webhook_order_cancelled_closes_the_pending_order_as_cancelled(): void
     {
         PaymentPendingOrder::create([
             'payment_method' => 'paypal', 'gateway_reference' => 'PAYPAL_ORDER_123',
@@ -879,7 +961,12 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        $this->assertNull(PaymentPendingOrder::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first());
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+            ->where('gateway_reference', 'PAYPAL_ORDER_123')
+            ->first();
+
+        $this->assertNotNull($pending);
+        $this->assertSame(PaymentPendingOrder::STATUS_CANCELLED, $pending->status);
     }
 
     public function test_cleanup_command_deletes_old_pending_orders(): void

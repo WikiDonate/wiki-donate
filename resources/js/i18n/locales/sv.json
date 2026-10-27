@@ -390,7 +390,20 @@
         "successful": "Din betalning lyckades.",
         "methodLabel": "Betalningsmetod",
         "unverifiedTitle": "Din {method}-betalning lyckades, men vi kunde inte verifiera den automatiskt.",
-        "unverifiedMsg": "Din donation kommer att slutföras inom kort. Kontakta supporten om du har några funderingar."
+        "unverifiedMsg": "Din donation kommer att slutföras inom kort. Kontakta supporten om du har några funderingar.",
+        "referenceLabel": "Referens",
+        "statePendingTitle": "Bekräftar din betalning",
+        "statePendingSubtitle": "Detta tar vanligtvis några sekunder.",
+        "statePendingMsg": "Vi väntar på att betalningsleverantören ska bekräfta. Den här sidan uppdateras automatiskt.",
+        "stateFailedTitle": "Betalning ej genomförd",
+        "stateFailedSubtitle": "Ingen avgift gjordes.",
+        "stateFailedMsg": "Betalningen avvisades eller avbröts. Du kan försöka igen när du är redo.",
+        "stateRefundedTitle": "Betalning återbetald",
+        "stateRefundedSubtitle": "Denna betalning har returnerats.",
+        "stateRefundedMsg": "Denna betalning har återbetalats. Kontakta supporten om du har några frågor.",
+        "stateUnknownTitle": "Betalning hittades inte",
+        "stateUnknownSubtitle": "Vi kunde inte matcha denna länk med en betalning.",
+        "stateUnknownMsg": "Om pengar lämnat ditt konto, kontakta supporten med referensen nedan."
     },
     "admin": {
         "panel": "Adminpanel",

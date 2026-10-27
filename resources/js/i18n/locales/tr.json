@@ -390,7 +390,20 @@
         "successful": "Ödemeniz başarılı oldu.",
         "methodLabel": "Ödeme yöntemi",
         "unverifiedTitle": "{method} ödemeniz başarılı oldu ancak bunu otomatik olarak doğrulayamadık.",
-        "unverifiedMsg": "Bağışınız kısa sürede tamamlanacaktır. Herhangi bir endişeniz varsa lütfen destek ekibiyle iletişime geçin."
+        "unverifiedMsg": "Bağışınız kısa sürede tamamlanacaktır. Herhangi bir endişeniz varsa lütfen destek ekibiyle iletişime geçin.",
+        "referenceLabel": "Referans",
+        "statePendingTitle": "Ödemeniz onaylanıyor",
+        "statePendingSubtitle": "Bu genellikle birkaç saniye sürer.",
+        "statePendingMsg": "Ödeme sağlayıcısının onaylamasını bekliyoruz. Bu sayfa otomatik olarak güncellenir.",
+        "stateFailedTitle": "Ödeme tamamlanmadı",
+        "stateFailedSubtitle": "Hiçbir ücret alınmadı.",
+        "stateFailedMsg": "Ödeme reddedildi veya iptal edildi. Hazır olduğunuzda tekrar deneyebilirsiniz.",
+        "stateRefundedTitle": "Ödeme iade edildi",
+        "stateRefundedSubtitle": "Bu ödeme iade edildi.",
+        "stateRefundedMsg": "Bu ödeme iade edildi. Sorularınız varsa destek ekibiyle iletişime geçin.",
+        "stateUnknownTitle": "Ödeme bulunamadı",
+        "stateUnknownSubtitle": "Bu bağlantıyı bir ödemeyle eşleştiremedik.",
+        "stateUnknownMsg": "Hesabınızdan para kaldıysa aşağıdaki referansla destek ekibiyle iletişime geçin."
     },
     "admin": {
         "panel": "Yönetici Paneli",

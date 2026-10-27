@@ -390,7 +390,20 @@
         "successful": "Votre paiement a réussi.",
         "methodLabel": "Mode de paiement",
         "unverifiedTitle": "Votre paiement {method} a réussi, mais nous n'avons pas pu le vérifier automatiquement.",
-        "unverifiedMsg": "Votre don sera finalisé sous peu. Veuillez contacter le support si vous avez des inquiétudes."
+        "unverifiedMsg": "Votre don sera finalisé sous peu. Veuillez contacter le support si vous avez des inquiétudes.",
+        "referenceLabel": "Référence",
+        "statePendingTitle": "Confirmation de votre paiement",
+        "statePendingSubtitle": "Cela prend généralement quelques secondes.",
+        "statePendingMsg": "Nous attendons la confirmation du prestataire de paiement. Cette page est mise à jour automatiquement.",
+        "stateFailedTitle": "Paiement non effectué",
+        "stateFailedSubtitle": "Aucune charge n’a été facturée.",
+        "stateFailedMsg": "Le paiement a été refusé ou annulé. Vous pouvez réessayer chaque fois que vous êtes prêt.",
+        "stateRefundedTitle": "Paiement remboursé",
+        "stateRefundedSubtitle": "Ce paiement a été restitué.",
+        "stateRefundedMsg": "Ce paiement a été remboursé. Contactez le support si vous avez des questions.",
+        "stateUnknownTitle": "Paiement introuvable",
+        "stateUnknownSubtitle": "Nous n'avons pas pu associer ce lien à un paiement.",
+        "stateUnknownMsg": "Si de l'argent a quitté votre compte, contactez l'assistance avec la référence ci-dessous."
     },
     "admin": {
         "panel": "Panneau d'administration",

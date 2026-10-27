@@ -390,7 +390,20 @@
         "successful": "Ihre Zahlung war erfolgreich.",
         "methodLabel": "Zahlungsart",
         "unverifiedTitle": "Ihre {method}-Zahlung war erfolgreich, wir konnten sie jedoch nicht automatisch überprüfen.",
-        "unverifiedMsg": "Ihre Spende wird in Kürze abgeschlossen. Bei Bedenken wenden Sie sich bitte an den Support."
+        "unverifiedMsg": "Ihre Spende wird in Kürze abgeschlossen. Bei Bedenken wenden Sie sich bitte an den Support.",
+        "referenceLabel": "Referenz",
+        "statePendingTitle": "Bestätigen Sie Ihre Zahlung",
+        "statePendingSubtitle": "Dies dauert normalerweise einige Sekunden.",
+        "statePendingMsg": "Wir warten auf die Bestätigung des Zahlungsanbieters. Diese Seite wird automatisch aktualisiert.",
+        "stateFailedTitle": "Zahlung nicht abgeschlossen",
+        "stateFailedSubtitle": "Es wurde keine Gebühr erhoben.",
+        "stateFailedMsg": "Die Zahlung wurde abgelehnt oder storniert. Sie können es jederzeit erneut versuchen.",
+        "stateRefundedTitle": "Zahlung zurückerstattet",
+        "stateRefundedSubtitle": "Diese Zahlung wurde zurückerstattet.",
+        "stateRefundedMsg": "Diese Zahlung wurde zurückerstattet. Kontaktieren Sie den Support, wenn Sie Fragen haben.",
+        "stateUnknownTitle": "Zahlung nicht gefunden",
+        "stateUnknownSubtitle": "Wir konnten diesen Link keiner Zahlung zuordnen.",
+        "stateUnknownMsg": "Wenn Geld von Ihrem Konto abgebucht wurde, wenden Sie sich unter der unten angegebenen Referenz an den Support."
     },
     "admin": {
         "panel": "Admin-Panel",

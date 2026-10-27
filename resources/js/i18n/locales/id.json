@@ -390,7 +390,20 @@
         "successful": "Pembayaran Anda berhasil.",
         "methodLabel": "Metode pembayaran",
         "unverifiedTitle": "Pembayaran {method} Anda berhasil, namun kami tidak dapat memverifikasinya secara otomatis.",
-        "unverifiedMsg": "Donasi Anda akan segera diselesaikan. Silakan hubungi dukungan jika Anda memiliki kekhawatiran."
+        "unverifiedMsg": "Donasi Anda akan segera diselesaikan. Silakan hubungi dukungan jika Anda memiliki kekhawatiran.",
+        "referenceLabel": "Referensi",
+        "statePendingTitle": "Mengonfirmasi pembayaran Anda",
+        "statePendingSubtitle": "Ini biasanya memakan waktu beberapa detik.",
+        "statePendingMsg": "Kami sedang menunggu penyedia pembayaran untuk mengonfirmasi. Halaman ini diperbarui secara otomatis.",
+        "stateFailedTitle": "Pembayaran belum selesai",
+        "stateFailedSubtitle": "Tidak ada biaya yang dikenakan.",
+        "stateFailedMsg": "Pembayaran ditolak atau dibatalkan. Anda dapat mencoba lagi kapan pun Anda siap.",
+        "stateRefundedTitle": "Pembayaran dikembalikan",
+        "stateRefundedSubtitle": "Pembayaran ini telah dikembalikan.",
+        "stateRefundedMsg": "Pembayaran ini telah dikembalikan. Hubungi dukungan jika Anda memiliki pertanyaan.",
+        "stateUnknownTitle": "Pembayaran tidak ditemukan",
+        "stateUnknownSubtitle": "Kami tidak dapat mencocokkan tautan ini dengan pembayaran.",
+        "stateUnknownMsg": "Jika uang keluar dari rekening Anda, hubungi dukungan dengan referensi di bawah ini."
     },
     "admin": {
         "panel": "Panel Admin",
