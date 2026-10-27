@@ -354,7 +354,7 @@
         "logIn": "لاگ ان کریں۔",
         "donationAmount": "عطیہ کی رقم ($)",
         "enterAmount": "رقم درج کریں۔",
-        "operationalCosts": "* آپریشنل اخراجات کے لیے 0.1% تک۔",
+        "operationalCosts": "* آپریشنل اخراجات کے لیے {rate}% تک ({amount})۔",
         "enterAmountToDonate": "عطیہ کرنے کے لیے رقم درج کریں۔",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "پے پال کنفیگر نہیں ہے۔",

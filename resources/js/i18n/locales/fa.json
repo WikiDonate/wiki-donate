@@ -354,7 +354,7 @@
         "logIn": "وارد شوید",
         "donationAmount": "مبلغ کمک مالی ($)",
         "enterAmount": "مقدار را وارد کنید",
-        "operationalCosts": "* تا 0.1٪ برای هزینه های عملیاتی.",
+        "operationalCosts": "* تا {rate}٪ برای هزینه های عملیاتی ({amount}).",
         "enterAmountToDonate": "مبلغی را برای اهدا وارد کنید",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "پی پال پیکربندی نشده است.",

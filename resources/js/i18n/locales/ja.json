@@ -354,7 +354,7 @@
         "logIn": "ログイン",
         "donationAmount": "寄付金額 ($)",
         "enterAmount": "金額を入力してください",
-        "operationalCosts": "※運用コストは最大0.1%。",
+        "operationalCosts": "※運用コストは最大{rate}% ({amount})。",
         "enterAmountToDonate": "寄付する金額を入力してください",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal が設定されていません。",

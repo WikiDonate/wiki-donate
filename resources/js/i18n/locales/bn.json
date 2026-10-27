@@ -354,7 +354,7 @@
         "logIn": "লগ ইন করুন",
         "donationAmount": "অনুদানের পরিমাণ ($)",
         "enterAmount": "পরিমাণ লিখুন",
-        "operationalCosts": "* অপারেশনাল খরচের জন্য 0.1% পর্যন্ত।",
+        "operationalCosts": "* অপারেশনাল খরচের জন্য {rate}% পর্যন্ত ({amount})।",
         "enterAmountToDonate": "দান করার জন্য একটি পরিমাণ লিখুন",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "পেপ্যাল ​​কনফিগার করা নেই।",

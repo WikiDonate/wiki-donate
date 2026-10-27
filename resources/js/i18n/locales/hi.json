@@ -354,7 +354,7 @@
         "logIn": "लॉग इन करें",
         "donationAmount": "दान राशि ($)",
         "enterAmount": "राशि दर्ज करें",
-        "operationalCosts": "*परिचालन लागत के लिए 0.1% तक।",
+        "operationalCosts": "*परिचालन लागत के लिए {rate}% तक ({amount})।",
         "enterAmountToDonate": "दान करने के लिए राशि दर्ज करें",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "पेपैल कॉन्फ़िगर नहीं है.",

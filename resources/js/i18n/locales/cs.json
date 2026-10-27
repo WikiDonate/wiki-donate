@@ -354,7 +354,7 @@
         "logIn": "Přihlaste se",
         "donationAmount": "Částka daru ($)",
         "enterAmount": "Zadejte částku",
-        "operationalCosts": "* Až 0,1 % na provozní náklady.",
+        "operationalCosts": "* Až {rate} % na provozní náklady ({amount}).",
         "enterAmountToDonate": "Zadejte částku, kterou chcete darovat",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal není nakonfigurován.",

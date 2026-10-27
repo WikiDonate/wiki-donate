@@ -354,7 +354,7 @@
         "logIn": "تسجيل الدخول",
         "donationAmount": "مبلغ التبرع ($)",
         "enterAmount": "أدخل المبلغ",
-        "operationalCosts": "* ما يصل إلى 0.1% للتكاليف التشغيلية.",
+        "operationalCosts": "* ما يصل إلى {rate}% للتكاليف التشغيلية ({amount}).",
         "enterAmountToDonate": "أدخل المبلغ للتبرع",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "لم يتم تكوين باي بال.",

@@ -354,7 +354,7 @@
         "logIn": "เข้าสู่ระบบ",
         "donationAmount": "จำนวนเงินบริจาค ($)",
         "enterAmount": "ใส่จำนวนเงิน",
-        "operationalCosts": "* สูงถึง 0.1% สำหรับค่าใช้จ่ายในการดำเนินงาน",
+        "operationalCosts": "* สูงถึง {rate}% สำหรับค่าใช้จ่ายในการดำเนินงาน ({amount})",
         "enterAmountToDonate": "ป้อนจำนวนเงินที่จะบริจาค",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "ไม่ได้กำหนดค่า PayPal",

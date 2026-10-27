@@ -354,7 +354,7 @@
         "logIn": "Faça login",
         "donationAmount": "Valor da doação ($)",
         "enterAmount": "Insira o valor",
-        "operationalCosts": "* Até 0,1% para custos operacionais.",
+        "operationalCosts": "* Até {rate}% para custos operacionais ({amount}).",
         "enterAmountToDonate": "Insira um valor para doar",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "O PayPal não está configurado.",

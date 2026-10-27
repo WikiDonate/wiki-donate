@@ -354,7 +354,7 @@
         "logIn": "உள்நுழையவும்",
         "donationAmount": "நன்கொடை தொகை ($)",
         "enterAmount": "தொகையை உள்ளிடவும்",
-        "operationalCosts": "* செயல்பாட்டுச் செலவுகளுக்கு 0.1% வரை.",
+        "operationalCosts": "* செயல்பாட்டுச் செலவுகளுக்கு {rate}% வரை ({amount}).",
         "enterAmountToDonate": "நன்கொடைக்கான தொகையை உள்ளிடவும்",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal கட்டமைக்கப்படவில்லை.",

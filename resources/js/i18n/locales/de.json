@@ -354,7 +354,7 @@
         "logIn": "Melden Sie sich an",
         "donationAmount": "Spendenbetrag ($)",
         "enterAmount": "Geben Sie den Betrag ein",
-        "operationalCosts": "* Bis zu 0,1 % für Betriebskosten.",
+        "operationalCosts": "* Bis zu {rate} % für Betriebskosten ({amount}).",
         "enterAmountToDonate": "Geben Sie einen Spendenbetrag ein",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal ist nicht konfiguriert.",

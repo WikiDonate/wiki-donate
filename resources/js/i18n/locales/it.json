@@ -354,7 +354,7 @@
         "logIn": "Accedi",
         "donationAmount": "Importo della donazione ($)",
         "enterAmount": "Inserisci l'importo",
-        "operationalCosts": "* Fino allo 0,1% per i costi operativi.",
+        "operationalCosts": "* Fino allo {rate}% per i costi operativi ({amount}).",
         "enterAmountToDonate": "Inserisci un importo da donare",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal non è configurato.",

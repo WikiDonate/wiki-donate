@@ -354,7 +354,7 @@
         "logIn": "Συνδεθείτε",
         "donationAmount": "Ποσό δωρεάς ($)",
         "enterAmount": "Εισαγάγετε το ποσό",
-        "operationalCosts": "* Έως 0,1% για λειτουργικά έξοδα.",
+        "operationalCosts": "* Έως {rate}% για λειτουργικά έξοδα ({amount}).",
         "enterAmountToDonate": "Εισαγάγετε ένα ποσό για δωρεά",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "Το PayPal δεν έχει ρυθμιστεί.",

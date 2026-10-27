@@ -102,8 +102,18 @@
                             ${{ quickAmount }}
                         </button>
                     </div>
-                    <p class="text-xs text-gray-600 mt-3 italic">
-                        {{ t('donate.operationalCosts') }}
+                    <!-- Display-only: UI math from config/donationFees.js, no
+                         backend fee is stored or charged. -->
+                    <p
+                        v-if="transactionCost !== null"
+                        class="text-xs text-red-600 mt-3 italic font-bold"
+                    >
+                        {{
+                            t('donate.operationalCosts', {
+                                rate: transactionFeePercent,
+                                amount: '$' + transactionCost.toFixed(2),
+                            })
+                        }}
                     </p>
                 </div>
 
@@ -215,8 +225,9 @@
     import { useI18n } from 'vue-i18n'
     import { donateService } from '~/services/donateService'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
+    import { TRANSACTION_FEE_PERCENT, calculateTransactionCost } from '~/config/donationFees'
 
-    const { t } = useI18n()
+    const { t, locale } = useI18n()
     const {
         methods,
         loading: loadingMethods,
@@ -305,6 +316,18 @@
     // Matches backend min (0.50) / max (500000) on both payment rails.
     const hasValidAmount = computed(
         () => Number(amount.value) >= 0.5 && Number(amount.value) <= 500000 && props.modelValue,
+    )
+
+    // Live display-only transaction cost; `null` hides the row for empty or
+    // invalid input (see config/donationFees.js).
+    const transactionCost = computed(() => calculateTransactionCost(amount.value))
+
+    // Locale-aware percentage so the translated labels keep their decimal
+    // separator (e.g. "0,1" in de/es/fr, "0.1" in en).
+    const transactionFeePercent = computed(() =>
+        new Intl.NumberFormat(locale.value, { maximumFractionDigits: 4 }).format(
+            TRANSACTION_FEE_PERCENT,
+        ),
     )
 
     // Browser-safe PayPal client id comes from the registry (no VITE_ build var).

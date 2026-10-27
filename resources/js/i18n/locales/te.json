@@ -354,7 +354,7 @@
         "logIn": "లాగిన్ చేయండి",
         "donationAmount": "విరాళం మొత్తం ($)",
         "enterAmount": "మొత్తాన్ని నమోదు చేయండి",
-        "operationalCosts": "* నిర్వహణ ఖర్చుల కోసం 0.1% వరకు.",
+        "operationalCosts": "* నిర్వహణ ఖర్చుల కోసం {rate}% వరకు ({amount}).",
         "enterAmountToDonate": "విరాళం ఇవ్వడానికి ఒక మొత్తాన్ని నమోదు చేయండి",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal కాన్ఫిగర్ చేయబడలేదు.",

@@ -354,7 +354,7 @@
         "logIn": "လော့ဂ်အင်",
         "donationAmount": "လှူဒါန်းမှုပမာဏ ($)",
         "enterAmount": "ပမာဏကို ထည့်ပါ။",
-        "operationalCosts": "* လုပ်ငန်းလည်ပတ်မှုကုန်ကျစရိတ်အတွက် 0.1% အထိ။",
+        "operationalCosts": "* လုပ်ငန်းလည်ပတ်မှုကုန်ကျစရိတ်အတွက် {rate}% အထိ။ ({amount})",
         "enterAmountToDonate": "လှူဒါန်းရန် ပမာဏကို ထည့်ပါ။",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal ကို စီစဉ်မထားပါ။",

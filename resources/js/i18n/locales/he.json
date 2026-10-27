@@ -354,7 +354,7 @@
         "logIn": "התחבר",
         "donationAmount": "סכום התרומה ($)",
         "enterAmount": "הזן סכום",
-        "operationalCosts": "* עד 0.1% עבור עלויות תפעול.",
+        "operationalCosts": "* עד {rate}% עבור עלויות תפעול ({amount}).",
         "enterAmountToDonate": "הזן סכום לתרומה",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal לא מוגדר.",

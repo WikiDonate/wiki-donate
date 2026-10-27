@@ -354,7 +354,7 @@
         "logIn": "Log ind",
         "donationAmount": "Donationsbeløb ($)",
         "enterAmount": "Indtast beløb",
-        "operationalCosts": "* Op til 0,1 % for driftsomkostninger.",
+        "operationalCosts": "* Op til {rate} % for driftsomkostninger ({amount}).",
         "enterAmountToDonate": "Indtast et beløb for at donere",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "PayPal er ikke konfigureret.",

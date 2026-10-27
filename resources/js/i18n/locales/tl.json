@@ -354,7 +354,7 @@
         "logIn": "Mag-log in",
         "donationAmount": "Halaga ng Donasyon ($)",
         "enterAmount": "Maglagay ng halaga",
-        "operationalCosts": "* Hanggang 0.1% para sa mga gastos sa pagpapatakbo.",
+        "operationalCosts": "* Hanggang {rate}% para sa mga gastos sa pagpapatakbo ({amount}).",
         "enterAmountToDonate": "Maglagay ng halagang ibibigay",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "Hindi naka-configure ang PayPal.",

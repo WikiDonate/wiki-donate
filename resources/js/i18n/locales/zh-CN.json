@@ -354,7 +354,7 @@
         "logIn": "登录",
         "donationAmount": "捐款金额（元）",
         "enterAmount": "输入金额",
-        "operationalCosts": "* 运营成本高达 0.1%。",
+        "operationalCosts": "* 运营成本高达 {rate}% ({amount})。",
         "enterAmountToDonate": "输入捐赠金额",
         "continueToCheckout": "Continue to checkout",
         "paypalNotConfigured": "未配置 PayPal。",
