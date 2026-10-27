@@ -106,6 +106,7 @@
     import { useI18n } from 'vue-i18n'
     import { adminService } from '~/services/adminService'
     import { charityService } from '~/services/charityService'
+    import { organizationService } from '~/services/organizationService'
 
     const { t } = useI18n()
 
@@ -123,13 +124,15 @@
             default: false,
         },
         /**
-         * Data source: `directory` (verified charities API — formula modal)
-         * or `local` (admin organization registry — dashboard filters,
-         * includes legacy free-text rows).
+         * Data source for the autocomplete.
+         * - `registry` (default): admin-curated `organizations` table only,
+         *   used by donor/editor formula rows. Never calls external APIs.
+         * - `directory`: external charity lookup — admin-only (add-org modal).
+         * - `local`: admin organizations index (dashboard filters).
          */
         source: {
             type: String,
-            default: 'directory',
+            default: 'registry',
         },
     })
 
@@ -215,9 +218,11 @@
 
         try {
             const rows =
-                props.source === 'local'
-                    ? await fetchLocalOrganizations(query, abortController.value.signal)
-                    : await fetchDirectoryCharities(query, abortController.value.signal)
+                props.source === 'directory'
+                    ? await fetchDirectoryCharities(query, abortController.value.signal)
+                    : props.source === 'local'
+                      ? await fetchLocalOrganizations(query, abortController.value.signal)
+                      : await fetchRegistryOrganizations(query, abortController.value.signal)
             if (isOpen.value) {
                 suggestions.value = rows.slice(0, 10)
             }
@@ -230,6 +235,16 @@
 
     const fetchDirectoryCharities = async (query, signal) => {
         const response = await charityService.searchCharities(query, signal)
+
+        return response.data ?? []
+    }
+
+    /**
+     * Donor/editor formula autocomplete: admin-curated registry only. External
+     * charity-directory lookup is admin-only and never touched here.
+     */
+    const fetchRegistryOrganizations = async (query, signal) => {
+        const response = await organizationService.searchOrganizations(query, signal)
 
         return response.data ?? []
     }
@@ -248,6 +263,11 @@
             state: org.state ?? null,
             website: org.website ?? null,
             rating: null,
+            // Registry identity + live verification state, so a picked row
+            // can carry organization_id and render the correct badge.
+            organization_id: org.organization_id ?? org.id ?? null,
+            payout_status: org.payout_status ?? 'unverified',
+            is_verified: org.is_verified === true || org.payout_status === 'verified',
         }))
     }
 

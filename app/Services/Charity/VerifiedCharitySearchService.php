@@ -8,13 +8,20 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Verified US-charity autocomplete for donation formulas.
+ * Verified US-charity autocomplete — ADMIN USE ONLY.
+ *
+ * This is directory identity lookup used by the admin "Add organization"
+ * modal to seed the curated `organizations` registry. It is exposed through
+ * `GET /v1/charities/search`, which is guarded by auth:sanctum + role:Admin.
+ * Donor/editor formula autocomplete reads the registry instead
+ * (`GET /v1/admin/organizations`), so no donor-facing request ever reaches a
+ * third-party charity API. Do not call this from donor paths.
  *
  * External directory results (Charity Navigator / ProPublica) are EIN-only
  * so every selectable row identifies a real, donatable US charity. Local
  * registry orgs with payout_status=verified are merged first — including
  * admin-verified custom names without an EIN — so a verification immediately
- * makes the org selectable in the formula dropdown.
+ * makes the org selectable in the admin picker.
  *
  * Primary: Charity Navigator (rated charities first = popular, established
  * orgs). Requires free self-serve keys; when absent, or on any upstream

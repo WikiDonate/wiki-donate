@@ -39,6 +39,7 @@
                             <OrganizationSelect
                                 :model-value="field.value.organization"
                                 :placeholder="t('formula.organizationPlaceholder')"
+                                source="registry"
                                 @update:model-value="field.value.organization = $event"
                                 @select="onOrgSelect(index, $event)"
                             />
@@ -212,9 +213,8 @@
             .of(
                 yup.object({
                     organization: yup.string().required(t('formula.organizationRequired')),
-                    // Optional: set when a verified charity is selected from
-                    // autocomplete. Custom (free-text) values are allowed and
-                    // simply carry no EIN.
+                    // Optional: carried by registry suggestions. Custom
+                    // (free-text) values are allowed and simply carry no EIN.
                     ein: yup.string().nullable(),
                     percentage: yup
                         .number()
@@ -248,13 +248,15 @@
     const showSaveConfirm = ref(false)
     const pendingSaveData = ref(null)
 
-    // Organization selection is delegated to OrganizationSelect (dropdown-only,
-    // verified charities with valid EIN). Only the EIN write-back lives here.
+    // Organization selection is delegated to OrganizationSelect (registry-
+    // backed). Selecting a row carries its registry identity (id) so the saved
+    // organization_id points at the curated registry, not a guess from text.
     const onOrgSelect = (index, suggestion) => {
         const row = fields.value[index]?.value
         if (row) {
             row.ein = suggestion.ein ?? null
             row.website = suggestion.website ?? null
+            row.organization_id = suggestion.organization_id ?? suggestion.id ?? null
         }
     }
 
@@ -263,6 +265,10 @@
             organization: row.organization ?? '',
             ein: row.ein ?? null,
             website: row.website ?? null,
+            // Additive: rows saved before the registry became the search
+            // source may have no organization_id — they stay valid as
+            // custom entries (no backfill).
+            organization_id: row.organization_id ?? null,
             percentage: row.percentage ?? 0,
         }))
 
@@ -285,7 +291,14 @@
                         ? JSON.parse(
                               JSON.stringify(normalizeFormulaRows(props.initialData.formula)),
                           )
-                        : [{ organization: '', ein: null, percentage: 0 }]
+                        : [
+                              {
+                                  organization: '',
+                                  ein: null,
+                                  organization_id: null,
+                                  percentage: 0,
+                              },
+                          ]
 
                 resetForm({
                     values: {
@@ -347,7 +360,7 @@
      * Adds a new empty row to the charity list
      */
     const addRow = () => {
-        push({ organization: '', ein: null, percentage: 0 })
+        push({ organization: '', ein: null, organization_id: null, percentage: 0 })
     }
 
     const removeRow = (index) => {
@@ -361,6 +374,7 @@
             organization: String(row.organization).trim(),
             ein: row.ein ? String(row.ein).trim() : null,
             website: row.website ? String(row.website).trim().slice(0, 500) : null,
+            organization_id: row.organization_id ?? null,
             percentage: parseFloat(row.percentage),
         }))
 

@@ -2,14 +2,16 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
+use App\Http\Controllers\v1\OrganizationConfirmationController;
+use App\Http\Controllers\v1\OrganizationSearchController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PaymentController;
 use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Controllers\v1\PaymentWebhookController;
 use App\Http\Controllers\v1\UserController;
+use App\Http\Middleware\FreshAuthGuard;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
 
@@ -28,9 +30,10 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
-    // Verified US-charity autocomplete (valid EIN only, cached server-side)
-    Route::get('charities/search', [CharitySearchController::class, 'search'])
-        ->middleware('throttle:30,1');
+    // NOTE: `charities/search` (external charity-directory autocomplete) is
+    // deliberately NOT public any more. It is admin-only and lives in
+    // routes/api/admin.php — the donor/editor formula autocomplete reads the
+    // admin-curated `organizations` registry instead.
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
 
     // Donation Formula routes (public)
@@ -38,6 +41,11 @@ Route::prefix('v1')->group(function () {
         DonationFormulaController::class,
         'index',
     ]);
+
+    // Donor/editor organization autocomplete: admin-curated registry ONLY.
+    // External charity-directory lookup is admin-only (see routes/api/admin.php).
+    Route::get('organizations/search', [OrganizationSearchController::class, 'search'])
+        ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin|Editor']);
 
     // Editor & Admin shared routes — loaded BEFORE the public `articles/{slug}`
     // route so static segments (e.g. `articles/my`) are not shadowed by the
