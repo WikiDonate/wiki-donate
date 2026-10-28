@@ -22,12 +22,14 @@ class PayPalClient
 
     public function __construct(?string $mode = null, ?PaymentCredentials $credentials = null)
     {
-        // Missing credentials must not fatal the request: PayPal answers 401
-        // and the caller reports a payment error, which is diagnosable. A
-        // TypeError here would take the whole endpoint down.
-        $this->clientId = (string) (config('services.paypal.client_id') ?? '');
-        $this->clientSecret = (string) (config('services.paypal.client_secret') ?? '');
-        $this->baseUrl = config('services.paypal.mode') === 'live'
+        // Credentials live in the payment_methods registry (encrypted column),
+        // never in .env. Resolving through the container keeps the per-request
+        // cache shared with the rest of the payment stack.
+        $this->credentials = $credentials ?? app(PaymentCredentials::class);
+
+        // Mode is DB-owned too; an explicit argument wins (unit tests), then
+        // the registry row, and a missing row fails safe to sandbox.
+        $this->baseUrl = ($mode ?? $this->registryMode()) === 'live'
             ? 'https://api-m.paypal.com'
             : 'https://api-m.sandbox.paypal.com';
     }
