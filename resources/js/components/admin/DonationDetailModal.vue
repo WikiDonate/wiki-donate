@@ -14,8 +14,8 @@
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3">
                     <AdminBadge
-                        :variant="donation.paypal_order_id ? 'warning' : 'info'"
-                        :text="donation.source"
+                        :variant="methodVariant(donation.payment_method)"
+                        :text="methodLabel(donation.payment_method)"
                     />
                     <AdminBadge :variant="statusVariant(donation.status)" :text="donation.status" />
                 </div>
@@ -52,7 +52,7 @@
                         t('admin.paymentId')
                     }}</span>
                     <p class="text-gray-800 text-xs font-mono mt-0.5 truncate">
-                        {{ donation.payment_id || donation.stripe_session_id || '—' }}
+                        {{ donation.payment_id || donation.gateway_reference || '—' }}
                     </p>
                 </div>
             </div>
@@ -141,8 +141,13 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
+    const { loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } = usePaymentMethods()
+
+    loadPaymentMethods()
+    loadAdminMethods()
 
     defineProps({
         modelValue: {

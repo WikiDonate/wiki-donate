@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\User;
 use App\Services\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -105,8 +105,9 @@ class DonationReportFormulaSnapshotTest extends TestCase
             'details' => 'Monthly donation',
         ]);
 
-        PayPalPendingOrder::create([
-            'paypal_order_id' => 'PAYPAL_ORDER_123',
+        PaymentPendingOrder::create([
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAYPAL_ORDER_123',
             'user_id' => $donor->id,
             'donation_formula_id' => $formula->id,
             'donor_name' => 'Test Donor',
@@ -123,11 +124,11 @@ class DonationReportFormulaSnapshotTest extends TestCase
 
         // Capture — the formula snapshot is frozen into donations.metadata here
         $this->withHeaders($auth)
-            ->postJson('/api/v1/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_123'])
+            ->postJson('/api/v1/payment/paypal/capture-order', ['order_id' => 'PAYPAL_ORDER_123'])
             ->assertOk()
             ->assertJsonPath('data.status', 'completed');
 
-        $donation = Donation::where('paypal_order_id', 'PAYPAL_ORDER_123')->first();
+        $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
         $this->assertNotNull($donation);
         $this->assertSame([
             ['organization' => 'Wiki1', 'percentage' => 40],

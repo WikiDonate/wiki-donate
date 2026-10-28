@@ -271,6 +271,19 @@ SEEDS = {
     'payment.safeMsg': 'চিন্তা করবেন না — আপনার পেমেন্ট তথ্য নিরাপদ।',
     'payment.tryAgain': 'যখনই প্রস্তুত হবেন আবার চেষ্টা করতে পারেন।',
     'payment.havingTrouble': 'সমস্যা হচ্ছে?', 'payment.contactSupport': 'সাপোর্টের সাথে যোগাযোগ করুন',
+    # Generic, method-agnostic payment copy. Any key carrying {method} MUST keep
+    # the token intact; scripts/backfill_locales.py masks it as X0PH0X before
+    # translating so it cannot be reshaped/renamed by the translation service.
+    'payment.methodLabel': 'পেমেন্ট পদ্ধতি',
+    'payment.unverifiedTitle': 'আপনার {method} পেমেন্ট সফল হয়েছে, কিন্তু আমরা এটি স্বয়ংক্রিয়ভাবে যাচাই করতে পারিনি।',
+    'payment.unverifiedMsg': 'আপনার দান শীঘ্রই চূড়ান্ত হবে। কোনো উদ্বেগ থাকলে সাপোর্টে যোগাযোগ করুন।',
+    'donate.paymentMethod': 'পেমেন্ট পদ্ধতি', 'donate.selectPaymentMethod': 'একটি পেমেন্ট পদ্ধতি নির্বাচন করুন',
+    'donate.noPaymentMethods': 'এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি উপলব্ধ নেই।',
+    'donate.methodNotConfigured': '{method} কনফিগার করা নেই।',
+    'donate.methodError': '{method} নিয়ে কিছু সমস্যা হয়েছে।',
+    'donate.failedToLoadMethod': '{method} লোড করা যায়নি। আবার চেষ্টা করুন।',
+    'admin.paymentMethod': 'পেমেন্ট পদ্ধতি', 'admin.paymentMethodLabel': 'পেমেন্ট পদ্ধতি',
+    'admin.allPaymentMethods': 'সব পেমেন্ট পদ্ধতি',
     'admin.panel': 'অ্যাডমিন প্যানেল', 'admin.dashboard': 'অ্যাডমিন ড্যাশবোর্ড',
     'admin.dashboardSubtitle': 'আপনার WikiDonate প্ল্যাটফর্মের ওভারভিউ',
     'admin.loadingDashboard': 'ড্যাশবোর্ড লোড হচ্ছে...', 'admin.totalUsers': 'মোট ব্যবহারকারী',

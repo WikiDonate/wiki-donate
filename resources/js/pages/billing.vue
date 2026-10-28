@@ -329,7 +329,14 @@
     }
 
     onMounted(async () => {
-        stripe.value = await useClientStripe()
+        try {
+            const response = await paymentMethodService.getPublicKey('stripe')
+            stripe.value = await useClientStripe(response?.data?.public_key)
+        } catch (error) {
+            if (import.meta.env.DEV) console.error(error)
+            showError(error?.errors?.[0] || error?.message || t('billing.stripeUnavailable'))
+        }
+
         await fetchPaymentMethod()
 
         // If no card exists, mount the form immediately

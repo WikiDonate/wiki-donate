@@ -10,13 +10,16 @@ class Donation extends Model
 {
     use HasFactory;
 
+    public const METHOD_PAYPAL = 'paypal';
+
+    public const METHOD_STRIPE = 'stripe';
+
     protected $fillable = [
         'uuid',
         'user_id',
         'donation_formula_id',
-        'stripe_session_id',
-        'stripe_payment_intent_id',
-        'paypal_order_id',
+        'payment_method',
+        'gateway_reference',
         'donor_name',
         'donor_email',
         'amount',
@@ -39,6 +42,33 @@ class Donation extends Model
                 $model->uuid = Str::uuid()->toString();
             }
         });
+    }
+
+    /**
+     * Match a donation by its gateway identity — the generic pair that phase 3
+     * migrated every webhook/capture lookup onto.
+     */
+    public function scopeGateway($query, string $method, string $reference)
+    {
+        return $query->where('payment_method', $method)
+            ->where('gateway_reference', $reference);
+    }
+
+    /**
+     * Generic gateway reference for this donation (PayPal order id, Stripe
+     * session id, ...). Replaces the dropped per-gateway id columns.
+     */
+    public function gatewayReference(): ?string
+    {
+        return $this->gateway_reference;
+    }
+
+    /**
+     * Generic payment method code ('paypal', 'stripe', ...).
+     */
+    public function paymentMethodCode(): ?string
+    {
+        return $this->payment_method;
     }
 
     public function user()

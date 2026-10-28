@@ -12,9 +12,11 @@ class CharitySearchController extends Controller
     /**
      * Autocomplete verified US charities (valid EIN only) by keyword.
      *
-     * Identity lookup for donation formulas. Only organizations carrying a
-     * valid EIN are returned, so every selectable row identifies a real,
-     * donatable charity.
+     * Admin-only (route is guarded by auth:sanctum + role:Admin). Used by the
+     * admin "Add organization" modal to seed the curated `organizations`
+     * registry. Donor/editor formula autocomplete reads the registry, never a
+     * third-party charity API. Only organizations carrying a valid EIN are
+     * returned, so every selectable row identifies a real, donatable charity.
      */
     public function search(Request $request, VerifiedCharitySearchService $service)
     {

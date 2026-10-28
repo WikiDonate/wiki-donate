@@ -113,7 +113,7 @@ class AdminTransactionLogTest extends TestCase
             'type' => 'partial',
             'status' => 'completed',
             'paid_at' => now(),
-            'method' => 'bank',
+            'payment_method' => 'bank',
         ]);
 
         $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
@@ -225,6 +225,8 @@ class AdminTransactionLogTest extends TestCase
         $donation = Donation::create([
             'uuid' => (string) Str::uuid(),
             'donation_formula_id' => $formula->id,
+            'payment_method' => 'stripe',
+            'gateway_reference' => 'cs_test_fields',
             'donor_name' => 'Alice',
             'donor_email' => 'alice@example.com',
             'amount' => 100,
@@ -303,7 +305,8 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 100,
             'currency' => 'usd',
             'status' => 'completed',
-            'paypal_order_id' => 'PAY-123',
+            'payment_method' => 'paypal',
+            'gateway_reference' => 'PAY-123',
         ]);
         Donation::create([
             'uuid' => (string) Str::uuid(),
@@ -313,7 +316,8 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 25,
             'currency' => 'usd',
             'status' => 'completed',
-            'stripe_session_id' => 'cs_test_123',
+            'payment_method' => 'stripe',
+            'gateway_reference' => 'cs_test_123',
         ]);
 
         $paypal = $this->getJson('/api/v1/admin/transactions?method=paypal', $this->authHeader())->json('data');

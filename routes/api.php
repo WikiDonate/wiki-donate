@@ -2,16 +2,16 @@
 
 use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
 use App\Http\Controllers\v1\OrganizationConfirmationController;
+use App\Http\Controllers\v1\OrganizationSearchController;
 use App\Http\Controllers\v1\PageController;
-use App\Http\Controllers\v1\PayPalController;
-use App\Http\Controllers\v1\PayPalWebhookController;
-use App\Http\Controllers\v1\StripeController;
-use App\Http\Controllers\v1\StripeWebhookController;
+use App\Http\Controllers\v1\PaymentController;
+use App\Http\Controllers\v1\PaymentMethodController;
+use App\Http\Controllers\v1\PaymentWebhookController;
 use App\Http\Controllers\v1\UserController;
+use App\Http\Middleware\FreshAuthGuard;
 use App\Http\Middleware\OptionalAuth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,20 +30,22 @@ Route::prefix('v1')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend-by-email');
     Route::get('search', [ArticleController::class, 'search']);
-    // Verified US-charity autocomplete (valid EIN only, cached server-side)
-    Route::get('charities/search', [CharitySearchController::class, 'search'])
-        ->middleware('throttle:30,1');
+    // NOTE: `charities/search` (external charity-directory autocomplete) is
+    // deliberately NOT public any more. It is admin-only and lives in
+    // routes/api/admin.php — the donor/editor formula autocomplete reads the
+    // admin-curated `organizations` registry instead.
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,10');
-
-    // Organization PayPal-email confirmation (public: recipient is not a user)
-    Route::post('organizations/confirm-email', [OrganizationConfirmationController::class, 'confirm'])
-        ->middleware('throttle:10,1');
 
     // Donation Formula routes (public)
     Route::get('donation-formulas/article/{slug}', [
         DonationFormulaController::class,
         'index',
     ]);
+
+    // Donor/editor organization autocomplete: admin-curated registry ONLY.
+    // External charity-directory lookup is admin-only (see routes/api/admin.php).
+    Route::get('organizations/search', [OrganizationSearchController::class, 'search'])
+        ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin|Editor']);
 
     // Editor & Admin shared routes — loaded BEFORE the public `articles/{slug}`
     // route so static segments (e.g. `articles/my`) are not shadowed by the
@@ -62,26 +64,39 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    // Stripe Checkout (public)
-    Route::post('stripe/checkout', [StripeController::class, 'createCheckoutSession'])
-        ->middleware('auth:sanctum');
-    Route::get('stripe/checkout/{sessionId}', [StripeController::class, 'getCheckoutSession']);
-
-    // Stripe Webhook (public, no auth — verified by signature; throttled
-    // so attackers can't force expensive signature checks at will)
-    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
-        ->middleware('throttle:60,1');
-
-    // PayPal Checkout (create + capture are callable without an authenticated
-    // user so guest donations and the post-redirect success-page flow work)
-    Route::post('paypal/create-order', [PayPalController::class, 'createOrder'])
+    // Generic donor checkout: /payment/{method}/create-order + /capture-order,
+    // where {method} is a payment_methods.code. Resolution enforces `active`
+    // and fails loudly for unknown/unbound methods, so enabling a new method
+    // needs no controller, route, or front-end change.
+    Route::post('payment/{method}/create-order', [PaymentController::class, 'createOrder'])
+        ->where('method', '[a-z0-9_-]+')
         ->middleware(['throttle:10,1', OptionalAuth::class]);
-    Route::post('paypal/capture-order', [PayPalController::class, 'captureOrder'])
+    Route::post('payment/{method}/capture-order', [PaymentController::class, 'captureOrder'])
+        ->where('method', '[a-z0-9_-]+')
         ->middleware(['throttle:20,1', OptionalAuth::class]);
 
-    // PayPal Webhook (public, no auth — verified by signature; throttled
-    // so attackers can't force expensive verification calls at will)
-    Route::post('webhooks/paypal', [PayPalWebhookController::class, 'handleWebhook'])
+    // Read-only status poll for hosted-checkout return pages (Stripe).
+    Route::get('payment/{method}/status/{reference}', [PaymentController::class, 'status'])
+        ->where('method', '[a-z0-9_-]+')
+        ->middleware('throttle:60,1');
+
+    // Method-parameterised webhooks: /webhooks/{method} (e.g. /webhooks/paypal,
+    // /webhooks/stripe). Resolution ignores `active` so in-flight events for a
+    // just-disabled method are still verified and processed.
+    Route::post('webhooks/{method}', [PaymentWebhookController::class, 'handle'])
+        ->where('method', '[a-z0-9_-]+')
+        ->middleware('throttle:60,1');
+
+    // Active payment-method registry (public): drives donor checkout pickers
+    // and the admin filters/badges/payout rail. Only active=1 rows are exposed.
+    Route::get('payment-methods', [PaymentMethodController::class, 'index'])
+        ->middleware('throttle:60,1');
+
+    // Browser-safe credential for a registered method (PayPal client ID /
+    // Stripe publishable key). Ignores `active` so billing can still load
+    // Stripe.js while Stripe is disabled for donations.
+    Route::get('payment-methods/{code}/public-key', [PaymentMethodController::class, 'publicKey'])
+        ->where('code', '[a-z0-9_-]+')
         ->middleware('throttle:60,1');
 
     // Public page content

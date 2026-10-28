@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
+use App\Exceptions\PaymentProviderException;
+use App\Models\PaymentMethod;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PayPalClient
 {
-    private string $clientId;
-
-    private string $clientSecret;
+    private PaymentCredentials $credentials;
 
     private string $baseUrl;
 
@@ -18,13 +20,53 @@ class PayPalClient
 
     private ?int $tokenExpiresAt = null;
 
-    public function __construct()
+    public function __construct(?string $mode = null, ?PaymentCredentials $credentials = null)
     {
-        $this->clientId = config('services.paypal.client_id');
-        $this->clientSecret = config('services.paypal.client_secret');
+        // Missing credentials must not fatal the request: PayPal answers 401
+        // and the caller reports a payment error, which is diagnosable. A
+        // TypeError here would take the whole endpoint down.
+        $this->clientId = (string) (config('services.paypal.client_id') ?? '');
+        $this->clientSecret = (string) (config('services.paypal.client_secret') ?? '');
         $this->baseUrl = config('services.paypal.mode') === 'live'
             ? 'https://api-m.paypal.com'
             : 'https://api-m.sandbox.paypal.com';
+    }
+
+    /**
+     * Read the gateway mode from the payment_methods registry row.
+     *
+     * Deliberately fails safe to sandbox: a missing row (pre-migration
+     * deploy) or a database hiccup must never start charging the live
+     * account by accident.
+     */
+    private function registryMode(): string
+    {
+        try {
+            return PaymentMethod::query()
+                ->where('code', PaymentMethod::CODE_PAYPAL)
+                ->first()
+                ?->mode() ?? 'sandbox';
+        } catch (Throwable $e) {
+            Log::warning('PayPal mode not readable from the payment_methods registry; defaulting to sandbox.', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return 'sandbox';
+        }
+    }
+
+    /** Client ID from the encrypted registry credentials (never .env). */
+    private function clientId(): string
+    {
+        return $this->credentials->get(PaymentMethod::CODE_PAYPAL, 'client_id')
+            ?? throw PaymentProviderException::forMissingCredentials(PaymentMethod::CODE_PAYPAL, 'client_id');
+    }
+
+    /** Client secret from the encrypted registry credentials (never .env). */
+    private function clientSecret(): string
+    {
+        return $this->credentials->get(PaymentMethod::CODE_PAYPAL, 'client_secret')
+            ?? throw PaymentProviderException::forMissingCredentials(PaymentMethod::CODE_PAYPAL, 'client_secret');
     }
 
     /**
@@ -38,7 +80,7 @@ class PayPalClient
             return $this->accessToken;
         }
 
-        $response = Http::withBasicAuth($this->clientId, $this->clientSecret)
+        $response = Http::withBasicAuth($this->clientId(), $this->clientSecret())
             ->asForm()
             ->post("{$this->baseUrl}/v1/oauth2/token", [
                 'grant_type' => 'client_credentials',
@@ -283,7 +325,7 @@ class PayPalClient
      */
     public function verifyWebhook(array $headers, string $body): bool
     {
-        $webhookId = config('services.paypal.webhook_id');
+        $webhookId = $this->credentials->get(PaymentMethod::CODE_PAYPAL, 'webhook_id');
 
         if (! $webhookId) {
             Log::error('PayPal webhook ID not configured — skipping verification');
@@ -319,7 +361,7 @@ class PayPalClient
 
             return $verified;
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('PayPal webhook verification error: '.$e->getMessage());
 
             return false;

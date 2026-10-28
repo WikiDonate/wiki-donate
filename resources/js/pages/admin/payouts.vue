@@ -171,6 +171,23 @@
                         {{ payFieldErrors.amount || payError }}
                     </p>
                 </div>
+                <div v-if="payoutMethods.length">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                        {{ t('donate.paymentMethod') }}
+                    </label>
+                    <select
+                        v-model="payMethod"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                    >
+                        <option
+                            v-for="method in payoutMethods"
+                            :key="method.code"
+                            :value="method.code"
+                        >
+                            {{ method.label }}
+                        </option>
+                    </select>
+                </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         {{ t('admin.noteLabel') }}
@@ -228,6 +245,11 @@
                         </div>
                         <div class="text-xs flex items-center gap-1.5 mt-0.5">
                             <AdminBadge
+                                v-if="h.payment_method"
+                                :variant="methodVariant(h.payment_method)"
+                                :text="methodLabel(h.payment_method)"
+                            />
+                            <AdminBadge
                                 :variant="statusVariant(h.status)"
                                 :text="statusLabel(h.status)"
                             />
@@ -264,6 +286,7 @@
     import AdminBadge from '~/components/admin/AdminBadge.vue'
     import AdminModal from '~/components/admin/AdminModal.vue'
     import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import { useToastify } from '~/composables/useToastify'
 
     const loading = ref(true)
@@ -274,6 +297,11 @@
     const payNote = ref('')
     const payError = ref('')
     const paying = ref(false)
+
+    // Payout rail is data-driven from the registry's payout-capable methods.
+    const { payoutMethods, loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } =
+        usePaymentMethods()
+    const payMethod = ref('')
 
     const syncing = ref(false)
     const syncMessage = ref('')
@@ -383,6 +411,9 @@
             return
         }
         payTarget.value = row
+        // Default to the first payout-capable registry method (PayPal when
+        // the registry has not loaded yet, to preserve legacy behaviour).
+        payMethod.value = payoutMethods.value[0]?.code || 'paypal'
         resetPayForm({ values: { amount: Number(row.balance) } })
         payNote.value = ''
         payError.value = ''
@@ -434,6 +465,7 @@
                 organization_name: payTarget.value.organization_name,
                 amount,
                 currency: payTarget.value.currency,
+                payment_method: payMethod.value || undefined,
                 note: payNote.value || null,
             })
             payTarget.value = null
@@ -461,4 +493,6 @@
     }
 
     fetchAllocations()
+    loadPaymentMethods()
+    loadAdminMethods()
 </script>

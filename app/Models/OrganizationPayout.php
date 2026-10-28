@@ -31,7 +31,7 @@ class OrganizationPayout extends Model
         'provider_status',
         'failure_reason',
         'actor_id',
-        'method',
+        'payment_method',
         'note',
     ];
 

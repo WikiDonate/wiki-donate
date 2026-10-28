@@ -8,13 +8,20 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Verified US-charity autocomplete for donation formulas.
+ * Verified US-charity autocomplete — ADMIN USE ONLY.
+ *
+ * This is directory identity lookup used by the admin "Add organization"
+ * modal to seed the curated `organizations` registry. It is exposed through
+ * `GET /v1/charities/search`, which is guarded by auth:sanctum + role:Admin.
+ * Donor/editor formula autocomplete reads the registry instead
+ * (`GET /v1/admin/organizations`), so no donor-facing request ever reaches a
+ * third-party charity API. Do not call this from donor paths.
  *
  * External directory results (Charity Navigator / ProPublica) are EIN-only
  * so every selectable row identifies a real, donatable US charity. Local
  * registry orgs with payout_status=verified are merged first — including
  * admin-verified custom names without an EIN — so a verification immediately
- * makes the org selectable in the formula dropdown.
+ * makes the org selectable in the admin picker.
  *
  * Primary: Charity Navigator (rated charities first = popular, established
  * orgs). Requires free self-serve keys; when absent, or on any upstream
@@ -37,9 +44,13 @@ class VerifiedCharitySearchService
     private const RESULT_LIMIT = 10;
 
     /**
+     * @param  bool  $excludeExisting  Drop every hit that is already in the
+     *                                 registry (verified or not). Used by the
+     *                                 admin "Add organization" modal so an
+     *                                 existing org can never be added twice.
      * @return array<int, array{name: string, ein: string|null, city: string|null, state: string|null, rating: float|null, source: string}>
      */
-    public function search(string $query): array
+    public function search(string $query, bool $excludeExisting = false): array
     {
         $query = trim($query);
 
@@ -48,6 +59,14 @@ class VerifiedCharitySearchService
         }
 
         $external = $this->cachedExternalSearch($query);
+
+        if ($excludeExisting) {
+            // Admin add-flow: the registry itself is the "already added" list,
+            // and it must not be selectable again — an unverified org is just
+            // as present as a verified one.
+            return array_slice($this->withoutRegistered($external), 0, self::RESULT_LIMIT);
+        }
+
         $local = $this->searchLocalRegistry($query);
 
         if (empty($local)) {
@@ -58,17 +77,18 @@ class VerifiedCharitySearchService
         $seenEin = [];
         $seenName = [];
         foreach ($local as $row) {
-            if (! empty($row['ein'])) {
-                $seenEin[$row['ein']] = true;
+            $ein = Organization::normalizeEin($row['ein'] ?? null);
+            if ($ein !== null) {
+                $seenEin[$ein] = true;
             }
             $seenName[Organization::normalizeName($row['name'])] = true;
         }
 
         $merged = $local;
         foreach ($external as $row) {
-            $ein = $row['ein'] ?? null;
+            $ein = Organization::normalizeEin($row['ein'] ?? null);
             $nameKey = Organization::normalizeName($row['name'] ?? '');
-            if (($ein && isset($seenEin[$ein])) || isset($seenName[$nameKey])) {
+            if (($ein !== null && isset($seenEin[$ein])) || isset($seenName[$nameKey])) {
                 continue;
             }
             $merged[] = $row;
@@ -78,6 +98,77 @@ class VerifiedCharitySearchService
         }
 
         return array_slice($merged, 0, self::RESULT_LIMIT);
+    }
+
+    /**
+     * Remove directory hits whose EIN or normalized name already exists in the
+     * organization registry, ignoring payout/verification status.
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     * @return array<int, array<string, mixed>>
+     */
+    private function withoutRegistered(array $rows): array
+    {
+        if ($rows === []) {
+            return [];
+        }
+
+        $eins = [];
+        $names = [];
+        foreach ($rows as $row) {
+            $ein = Organization::normalizeEin($row['ein'] ?? null);
+            if ($ein !== null) {
+                $eins[$ein] = true;
+            }
+            $key = Organization::normalizeName((string) ($row['name'] ?? ''));
+            if ($key !== '') {
+                $names[$key] = true;
+            }
+        }
+
+        // Rows written before EIN canonicalization may still hold the
+        // unpadded form, so look up both spellings.
+        $einLookup = array_keys($eins);
+        $einLookup = array_merge(
+            $einLookup,
+            array_map(fn (string $ein): string => ltrim($ein, '0'), $einLookup),
+        );
+        $einLookup = array_values(array_unique(array_filter($einLookup, fn (string $ein): bool => $ein !== '')));
+
+        try {
+            $registeredEins = $einLookup === []
+                ? []
+                : Organization::query()->whereIn('ein', $einLookup)->pluck('ein')->all();
+            $registeredNames = $names === []
+                ? []
+                : Organization::query()
+                    ->whereIn('normalized_name', array_keys($names))
+                    ->pluck('normalized_name')
+                    ->all();
+        } catch (\Throwable $e) {
+            // The add modal exists to avoid duplicates; on a registry read
+            // failure showing nothing is safer than offering rows we cannot
+            // prove are new.
+            Log::warning('Registry exclusion for organization search failed: '.$e->getMessage());
+
+            return [];
+        }
+
+        $seenEin = [];
+        foreach ($registeredEins as $registeredEin) {
+            $canonical = Organization::normalizeEin($registeredEin);
+            if ($canonical !== null) {
+                $seenEin[$canonical] = true;
+            }
+        }
+        $seenName = array_flip($registeredNames);
+
+        return array_values(array_filter($rows, function (array $row) use ($seenEin, $seenName) {
+            $ein = Organization::normalizeEin($row['ein'] ?? null);
+            $name = Organization::normalizeName((string) ($row['name'] ?? ''));
+
+            return ! ($ein !== null && isset($seenEin[$ein])) && ! isset($seenName[$name]);
+        }));
     }
 
     /**
@@ -318,12 +409,6 @@ class VerifiedCharitySearchService
      */
     private function cleanEin(mixed $ein): ?string
     {
-        if ($ein === null) {
-            return null;
-        }
-
-        $clean = strtoupper((string) preg_replace('/[^A-Z0-9]/i', '', (string) $ein));
-
-        return $clean === '' ? null : $clean;
+        return Organization::normalizeEin($ein);
     }
 }

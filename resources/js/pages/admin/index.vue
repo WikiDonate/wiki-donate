@@ -138,8 +138,50 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 sm:px-6 py-4">
+                <!-- Donations by payment method -->
+                <div
+                    class="mx-4 sm:mx-6 my-4 bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6"
+                >
+                    <h3
+                        class="text-sm font-semibold text-gray-600 uppercase tracking-wide flex items-center gap-2 mb-4"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'credit-card']"
+                            class="w-4 h-4 text-indigo-600"
+                        />
+                        {{ t('payment.methodLabel') }}
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                        <div
+                            v-for="(row, i) in stats.donationsByMethod"
+                            :key="i"
+                            class="flex items-center gap-3"
+                        >
+                            <span class="text-xs text-gray-500 w-20 truncate text-right">{{
+                                methodLabel(row.payment_method)
+                            }}</span>
+                            <div class="flex-1 bg-gray-100 rounded-full h-2">
+                                <div
+                                    class="bg-linear-to-r from-amber-400 to-orange-500 h-2 rounded-full"
+                                    :style="{ width: methodBarWidth(row) }"
+                                />
+                            </div>
+                            <span class="text-xs font-semibold text-gray-700 w-24 text-right">
+                                {{ Number(row.count) }} · {{ Number(row.total).toFixed(0) }}
+                            </span>
+                        </div>
+                        <p
+                            v-if="stats.donationsByMethod.length === 0"
+                            class="text-xs text-gray-400 text-center py-3"
+                        >
+                            {{ t('admin.noDonationData') }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity: full-width stacked cards; the donations
+                     table has seven columns and needs the room. -->
+                <div class="grid grid-cols-1 gap-4 px-4 sm:px-6 py-4">
                     <div
                         class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                     >
@@ -166,8 +208,11 @@
                             :rows="stats.recentDonations"
                             empty-text="admin.noDonationsYet"
                         >
-                            <template #cell-source>
-                                <AdminBadge variant="info" :text="t('admin.checkout')" />
+                            <template #cell-payment_method="{ row }">
+                                <AdminBadge
+                                    :variant="methodVariant(row.payment_method)"
+                                    :text="methodLabel(row.payment_method)"
+                                />
                             </template>
                             <template #cell-amount="{ row }"
                                 >{{ row.currency }} {{ Number(row.amount).toFixed(2) }}</template
@@ -256,9 +301,11 @@
     import StatCard from '~/components/admin/StatCard.vue'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
 
     const { t } = useI18n()
     const { notifyError } = useToastify()
+    const { loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } = usePaymentMethods()
 
     const selectedDonation = ref(null)
     const selectedFormulaUrl = ref('')
@@ -286,12 +333,13 @@
         recentDonations: [],
         recentUsers: [],
         monthlyStats: { donations: [], registrations: [] },
+        donationsByMethod: [],
     })
 
     const donationColumns = [
         { key: 'date', label: t('admin.date') },
         { key: 'user', label: t('admin.donor') },
-        { key: 'source', label: t('admin.source') },
+        { key: 'payment_method', label: t('admin.paymentMethod') },
         { key: 'amount', label: t('admin.amount') },
         { key: 'status', label: t('admin.status') },
         { key: 'article', label: t('admin.article') },
@@ -322,6 +370,12 @@
         return `${(Number(row.total) / max) * 100}%`
     }
 
+    const methodBarWidth = (row) => {
+        const all = stats.value.donationsByMethod
+        const max = Math.max(...all.map((r) => Number(r.total)), 1)
+        return `${(Number(row.total) / max) * 100}%`
+    }
+
     const registrationBarWidth = (row) => {
         const all = stats.value.monthlyStats.registrations
         const max = Math.max(...all.map((r) => Number(r.total)), 1)
@@ -329,10 +383,19 @@
     }
 
     onMounted(async () => {
+        loadPaymentMethods()
+        loadAdminMethods()
         try {
             const response = await adminService.getDashboard()
             if (response.success) {
-                stats.value = response.data
+                // Default the method split so a dashboard payload cached by the
+                // previous release (before this aggregate existed) can't make
+                // the chart read `.length` of undefined.
+                stats.value = {
+                    ...stats.value,
+                    ...response.data,
+                    donationsByMethod: response.data?.donationsByMethod ?? [],
+                }
             }
         } catch {
             notifyError(t('admin.failedToLoadDashboard'))

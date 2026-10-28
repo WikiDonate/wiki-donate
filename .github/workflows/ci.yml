@@ -74,8 +74,6 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: /api/v1
-          VITE_STRIPE_PUBLIC_KEY: pk_test_dummy
-          VITE_PAYPAL_CLIENT_ID: dummy
           VITE_AI_CHATBOT_API_KEY: dummy
 
       - name: Upload build artifact

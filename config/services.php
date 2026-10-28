@@ -34,18 +34,19 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    'stripe' => [
-        'secret' => env('STRIPE_SECRET_KEY'),
-        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
-        'publishable_key' => env('STRIPE_PUBLISHABLE_KEY'),
-    ],
-
-    'paypal' => [
-        'client_id' => env('PAYPAL_CLIENT_ID'),
-        'client_secret' => env('PAYPAL_SECRET'),
-        'webhook_id' => env('PAYPAL_WEBHOOK_ID'),
-        'mode' => env('PAYPAL_MODE', 'sandbox'),
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Payment gateways
+    |--------------------------------------------------------------------------
+    |
+    | PayPal and Stripe are registered in the `payment_methods` table: the
+    | gateway mode lives in its non-secret `config` JSON, and client IDs /
+    | secrets live in the encrypted `credentials` column (APP_KEY). Nothing
+    | gateway-related is read from .env — rotate keys with a DB update.
+    |
+    | See App\Services\Payment\PaymentCredentials.
+    |
+    */
 
     // Charity Navigator (rated US charities for formula autocomplete).
     // Self-serve free keys. When absent, search degrades to ProPublica-only.

@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class DonationReportController extends Controller
 {
@@ -38,9 +39,8 @@ class DonationReportController extends Controller
                 ->when($request->filled('search'), function ($q) use ($request) {
                     $search = $request->input('search');
                     $q->where(function ($sq) use ($search) {
-                        $sq->where('paypal_order_id', 'like', "%{$search}%")
-                            ->orWhere('stripe_session_id', 'like', "%{$search}%")
-                            ->orWhere('stripe_payment_intent_id', 'like', "%{$search}%")
+                        $sq->where('gateway_reference', 'like', "%{$search}%")
+                            ->orWhere('payment_method', 'like', "%{$search}%")
                             ->orWhere('metadata->payment_id', 'like', "%{$search}%")
                             ->orWhere('donor_email', 'like', "%{$search}%");
                     });
@@ -59,13 +59,17 @@ class DonationReportController extends Controller
                 'totalDonations' => (int) ($completed->count ?? 0),
                 'pendingDonations' => (int) ($statusStats['pending']->count ?? 0),
                 'failedDonations' => (int) ($statusStats['failed']->count ?? 0),
-                'bySource' => (clone $base)
+                // Data-driven: group on the generic payment_method column.
+                // Rows without a method are "unknown", never attributed to a
+                // specific gateway — group by the same expression as the label
+                // so `unknown` can't be split into a duplicate bucket.
+                'byPaymentMethod' => (clone $base)
                     ->selectRaw(
-                        "CASE WHEN paypal_order_id IS NOT NULL THEN 'paypal' ELSE 'stripe' END as source, "
+                        "COALESCE(payment_method, 'unknown') as payment_method, "
                         .'COUNT(*) as count, SUM(amount) as total'
                     )
                     ->where('status', 'completed')
-                    ->groupBy('source')
+                    ->groupBy(DB::raw("COALESCE(payment_method, 'unknown')"))
                     ->get(),
             ];
 
@@ -89,15 +93,17 @@ class DonationReportController extends Controller
 
                 return [
                     'id' => $donation->id,
-                    'source' => $donation->paypal_order_id ? 'paypal' : 'stripe',
+                    'payment_method' => $donation->paymentMethodCode() ?? 'unknown',
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
                     'date' => $donation->created_at->format('d M, Y'),
+                    // Exact instant (UTC, ISO 8601) so the SPA can render the
+                    // donor's own local date *and time*. `date` stays for
+                    // older clients that only understand the written form.
+                    'date_raw' => $donation->created_at->toISOString(),
                     'donor_email' => $donation->donor_email,
-                    'payment_id' => $donation->paypal_order_id
-                        ? ($metadata['payment_id'] ?? $donation->paypal_order_id)
-                        : ($donation->stripe_payment_intent_id ?? $donation->stripe_session_id),
+                    'payment_id' => $metadata['payment_id'] ?? $donation->gateway_reference,
                     'formula_id' => $metadata['formula_id'] ?? $formula?->id,
                     'formula' => $snapshot ?? $formula?->formula,
                     'formula_snapshot_used' => $usesSnapshot,

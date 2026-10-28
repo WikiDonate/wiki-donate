@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PaymentMethod;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -24,14 +26,19 @@ class VerifyPayPalCredentials extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(PaymentCredentials $credentials): int
     {
-        $clientId = config('services.paypal.client_id');
-        $clientSecret = config('services.paypal.client_secret');
-        $mode = config('services.paypal.mode', 'sandbox');
+        $clientId = $credentials->get(PaymentMethod::CODE_PAYPAL, 'client_id');
+        $clientSecret = $credentials->get(PaymentMethod::CODE_PAYPAL, 'client_secret');
+
+        // Mode and credentials both live in the payment_methods registry.
+        $mode = PaymentMethod::query()
+            ->where('code', PaymentMethod::CODE_PAYPAL)
+            ->first()
+            ?->mode() ?? 'sandbox';
 
         if (! $clientId || ! $clientSecret) {
-            $this->error('PayPal credentials are missing. Set PAYPAL_CLIENT_ID and PAYPAL_SECRET in your .env.');
+            $this->error('PayPal credentials are missing from the payment_methods registry (code=paypal, credentials column).');
 
             return self::FAILURE;
         }
@@ -68,9 +75,9 @@ class VerifyPayPalCredentials extends Command
         $this->newLine();
         $this->warn('Suggestions:');
         $this->line('  1. The Client ID and Secret must come from the SAME PayPal app.');
-        $this->line('  2. Make sure you copied them from the correct environment (Sandbox vs Live) matching PAYPAL_MODE.');
-        $this->line('  3. Watch out for leading/trailing spaces or a truncated value when pasting into .env.');
-        $this->line('  4. After updating .env, run: php artisan config:clear');
+        $this->line('  2. The mode (payment_methods.config.mode for code=paypal) must match those credentials (sandbox vs live).');
+        $this->line('  3. Watch out for leading/trailing spaces or a truncated value when pasting into the registry.');
+        $this->line('  4. Credentials live in payment_methods.credentials (encrypted) — not in .env.');
 
         return self::FAILURE;
     }

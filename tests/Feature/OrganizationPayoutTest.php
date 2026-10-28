@@ -7,8 +7,10 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use App\Models\User;
+use App\Services\Payment\PaymentCredentials;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -30,6 +32,19 @@ class OrganizationPayoutTest extends TestCase
         parent::setUp();
 
         Role::firstOrCreate(['name' => 'Admin']);
+
+        // PayPal credentials now come from the registry, not .env.
+        PaymentMethod::query()
+            ->where('code', PaymentMethod::CODE_PAYPAL)
+            ->firstOrFail()
+            ->forceFill([
+                'credentials' => [
+                    'client_id' => 'fake-client-id',
+                    'client_secret' => 'fake-client-secret',
+                ],
+            ])
+            ->save();
+        app(PaymentCredentials::class)->flush();
 
         $this->admin = User::factory()->create();
         $this->admin->assignRole('Admin');
@@ -240,6 +255,36 @@ class OrganizationPayoutTest extends TestCase
         $response->assertStatus(422);
         $this->assertDatabaseMissing('organization_payouts', [
             'organization_name' => 'Charity A',
+        ]);
+    }
+
+    public function test_payout_fails_and_keeps_no_pending_row_when_registry_credentials_are_missing(): void
+    {
+        $this->addDonation(100, 'completed');
+        $this->fakePayPal();
+
+        // Simulate a registry row without credentials (fresh deploy / typo).
+        PaymentMethod::query()
+            ->where('code', PaymentMethod::CODE_PAYPAL)
+            ->firstOrFail()
+            ->forceFill(['credentials' => null])
+            ->save();
+        app(PaymentCredentials::class)->flush();
+
+        $response = $this->asAdmin()->postJson('/api/v1/admin/payouts', [
+            'donation_formula_id' => $this->formula->id,
+            'organization_name' => 'Charity A',
+            'amount' => 40,
+            'currency' => 'usd',
+        ]);
+
+        $response->assertStatus(422);
+
+        // A configuration error means no request was sent: the ledger row must
+        // be failed (reconcilable) rather than pending forever.
+        $this->assertDatabaseHas('organization_payouts', [
+            'organization_name' => 'Charity A',
+            'status' => 'failed',
         ]);
     }
 

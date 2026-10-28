@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Mockery;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -23,14 +25,6 @@ class SecurityTest extends TestCase
     private function authHeader(User $user): array
     {
         return ['Authorization' => 'Bearer '.$user->createToken('test')->plainTextToken];
-    }
-
-    private function editorHeaders(): array
-    {
-        $user = User::factory()->create();
-        $user->assignRole('Editor');
-
-        return $this->authHeader($user);
     }
 
     // ---------------------------------------------------------------------
@@ -88,18 +82,61 @@ class SecurityTest extends TestCase
     }
 
     // ---------------------------------------------------------------------
-    // STRIPE REDIRECTS — same-host only
+    // CHECKOUT REDIRECTS — server-owned, never taken from the request
     // ---------------------------------------------------------------------
 
-    public function test_stripe_checkout_rejects_off_host_redirect(): void
+    /**
+     * The client may not choose where the gateway sends the donor: the
+     * checkout service builds success/cancel URLs from APP_URL. A supplied
+     * `success_url` must be ignored (open-redirect / phishing regression).
+     */
+    public function test_checkout_ignores_client_supplied_redirect_urls(): void
     {
-        $this->withHeaders($this->editorHeaders())
-            ->postJson('/api/v1/stripe/checkout', [
-                'amount' => 10,
-                'success_url' => 'https://evil.example/phish',
-            ])
-            ->assertUnprocessable()
-            ->assertJsonFragment(['success_url must point to this application.']);
+        $captured = [];
+
+        $mock = Mockery::mock(PayPalClient::class);
+        $mock->shouldReceive('getAccessToken')->andReturn('test-access-token');
+        $mock->shouldReceive('createOrder')
+            ->andReturnUsing(function ($amount, $currency, $returnUrl, $cancelUrl) use (&$captured) {
+                $captured = compact('returnUrl', 'cancelUrl');
+
+                return [
+                    'id' => 'PAYPAL_REDIRECT_TEST',
+                    'status' => 'CREATED',
+                    'links' => [
+                        ['rel' => 'approve', 'href' => 'https://www.sandbox.paypal.com/checkoutnow?token=X'],
+                    ],
+                ];
+            });
+
+        $this->app->instance(PayPalClient::class, $mock);
+
+        $this->postJson('/api/v1/payment/paypal/create-order', [
+            'amount' => 10,
+            'success_url' => 'https://evil.example/phish',
+            'cancel_url' => 'https://evil.example/phish',
+        ])->assertOk()->assertJsonMissing(['approval_url' => 'https://evil.example/phish']);
+
+        $this->assertStringStartsWith((string) config('app.url'), $captured['returnUrl']);
+        $this->assertStringStartsWith((string) config('app.url'), $captured['cancelUrl']);
+        $this->assertStringNotContainsString('evil.example', $captured['returnUrl']);
+        $this->assertStringNotContainsString('evil.example', $captured['cancelUrl']);
+    }
+
+    // ---------------------------------------------------------------------
+    // REMOVED LEGACY ROUTES — must not linger as bypasses
+    // ---------------------------------------------------------------------
+
+    public function test_legacy_per_gateway_checkout_routes_no_longer_exist(): void
+    {
+        foreach ([
+            '/api/v1/paypal/create-order',
+            '/api/v1/paypal/capture-order',
+            '/api/v1/stripe/checkout',
+            '/api/v1/stripe/webhook',
+        ] as $path) {
+            $this->postJson($path, [])->assertNotFound();
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -109,6 +146,22 @@ class SecurityTest extends TestCase
     public function test_admin_dashboard_requires_authentication(): void
     {
         $this->getJson('/api/v1/admin/dashboard')->assertStatus(401);
+    }
+
+    /**
+     * Clients that omit the Accept header must get the same JSON 401 — not a
+     * 500 from Laravel trying to redirect to a `login` route this API does not
+     * have. The payment surface is public, so this is reachable by anyone.
+     */
+    public function test_unauthenticated_api_request_without_accept_header_is_json_401(): void
+    {
+        $this->get('/api/v1/admin/payment-methods')
+            ->assertStatus(401)
+            ->assertJsonPath('success', false);
+
+        $this->post('/api/v1/logout')
+            ->assertStatus(401)
+            ->assertJsonPath('message', 'Unauthorized');
     }
 
     public function test_protected_user_routes_require_authentication(): void
@@ -180,7 +233,7 @@ class SecurityTest extends TestCase
     public function test_paypal_capture_order_does_not_require_auth(): void
     {
         // No token: a 422 (validation) proves auth is NOT enforced here.
-        $this->postJson('/api/v1/paypal/capture-order', [])
+        $this->postJson('/api/v1/payment/paypal/capture-order', [])
             ->assertStatus(422);
     }
 

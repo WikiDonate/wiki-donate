@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
-use App\Models\PayPalPendingOrder;
+use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
+use App\Services\Payment\PaymentCheckoutService;
 use App\Services\PayPalClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,12 +18,10 @@ use Illuminate\Support\Facades\Log;
 
 class PayPalWebhookController extends Controller
 {
-    private PayPalClient $paypal;
-
-    public function __construct(PayPalClient $paypal)
-    {
-        $this->paypal = $paypal;
-    }
+    public function __construct(
+        private PayPalClient $paypal,
+        private PaymentCheckoutService $checkout,
+    ) {}
 
     /**
      * Handle incoming PayPal webhook events.
@@ -204,6 +203,7 @@ class PayPalWebhookController extends Controller
                     $payout->organization_name
                 ),
                 'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
+                'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
             ]);
 
             return;
@@ -249,20 +249,27 @@ class PayPalWebhookController extends Controller
             'subject_type' => OrganizationPayout::class,
             'subject_id' => $payout->id,
             'message' => sprintf(
-                'PayPal rejected payout of %.2f %s to %s — %s',
+                'Payout of %.2f %s to %s via %s rejected — %s',
                 $payout->amount,
                 strtoupper($payout->currency),
                 $payout->organization_name,
+                $payout->payment_method ?: 'paypal',
                 $reason
             ),
             'after' => ['status' => 'failed', 'provider_status' => 'FAILED', 'failure_reason' => $reason],
+            'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
         ]);
     }
 
     /**
-     * Handle checkout.order.approved — buyer has approved the order.
-     * For IMMEDIATE_PAYMENT_REQUIRED, capture confirmation comes via
-     * payment.capture.completed, so this just logs.
+     * Handle checkout.order.approved — the buyer authorised the order.
+     *
+     * This is the recovery path for a donor who approves at PayPal and closes
+     * the tab before the SPA can call capture: without capturing here the
+     * authorisation silently expires and the money is never taken. Capture goes
+     * through PaymentCheckoutService, the same idempotent path the SPA uses, so
+     * a simultaneous client-side capture cannot charge twice (the provider
+     * reads the order back when PayPal answers ORDER_ALREADY_CAPTURED).
      */
     protected function handleOrderApproved(array $event): void
     {
@@ -274,7 +281,41 @@ class PayPalWebhookController extends Controller
             return;
         }
 
-        Log::info('PayPal order approved (webhook)', ['order_id' => $orderId]);
+        $pending = PaymentPendingOrder::query()
+            ->where('payment_method', 'paypal')
+            ->where('gateway_reference', $orderId)
+            ->first();
+
+        // No in-flight checkout (already captured, already closed, or created
+        // by another installation): nothing we can safely capture.
+        if (! $pending || ! $pending->isOpen()) {
+            Log::info('PayPal order approved with nothing to capture', [
+                'order_id' => $orderId,
+                'status' => $pending?->status,
+            ]);
+
+            return;
+        }
+
+        // Exceptions bubble up: PayPal retries a 500, which is exactly what we
+        // want for a transient gateway failure.
+        $result = $this->checkout->capture('paypal', (string) $orderId);
+
+        if (! ($result['success'] ?? false)) {
+            // A declined/uncompletable capture is not retryable; the donor (or
+            // the PAYMENT.CAPTURE.DENIED webhook) closes the checkout.
+            Log::warning('PayPal webhook: capture on approval did not complete', [
+                'order_id' => $orderId,
+                'message' => $result['message'] ?? null,
+            ]);
+
+            return;
+        }
+
+        Log::info('PayPal order captured from approval webhook', [
+            'order_id' => $orderId,
+            'donation_id' => $result['data']['donation_id'] ?? null,
+        ]);
     }
 
     /**
@@ -297,7 +338,7 @@ class PayPalWebhookController extends Controller
         }
 
         // Idempotency: skip if already recorded
-        $existing = Donation::where('paypal_order_id', $orderId)
+        $existing = Donation::gateway('paypal', $orderId)
             ->where('status', 'completed')
             ->first();
 
@@ -311,7 +352,9 @@ class PayPalWebhookController extends Controller
         }
 
         // Look up the pending order
-        $pending = PayPalPendingOrder::where('paypal_order_id', $orderId)->first();
+        $pending = PaymentPendingOrder::where('payment_method', 'paypal')
+            ->where('gateway_reference', $orderId)
+            ->first();
 
         // The capture webhook resource contains the merchant (payee), not the
         // buyer (payer). Pull payer details from the pending order if present,
@@ -340,7 +383,8 @@ class PayPalWebhookController extends Controller
         $formula = $pending?->donation_formula_id ? DonationFormula::find($pending->donation_formula_id) : null;
 
         $donation = Donation::create([
-            'paypal_order_id' => $orderId,
+            'payment_method' => 'paypal',
+            'gateway_reference' => $orderId,
             'user_id' => $pending?->user_id,
             'donation_formula_id' => $pending?->donation_formula_id,
             'donor_name' => $donorName,
@@ -382,6 +426,7 @@ class PayPalWebhookController extends Controller
                 'order_id' => $orderId,
                 'status' => 'completed',
             ],
+            'meta' => ['payment_method' => 'paypal'],
         ]);
 
         Log::info('PayPal donation recorded via webhook', [
@@ -392,32 +437,115 @@ class PayPalWebhookController extends Controller
     }
 
     /**
-     * Handle payment.capture.denied — the capture was declined, nothing to charge.
-     * Clean up the pending order so it does not linger.
+     * Handle payment.capture.denied — the gateway declined the capture.
+     *
+     * The checkout is closed, not deleted: the donor's return page must be
+     * able to answer "declined" instead of 404 (which the SPA used to render
+     * as a false success), and admins get an audit row for the attempt.
      */
     protected function handleCaptureDenied(array $event): void
     {
         $resource = $event['resource'] ?? [];
         $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? $resource['custom_id'] ?? null;
 
-        if ($orderId) {
-            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
-            Log::info('PayPal capture denied, pending order removed', ['order_id' => $orderId]);
+        if (! $orderId) {
+            Log::warning('PayPal webhook: payment.capture.denied missing order ID');
+
+            return;
         }
+
+        $reason = $resource['status_details']['reason'] ?? null;
+
+        $this->closePendingOrder(
+            (string) $orderId,
+            PaymentPendingOrder::STATUS_FAILED,
+            $reason !== null ? (string) $reason : 'DECLINED',
+            'PAYMENT.CAPTURE.DENIED'
+        );
     }
 
     /**
      * Handle checkout.order.cancelled — buyer abandoned/cancelled the order.
-     * Remove the pending order so abandoned checkouts are cleaned up.
+     *
+     * Closed, not deleted, for the same reason as a denied capture.
      */
     protected function handleOrderCancelled(array $event): void
     {
         $orderId = $event['resource']['id'] ?? null;
 
-        if ($orderId) {
-            PayPalPendingOrder::where('paypal_order_id', $orderId)->delete();
-            Log::info('PayPal order cancelled, pending order removed', ['order_id' => $orderId]);
+        if (! $orderId) {
+            Log::warning('PayPal webhook: checkout.order.cancelled missing order ID');
+
+            return;
         }
+
+        $this->closePendingOrder(
+            (string) $orderId,
+            PaymentPendingOrder::STATUS_CANCELLED,
+            'CANCELLED',
+            'CHECKOUT.ORDER.CANCELLED'
+        );
+    }
+
+    /**
+     * Close an in-flight checkout with a terminal status.
+     *
+     * Idempotent: a second event for the same order (or an order already
+     * captured) leaves the row untouched.
+     */
+    protected function closePendingOrder(string $orderId, string $status, ?string $reason, string $eventType): void
+    {
+        $pending = PaymentPendingOrder::query()
+            ->where('payment_method', 'paypal')
+            ->where('gateway_reference', $orderId)
+            ->first();
+
+        if (! $pending) {
+            Log::info('PayPal webhook: no in-flight checkout to close', [
+                'order_id' => $orderId,
+                'event_type' => $eventType,
+            ]);
+
+            return;
+        }
+
+        if (! $pending->isOpen()) {
+            Log::info('PayPal webhook: checkout already closed', [
+                'order_id' => $orderId,
+                'status' => $pending->status,
+            ]);
+
+            return;
+        }
+
+        $pending->forceFill([
+            'status' => $status,
+            'status_reason' => $reason,
+        ])->save();
+
+        // The audit trail is what makes a failed attempt visible at all:
+        // pending orders never appear in donation reports.
+        TransactionLog::record('payment.'.$status, [
+            'actor_role' => 'Webhook',
+            'message' => sprintf('PayPal %s for order %s', $status, $orderId),
+            'after' => [
+                'payment_method' => 'paypal',
+                'order_id' => $orderId,
+                'status' => $status,
+                'reason' => $reason,
+            ],
+            'meta' => [
+                'event_type' => $eventType,
+                'gateway_reference' => $orderId,
+            ],
+        ]);
+
+        Log::info('PayPal checkout closed', [
+            'order_id' => $orderId,
+            'status' => $status,
+            'reason' => $reason,
+            'event_type' => $eventType,
+        ]);
     }
 
     /**

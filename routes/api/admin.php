@@ -7,14 +7,31 @@ use App\Http\Controllers\v1\Admin\OrganizationPayoutController;
 use App\Http\Controllers\v1\Admin\PageContentController;
 use App\Http\Controllers\v1\Admin\TransactionController;
 use App\Http\Controllers\v1\Admin\TransactionLogController;
+use App\Http\Controllers\v1\CharitySearchController;
 use App\Http\Middleware\FreshAuthGuard;
 use Illuminate\Support\Facades\Route;
+
+// External charity-directory autocomplete (Charity Navigator / ProPublica).
+//
+// Admin-only by design: this is identity lookup used by the admin
+// "Add organization" modal to seed the curated `organizations` registry.
+// Donor/editor formula autocomplete must never call external charity APIs —
+// it searches the registry instead (see the admin `organizations` index).
+// The path deliberately stays `v1/charities/search` (no `admin/` prefix) so
+// the existing client service keeps working; the authorization, not the URL,
+// is what restricts access.
+Route::get('charities/search', [CharitySearchController::class, 'search'])
+    ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin', 'throttle:30,1']);
 
 Route::prefix('admin')
     ->middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin'])
     ->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index']);
         Route::get('donations', [DashboardController::class, 'donations']);
+
+        // Full payment-method registry (includes inactive methods) for admin
+        // filters/labels — the public endpoint exposes active+servable only.
+        Route::get('payment-methods', [PaymentMethodController::class, 'adminIndex']);
 
         // Organization payouts (append-only ledger, live computed balances)
         Route::get('payouts', [OrganizationPayoutController::class, 'index']);
@@ -25,8 +42,12 @@ Route::prefix('admin')
 
         // Organization registry (charity directory + payout destinations)
         Route::get('organizations', [OrganizationController::class, 'index']);
+        // Before organizations/{id}: "search" must not be parsed as an id.
+        Route::get('organizations/search', [OrganizationController::class, 'search']);
+        Route::post('organizations', [OrganizationController::class, 'store']);
         Route::get('organizations/{id}', [OrganizationController::class, 'show']);
         Route::put('organizations/{id}', [OrganizationController::class, 'update']);
+        Route::delete('organizations/{id}', [OrganizationController::class, 'destroy']);
         Route::put('organizations/{id}/paypal-email', [OrganizationController::class, 'updatePaypalEmail']);
         Route::post('organizations/{id}/verify', [OrganizationController::class, 'verify']);
         Route::post('organizations/{id}/unverify', [OrganizationController::class, 'unverify']);

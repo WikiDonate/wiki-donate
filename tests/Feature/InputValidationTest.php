@@ -59,11 +59,11 @@ class InputValidationTest extends TestCase
         $headers = ['Authorization' => 'Bearer '.$user->createToken('test')->plainTextToken];
 
         $this->withHeaders($headers)
-            ->postJson('/api/v1/stripe/checkout', ['amount' => 0.10])
+            ->postJson('/api/v1/payment/stripe/create-order', ['amount' => 0.10])
             ->assertUnprocessable();
 
         $this->withHeaders($headers)
-            ->postJson('/api/v1/stripe/checkout', ['amount' => 999999999])
+            ->postJson('/api/v1/payment/stripe/create-order', ['amount' => 999999999])
             ->assertUnprocessable();
     }
 
