@@ -8,6 +8,7 @@ use App\Http\Controllers\v1\Admin\PageContentController;
 use App\Http\Controllers\v1\Admin\TransactionController;
 use App\Http\Controllers\v1\Admin\TransactionLogController;
 use App\Http\Controllers\v1\CharitySearchController;
+use App\Http\Controllers\v1\PaymentMethodController;
 use App\Http\Middleware\FreshAuthGuard;
 use Illuminate\Support\Facades\Route;
 
