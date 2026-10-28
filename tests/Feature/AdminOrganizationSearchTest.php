@@ -110,7 +110,7 @@ class AdminOrganizationSearchTest extends TestCase
         $this->assertSame(['Another Org'], array_column($data, 'name'));
     }
 
-    public function test_public_charity_search_still_returns_verified_local_orgs(): void
+    public function test_charity_search_returns_verified_local_orgs(): void
     {
         Organization::create([
             'name' => 'Public Registry Org',
@@ -124,7 +124,11 @@ class AdminOrganizationSearchTest extends TestCase
             ['name' => 'External Only Org', 'ein' => 888888888],
         ]);
 
-        $data = $this->getJson('/api/v1/charities/search?q=org')->json('data');
+        // The directory endpoint is admin-only (the donor formula picker reads
+        // the registry instead), so authenticate like the admin modal does.
+        $data = $this->withHeaders($this->headersFor($this->admin))
+            ->getJson('/api/v1/charities/search?q=org')
+            ->json('data');
 
         $this->assertSame('Public Registry Org', $data[0]['name']);
         $this->assertSame('local', $data[0]['source']);

@@ -4,7 +4,6 @@ use App\Http\Controllers\v1\ArticleController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\ContactController;
 use App\Http\Controllers\v1\DonationFormulaController;
-use App\Http\Controllers\v1\OrganizationConfirmationController;
 use App\Http\Controllers\v1\OrganizationSearchController;
 use App\Http\Controllers\v1\PageController;
 use App\Http\Controllers\v1\PaymentController;
