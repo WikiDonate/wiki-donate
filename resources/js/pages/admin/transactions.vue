@@ -47,18 +47,6 @@
                     :value="formatAmount(summary.netInHand)"
                 />
             </div>
-            <p
-                v-if="summary.totalPayoutFees > 0"
-                class="px-4 sm:px-6 -mt-2 pb-3 text-xs text-amber-600"
-            >
-                {{
-                    t('admin.transactionCostSummary', {
-                        percent: formatPercent(summary.transactionCostPercent),
-                        fee: formatAmount(summary.totalPayoutFees),
-                        net: formatAmount(summary.totalPayoutNet),
-                    })
-                }}
-            </p>
 
             <!-- Filters -->
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
@@ -248,20 +236,20 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { onMounted, ref } from 'vue'
     import { useI18n } from 'vue-i18n'
-    import { adminService } from '~/services/adminService'
-    import api from '~/config/apiConfig'
-    import { useToastify } from '~/composables/useToastify'
-    import { formatDateUTC } from '~/utils/dateFormatUTC'
-    import { usePaymentMethods } from '~/composables/usePaymentMethods'
+    import AdminBadge from '~/components/admin/AdminBadge.vue'
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
-    import AdminBadge from '~/components/admin/AdminBadge.vue'
     import StatCard from '~/components/admin/StatCard.vue'
+    import Button from '~/components/Button.vue'
     import LoadingSpinner from '~/components/LoadingSpinner.vue'
     import Pagination from '~/components/Pagination.vue'
-    import Button from '~/components/Button.vue'
+    import { usePaymentMethods } from '~/composables/usePaymentMethods'
+    import { useToastify } from '~/composables/useToastify'
+    import api from '~/config/apiConfig'
+    import { adminService } from '~/services/adminService'
+    import { formatDateUTC } from '~/utils/dateFormatUTC'
 
     const { notifyError } = useToastify()
 
