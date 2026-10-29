@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\UserFacingException;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
@@ -205,7 +206,7 @@ class OrganizationPayoutTransactionCostTest extends TestCase
         $this->addDonation(500);
         $this->fakePayPal();
 
-        $this->expectException(\App\Exceptions\UserFacingException::class);
+        $this->expectException(UserFacingException::class);
 
         app(OrganizationPayoutService::class)->createPayout([
             'donation_formula_id' => $this->formula->id,
