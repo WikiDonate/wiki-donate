@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "Tranzakciós költség",
+        "payoutGross": "Bruttó",
+        "payoutNet": "Nettó a szervezethez",
+        "payoutFee": "Díj ({percent}%)",
+        "transactionCostLabel": "Tranzakciós költség ({percent}%)",
+        "netToOrganization": "Nettó a szervezethez",
+        "payoutFeeNote": "Minden kifizetésből {percent}%-os tranzakciós költséget vonnak le.",
+        "payoutNetBelowMinimum": "A nettó összeg a tranzakciós költség utáni minimum 1,00 átutalás alatt van.",
+        "transactionCostSummary": "{percent}% visszatartott tranzakciós költség: {fee} — a szervezetek nettó {net} összeget kaptak."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

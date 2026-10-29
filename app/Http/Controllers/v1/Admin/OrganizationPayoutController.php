@@ -94,6 +94,13 @@ class OrganizationPayoutController extends Controller
             'donation_formula_id' => 'required|integer|exists:donation_formulas,id',
             'organization_name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0.01',
+            // The transaction cost is enforced server-side: a client may not
+            // submit a fee or net figure at all (prohibited => 422).
+            'net_amount' => 'prohibited',
+            'net' => 'prohibited',
+            'fee_amount' => 'prohibited',
+            'fee_percent' => 'prohibited',
+            'fee' => 'prohibited',
             'currency' => 'required|string|size:3',
             'note' => 'nullable|string|max:65535',
             // Payout rail is data-driven: only an active, payout-capable
@@ -162,7 +169,12 @@ class OrganizationPayoutController extends Controller
             'organization_name' => $payout->organization_name,
             'organization_id' => $payout->organization_id,
             'destination_paypal_email' => $payout->destination_paypal_email,
+            // amount = GROSS; fee_amount is the enforced transaction cost and
+            // net_amount is what the organization actually received.
             'amount' => (float) $payout->amount,
+            'fee_percent' => $payout->fee_percent === null ? null : (float) $payout->fee_percent,
+            'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+            'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
             'currency' => $payout->currency,
             'type' => $payout->type,
             'status' => $payout->status,

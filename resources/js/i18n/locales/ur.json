@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "لین دین کی لاگت",
+        "payoutGross": "مجموعی",
+        "payoutNet": "تنظیم کے لئے نیٹ",
+        "payoutFee": "فیس ({percent}%)",
+        "transactionCostLabel": "لین دین کی لاگت ({percent}%)",
+        "netToOrganization": "تنظیم کے لئے نیٹ",
+        "payoutFeeNote": "ہر ادائیگی سے ایک {percent}% ٹرانزیکشن لاگت کاٹ لی جاتی ہے۔",
+        "payoutNetBelowMinimum": "لین دین کی لاگت کے بعد خالص رقم 1.00 کی کم از کم منتقلی سے کم ہے۔",
+        "transactionCostSummary": "{percent}% ٹرانزیکشن لاگت روک دی گئی: {fee} — تنظیموں کو {net} نیٹ موصول ہوا۔"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

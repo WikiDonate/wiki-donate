@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "거래 비용",
+        "payoutGross": "총",
+        "payoutNet": "조직 순",
+        "payoutFee": "수수료({percent}%)",
+        "transactionCostLabel": "거래비용({percent}%)",
+        "netToOrganization": "조직 순",
+        "payoutFeeNote": "{percent}%의 거래 비용이 모든 지불금에서 공제됩니다.",
+        "payoutNetBelowMinimum": "순금액은 거래 비용을 차감한 최소 이체 금액인 1.00 미만입니다.",
+        "transactionCostSummary": "{percent}% 거래 비용 원천징수: {fee} — 조직은 {net} 순수익을 받았습니다."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

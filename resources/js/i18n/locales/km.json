@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "តម្លៃប្រតិបត្តិការ",
+        "payoutGross": "សរុប",
+        "payoutNet": "សុទ្ធដល់អង្គការ",
+        "payoutFee": "ថ្លៃសេវា ({percent}%)",
+        "transactionCostLabel": "តម្លៃប្រតិបត្តិការ ({percent}%)",
+        "netToOrganization": "សុទ្ធដល់អង្គការ",
+        "payoutFeeNote": "តម្លៃប្រតិបត្តិការ {percent}% ត្រូវបានកាត់ចេញពីរាល់ការទូទាត់។",
+        "payoutNetBelowMinimum": "ចំនួនទឹកប្រាក់សុទ្ធគឺទាបជាងការផ្ទេរអប្បបរមា 1.00 បន្ទាប់ពីតម្លៃប្រតិបត្តិការ។",
+        "transactionCostSummary": "ការចំណាយលើប្រតិបត្តិការ {percent}% ត្រូវបានកាត់ទុក៖ {fee} — អង្គការបានទទួល {net} សុទ្ធ។"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

@@ -197,13 +197,24 @@ class PayPalWebhookController extends Controller
                 'subject_type' => OrganizationPayout::class,
                 'subject_id' => $payout->id,
                 'message' => sprintf(
-                    'PayPal webhook confirmed payout of %.2f %s to %s',
+                    'PayPal webhook confirmed payout of %.2f %s gross (net %.2f) to %s',
                     $payout->amount,
                     strtoupper($payout->currency),
+                    (float) ($payout->net_amount ?? $payout->amount),
                     $payout->organization_name
                 ),
-                'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
-                'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
+                'after' => [
+                    'status' => 'paid',
+                    'paid_at' => $payout->paid_at?->toDateTimeString(),
+                    'amount' => (float) $payout->amount,
+                    'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+                    'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
+                ],
+                'meta' => [
+                    'payment_method' => $payout->payment_method ?: 'paypal',
+                    'gross_amount' => (float) $payout->amount,
+                    'net_amount' => (float) ($payout->net_amount ?? $payout->amount),
+                ],
             ]);
 
             return;

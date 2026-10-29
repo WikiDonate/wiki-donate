@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "Kos Transaksi",
+        "payoutGross": "kasar",
+        "payoutNet": "Bersih kepada organisasi",
+        "payoutFee": "Yuran ({percent}%)",
+        "transactionCostLabel": "Kos urus niaga ({percent}%)",
+        "netToOrganization": "Bersih kepada organisasi",
+        "payoutFeeNote": "Kos transaksi {percent}% ditolak daripada setiap pembayaran.",
+        "payoutNetBelowMinimum": "Jumlah bersih adalah di bawah pemindahan minimum 1.00 selepas kos transaksi.",
+        "transactionCostSummary": "{percent}% kos transaksi ditahan: {fee} — organisasi menerima {net} bersih."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

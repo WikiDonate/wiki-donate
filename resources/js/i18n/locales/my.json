@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "ငွေလွှဲစရိတ်",
+        "payoutGross": "စုစုပေါင်း",
+        "payoutNet": "ကွန်ပလိန်း",
+        "payoutFee": "အခကြေးငွေ ({percent}%)",
+        "transactionCostLabel": "ငွေလွှဲစရိတ် ({percent}%)",
+        "netToOrganization": "ကွန်ပလိန်း",
+        "payoutFeeNote": "ပေးချေမှုတိုင်းမှ {percent}% အရောင်းအ၀ယ်ကုန်ကျစရိတ်ကို နုတ်ယူပါသည်။",
+        "payoutNetBelowMinimum": "အသားတင်ပမာဏသည် ငွေလွှဲခပြီးနောက် အနည်းဆုံး 1.00 လွှဲပြောင်းမှုအောက်တွင် ရှိသည်။",
+        "transactionCostSummary": "{percent}% အရောင်းအ၀ယ်ကုန်ကျစရိတ်- {fee} — အဖွဲ့အစည်းများသည် {net} အသားတင်ကို လက်ခံရရှိခဲ့သည်။"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

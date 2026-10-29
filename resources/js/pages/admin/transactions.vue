@@ -47,6 +47,18 @@
                     :value="formatAmount(summary.netInHand)"
                 />
             </div>
+            <p
+                v-if="summary.totalPayoutFees > 0"
+                class="px-4 sm:px-6 -mt-2 pb-3 text-xs text-amber-600"
+            >
+                {{
+                    t('admin.transactionCostSummary', {
+                        percent: formatPercent(summary.transactionCostPercent),
+                        fee: formatAmount(summary.totalPayoutFees),
+                        net: formatAmount(summary.totalPayoutNet),
+                    })
+                }}
+            </p>
 
             <!-- Filters -->
             <div class="px-4 sm:px-6 py-3 border-b border-gray-100">
@@ -156,6 +168,30 @@
                                 }}</span>
                             </span>
                         </template>
+                        <!-- Forced payout transaction cost: gross (amount) →
+                            fee → net actually transferred. Income rows have no
+                            fee, so those cells stay empty. -->
+                        <template #cell-fee="{ row }">
+                            <span
+                                v-if="row.type === 'expense' && row.fee_amount !== null"
+                                class="text-xs text-amber-600"
+                            >
+                                −{{ formatAmount(row.fee_amount) }}
+                                <span class="text-[10px] text-gray-400"
+                                    >({{ formatPercent(row.fee_percent) }}%)</span
+                                >
+                            </span>
+                            <span v-else class="text-xs text-gray-300">—</span>
+                        </template>
+                        <template #cell-net="{ row }">
+                            <span
+                                v-if="row.type === 'expense' && row.net_amount !== null"
+                                class="text-xs font-medium text-gray-700"
+                            >
+                                {{ formatAmount(row.net_amount) }}
+                            </span>
+                            <span v-else class="text-xs text-gray-300">—</span>
+                        </template>
                         <template #cell-method="{ row }">
                             <span v-if="row.type === 'income'" class="text-xs">{{
                                 methodLabel(row.method)
@@ -259,6 +295,8 @@
         { key: 'description', label: t('admin.description') },
         { key: 'type', label: t('admin.type') },
         { key: 'amount', label: t('admin.amount') },
+        { key: 'fee', label: t('admin.transactionCost') },
+        { key: 'net', label: t('admin.payoutNet') },
         { key: 'method', label: t('admin.method') },
         { key: 'status', label: t('admin.status') },
         { key: 'context', label: t('admin.context') },
@@ -267,6 +305,11 @@
     function formatAmount(value) {
         const n = Number(value ?? 0)
         return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    function formatPercent(value) {
+        const n = Number(value ?? 0)
+        return Number.isFinite(n) ? String(Number(n.toFixed(2))) : '0'
     }
 
     function buildParams(page) {

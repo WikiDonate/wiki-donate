@@ -22,6 +22,9 @@ class OrganizationPayout extends Model
         'organization_key',
         'destination_paypal_email',
         'amount',
+        'fee_percent',
+        'fee_amount',
+        'net_amount',
         'currency',
         'type',
         'status',
@@ -37,6 +40,9 @@ class OrganizationPayout extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'fee_percent' => 'decimal:2',
+        'fee_amount' => 'decimal:2',
+        'net_amount' => 'decimal:2',
         'paid_at' => 'datetime',
     ];
 

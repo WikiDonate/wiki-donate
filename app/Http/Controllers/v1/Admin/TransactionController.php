@@ -90,6 +90,18 @@ class TransactionController extends Controller
                 ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
                 ->sum('amount');
 
+            // Enforced transaction-cost totals for the same filter window.
+            // Gross is `amount`; the org received `net_amount`. Legacy rows
+            // were backfilled fee=0/net=gross so the identity always holds.
+            $feeTotals = OrganizationPayout::query()
+                ->where('status', '!=', 'failed')
+                ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
+                ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
+                ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
+                ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
+                ->selectRaw('COALESCE(SUM(fee_amount), 0) as total_fee, COALESCE(SUM(net_amount), 0) as total_net')
+                ->first();
+
             [$totalOwed] = $this->computeOwed($request);
 
             return response()->json([
@@ -98,7 +110,15 @@ class TransactionController extends Controller
                 'data' => [
                     'totalIncome' => round($totalIncome, 2),
                     'totalPayouts' => round($totalPayouts, 2),
+                    // Transaction cost withheld from payouts in this window.
+                    'totalPayoutFees' => round((float) ($feeTotals->total_fee ?? 0), 2),
+                    // What organizations actually received (gross - fee).
+                    'totalPayoutNet' => round((float) ($feeTotals->total_net ?? 0), 2),
+                    'transactionCostPercent' => (float) config('donations.transaction_cost_percent', 5),
                     'remainingPayable' => round(max($totalOwed - $totalPayouts, 0), 2),
+                    // Income kept after the actual (net) transfers plus the
+                    // withheld fee stays with the platform, so net-in-hand is
+                    // still income - gross payouts (fee is not paid out).
                     'netInHand' => round($totalIncome - $totalPayouts, 2),
                 ],
             ], Response::HTTP_OK);
@@ -131,14 +151,26 @@ class TransactionController extends Controller
         return response()->streamDownload(function () use ($rows) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // UTF-8 BOM for Excel
-            fputcsv($out, ['Date', 'Type', 'Description', 'Amount', 'Currency', 'Method', 'Status', 'Context']);
+            fputcsv($out, [
+                'Date', 'Type', 'Description', 'Amount', 'Fee', 'Net', 'Fee %', 'Currency', 'Method', 'Status', 'Context',
+            ]);
 
             foreach ($rows as $row) {
+                $isExpense = $row['type'] === 'expense';
                 fputcsv($out, [
                     $row['date_raw'],
                     $row['type'],
                     $row['description'],
-                    $row['type'] === 'expense' ? '-'.number_format($row['amount'], 2, '.', '') : number_format($row['amount'], 2, '.', ''),
+                    $isExpense ? '-'.number_format($row['amount'], 2, '.', '') : number_format($row['amount'], 2, '.', ''),
+                    // Fee/net only exist on payout (expense) rows; the fee is
+                    // shown as a negative cash-out line so column math works.
+                    $isExpense && $row['fee_amount'] !== null
+                        ? '-'.number_format((float) $row['fee_amount'], 2, '.', '')
+                        : '',
+                    $isExpense && $row['net_amount'] !== null
+                        ? '-'.number_format((float) $row['net_amount'], 2, '.', '')
+                        : '',
+                    $isExpense && $row['fee_percent'] !== null ? $row['fee_percent'] : '',
                     $row['currency'],
                     $row['method'] ?? '',
                     $row['status'] ?? '',
@@ -275,6 +307,11 @@ class TransactionController extends Controller
             'description' => 'Payout to '.$payout->organization_name,
             'organization_name' => $payout->organization_name,
             'amount' => (float) $payout->amount,
+            // Enforced transaction-cost breakdown. `amount` is gross (what
+            // consumes the owed balance); `net_amount` is what was sent.
+            'fee_percent' => $payout->fee_percent === null ? null : (float) $payout->fee_percent,
+            'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+            'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
             'currency' => $payout->currency,
             'method' => $payout->payment_method,
             'status' => $payout->status,

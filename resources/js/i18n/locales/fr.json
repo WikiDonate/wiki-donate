@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "Coût de transaction",
+        "payoutGross": "Brut",
+        "payoutNet": "Net à l'organisation",
+        "payoutFee": "Frais ({percent}%)",
+        "transactionCostLabel": "Coût de transaction ({percent}%)",
+        "netToOrganization": "Net à l'organisation",
+        "payoutFeeNote": "Un coût de transaction de {percent} % est déduit de chaque paiement.",
+        "payoutNetBelowMinimum": "Le montant net est inférieur au transfert minimum de 1,00 après le coût de la transaction.",
+        "transactionCostSummary": "{percent} % du coût de transaction retenu : {fee} — les organisations ont reçu {net} net."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tous droits réservés."

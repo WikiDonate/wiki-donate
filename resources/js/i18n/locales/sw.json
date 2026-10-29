@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "Gharama ya Muamala",
+        "payoutGross": "Jumla",
+        "payoutNet": "Net kwa shirika",
+        "payoutFee": "Ada ({percent}%)",
+        "transactionCostLabel": "Gharama ya muamala ({percent}%)",
+        "netToOrganization": "Net kwa shirika",
+        "payoutFeeNote": "Gharama ya miamala ya {percent}% inakatwa kutoka kwa kila malipo.",
+        "payoutNetBelowMinimum": "Kiasi halisi kiko chini ya kima cha chini kabisa cha uhamisho cha 1.00 baada ya gharama ya muamala.",
+        "transactionCostSummary": "Gharama ya muamala ya {percent}% imezuiwa: {fee} — mashirika yalipata wavu {net}."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

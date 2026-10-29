@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "Стоимость транзакции",
+        "payoutGross": "Валовой",
+        "payoutNet": "Сеть для организации",
+        "payoutFee": "Комиссия ({percent}%)",
+        "transactionCostLabel": "Стоимость транзакции ({percent}%)",
+        "netToOrganization": "Сеть для организации",
+        "payoutFeeNote": "Из каждой выплаты вычитается стоимость транзакции {percent}%.",
+        "payoutNetBelowMinimum": "Чистая сумма ниже минимального перевода в размере 1,00 после стоимости транзакции.",
+        "transactionCostSummary": "Удержано {percent}% стоимости транзакции: {fee} — организации получили {net} нетто."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Все права защищены."

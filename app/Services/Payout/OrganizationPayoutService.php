@@ -24,6 +24,48 @@ use Illuminate\Support\Facades\Log;
 class OrganizationPayoutService
 {
     /**
+     * PayPal Payouts rejects transfers below 1.00 USD-equivalent in most
+     * corridors; keeping our own floor at the same value means we never
+     * submit a batch item the provider would bounce.
+     */
+    public const MIN_NET_SEND_AMOUNT = 1.00;
+
+    /**
+     * Forced transaction-cost rate (percent) from config/donations.php.
+     *
+     * The admin always types the GROSS amount; this rate is deducted
+     * server-side. Never trust a client-supplied fee/net value.
+     */
+    public function transactionCostPercent(): float
+    {
+        return (float) config('donations.transaction_cost_percent', 5);
+    }
+
+    /**
+     * Split a gross amount into its enforced fee / net parts.
+     *
+     * Rounding is round-half-up to cents on the FEE, and net is derived as
+     * gross − fee so the pair always sums back to the gross amount exactly
+     * (no lost cent at boundaries such as 0.10 → 0.01 fee / 0.09 net).
+     *
+     * @return array{percent: float, fee: float, net: float}
+     */
+    public function splitTransactionCost(float $gross): array
+    {
+        $percent = $this->transactionCostPercent();
+        $gross = round($gross, 2);
+        $fee = round($gross * ($percent / 100), 2, PHP_ROUND_HALF_UP);
+        // Guard against float drift making fee > gross on tiny sends.
+        $fee = min($fee, $gross);
+
+        return [
+            'percent' => round($percent, 2),
+            'fee' => $fee,
+            'net' => round($gross - $fee, 2),
+        ];
+    }
+
+    /**
      * List every allocatable (formula_id + organization) pair with its
      * live owed / paid / balance amounts.
      *
@@ -117,6 +159,9 @@ class OrganizationPayoutService
                     'owed' => $owed,
                     'paid' => $paid,
                     'balance' => $balance,
+                    // Forced rate the Pay modal must mirror as read-only
+                    // "transaction cost" / "net to organization" rows.
+                    'transaction_cost_percent' => $this->transactionCostPercent(),
                 ]);
             }
         }
@@ -139,6 +184,18 @@ class OrganizationPayoutService
      */
     public function createPayout(array $data, int $actorId): OrganizationPayout
     {
+        // The transaction cost is FORCED. A caller may only submit the gross
+        // amount; any attempt to hand in a fee or a net figure is rejected
+        // outright rather than silently ignored, so a stale/rogue client can
+        // never pay gross while believing it paid net (or vice versa).
+        foreach (['net_amount', 'fee_amount', 'fee_percent', 'net', 'fee'] as $forbidden) {
+            if (array_key_exists($forbidden, $data) && $data[$forbidden] !== null && $data[$forbidden] !== '') {
+                throw new UserFacingException(
+                    'The transaction cost is applied automatically; only the gross amount may be submitted.'
+                );
+            }
+        }
+
         $orgName = trim($data['organization_name']);
         $key = OrganizationPayout::makeKey($orgName);
         // Normalize once at the boundary: donations store mixed case
@@ -204,6 +261,18 @@ class OrganizationPayoutService
                 ));
             }
 
+            // Forced transaction-cost deduction: gross in, net out.
+            $split = $this->splitTransactionCost($amount);
+            if ($split['net'] < self::MIN_NET_SEND_AMOUNT) {
+                throw new UserFacingException(sprintf(
+                    'Net amount of %.2f is below the minimum transfer of %.2f (after the %.2f%% transaction cost on a gross of %.2f).',
+                    $split['net'],
+                    self::MIN_NET_SEND_AMOUNT,
+                    $split['percent'],
+                    $amount
+                ));
+            }
+
             $type = $amount >= $balance->balance - 0.009 ? 'full' : 'partial';
 
             // Reserve the allocation in the ledger FIRST, inside the lock.
@@ -215,6 +284,9 @@ class OrganizationPayoutService
                 'organization_name' => $orgName,
                 'organization_key' => $key,
                 'amount' => $amount,
+                'fee_percent' => $split['percent'],
+                'fee_amount' => $split['fee'],
+                'net_amount' => $split['net'],
                 'currency' => $data['currency'],
                 'type' => $type,
                 'status' => 'pending',
@@ -235,7 +307,9 @@ class OrganizationPayoutService
         // of rolling back and losing the audit trail. The log records the
         // provider-response status in every outcome — including rejections.
         try {
-            $this->submitToProvider($payout, $amount, $type);
+            // The organization receives the NET amount: the enforced fee can
+            // never be submitted as part of the provider transfer.
+            $this->submitToProvider($payout, (float) $payout->net_amount, $type);
         } finally {
             $this->recordLog($payout->refresh(), $amount, $type, $actorId);
         }
@@ -414,13 +488,24 @@ class OrganizationPayoutService
                         'subject_type' => OrganizationPayout::class,
                         'subject_id' => $payout->id,
                         'message' => sprintf(
-                            'PayPal confirmed payout of %.2f %s to %s',
+                            'PayPal confirmed payout of %.2f %s gross (net %.2f) to %s',
                             $payout->amount,
                             strtoupper($payout->currency),
+                            (float) ($payout->net_amount ?? $payout->amount),
                             $payout->organization_name
                         ),
-                        'after' => ['status' => 'paid', 'paid_at' => $payout->paid_at?->toDateTimeString()],
-                        'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
+                        'after' => [
+                            'status' => 'paid',
+                            'paid_at' => $payout->paid_at?->toDateTimeString(),
+                            'amount' => (float) $payout->amount,
+                            'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+                            'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
+                        ],
+                        'meta' => [
+                            'payment_method' => $payout->payment_method ?: 'paypal',
+                            'gross_amount' => (float) $payout->amount,
+                            'net_amount' => (float) ($payout->net_amount ?? $payout->amount),
+                        ],
                     ]);
                 } elseif (in_array($effective, ['FAILED', 'RETURNED', 'BLOCKED'], true)) {
                     $payout->forceFill([
@@ -463,10 +548,13 @@ class OrganizationPayoutService
             'actor_id' => $actorId,
             'actor_role' => 'Admin',
             'message' => sprintf(
-                '%s payout of %.2f %s to %s (%s) via %s',
+                '%s payout of %.2f %s gross (fee %.2f @ %s%%, net %.2f) to %s (%s) via %s',
                 $type,
                 $amount,
                 strtoupper($payout->currency),
+                (float) $payout->fee_amount,
+                rtrim(rtrim(number_format((float) $payout->fee_percent, 2, '.', ''), '0'), '.'),
+                (float) $payout->net_amount,
                 $payout->organization_name,
                 $payout->destination_paypal_email,
                 $payout->payment_method ?: 'paypal'
@@ -474,7 +562,11 @@ class OrganizationPayoutService
             'after' => [
                 'organization_id' => $payout->organization_id,
                 'organization_name' => $payout->organization_name,
+                // amount = gross (consumes the owed balance)
                 'amount' => $amount,
+                'fee_percent' => (float) $payout->fee_percent,
+                'fee_amount' => (float) $payout->fee_amount,
+                'net_amount' => (float) $payout->net_amount,
                 'currency' => strtoupper($payout->currency),
                 'type' => $type,
                 'status' => $payout->status,
@@ -484,7 +576,14 @@ class OrganizationPayoutService
                 'provider_status' => $payout->provider_status,
                 'failure_reason' => $payout->failure_reason,
             ],
-            'meta' => ['payment_method' => $payout->payment_method ?: 'paypal'],
+            'meta' => [
+                'payment_method' => $payout->payment_method ?: 'paypal',
+                // Rate in force at execution time (frozen on the row too).
+                'transaction_cost_percent' => (float) $payout->fee_percent,
+                'gross_amount' => (float) $amount,
+                'fee_amount' => (float) $payout->fee_amount,
+                'net_amount' => (float) $payout->net_amount,
+            ],
         ]);
     }
 

@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "取引コスト",
+        "payoutGross": "グロス",
+        "payoutNet": "ネットから組織まで",
+        "payoutFee": "料金 ({percent}%)",
+        "transactionCostLabel": "取引コスト ({percent}%)",
+        "netToOrganization": "ネットから組織まで",
+        "payoutFeeNote": "{percent}% の取引コストがすべての支払いから差し引かれます。",
+        "payoutNetBelowMinimum": "取引コストを差し引いた純額は、最低送金額の 1.00 を下回ります。",
+        "transactionCostSummary": "{percent}% の取引コストが源泉徴収: {fee} — 組織は正味 {net} を受け取りました。"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "交易成本",
+        "payoutGross": "格羅斯",
+        "payoutNet": "網路到組織",
+        "payoutFee": "費用（{percent}%）",
+        "transactionCostLabel": "交易成本（{percent}%）",
+        "netToOrganization": "網路到組織",
+        "payoutFeeNote": "從每筆支出中扣除 {percent}% 的交易成本。",
+        "payoutNetBelowMinimum": "扣除交易費用後淨額低於最低轉帳1.00。",
+        "transactionCostSummary": "{percent}% 扣留交易成本：{fee} — 組織收到 {net} 淨額。"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"

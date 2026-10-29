@@ -106,6 +106,13 @@
                                             Owed {{ fmt(row.currency, row.owed) }} · Paid
                                             {{ fmt(row.currency, row.paid) }}
                                         </span>
+                                        <span class="block text-xs text-amber-600">
+                                            {{
+                                                t('admin.payoutFeeNote', {
+                                                    percent: feePercentLabel(row),
+                                                })
+                                            }}
+                                        </span>
                                     </div>
                                     <div class="flex items-center gap-2 shrink-0">
                                         <button
@@ -171,6 +178,28 @@
                         {{ payFieldErrors.amount || payError }}
                     </p>
                 </div>
+                <!-- Forced 5% transaction cost: read-only breakdown. The
+                    server recomputes these values; the API rejects any
+                    client-supplied fee or net figure. -->
+                <div class="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-gray-500">
+                            {{ t('admin.transactionCostLabel', { percent: payFeePercent }) }}
+                        </span>
+                        <span class="font-medium text-amber-600">
+                            − {{ fmt(payTarget.currency, payFeeAmount) }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">{{ t('admin.netToOrganization') }}</span>
+                        <span class="font-semibold text-gray-800">
+                            {{ fmt(payTarget.currency, payNetAmount) }}
+                        </span>
+                    </div>
+                    <p v-if="payNetTooSmall" class="text-xs text-red-600">
+                        {{ t('admin.payoutNetBelowMinimum') }}
+                    </p>
+                </div>
                 <div v-if="payoutMethods.length">
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         {{ t('donate.paymentMethod') }}
@@ -208,7 +237,7 @@
                 </button>
                 <button
                     class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40"
-                    :disabled="paying"
+                    :disabled="paying || payNetTooSmall"
                     @click="submitPay"
                 >
                     {{ paying ? t('admin.paying') : t('admin.recordPayout') }}
@@ -238,6 +267,18 @@
                                 :variant="h.type === 'full' ? 'success' : 'amber'"
                                 :text="h.type"
                             />
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            {{ t('admin.payoutGross') }}: {{ fmt(h.currency, h.amount) }} ·
+                            {{
+                                t('admin.payoutFee', {
+                                    percent: formatPercent(h.fee_percent),
+                                })
+                            }}: −{{ fmt(h.currency, h.fee_amount ?? 0) }} ·
+                            {{ t('admin.payoutNet') }}:
+                            <span class="font-semibold text-gray-700">
+                                {{ fmt(h.currency, h.net_amount ?? h.amount) }}
+                            </span>
                         </div>
                         <div class="text-xs text-gray-400">
                             {{ formatDateUTC(h.paid_at) || t('admin.unpaid') }} · by
@@ -278,6 +319,7 @@
 
 <script setup>
     import { adminService } from '@/services/adminService'
+    import { DEFAULT_TRANSACTION_FEE_PERCENT, roundHalfUp } from '@/config/donationFees'
     import { formatDateUTC } from '~/utils/dateFormatUTC'
     import { computed, ref } from 'vue'
     import { useI18n } from 'vue-i18n'
@@ -299,8 +341,14 @@
     const paying = ref(false)
 
     // Payout rail is data-driven from the registry's payout-capable methods.
-    const { payoutMethods, loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } =
-        usePaymentMethods()
+    const {
+        payoutMethods,
+        loadPaymentMethods,
+        loadAdminMethods,
+        methodLabel,
+        methodVariant,
+        transactionCostPercent: registryCostPercent,
+    } = usePaymentMethods()
     const payMethod = ref('')
 
     const syncing = ref(false)
@@ -333,6 +381,49 @@
     } = useForm({ validationSchema: paySchema })
 
     const [payAmount, payAmountProps] = definePayField('amount')
+
+    // Forced transaction cost (single source: config/donations.php, surfaced
+    // by GET /v1/payment-methods, mirrored per allocation). The modal only
+    // DISPLAYS the split — the server recomputes and rejects any client fee.
+    const payFeePercent = computed(() => {
+        const raw = payTarget.value?.transaction_cost_percent
+        // Allocation → registry payload → shared fallback constant.
+        const value = Number(raw ?? registryCostPercent.value ?? DEFAULT_TRANSACTION_FEE_PERCENT)
+        return Number.isFinite(value) ? value : DEFAULT_TRANSACTION_FEE_PERCENT
+    })
+
+    const formatPercent = (value) => {
+        const n = Number(value ?? 0)
+        if (!Number.isFinite(n)) return '0'
+        return String(Number(n.toFixed(2)))
+    }
+
+    const feePercentLabel = (row) =>
+        formatPercent(
+            row?.transaction_cost_percent ??
+                registryCostPercent.value ??
+                DEFAULT_TRANSACTION_FEE_PERCENT,
+        )
+
+    const payGrossAmount = computed(() => {
+        const n = Number(payAmount.value)
+        return Number.isFinite(n) && n > 0 ? roundHalfUp(n) : 0
+    })
+
+    const payFeeAmount = computed(() => {
+        const gross = payGrossAmount.value
+        if (gross <= 0) return 0
+        return Math.min(roundHalfUp((gross * payFeePercent.value) / 100), gross)
+    })
+
+    const payNetAmount = computed(() => roundHalfUp(payGrossAmount.value - payFeeAmount.value))
+
+    // Mirrors the server's minimum-send guard so the button explains the block
+    // before the request is attempted.
+    const MIN_NET_SEND = 1
+    const payNetTooSmall = computed(
+        () => payGrossAmount.value > 0 && payNetAmount.value < MIN_NET_SEND,
+    )
 
     const rowKey = (row) => `${row.formula_id}:${row.organization_key}`
 
@@ -458,8 +549,16 @@
             })
             return
         }
+        // Mirrors the server guard: the enforced 5% must still leave a
+        // transferable net amount.
+        if (payNetTooSmall.value) {
+            payError.value = t('admin.payoutNetBelowMinimum')
+            return
+        }
         paying.value = true
         try {
+            // Only the gross amount is submitted — the server computes and
+            // records the transaction cost itself.
             await adminService.createPayout({
                 donation_formula_id: payTarget.value.formula_id,
                 organization_name: payTarget.value.organization_name,

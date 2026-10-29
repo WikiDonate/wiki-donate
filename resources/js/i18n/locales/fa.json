@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "هزینه تراکنش",
+        "payoutGross": "ناخالص",
+        "payoutNet": "شبکه به سازمان",
+        "payoutFee": "کارمزد ({percent}%)",
+        "transactionCostLabel": "هزینه تراکنش ({percent}%)",
+        "netToOrganization": "شبکه به سازمان",
+        "payoutFeeNote": "هزینه تراکنش {percent}٪ از هر پرداخت کسر می شود.",
+        "payoutNetBelowMinimum": "مبلغ خالص کمتر از حداقل انتقال 1.00 پس از هزینه معامله است.",
+        "transactionCostSummary": "{percent}% هزینه معامله: {fee} - سازمان‌ها خالص {net} را دریافت کردند."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

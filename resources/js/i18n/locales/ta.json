@@ -643,7 +643,16 @@
         "deleteOrganizationMsg": "Delete \"{name}\"? Organizations with payout or formula history cannot be deleted.",
         "deleteOrganizationHistoryHint": "Organizations with payout or formula history can't be deleted — unverify them instead.",
         "organizationDeleted": "Organization deleted",
-        "failedToDeleteOrganization": "Failed to delete organization"
+        "failedToDeleteOrganization": "Failed to delete organization",
+        "transactionCost": "பரிவர்த்தனை செலவு",
+        "payoutGross": "மொத்த",
+        "payoutNet": "அமைப்புக்கு நிகராக",
+        "payoutFee": "கட்டணம் ({percent}%)",
+        "transactionCostLabel": "பரிவர்த்தனை செலவு ({percent}%)",
+        "netToOrganization": "அமைப்புக்கு நிகராக",
+        "payoutFeeNote": "ஒவ்வொரு பேஅவுட்டிலிருந்தும் {percent}% பரிவர்த்தனை செலவு கழிக்கப்படும்.",
+        "payoutNetBelowMinimum": "பரிவர்த்தனை செலவுக்குப் பிறகு நிகரத் தொகையானது குறைந்தபட்ச பரிமாற்றமான 1.00க்குக் கீழே உள்ளது.",
+        "transactionCostSummary": "{percent}% பரிவர்த்தனை செலவு நிறுத்தப்பட்டது: {fee} — நிறுவனங்கள் {net} நிகரத்தைப் பெற்றன."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
