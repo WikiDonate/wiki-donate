@@ -652,7 +652,14 @@
         "netToOrganization": "Сеть для организации",
         "payoutFeeNote": "Из каждой выплаты вычитается стоимость транзакции {percent}%.",
         "payoutNetBelowMinimum": "Чистая сумма ниже минимального перевода в размере 1,00 после стоимости транзакции.",
-        "transactionCostSummary": "Удержано {percent}% стоимости транзакции: {fee} — организации получили {net} нетто."
+        "transactionCostSummary": "Удержано {percent}% стоимости транзакции: {fee} — организации получили {net} нетто.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Все права защищены."

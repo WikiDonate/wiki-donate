@@ -459,7 +459,7 @@ class PayPalCheckoutTest extends TestCase
         $this->assertEquals('donor@example.com', $donation->donor_email);
     }
 
-    public function test_capture_order_non_usd_currency(): void
+    public function test_capture_order_normalises_non_usd_currency_to_usd(): void
     {
         $user = User::factory()->create();
         $token = $user->createToken('test')->plainTextToken;
@@ -469,10 +469,12 @@ class PayPalCheckoutTest extends TestCase
             'user_id' => $user->id,
             'donor_email' => 'eur@example.com',
             'amount' => 50.00,
-            'currency' => 'EUR',
+            'currency' => 'USD',
         ]);
 
-        // Mock returns USD by default; override captureOrder to return EUR
+        // A capture that comes back in another currency must never enter the
+        // USD-only ledger as-is: it is recorded in the supported currency so
+        // the captured money is not lost.
         $this->mockPayPalClient([
             'captureOrder' => [
                 'id' => 'PAYPAL_ORDER_123',
@@ -502,7 +504,8 @@ class PayPalCheckoutTest extends TestCase
         $response->assertStatus(200);
 
         $donation = Donation::where('payment_method', 'paypal')->where('gateway_reference', 'PAYPAL_ORDER_123')->first();
-        $this->assertEquals('EUR', $donation->currency);
+        $this->assertNotNull($donation);
+        $this->assertEquals('USD', $donation->currency);
         $this->assertEquals(50.00, $donation->amount);
     }
 

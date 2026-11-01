@@ -652,7 +652,14 @@
         "netToOrganization": "Netto aan organisatie",
         "payoutFeeNote": "Van elke uitbetaling worden transactiekosten van {percent}% afgetrokken.",
         "payoutNetBelowMinimum": "Het nettobedrag ligt onder de minimale overboeking van € 1,00 na transactiekosten.",
-        "transactionCostSummary": "{percent}% transactiekosten ingehouden: {fee} — organisaties ontvingen {net} netto."
+        "transactionCostSummary": "{percent}% transactiekosten ingehouden: {fee} — organisaties ontvingen {net} netto.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rechten voorbehouden."

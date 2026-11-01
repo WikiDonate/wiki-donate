@@ -652,7 +652,14 @@
         "netToOrganization": "Bersih kepada organisasi",
         "payoutFeeNote": "Kos transaksi {percent}% ditolak daripada setiap pembayaran.",
         "payoutNetBelowMinimum": "Jumlah bersih adalah di bawah pemindahan minimum 1.00 selepas kos transaksi.",
-        "transactionCostSummary": "{percent}% kos transaksi ditahan: {fee} — organisasi menerima {net} bersih."
+        "transactionCostSummary": "{percent}% kos transaksi ditahan: {fee} — organisasi menerima {net} bersih.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

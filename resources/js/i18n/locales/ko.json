@@ -652,7 +652,14 @@
         "netToOrganization": "조직 순",
         "payoutFeeNote": "{percent}%의 거래 비용이 모든 지불금에서 공제됩니다.",
         "payoutNetBelowMinimum": "순금액은 거래 비용을 차감한 최소 이체 금액인 1.00 미만입니다.",
-        "transactionCostSummary": "{percent}% 거래 비용 원천징수: {fee} — 조직은 {net} 순수익을 받았습니다."
+        "transactionCostSummary": "{percent}% 거래 비용 원천징수: {fee} — 조직은 {net} 순수익을 받았습니다.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

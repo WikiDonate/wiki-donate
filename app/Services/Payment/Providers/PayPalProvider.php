@@ -4,6 +4,7 @@ namespace App\Services\Payment\Providers;
 
 use App\Contracts\PaymentProvider;
 use App\Models\PaymentMethod;
+use App\Rules\SupportedCurrency;
 use App\Services\PayPalClient;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +39,9 @@ class PayPalProvider implements PaymentProvider
      */
     public function supportedCurrencies(): array
     {
-        return ['USD', 'EUR', 'GBP', 'AUD', 'CAD'];
+        // The platform is single-currency; this must track
+        // config('donations.currency') so it can never drift from the API.
+        return [SupportedCurrency::code()];
     }
 
     /**

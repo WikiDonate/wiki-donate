@@ -652,7 +652,14 @@
         "netToOrganization": "Nett til organisasjon",
         "payoutFeeNote": "En transaksjonskostnad på {percent} % trekkes fra hver utbetaling.",
         "payoutNetBelowMinimum": "Nettobeløpet er under minimumsoverføringen på 1,00 etter transaksjonskostnaden.",
-        "transactionCostSummary": "{percent} % transaksjonskostnad tilbakeholdt: {fee} — organisasjoner mottok {net} netto."
+        "transactionCostSummary": "{percent} % transaksjonskostnad tilbakeholdt: {fee} — organisasjoner mottok {net} netto.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

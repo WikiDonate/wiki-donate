@@ -16,4 +16,16 @@ return [
     |
     */
     'transaction_cost_percent' => env('DONATION_TRANSACTION_COST_PERCENT', 5),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Supported currency
+    |--------------------------------------------------------------------------
+    |
+    | Single source of truth for the currency the platform accepts. Donations
+    | and organization payouts are USD only; any other code is rejected at the
+    | API boundary instead of being silently coerced.
+    |
+    */
+    'currency' => env('DONATION_CURRENCY', 'USD'),
 ];

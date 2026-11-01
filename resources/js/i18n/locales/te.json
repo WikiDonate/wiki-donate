@@ -652,7 +652,14 @@
         "netToOrganization": "సంస్థకు నెట్",
         "payoutFeeNote": "ప్రతి చెల్లింపు నుండి {percent}% లావాదేవీ ఖర్చు తీసివేయబడుతుంది.",
         "payoutNetBelowMinimum": "లావాదేవీ ఖర్చు తర్వాత నికర మొత్తం కనీస బదిలీ 1.00 కంటే తక్కువగా ఉంటుంది.",
-        "transactionCostSummary": "{percent}% లావాదేవీ ఖర్చు నిలిపివేయబడింది: {fee} — సంస్థలు {net} నికరాన్ని అందుకున్నాయి."
+        "transactionCostSummary": "{percent}% లావాదేవీ ఖర్చు నిలిపివేయబడింది: {fee} — సంస్థలు {net} నికరాన్ని అందుకున్నాయి.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి."

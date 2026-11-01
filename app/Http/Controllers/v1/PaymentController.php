@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Exceptions\PaymentProviderException;
 use App\Http\Controllers\Controller;
+use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentCheckoutService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -36,7 +37,7 @@ class PaymentController extends Controller
 
         $request->validate([
             'amount' => 'required|numeric|min:0.50|max:500000',
-            'currency' => 'nullable|string|size:3',
+            'currency' => ['nullable', 'string', new SupportedCurrency],
             'donor_name' => 'nullable|string|max:255',
             'donor_email' => 'nullable|email|max:255',
             'formula_id' => 'nullable|integer|exists:donation_formulas,id',

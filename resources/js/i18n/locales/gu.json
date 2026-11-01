@@ -652,7 +652,14 @@
         "netToOrganization": "સંસ્થા માટે ચોખ્ખી",
         "payoutFeeNote": "દરેક ચૂકવણીમાંથી {percent}% વ્યવહાર ખર્ચ બાદ કરવામાં આવે છે.",
         "payoutNetBelowMinimum": "ટ્રાન્ઝેક્શન ખર્ચ પછી ચોખ્ખી રકમ 1.00 ના ન્યૂનતમ ટ્રાન્સફર કરતાં ઓછી છે.",
-        "transactionCostSummary": "{percent}% ટ્રાન્ઝેક્શન ખર્ચ અટકાવવામાં આવ્યો: {fee} — સંસ્થાઓએ {net} નેટ પ્રાપ્ત કર્યું."
+        "transactionCostSummary": "{percent}% ટ્રાન્ઝેક્શન ખર્ચ અટકાવવામાં આવ્યો: {fee} — સંસ્થાઓએ {net} નેટ પ્રાપ્ત કર્યું.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. સર્વાધિકાર આરક્ષિત."

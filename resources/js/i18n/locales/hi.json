@@ -652,7 +652,14 @@
         "netToOrganization": "संगठन के लिए नेट",
         "payoutFeeNote": "प्रत्येक भुगतान से {percent}% लेनदेन लागत काट ली जाती है।",
         "payoutNetBelowMinimum": "लेनदेन लागत के बाद शुद्ध राशि 1.00 के न्यूनतम हस्तांतरण से कम है।",
-        "transactionCostSummary": "{percent}% लेनदेन लागत रोकी गई: {fee} - संगठनों को {net} नेट प्राप्त हुआ।"
+        "transactionCostSummary": "{percent}% लेनदेन लागत रोकी गई: {fee} - संगठनों को {net} नेट प्राप्त हुआ।",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्वाधिकार सुरक्षित।"

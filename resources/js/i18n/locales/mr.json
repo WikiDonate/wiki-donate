@@ -652,7 +652,14 @@
         "netToOrganization": "संस्थेला नेट",
         "payoutFeeNote": "प्रत्येक पेआउटमधून {percent}% व्यवहार खर्च वजा केला जातो.",
         "payoutNetBelowMinimum": "निव्वळ रक्कम व्यवहार खर्चानंतर 1.00 च्या किमान हस्तांतरणापेक्षा कमी आहे.",
-        "transactionCostSummary": "{percent}% व्यवहार खर्च रोखला: {fee} — संस्थांना {net} निव्वळ प्राप्त झाले."
+        "transactionCostSummary": "{percent}% व्यवहार खर्च रोखला: {fee} — संस्थांना {net} निव्वळ प्राप्त झाले.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."

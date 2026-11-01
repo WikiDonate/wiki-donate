@@ -652,7 +652,14 @@
         "netToOrganization": "Neto a la organización",
         "payoutFeeNote": "Se deduce un costo de transacción {percent}% de cada pago.",
         "payoutNetBelowMinimum": "El monto neto está por debajo de la transferencia mínima de 1,00 después del costo de la transacción.",
-        "transactionCostSummary": "{percent}% del costo de transacción retenido: {fee}: las organizaciones recibieron {net} neto."
+        "transactionCostSummary": "{percent}% del costo de transacción retenido: {fee}: las organizaciones recibieron {net} neto.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."

@@ -652,7 +652,14 @@
         "netToOrganization": "تنظیم کے لئے نیٹ",
         "payoutFeeNote": "ہر ادائیگی سے ایک {percent}% ٹرانزیکشن لاگت کاٹ لی جاتی ہے۔",
         "payoutNetBelowMinimum": "لین دین کی لاگت کے بعد خالص رقم 1.00 کی کم از کم منتقلی سے کم ہے۔",
-        "transactionCostSummary": "{percent}% ٹرانزیکشن لاگت روک دی گئی: {fee} — تنظیموں کو {net} نیٹ موصول ہوا۔"
+        "transactionCostSummary": "{percent}% ٹرانزیکشن لاگت روک دی گئی: {fee} — تنظیموں کو {net} نیٹ موصول ہوا۔",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

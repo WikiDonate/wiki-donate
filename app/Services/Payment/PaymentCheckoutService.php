@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\PaymentPendingOrder;
 use App\Models\TransactionLog;
+use App\Rules\SupportedCurrency;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,14 @@ class PaymentCheckoutService
         $provider = $this->registry->forCode($code);
 
         $amount = round((float) ($input['amount'] ?? 0), 2);
-        $currency = strtoupper((string) ($input['currency'] ?? 'USD'));
+
+        // The platform is single-currency (config/donations.php). Normalize the
+        // incoming code and refuse anything else rather than silently coercing
+        // a mismatched amount — the donor must be told the gateway expects USD.
+        $currency = strtoupper(trim((string) ($input['currency'] ?? SupportedCurrency::code())));
+        if ($currency !== SupportedCurrency::code()) {
+            throw PaymentProviderException::unsupportedCurrency($currency, SupportedCurrency::code());
+        }
 
         $returnUrl = $provider->returnUrl((string) config('app.url'), $code);
         $cancelUrl = rtrim((string) config('app.url'), '/').'/payment/cancel?method='.$code;
@@ -163,6 +171,22 @@ class PaymentCheckoutService
 
             $facts = (array) ($captured['capture'] ?? []);
 
+            // The platform is single-currency. Every order is created in the
+            // supported currency, so a capture returning another code means
+            // provider drift/tampering. The money has already moved, so refuse
+            // to drop it: record the row in the supported currency (the ledger
+            // cannot hold a second one) and leave an audit trail.
+            $capturedCurrency = strtoupper(trim((string) ($facts['currency'] ?? '')));
+            $recordedCurrency = SupportedCurrency::code();
+            if ($capturedCurrency !== '' && $capturedCurrency !== $recordedCurrency) {
+                Log::warning('Payment capture currency is not the supported currency', [
+                    'method' => $code,
+                    'reference' => $reference,
+                    'captured_currency' => $capturedCurrency,
+                    'recorded_currency' => $recordedCurrency,
+                ]);
+            }
+
             $formula = $pending->donation_formula_id
                 ? DonationFormula::find($pending->donation_formula_id)
                 : null;
@@ -175,7 +199,7 @@ class PaymentCheckoutService
                 'donor_name' => $pending->donor_name ?: ($facts['payer_name'] ?? null),
                 'donor_email' => $pending->donor_email ?: ($facts['payer_email'] ?? null),
                 'amount' => $facts['amount'] ?? $pending->amount,
-                'currency' => strtoupper((string) ($facts['currency'] ?? $pending->currency)),
+                'currency' => $recordedCurrency,
                 'status' => 'completed',
                 'metadata' => [
                     'payment_id' => $facts['payment_id'] ?? $reference,

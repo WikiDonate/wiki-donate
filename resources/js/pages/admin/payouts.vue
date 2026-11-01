@@ -27,8 +27,8 @@
                 <template v-else>
                     <!-- Payable allocations, grouped by organization.
                         Money stays per-formula (each row pays one formula);
-                        only the display is merged. Totals are never summed
-                        across rows because formulas can differ in currency. -->
+                        only the display is merged. The platform is USD-only,
+                        so totals share one currency. -->
                     <div
                         v-if="groupedAllocations.length === 0"
                         class="text-center text-sm text-gray-400 py-8"
@@ -294,8 +294,11 @@
                                 :variant="statusVariant(h.status)"
                                 :text="statusLabel(h.status)"
                             />
+                            <span v-if="h.status === 'reversed'" class="text-amber-600">
+                                {{ t('admin.payoutReversedHint') }}
+                            </span>
                             <span
-                                v-if="h.status === 'failed' && h.failure_reason"
+                                v-else-if="h.status === 'failed' && h.failure_reason"
                                 class="text-red-500"
                             >
                                 {{ h.failure_reason }}
@@ -514,6 +517,7 @@
         if (status === 'paid') return t('admin.payoutStatusPaid')
         if (status === 'pending') return t('admin.payoutStatusPending')
         if (status === 'failed') return t('admin.payoutStatusFailed')
+        if (status === 'reversed') return t('admin.payoutStatusReversed')
         return status || '—'
     }
 
@@ -521,6 +525,7 @@
         if (status === 'paid') return 'success'
         if (status === 'pending') return 'amber'
         if (status === 'failed') return 'danger'
+        if (status === 'reversed') return 'danger'
         return 'info'
     }
 
@@ -531,7 +536,17 @@
         try {
             const res = await adminService.syncPayouts()
             const count = (res.data ?? []).length
-            syncMessage.value = count > 0 ? `${count} payout(s) updated` : t('admin.noPayouts')
+            const meta = res.meta ?? {}
+            if (count > 0) {
+                syncMessage.value = t('admin.payoutsUpdated', { count })
+            } else if ((meta.checked ?? 0) === 0) {
+                syncMessage.value = t('admin.noPendingPayouts')
+            } else {
+                syncMessage.value = t('admin.payoutsUnchanged', { count: meta.checked })
+            }
+            if ((meta.errors ?? 0) > 0) {
+                syncError.value = t('admin.payoutsSyncErrors', { count: meta.errors })
+            }
             await fetchAllocations()
         } catch (err) {
             syncError.value = apiErrorMessage(err, t('admin.failedToSync'))

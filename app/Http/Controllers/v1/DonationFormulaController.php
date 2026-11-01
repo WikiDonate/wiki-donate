@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\DonationFormula;
 use App\Models\Organization;
+use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
 use App\Services\Organization\CustomOrganizationNotifier;
 use App\Services\Organization\OrganizationRegistryService;
@@ -137,12 +138,28 @@ class DonationFormulaController extends Controller
      */
     private function validateOrganizationIdentity(array $rows)
     {
+        $seenKeys = [];
+
         foreach (array_values($rows) as $i => $row) {
             $rowNo = $i + 1;
 
             if (mb_strlen((string) ($row['organization'] ?? '')) > 255) {
                 return $this->identityError("Row {$rowNo}: organization name is too long.");
             }
+
+            // Two rows for the same organization cannot be paid: allocations
+            // are keyed by the normalized name and deduplicated, so the second
+            // row's percentage would be silently unpayable.
+            $key = OrganizationPayout::makeKey((string) ($row['organization'] ?? ''));
+
+            if (isset($seenKeys[$key])) {
+                return $this->identityError(
+                    "Row {$rowNo}: this organization is already listed on row {$seenKeys[$key]}. "
+                    .'Merge the two percentages into a single row.'
+                );
+            }
+
+            $seenKeys[$key] = $rowNo;
 
             $ein = $this->normalizeEin($row['ein'] ?? null);
             if (array_key_exists('ein', $row) && $row['ein'] !== null && $row['ein'] !== '' && $ein === null) {

@@ -29,6 +29,9 @@ class OrganizationPayout extends Model
         'type',
         'status',
         'paid_at',
+        'submitted_at',
+        'attempt_count',
+        'reversed_at',
         'payout_batch_id',
         'payout_item_id',
         'provider_status',
@@ -44,7 +47,49 @@ class OrganizationPayout extends Model
         'fee_amount' => 'decimal:2',
         'net_amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'reversed_at' => 'datetime',
+        'attempt_count' => 'integer',
     ];
+
+    /**
+     * Statuses that consume the live balance. A `paid` row that was later
+     * reversed does NOT consume it any more (see isReversed()).
+     *
+     * @var array<int, string>
+     */
+    public const ON_BALANCE_STATUSES = ['paid', 'pending'];
+
+    /**
+     * Statuses that are terminal for reconciliation (the webhook handler and
+     * syncPending() will not flip them again, except for reversals).
+     *
+     * @var array<int, string>
+     */
+    public const TERMINAL_STATUSES = ['paid', 'failed', 'reversed'];
+
+    /**
+     * A paid row PayPal later reported as returned/canceled/unclaimed: the
+     * funds came back, so the balance must be re-opened.
+     */
+    public function isReversed(): bool
+    {
+        return $this->reversed_at !== null;
+    }
+
+    /**
+     * Whether this row currently consumes the organization's live balance.
+     * Mirrors the WHERE clause used by the balance aggregate so the rule
+     * lives in exactly one place.
+     */
+    public function consumesBalance(): bool
+    {
+        if (! in_array($this->status, self::ON_BALANCE_STATUSES, true)) {
+            return false;
+        }
+
+        return ! $this->isReversed();
+    }
 
     protected static function boot()
     {

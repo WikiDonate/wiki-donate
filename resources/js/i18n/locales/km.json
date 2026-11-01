@@ -652,7 +652,14 @@
         "netToOrganization": "សុទ្ធដល់អង្គការ",
         "payoutFeeNote": "តម្លៃប្រតិបត្តិការ {percent}% ត្រូវបានកាត់ចេញពីរាល់ការទូទាត់។",
         "payoutNetBelowMinimum": "ចំនួនទឹកប្រាក់សុទ្ធគឺទាបជាងការផ្ទេរអប្បបរមា 1.00 បន្ទាប់ពីតម្លៃប្រតិបត្តិការ។",
-        "transactionCostSummary": "ការចំណាយលើប្រតិបត្តិការ {percent}% ត្រូវបានកាត់ទុក៖ {fee} — អង្គការបានទទួល {net} សុទ្ធ។"
+        "transactionCostSummary": "ការចំណាយលើប្រតិបត្តិការ {percent}% ត្រូវបានកាត់ទុក៖ {fee} — អង្គការបានទទួល {net} សុទ្ធ។",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

@@ -652,7 +652,14 @@
         "netToOrganization": "Net kwa shirika",
         "payoutFeeNote": "Gharama ya miamala ya {percent}% inakatwa kutoka kwa kila malipo.",
         "payoutNetBelowMinimum": "Kiasi halisi kiko chini ya kima cha chini kabisa cha uhamisho cha 1.00 baada ya gharama ya muamala.",
-        "transactionCostSummary": "Gharama ya muamala ya {percent}% imezuiwa: {fee} — mashirika yalipata wavu {net}."
+        "transactionCostSummary": "Gharama ya muamala ya {percent}% imezuiwa: {fee} — mashirika yalipata wavu {net}.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

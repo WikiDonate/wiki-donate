@@ -652,7 +652,14 @@
         "netToOrganization": "Síť do organizace",
         "payoutFeeNote": "Z každé výplaty je odečtena transakční cena {percent} %.",
         "payoutNetBelowMinimum": "Čistá částka je nižší než minimální převod 1,00 po transakční ceně.",
-        "transactionCostSummary": "{percent} % zadržených transakčních nákladů: {fee} — organizace obdržely {net} netto."
+        "transactionCostSummary": "{percent} % zadržených transakčních nákladů: {fee} — organizace obdržely {net} netto.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

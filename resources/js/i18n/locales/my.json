@@ -652,7 +652,14 @@
         "netToOrganization": "ကွန်ပလိန်း",
         "payoutFeeNote": "ပေးချေမှုတိုင်းမှ {percent}% အရောင်းအ၀ယ်ကုန်ကျစရိတ်ကို နုတ်ယူပါသည်။",
         "payoutNetBelowMinimum": "အသားတင်ပမာဏသည် ငွေလွှဲခပြီးနောက် အနည်းဆုံး 1.00 လွှဲပြောင်းမှုအောက်တွင် ရှိသည်။",
-        "transactionCostSummary": "{percent}% အရောင်းအ၀ယ်ကုန်ကျစရိတ်- {fee} — အဖွဲ့အစည်းများသည် {net} အသားတင်ကို လက်ခံရရှိခဲ့သည်။"
+        "transactionCostSummary": "{percent}% အရောင်းအ၀ယ်ကုန်ကျစရိတ်- {fee} — အဖွဲ့အစည်းများသည် {net} အသားတင်ကို လက်ခံရရှိခဲ့သည်။",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

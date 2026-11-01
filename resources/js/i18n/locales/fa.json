@@ -652,7 +652,14 @@
         "netToOrganization": "شبکه به سازمان",
         "payoutFeeNote": "هزینه تراکنش {percent}٪ از هر پرداخت کسر می شود.",
         "payoutNetBelowMinimum": "مبلغ خالص کمتر از حداقل انتقال 1.00 پس از هزینه معامله است.",
-        "transactionCostSummary": "{percent}% هزینه معامله: {fee} - سازمان‌ها خالص {net} را دریافت کردند."
+        "transactionCostSummary": "{percent}% هزینه معامله: {fee} - سازمان‌ها خالص {net} را دریافت کردند.",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

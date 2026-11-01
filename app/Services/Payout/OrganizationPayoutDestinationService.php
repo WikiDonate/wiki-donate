@@ -34,14 +34,25 @@ class OrganizationPayoutDestinationService
             }
         }
 
-        // Name fallback: exact first, then case-insensitive so formula rows
-        // with different casing still resolve to the same registry entry.
-        $org = Organization::where('name', '=', $organizationName)->first();
+        // Name fallback: normalized_name is unique in the registry (enforced
+        // by migration), so a same-name lookup can never be ambiguous. The
+        // legacy exact/case-insensitive probes are kept only as a safety net
+        // for rows written before normalized_name was guaranteed unique.
+        $key = Organization::normalizeName($organizationName);
+
+        $org = Organization::where('normalized_name', $key)->first();
         if ($org) {
             return $org;
         }
 
-        return Organization::whereRaw('LOWER(name) = ?', [mb_strtolower($organizationName)])->first();
+        $matches = Organization::whereRaw('LOWER(name) = ?', [mb_strtolower($organizationName)])->limit(2)->get();
+
+        if ($matches->count() > 1) {
+            // Ambiguous on legacy data: refuse rather than pay a random row.
+            return null;
+        }
+
+        return $matches->first();
     }
 
     /**
@@ -97,7 +108,7 @@ class OrganizationPayoutDestinationService
             throw new UserFacingException('This organization has no PayPal receiving email set. Set it in the Organizations page first.');
         }
 
-        if ($org->payout_status !== 'verified') {
+        if (! $org->isVerified()) {
             TransactionLog::record('payout.blocked', [
                 'actor_id' => $actorId,
                 'actor_role' => 'Admin',

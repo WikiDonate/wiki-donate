@@ -20,7 +20,7 @@ The entire application lives in a single Laravel project at the repository root:
 - Laravel 13: for building RESTful APIs and handling server-side logic
 - MySQL: as the database solution for managing structured data
 - Sanctum: token-based authentication for the SPA
-- PHP 8.3+
+- PHP 8.4+
 
 ### Frontend
 
@@ -97,23 +97,142 @@ The entire application lives in a single Laravel project at the repository root:
 4. Generate encryption keys: `php artisan key:generate`
 5. Run migrations: `php artisan migrate`
 
+Payment gateways are configured **after** migrating, by editing the
+`payment_methods` rows (see [Environment Variables](#environment-variables)).
+
 ### Environment Variables
 
-All configuration lives in `.env`. Frontend (Vite) build-time variables are
+Configuration lives in `.env`. Frontend (Vite) build-time variables are
 consumed in the SPA via `import.meta.env` and must be prefixed with `VITE_`:
 
 | Variable | Description |
 | --- | --- |
 | `VITE_API_URL` | Base URL for the API (default `/api/v1`) |
-| `VITE_STRIPE_PUBLIC_KEY` | Stripe publishable key used for card payments |
-| `VITE_PAYPAL_CLIENT_ID` | PayPal client ID used for PayPal checkout |
 | `VITE_AI_CHATBOT_API_KEY` | API key for the AI chatbot widget |
 | `VITE_APP_NAME` | App name exposed to the frontend |
 
-The backend payment variables (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
-`PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_WEBHOOK_ID`) must also be set for
-Stripe and PayPal flows to work. Note that changing `VITE_*` values requires a
-re-run of `npm run build` (or `npm run dev`) to take effect.
+| Variable | Description |
+| --- | --- |
+| `APP_URL` / `APP_FRONTEND_URL` | Must match the serving origin, or emailed links go to the wrong host |
+| `DONATION_TRANSACTION_COST_PERCENT` | Payout/transaction-cost rate (default `5`) |
+| `DONATION_CURRENCY` | The only supported currency (default `USD`) |
+
+Changing `VITE_*` values requires a re-run of `npm run build` (or `npm run dev`)
+to take effect.
+
+**Payment gateway configuration is DB-owned, not env-owned.** There are no
+`STRIPE_*` / `PAYPAL_*` / `VITE_STRIPE_*` / `VITE_PAYPAL_*` keys. Each gateway
+is a row in the `payment_methods` table:
+
+- `config` — non-secret metadata: `mode` (`sandbox` | `live`), currencies,
+  webhook route + subscribed events, limits.
+- `credentials` — **encrypted** (`encrypted:array`, needs `APP_KEY`): client
+  id/secret and webhook id/secret. Never fillable, never returned by the API.
+
+The SPA reads public keys from `GET /v1/payment-methods` (`public_key`) or
+`GET /v1/payment-methods/{code}/public-key`; payment servers read the secrets
+via `App\Services\Payment\PaymentCredentials`. Re-introducing per-gateway env
+keys would create a second source of truth — don't.
+
+### Webhooks
+
+There is one webhook endpoint per gateway:
+
+```
+POST {APP_URL}/api/v1/webhooks/{method}
+```
+
+e.g. `https://example.com/api/v1/webhooks/paypal`. The route is public but every
+delivery is **signature-verified** before processing, so an unsigned request is
+rejected with `401`.
+
+To wire up PayPal (also required for payouts — see below):
+
+1. PayPal Developer Dashboard → **Apps & Credentials** → your app →
+   **Sandbox**/**Live** → **Webhooks** → **Add Webhook**.
+2. URL: `{APP_URL}/api/v1/webhooks/paypal`.
+3. Subscribe to at least:
+
+   ```
+   PAYMENT.CAPTURE.COMPLETED
+   PAYMENT.PAYOUTSBATCH.SUCCESS
+   PAYMENT.PAYOUTSBATCH.DENIED
+   PAYMENT.PAYOUTS-ITEM.SUCCEEDED
+   PAYMENT.PAYOUTS-ITEM.FAILED
+   PAYMENT.PAYOUTS-ITEM.RETURNED
+   PAYMENT.PAYOUTS-ITEM.BLOCKED
+   PAYMENT.PAYOUTS-ITEM.CANCELED
+   PAYMENT.PAYOUTS-ITEM.UNCLAIMED
+   ```
+
+4. Copy the **Webhook ID** and store it on the registry row (encrypted):
+
+   ```php
+   $m = App\Models\PaymentMethod::where('code', 'paypal')->first();
+   $c = $m->credentials;
+   $c['webhook_id'] = 'WH-XXXXXXXXXXXXXXXX';
+   $m->forceFill(['credentials' => $c])->save();
+   app(App\Services\Payment\PaymentCredentials::class)->flush();
+   ```
+
+PayPal can only reach a **publicly resolvable HTTPS URL**. For local
+development, use a tunnel (`cloudflared tunnel --url http://localhost:8000`, or
+`ngrok http 8000`) and point the webhook at the tunnel URL. Avoid localtunnel /
+`loca.lt` — its interstitial page usually breaks PayPal's delivery.
+
+## Organization Payouts
+
+Verified organizations are paid out from the donations allocated to them.
+
+- **Ledger:** `organization_payouts` is append-only. The live balance for an
+  allocation is always `owed − sum(paid + pending)`, never a stored snapshot.
+- **Flow:** an admin types a **gross** amount; the server deducts the
+  configurable transaction cost (`DONATION_TRANSACTION_COST_PERCENT`) and
+  transfers the **net** to the organization. Client-supplied fee/net values are
+  rejected (`prohibited`) — the split is server-enforced and frozen per row.
+- **Guard:** payouts are blocked unless the organization is **verified** and the
+  requested rail is enabled on it (PayPal additionally needs a receiving email).
+- **Currency:** the platform is **USD-only**. `config('donations.currency')`
+  (env `DONATION_CURRENCY`, default `USD`) is the single source of truth; every
+  donation and payout in another code is rejected with a `422` rather than
+  silently coerced. Donations are summed into one USD balance per allocation.
+  Legacy non-USD `completed` rows (stored before the restriction) are **excluded**
+  from USD balances rather than counted as dollars (which would overpay). List
+  them with the read-only audit command `php artisan donations:legacy-currency`
+  (add `--json` for machine output) and reconcile them manually.
+- **Reconciliation:** PayPal settles asynchronously.
+
+  | Mechanism | Trigger | Purpose |
+  | --- | --- | --- |
+  | Synchronous response | On submit | Marks `paid`/`failed` immediately when PayPal answers inline |
+  | Webhook | PayPal push | Confirms `pending → paid`, records failures and reversals |
+  | `php artisan payouts:sync` | Every 15 min (scheduler) + admin "Sync statuses" | Polls the PayPal Payouts API; re-submits rows PayPal never acknowledged |
+  | `php artisan payouts:sync --recheck-paid` | Daily (scheduler) | Re-polls recently paid rows for a late `RETURNED`/`REFUNDED`/`REVERSED`/`UNCLAIMED` |
+
+  The webhook is a **latency optimisation, not a dependency** — `payouts:sync`
+  reconciles via outbound API calls and works without it. It runs every 15
+  minutes when `php artisan schedule:work` (or a cron entry) is active.
+
+- **Ambiguous submissions are never released.** If the submit call times out
+  (no response) or PayPal returns a 5xx, the row stays `pending`; the scheduler
+  re-submits it with the **same `sender_batch_id`** (the row `uuid`). PayPal
+  dedupes that id, and a duplicate-id rejection is reconciled to the original
+  batch instead of being marked failed — so an admin retry can never pay twice.
+- **Row statuses:** `pending` (submitted, awaiting settlement), `paid`,
+  `failed` (definitively rejected; excluded from the balance, safe to retry),
+  `reversed` (funds returned after success; balance re-opened). Reversals are
+  idempotent: the first webhook/poll wins and duplicates are ignored.
+- **Admin routes** (`role:Admin`): `GET payouts`, `GET payouts/allocations`,
+  `GET payouts/history`, `POST payouts`, `POST payouts/sync`.
+
+Live production requires a running scheduler for `payouts:sync`:
+
+```
+* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+(or run `php artisan schedule:work` under a supervisor). Requires a running
+`queue:work` too, since notification mail is queued.
 
 ### Running locally
 
@@ -133,8 +252,16 @@ The Laravel web route serves the SPA for all non-API, non-asset paths.
 
 ### Testing
 
-- Backend (PHPUnit/Pest): `php artisan test`
+The backend suite runs on sqlite `:memory:` and needs no MySQL/Redis/SMTP
+(configured in `phpunit.xml`):
+
+- Backend tests: `php artisan test --compact`
+- Single class while iterating: `php artisan test --filter=OrganizationPayoutTest`
+- Code style: `./vendor/bin/pint --test`
+- Frontend lint / format: `npm run lint` and `npm run format:check`
 - Frontend production build check: `npm run build`
+
+CI (`.github/workflows/ci.yml`) runs all of the above on pushes/PRs to `main`.
 
 ## Contribution
 

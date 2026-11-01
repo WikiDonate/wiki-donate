@@ -652,7 +652,14 @@
         "netToOrganization": "網路到組織",
         "payoutFeeNote": "從每筆支出中扣除 {percent}% 的交易成本。",
         "payoutNetBelowMinimum": "扣除交易費用後淨額低於最低轉帳1.00。",
-        "transactionCostSummary": "{percent}% 扣留交易成本：{fee} — 組織收到 {net} 淨額。"
+        "transactionCostSummary": "{percent}% 扣留交易成本：{fee} — 組織收到 {net} 淨額。",
+        "payoutStatusReversed": "Reversed",
+        "payoutReversedHint": "PayPal returned the funds; the balance is available again.",
+        "payoutMixedCurrency": "Mixed currencies",
+        "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
+        "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
+        "noPendingPayouts": "No pending payouts to sync.",
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"
