@@ -32,6 +32,9 @@ The entire application lives in a single Laravel project at the repository root:
 
 - Shared hosting / any PHP host: point the document root to `public/`
 - Run `npm run build` before deploying so the compiled assets exist in `public/build`
+- Deploys run `php artisan migrate --force` (plus config/route/view caching) and
+  **never** seed the database — seeding is deliberately excluded. See
+  [Database Seeding](#database-seeding) below.
 
 ## Features
 
@@ -99,6 +102,24 @@ The entire application lives in a single Laravel project at the repository root:
 
 Payment gateways are configured **after** migrating, by editing the
 `payment_methods` rows (see [Environment Variables](#environment-variables)).
+
+### Database Seeding
+
+Seeding is **manual and never part of a deployment**. Both deploy paths —
+`.github/workflows/deploy.yml` and `scripts/deploy.sh` — run only
+`php artisan migrate --force`, never `migrate --seed`, `migrate:fresh`, or
+`db:seed`, so existing production data is never overwritten by demo rows.
+
+Run it yourself when you actually want it:
+
+```bash
+php artisan db:seed                          # RoleSeeder + PageContentSeeder
+php artisan db:seed --class=DemoDataSeeder   # demo articles/donations
+php artisan db:seed --class=DonationSeeder   # sample donations
+```
+
+`DatabaseSeeder` only calls `DemoDataSeeder` when `APP_ENV=local`, so a manual
+seed on production skips demo data. `migrate --force` on deploy never seeds.
 
 ### Environment Variables
 
