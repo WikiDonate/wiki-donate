@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Services\Payment\PaymentCredentials;
 use Illuminate\Http\Request;
@@ -30,6 +31,20 @@ class StripeWebhookController extends Controller
         $sigHeader = $request->header('Stripe-Signature');
         $webhookSecret = $this->credentials->get('stripe', 'webhook_secret');
 
+        $decoded = json_decode($payload, true);
+        $decoded = is_array($decoded) ? $decoded : [];
+
+        // Claim the delivery before verification so a forged/replayed request
+        // is still recorded. The unique (provider, event_id) key is the
+        // idempotency lock — Stripe's event id lives in the body.
+        $record = PaymentWebhookEvent::begin('stripe', $decoded, $request->headers->all(), $payload);
+
+        if ($record?->isFinal()) {
+            Log::info('Stripe webhook already processed', ['event_id' => $record->event_id]);
+
+            return response()->json(['success' => true, 'message' => 'Event already processed']);
+        }
+
         if (! $webhookSecret) {
             // Deployment/config problem, not a client error: answer 503 so
             // Stripe retries later instead of treating the event as delivered,
@@ -37,6 +52,10 @@ class StripeWebhookController extends Controller
             Log::critical('Stripe webhook secret is not configured — rejecting event.', [
                 'event_id' => $request->header('Stripe-Event-Id'),
             ]);
+
+            // Ignored, not failed: nothing was wrong with the delivery and it
+            // will be retried once the secret exists.
+            $record?->markIgnored('Stripe webhook secret is not configured', Response::HTTP_SERVICE_UNAVAILABLE);
 
             return response()->json([
                 'success' => false,
@@ -53,6 +72,9 @@ class StripeWebhookController extends Controller
         } catch (SignatureVerificationException $e) {
             Log::error('Stripe webhook signature verification failed: '.$e->getMessage());
 
+            $record?->markSignature(false);
+            $record?->markFailed('Signature verification failed', Response::HTTP_UNAUTHORIZED);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid signature',
@@ -60,11 +82,16 @@ class StripeWebhookController extends Controller
         } catch (\UnexpectedValueException $e) {
             Log::error('Stripe webhook invalid payload: '.$e->getMessage());
 
+            $record?->markSignature(false);
+            $record?->markFailed('Invalid payload', Response::HTTP_BAD_REQUEST);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid payload',
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        $record?->markSignature(true);
 
         // Log the event for debugging
         Log::info('Stripe webhook received', [
@@ -87,16 +114,49 @@ class StripeWebhookController extends Controller
                 'event_id' => $event->id,
             ]);
 
+            $record?->markFailed($e::class.': '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error processing webhook',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        [$relatedType, $relatedId] = $this->relatedFromEvent($event);
+        $record?->markProcessed(Response::HTTP_OK, $relatedType, $relatedId);
+
         return response()->json([
             'success' => true,
             'message' => 'Webhook processed',
         ]);
+    }
+
+    /**
+     * Best-effort link from a Stripe event to the ledger row it touched.
+     *
+     * Runs after the handler, so it only records what actually exists; never
+     * throws (a failed lookup must not fail an already-applied event).
+     *
+     * @return array{0: ?string, 1: ?int}
+     */
+    protected function relatedFromEvent($event): array
+    {
+        try {
+            if (str_starts_with((string) $event->type, 'checkout.session.')) {
+                $sessionId = $event->data->object->id ?? null;
+
+                $donation = $sessionId ? Donation::gateway('stripe', $sessionId)->first() : null;
+
+                return $donation ? [Donation::class, $donation->id] : [null, null];
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Stripe webhook: could not resolve related row', [
+                'event_type' => $event->type ?? null,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return [null, null];
     }
 
     /**

@@ -16,3 +16,6 @@ Schedule::command('payouts:sync')->everyFifteenMinutes()->withoutOverlapping();
 // Deep pass: re-poll recently paid rows so a late RETURNED/REFUNDED reversal
 // is caught even when the PayPal webhook is never delivered.
 Schedule::command('payouts:sync --recheck-paid')->daily()->withoutOverlapping();
+// Trim the payment webhook log. Failed deliveries are kept: they are the
+// evidence trail for a payment that never settled.
+Schedule::command('webhooks:prune --days=90')->daily()->withoutOverlapping();

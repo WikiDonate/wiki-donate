@@ -201,6 +201,27 @@ development, use a tunnel (`cloudflared tunnel --url http://localhost:8000`, or
 `ngrok http 8000`) and point the webhook at the tunnel URL. Avoid localtunnel /
 `loca.lt` — its interstitial page usually breaks PayPal's delivery.
 
+#### Webhook event log
+
+Every delivery — PayPal and Stripe — is persisted to `payment_webhook_events`
+before signature verification, so a forged or replayed request is recorded too.
+The unique `(provider, event_id)` key is the **idempotency lock**; it is not a
+cache, so `php artisan cache:clear` (run on every deploy) can no longer make a
+gateway retransmission look new.
+
+Each row carries `status` (`received` / `processed` / `failed` / `ignored`),
+`event_type`, `http_status`, `signature_valid`, the decoded `payload`, a
+filtered header subset (signature values are stored as a SHA-256 prefix, never
+raw), and a best-effort `related_type` / `related_id` link to the
+`Donation` or `OrganizationPayout` it affected.
+
+A previously `failed` delivery is re-opened on retry, so a transient provider
+error still settles. Failed rows are never pruned:
+
+```bash
+php artisan webhooks:prune --days=90          # scheduled daily
+```
+
 ## Organization Payouts
 
 Verified organizations are paid out from the donations allocated to them.
