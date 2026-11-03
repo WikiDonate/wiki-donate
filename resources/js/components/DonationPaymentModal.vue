@@ -102,8 +102,9 @@
                             ${{ quickAmount }}
                         </button>
                     </div>
-                    <!-- Display-only: UI math from config/donationFees.js, no
-                         backend fee is stored or charged. -->
+                    <!-- Display-only donor-side view of the SAME 5% rate the
+                         server enforces on payouts (config/donations.php,
+                         served by /payment-methods). -->
                     <p
                         v-if="transactionCost !== null"
                         class="text-xs text-red-600 mt-3 italic font-bold"
@@ -225,13 +226,17 @@
     import { useI18n } from 'vue-i18n'
     import { donateService } from '~/services/donateService'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
-    import { TRANSACTION_FEE_PERCENT, calculateTransactionCost } from '~/config/donationFees'
+    import {
+        DEFAULT_TRANSACTION_FEE_PERCENT,
+        calculateTransactionCost,
+    } from '~/config/donationFees'
 
     const { t, locale } = useI18n()
     const {
         methods,
         loading: loadingMethods,
         loadPaymentMethods,
+        transactionCostPercent: registryCostPercent,
         methodLabel,
         hasMethod,
     } = usePaymentMethods()
@@ -318,15 +323,24 @@
         () => Number(amount.value) >= 0.5 && Number(amount.value) <= 500000 && props.modelValue,
     )
 
+    // Rate comes from the server config (falls back to the same default while
+    // the registry loads) so donor UI and payout deduction can never drift.
+    const effectiveFeePercent = computed(() => {
+        const value = Number(registryCostPercent.value)
+        return Number.isFinite(value) ? value : DEFAULT_TRANSACTION_FEE_PERCENT
+    })
+
     // Live display-only transaction cost; `null` hides the row for empty or
     // invalid input (see config/donationFees.js).
-    const transactionCost = computed(() => calculateTransactionCost(amount.value))
+    const transactionCost = computed(() =>
+        calculateTransactionCost(amount.value, effectiveFeePercent.value),
+    )
 
     // Locale-aware percentage so the translated labels keep their decimal
     // separator (e.g. "0,1" in de/es/fr, "0.1" in en).
     const transactionFeePercent = computed(() =>
         new Intl.NumberFormat(locale.value, { maximumFractionDigits: 4 }).format(
-            TRANSACTION_FEE_PERCENT,
+            effectiveFeePercent.value,
         ),
     )
 

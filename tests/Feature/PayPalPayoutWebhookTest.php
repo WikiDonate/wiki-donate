@@ -17,8 +17,12 @@ use Mockery\MockInterface;
 use Tests\TestCase;
 
 /**
- * Webhook reconciliation tests for PAYOUTS.* events — the authoritative
+ * Webhook reconciliation tests for Payouts events — the authoritative
  * per-item status path that complements the polling fallback (syncPending).
+ *
+ * Event names MUST be the real ones PayPal sends (`PAYMENT.PAYOUTS-ITEM.*`
+ * and `PAYMENT.PAYOUTSBATCH.*`). The app also accepts the `PAYOUTS.ITEM.*`
+ * family, which is covered by the legacy-name test below.
  */
 class PayPalPayoutWebhookTest extends TestCase
 {
@@ -107,7 +111,7 @@ class PayPalPayoutWebhookTest extends TestCase
 
         $response = $this->postWebhook([
             'id' => 'WH_'.uniqid(),
-            'event_type' => 'PAYOUTS.ITEM.SUCCEEDED',
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.SUCCEEDED',
             'resource' => [
                 'payout_item_id' => $payout->payout_item_id,
                 'sender_item_id' => $payout->uuid,
@@ -134,7 +138,7 @@ class PayPalPayoutWebhookTest extends TestCase
 
         $response = $this->postWebhook([
             'id' => 'WH_'.uniqid(),
-            'event_type' => 'PAYOUTS.ITEM.DENIED',
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.DENIED',
             'resource' => [
                 'payout_item_id' => $payout->payout_item_id,
                 'sender_item_id' => $payout->uuid,
@@ -148,7 +152,8 @@ class PayPalPayoutWebhookTest extends TestCase
         $this->assertDatabaseHas('organization_payouts', [
             'id' => $payout->id,
             'status' => 'failed',
-            'provider_status' => 'FAILED',
+            // The true provider status is preserved (was hard-coded FAILED).
+            'provider_status' => 'DENIED',
         ]);
         $reason = OrganizationPayout::find($payout->id)->failure_reason;
         $this->assertStringContainsString('RECEIVER_UNREGISTERED', $reason);
@@ -191,7 +196,7 @@ class PayPalPayoutWebhookTest extends TestCase
 
         $response = $this->postWebhook([
             'id' => 'WH_'.uniqid(),
-            'event_type' => 'PAYOUTS.BATCH.PROCESSING.DENIED',
+            'event_type' => 'PAYMENT.PAYOUTSBATCH.DENIED',
             'resource' => [
                 'payout_batch_id' => 'BATCH-DENIED',
                 'batch_status' => 'DENIED',
@@ -215,7 +220,7 @@ class PayPalPayoutWebhookTest extends TestCase
 
         $response = $this->postWebhook([
             'id' => 'WH_'.uniqid(),
-            'event_type' => 'PAYOUTS.ITEM.COMPLETED',
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.SUCCEEDED',
             'resource' => [
                 'payout_item_id' => 'ITEM-NOPE',
                 'sender_item_id' => 'uuid-nope',
@@ -225,5 +230,143 @@ class PayPalPayoutWebhookTest extends TestCase
 
         $response->assertOk()->assertJson(['success' => true]);
         $this->assertDatabaseCount('organization_payouts', 0);
+    }
+
+    /**
+     * The legacy PAYOUTS.ITEM.* family must keep working too — both naming
+     * families in the wild are accepted.
+     */
+    public function test_legacy_payouts_item_naming_family_still_handled(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYOUTS.ITEM.SUCCEEDED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'SUCCESS',
+            ],
+        ])->assertOk();
+
+        $this->assertSame('paid', $payout->fresh()->status);
+    }
+
+    /**
+     * A reversal arrives AFTER success: the row must be re-opened (reversed)
+     * rather than ignored, otherwise the balance stays consumed forever.
+     */
+    public function test_returned_after_success_reopens_balance(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+        $payout->forceFill(['status' => 'paid', 'paid_at' => now(), 'provider_status' => 'SUCCESS'])->save();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.RETURNED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'RETURNED',
+                'errors' => ['message' => 'receiver account closed'],
+            ],
+        ])->assertOk();
+
+        $payout->refresh();
+        $this->assertSame('reversed', $payout->status);
+        $this->assertSame('RETURNED', $payout->provider_status);
+        $this->assertNotNull($payout->reversed_at);
+        $this->assertDatabaseHas('transaction_logs', ['event' => 'payout.reversed']);
+    }
+
+    public function test_unclaimed_item_is_treated_as_reversal(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.UNCLAIMED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'UNCLAIMED',
+            ],
+        ])->assertOk();
+
+        $this->assertSame('reversed', $payout->fresh()->status);
+    }
+
+    /**
+     * REFUNDED is a real PayPal item status and must re-open the balance like
+     * RETURNED/UNCLAIMED did — it used to be ignored entirely.
+     */
+    public function test_refunded_after_success_reopens_balance(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+        $payout->forceFill(['status' => 'paid', 'paid_at' => now(), 'provider_status' => 'SUCCESS'])->save();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.REFUNDED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'REFUNDED',
+            ],
+        ])->assertOk();
+
+        $payout->refresh();
+        $this->assertSame('reversed', $payout->status);
+        $this->assertSame('REFUNDED', $payout->provider_status);
+        $this->assertNotNull($payout->reversed_at);
+
+        // A duplicate reversal is a no-op (PayPal retries deliveries).
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.REFUNDED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'REFUNDED',
+            ],
+        ])->assertOk();
+
+        $this->assertSame(1, TransactionLog::where('event', 'payout.reversed')->count());
+    }
+
+    /**
+     * A denied/blocked event arriving after a reversal must not flip the row
+     * back to failed — the funds already came back, so that would corrupt the
+     * history (and leave reversed_at set on a non-reversed row).
+     */
+    public function test_failure_event_does_not_override_a_reversed_row(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+        $payout->forceFill([
+            'status' => 'reversed',
+            'reversed_at' => now(),
+            'provider_status' => 'RETURNED',
+        ])->save();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.DENIED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'DENIED',
+                'errors' => ['message' => 'late denial'],
+            ],
+        ])->assertOk();
+
+        $payout->refresh();
+        $this->assertSame('reversed', $payout->status);
+        $this->assertNotNull($payout->reversed_at);
     }
 }

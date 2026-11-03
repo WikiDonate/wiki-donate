@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\v1\Admin;
 
+use App\Exceptions\UserFacingException;
 use App\Http\Controllers\Controller;
 use App\Models\DonationFormula;
+use App\Models\Organization;
 use App\Models\OrganizationPayout;
+use App\Rules\SupportedCurrency;
 use App\Services\Payout\OrganizationPayoutService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class OrganizationPayoutController extends Controller
 {
@@ -29,7 +33,26 @@ class OrganizationPayoutController extends Controller
         }
 
         if ($request->filled('organization')) {
-            $query->where('organization_name', $request->organization);
+            // Rename-safe, like the balance math: match the key OR the resolved
+            // registry row, so renaming an org does not hide its ledger.
+            $key = OrganizationPayout::makeKey($request->organization);
+            $formula = $request->filled('donation_formula_id')
+                ? DonationFormula::find($request->input('donation_formula_id'))
+                : null;
+
+            $organizationId = $formula
+                ? $this->payouts->resolveOrganizationId($formula, (string) $request->organization)
+                : Organization::query()
+                    ->where('normalized_name', Organization::normalizeName((string) $request->organization))
+                    ->value('id');
+
+            $query->where(function ($q) use ($key, $organizationId) {
+                $q->where('organization_key', $key);
+
+                if ($organizationId !== null) {
+                    $q->orWhere('organization_id', $organizationId);
+                }
+            });
         }
 
         $perPage = (int) ($request->input('per_page') ?? 20);
@@ -38,7 +61,9 @@ class OrganizationPayoutController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Payouts retrieved successfully',
-            'data' => $query->latest('paid_at')->paginate($perPage)->through(fn ($p) => $this->transform($p)),
+            // created_at, not paid_at: pending/reversed rows have no paid_at
+            // and would sort unpredictably.
+            'data' => $query->latest('created_at')->paginate($perPage)->through(fn ($p) => $this->transform($p)),
         ], Response::HTTP_OK);
     }
 
@@ -94,7 +119,14 @@ class OrganizationPayoutController extends Controller
             'donation_formula_id' => 'required|integer|exists:donation_formulas,id',
             'organization_name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0.01',
-            'currency' => 'required|string|size:3',
+            // The transaction cost is enforced server-side: a client may not
+            // submit a fee or net figure at all (prohibited => 422).
+            'net_amount' => 'prohibited',
+            'net' => 'prohibited',
+            'fee_amount' => 'prohibited',
+            'fee_percent' => 'prohibited',
+            'fee' => 'prohibited',
+            'currency' => ['required', 'string', new SupportedCurrency],
             'note' => 'nullable|string|max:65535',
             // Payout rail is data-driven: only an active, payout-capable
             // registry code may be used. Omitted => the historical default.
@@ -121,11 +153,24 @@ class OrganizationPayoutController extends Controller
                 'message' => 'Payout submitted',
                 'data' => $this->transform($payout->load('actor:id,uuid,username', 'formula:id,uuid,name')),
             ], Response::HTTP_CREATED);
-        } catch (Exception $e) {
+        } catch (UserFacingException $e) {
+            // Expected, admin-readable rejection (overpay, guard, fee rules).
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (Throwable $e) {
+            // Unexpected: log the detail, never leak internals to the client.
+            Log::error('Payout creation failed', [
+                'donation_formula_id' => $request->input('donation_formula_id'),
+                'organization_name' => $request->input('organization_name'),
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'The payout could not be submitted. Please try again or contact support.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -135,17 +180,24 @@ class OrganizationPayoutController extends Controller
     public function sync(Request $request): JsonResponse
     {
         try {
-            $changed = $this->payouts->syncPending();
+            $result = $this->payouts->syncPending();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Payout statuses synced',
-                'data' => $changed->map(fn ($p) => $this->transform($p->load('formula:id,uuid,name'))),
+                'data' => $result['changed']->map(fn ($p) => $this->transform($p->load('formula:id,uuid,name'))),
+                'meta' => [
+                    'checked' => $result['checked'],
+                    'changed' => $result['changed']->count(),
+                    'errors' => $result['failed'],
+                ],
             ], Response::HTTP_OK);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
+            Log::error('Payout sync failed', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Could not sync payout statuses. Please try again or contact support.',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -162,7 +214,12 @@ class OrganizationPayoutController extends Controller
             'organization_name' => $payout->organization_name,
             'organization_id' => $payout->organization_id,
             'destination_paypal_email' => $payout->destination_paypal_email,
+            // amount = GROSS; fee_amount is the enforced transaction cost and
+            // net_amount is what the organization actually received.
             'amount' => (float) $payout->amount,
+            'fee_percent' => $payout->fee_percent === null ? null : (float) $payout->fee_percent,
+            'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+            'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
             'currency' => $payout->currency,
             'type' => $payout->type,
             'status' => $payout->status,

@@ -67,6 +67,10 @@ class PaymentMethodController extends Controller
                         ->map(fn (PaymentMethod $method) => $this->format($method))
                         ->values()
                         ->all(),
+                    // Single source of truth for the 5% transaction cost:
+                    // config/donations.php. The SPA mirrors the server math
+                    // instead of hard-coding a rate that could drift.
+                    'transaction_cost_percent' => (float) config('donations.transaction_cost_percent', 5),
                 ],
             ], Response::HTTP_OK);
         } catch (Exception $e) {

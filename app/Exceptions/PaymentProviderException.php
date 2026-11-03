@@ -44,6 +44,17 @@ class PaymentProviderException extends UserFacingException
         return new self("Payment method '{$code}' is not active.");
     }
 
+    /**
+     * The requested currency is not the platform's single supported currency.
+     */
+    public static function unsupportedCurrency(string $currency, string $supported): self
+    {
+        return new self(
+            "Only {$supported} donations are supported; '{$currency}' was requested.",
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        );
+    }
+
     public static function unsupported(string $code, string $operation): self
     {
         return new self(

@@ -5,6 +5,7 @@ namespace App\Services\Payment\Providers;
 use App\Contracts\PaymentProvider;
 use App\Exceptions\PaymentProviderException;
 use App\Models\PaymentMethod;
+use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentCredentials;
 use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
@@ -92,7 +93,9 @@ class StripeProvider implements PaymentProvider
      */
     public function supportedCurrencies(): array
     {
-        return ['USD', 'EUR', 'GBP'];
+        // The platform is single-currency; this must track
+        // config('donations.currency') so it can never drift from the API.
+        return [SupportedCurrency::code()];
     }
 
     /**

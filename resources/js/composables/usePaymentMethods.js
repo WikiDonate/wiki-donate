@@ -19,6 +19,9 @@ import api from '~/config/apiConfig'
 const methods = ref([])
 const payoutMethods = ref([])
 const adminMethods = ref([])
+// Forced transaction-cost rate from the server (config/donations.php). Null
+// until the registry loads so callers can fall back to their own default.
+const registryTransactionCostPercent = ref(null)
 const loading = ref(false)
 const loaded = ref(false)
 const error = ref('')
@@ -49,6 +52,8 @@ async function fetchRegistry() {
     }
     methods.value = normalize(response.data?.methods)
     payoutMethods.value = normalize(response.data?.payout_methods)
+    const percent = Number(response.data?.transaction_cost_percent)
+    registryTransactionCostPercent.value = Number.isFinite(percent) ? percent : null
     loaded.value = true
     error.value = ''
 }
@@ -140,6 +145,7 @@ export function usePaymentMethods() {
         methods,
         payoutMethods,
         adminMethods,
+        transactionCostPercent: registryTransactionCostPercent,
         allMethods,
         loading,
         loaded,
