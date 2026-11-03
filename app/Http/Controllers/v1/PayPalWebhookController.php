@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
 use App\Models\PaymentPendingOrder;
+use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentCheckoutService;
@@ -41,9 +42,27 @@ class PayPalWebhookController extends Controller
             ->keyBy(fn ($values, $key) => strtolower($key))
             ->toArray();
 
+        $event = json_decode($body, true);
+        $event = is_array($event) ? $event : [];
+
+        // Claim the delivery BEFORE verification, so a forged or replayed
+        // request leaves a trace too. Duplicate detection is the unique
+        // (provider, event_id) key on this table — not the file cache, which a
+        // deploy's cache:clear used to wipe mid-retransmission-window.
+        $record = PaymentWebhookEvent::begin('paypal', $event, $headers, $body);
+
+        if ($record?->isFinal()) {
+            Log::info('PayPal webhook already processed', ['event_id' => $record->event_id]);
+
+            return response()->json(['success' => true, 'message' => 'Event already processed']);
+        }
+
         // Verify webhook signature
         if (! $this->paypal->verifyWebhook($headers, $body)) {
             Log::warning('PayPal webhook signature verification failed');
+
+            $record?->markSignature(false);
+            $record?->markFailed('Signature verification failed', Response::HTTP_UNAUTHORIZED);
 
             return response()->json([
                 'success' => false,
@@ -51,9 +70,11 @@ class PayPalWebhookController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $event = json_decode($body, true);
+        $record?->markSignature(true);
 
-        if (! $event) {
+        if ($event === []) {
+            $record?->markFailed('Invalid webhook payload', Response::HTTP_BAD_REQUEST);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid webhook payload',
@@ -63,13 +84,6 @@ class PayPalWebhookController extends Controller
         // PayPal sends event types in UPPERCASE, e.g. CHECKOUT.ORDER.APPROVED
         $eventType = strtoupper($event['event_type'] ?? '');
         $eventId = $event['id'] ?? '';
-
-        // Idempotency: skip already-processed events
-        if ($this->alreadyProcessed($eventId)) {
-            Log::info('PayPal webhook already processed', ['event_id' => $eventId]);
-
-            return response()->json(['success' => true, 'message' => 'Event already processed']);
-        }
 
         Log::info('PayPal webhook received', [
             'event_type' => $eventType,
@@ -89,7 +103,8 @@ class PayPalWebhookController extends Controller
                     $this->handlePayoutItemEvent($event, $payoutEvent);
                 }
 
-                $this->markProcessed($eventId);
+                [$relatedType, $relatedId] = $this->relatedFromEvent($eventType, $event);
+                $record?->markProcessed(Response::HTTP_OK, $relatedType, $relatedId);
 
                 return response()->json([
                     'success' => true,
@@ -111,18 +126,71 @@ class PayPalWebhookController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
+            $record?->markFailed($e::class.': '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Webhook processing error',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $this->markProcessed($eventId);
+        [$relatedType, $relatedId] = $this->relatedFromEvent($eventType, $event);
+        $record?->markProcessed(Response::HTTP_OK, $relatedType, $relatedId);
 
         return response()->json([
             'success' => true,
             'message' => 'Webhook processed',
         ]);
+    }
+
+    /**
+     * Best-effort link from a PayPal event to the ledger row it touched.
+     *
+     * Runs AFTER the handler, so it only records what actually exists; never
+     * throws (a failed lookup must not fail an already-applied event).
+     *
+     * @return array{0: ?string, 1: ?int}
+     */
+    protected function relatedFromEvent(string $eventType, array $event): array
+    {
+        try {
+            $resource = $event['resource'] ?? [];
+
+            if (! is_array($resource)) {
+                return [null, null];
+            }
+
+            // Payout events: PAYMENT.PAYOUTSBATCH.* / PAYMENT.PAYOUTS-ITEM.*
+            if (str_starts_with($eventType, 'PAYMENT.PAYOUTS') || str_starts_with($eventType, 'PAYOUTS')
+                || str_starts_with($eventType, 'PAYMENT.PAYOUTSBATCH')) {
+                $itemId = $resource['payout_item_id'] ?? null;
+                $senderItemId = $resource['sender_item_id'] ?? null;
+
+                $payout = $itemId
+                    ? OrganizationPayout::where('payout_item_id', $itemId)->first()
+                    : ($senderItemId ? OrganizationPayout::where('uuid', $senderItemId)->first() : null);
+
+                return $payout ? [OrganizationPayout::class, $payout->id] : [null, null];
+            }
+
+            // Donor captures: the order id is our donation reference.
+            if (str_starts_with($eventType, 'PAYMENT.CAPTURE')) {
+                $orderId = $resource['supplementary_data']['related_ids']['order_id']
+                    ?? $resource['custom_id']
+                    ?? null;
+
+                $donation = $orderId ? Donation::gateway('paypal', $orderId)->first() : null;
+
+                return $donation ? [Donation::class, $donation->id] : [null, null];
+            }
+        } catch (\Throwable $e) {
+            Log::warning('PayPal webhook: could not resolve related row', [
+                'event_type' => $eventType,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return [null, null];
     }
 
     /**
@@ -718,22 +786,5 @@ class PayPalWebhookController extends Controller
             'payer_name' => trim(($name['given_name'] ?? '').' '.($name['surname'] ?? '')),
             'payment_id' => $resource['id'] ?? null,
         ];
-    }
-
-    /**
-     * Check if a webhook event has already been processed (idempotency).
-     */
-    protected function alreadyProcessed(string $eventId): bool
-    {
-        return Cache::store('file')->has("paypal_webhook:{$eventId}");
-    }
-
-    /**
-     * Mark a webhook event as processed for idempotency.
-     * 24-hour TTL covers PayPal's retransmission window.
-     */
-    protected function markProcessed(string $eventId): void
-    {
-        Cache::store('file')->put("paypal_webhook:{$eventId}", true, now()->addHours(24));
     }
 }

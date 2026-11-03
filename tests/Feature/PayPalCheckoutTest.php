@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\PaymentPendingOrder;
+use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\PayPalClient;
@@ -543,8 +544,16 @@ class PayPalCheckoutTest extends TestCase
     {
         $eventId = 'WH_DUPLICATE_'.uniqid();
 
-        // Pre-mark the event as processed
-        Cache::store('file')->put("paypal_webhook:{$eventId}", true, now()->addHours(24));
+        // Pre-record the event as processed. Idempotency is the durable
+        // payment_webhook_events row (unique provider+event_id), not the file
+        // cache a deploy's cache:clear used to wipe.
+        PaymentWebhookEvent::create([
+            'provider' => 'paypal',
+            'event_id' => $eventId,
+            'event_type' => 'PAYMENT.CAPTURE.COMPLETED',
+            'status' => PaymentWebhookEvent::STATUS_PROCESSED,
+            'received_at' => now(),
+        ]);
 
         $this->mockPayPalClient();
 
