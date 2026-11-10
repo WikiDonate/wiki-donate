@@ -75,11 +75,6 @@
     import { articleService } from '~/services/articleService'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('article.newArticleTitle'),
-    })
-
     const route = useRoute()
     const router = useRouter()
     const authStore = useAuthStore()

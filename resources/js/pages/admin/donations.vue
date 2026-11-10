@@ -161,8 +161,6 @@
     const { t } = useI18n()
     const { allMethods, loadPaymentMethods, loadAdminMethods, methodLabel, methodVariant } =
         usePaymentMethods()
-
-    useHead({ title: t('admin.allDonations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const donations = ref([])

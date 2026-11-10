@@ -105,11 +105,6 @@
     import api from '~/config/apiConfig'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('contact.title'),
-    })
-
     const showAlert = ref(false)
     const alertVariant = ref('')
     const alertMessage = ref('')

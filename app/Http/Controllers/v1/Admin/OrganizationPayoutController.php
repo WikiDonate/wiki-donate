@@ -228,7 +228,10 @@ class OrganizationPayoutController extends Controller
             'failure_reason' => $payout->failure_reason,
             'payout_batch_id' => $payout->payout_batch_id,
             'payout_item_id' => $payout->payout_item_id,
-            'paid_at' => $payout->paid_at?->format('Y-m-d H:i:s'),
+            'paid_at' => $payout->paid_at?->toIso8601String(),
+            'submitted_at' => $payout->submitted_at?->toIso8601String(),
+            'reversed_at' => $payout->reversed_at?->toIso8601String(),
+            'created_at' => $payout->created_at?->toIso8601String(),
             'note' => $payout->note,
             'actor' => $payout->relationLoaded('actor') && $payout->actor
                 ? ['uuid' => $payout->actor->uuid, 'username' => $payout->actor->username]

@@ -97,8 +97,6 @@
     import { useUserStore } from '@/stores/userStore'
 
     const { t } = useI18n()
-
-    useHead({ title: t('profile.title') })
     definePageMeta({ middleware: 'auth' })
 
     const userStore = useUserStore()

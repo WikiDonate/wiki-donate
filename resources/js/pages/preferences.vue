@@ -232,11 +232,6 @@
     definePageMeta({
         middleware: 'auth',
     })
-
-    useHead({
-        title: 'Preferences',
-    })
-
     const authStore = useAuthStore()
 
     // Active tab state

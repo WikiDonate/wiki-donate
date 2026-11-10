@@ -121,11 +121,6 @@
     })
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('article.myArticles'),
-    })
-
     const articleStore = useArticleStore()
 
     const articles = computed(() => articleStore.articles || [])

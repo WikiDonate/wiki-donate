@@ -131,8 +131,6 @@
 
     const { notifyError } = useToastify()
     const { t } = useI18n()
-
-    useHead({ title: t('admin.transactionLogs') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const loading = ref(true)

@@ -191,8 +191,6 @@
 
     const { t } = useI18n()
     const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
-
-    useHead({ title: t('report.title') })
     definePageMeta({ middleware: 'auth' })
 
     const loading = ref(true)

@@ -127,8 +127,6 @@
     const { notifySuccess, notifyError } = useToastify()
 
     const { t } = useI18n()
-
-    useHead({ title: t('admin.articles') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const articles = ref([])

@@ -149,11 +149,6 @@
     import { useClientStripe } from '@/plugins/useClientStripe'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('billing.title'),
-    })
-
     definePageMeta({
         middleware: 'auth',
     })
