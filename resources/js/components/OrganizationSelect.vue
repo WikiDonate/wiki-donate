@@ -156,6 +156,22 @@
         set: (value) => emit('update:modelValue', value),
     })
 
+    watch(
+        () => props.modelValue,
+        (value) => {
+            const normalized = value ?? ''
+            if (!normalized) {
+                selectedName.value = ''
+                dismiss()
+                return
+            }
+
+            // Keep internal selection in sync when the parent updates the value.
+            if (normalized === selectedName.value) return
+            selectedName.value = ''
+        },
+    )
+
     const searchingText = t('formula.searchingCharities')
     const noResultsText = t('formula.noCharityResults')
 

@@ -17,9 +17,9 @@ class OrganizationSearchController extends Controller
      * used by the admin "Add organization" modal). Free-text (custom) entries
      * remain allowed client-side; this endpoint simply never returns them.
      *
-     * Rows are matched by name, normalized_name or EIN. Admin-created registry
-     * orgs are donor-visible immediately, verified or not — the client renders
-     * the three-state badge from `payout_status`/`is_verified`.
+     * Rows are matched by name, normalized_name or EIN. Only admin-verified
+     * organizations are listed, so custom organizations appear only after an
+     * admin verifies them.
      */
     public function search(Request $request)
     {
@@ -41,6 +41,8 @@ class OrganizationSearchController extends Controller
                     ->orWhere('ein', 'like', "%{$query}%")
                     ->orWhere('normalized_name', 'like', "%{$normalized}%");
             })
+            ->where('payout_status', 'verified')
+            ->whereNotNull('verified_at')
             ->orderBy('name')
             ->limit(10)
             ->get()

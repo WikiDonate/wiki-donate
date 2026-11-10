@@ -59,7 +59,7 @@ class OrganizationSearchEndpointTest extends TestCase
         ]);
     }
 
-    public function test_editor_search_returns_registry_rows_only(): void
+    public function test_editor_search_returns_verified_registry_rows_only(): void
     {
         Organization::create([
             'name' => 'Red Cross Local',
@@ -71,31 +71,30 @@ class OrganizationSearchEndpointTest extends TestCase
             'name' => 'Red Crescent',
             'payout_status' => 'unverified',
         ]);
-        Organization::create(['name' => 'Blue Shield', 'payout_status' => 'verified']);
+        Organization::create(['name' => 'Blue Shield', 'payout_status' => 'verified', 'verified_at' => now()]);
 
         $response = $this->search($this->editor, 'red');
 
         $response->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonCount(2, 'data');
+            ->assertJsonCount(1, 'data');
 
-        $names = collect($response->json('data'))->pluck('name')->all();
-        $this->assertEqualsCanonicalizing(['Red Cross Local', 'Red Crescent'], $names);
-
-        $verified = collect($response->json('data'))->firstWhere('name', 'Red Cross Local');
-        $this->assertEquals('verified', $verified['payout_status']);
+        $verified = $response->json('data.0');
+        $this->assertSame('Red Cross Local', $verified['name']);
+        $this->assertSame('verified', $verified['payout_status']);
         $this->assertTrue($verified['is_verified']);
-        $this->assertEquals('local', $verified['source']);
+        $this->assertSame('local', $verified['source']);
         $this->assertNotNull($verified['organization_id']);
-
-        $unverified = collect($response->json('data'))->firstWhere('name', 'Red Crescent');
-        $this->assertEquals('unverified', $unverified['payout_status']);
-        $this->assertFalse($unverified['is_verified']);
     }
 
-    public function test_search_matches_by_ein(): void
+    public function test_search_matches_by_ein_for_verified_org(): void
     {
-        Organization::create(['name' => 'Some Org', 'ein' => '530196605']);
+        Organization::create([
+            'name' => 'Some Org',
+            'ein' => '530196605',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
+        ]);
 
         $this->search($this->editor, '530196605')
             ->assertOk()
@@ -142,54 +141,54 @@ class OrganizationSearchEndpointTest extends TestCase
     }
 
     // ---------------------------------------------------------------------
-    // Registry rows are donor-visible immediately, verified or not
+    // Registry rows become donor-visible only after admin verification
     // ---------------------------------------------------------------------
 
-    public function test_admin_created_org_is_donor_visible_immediately_even_unverified(): void
+    public function test_custom_org_appears_in_autocomplete_only_after_admin_verification(): void
     {
-        // Admin curates a brand-new org straight into the registry (no
-        // verification yet). It must be selectable in the formula autocomplete
-        // the moment it exists — the badge, not the visibility, encodes state.
-        Organization::create([
-            'name' => 'Fresh Registry Org',
+        $org = Organization::create([
+            'name' => 'Fresh Custom Org',
             'payout_status' => 'unverified',
         ]);
 
-        $response = $this->search($this->editor, 'fresh registry');
+        // Unverified custom org must not appear in the donation formula list.
+        $this->search($this->editor, 'fresh custom')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
 
+        // After admin verification, it becomes selectable.
+        $org->forceFill(['payout_status' => 'verified', 'verified_at' => now()])->save();
+
+        $response = $this->search($this->editor, 'fresh custom');
         $response->assertOk()->assertJsonCount(1, 'data');
+
         $row = $response->json('data.0');
-        $this->assertSame('Fresh Registry Org', $row['name']);
-        $this->assertSame('unverified', $row['payout_status']);
-        $this->assertFalse($row['is_verified']);
+        $this->assertSame('Fresh Custom Org', $row['name']);
+        $this->assertSame('verified', $row['payout_status']);
+        $this->assertTrue($row['is_verified']);
         $this->assertSame('local', $row['source']);
         $this->assertNotNull($row['organization_id']);
     }
 
-    public function test_badge_state_follows_live_registry_verify_and_unverify(): void
+    public function test_verified_org_disappears_from_autocomplete_after_unverify(): void
     {
         $org = Organization::create([
             'name' => 'Live State Org',
             'ein' => '123456789',
-            'payout_status' => 'unverified',
+            'payout_status' => 'verified',
+            'verified_at' => now(),
         ]);
 
-        // Unverified registry row → red state.
-        $row = $this->search($this->editor, 'live state')->json('data.0');
-        $this->assertSame('unverified', $row['payout_status']);
-        $this->assertFalse($row['is_verified']);
+        $this->search($this->editor, 'live state')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.payout_status', 'verified');
 
-        // Verify in the registry → green state, immediately.
-        $org->forceFill(['payout_status' => 'verified', 'verified_at' => now()])->save();
-        $row = $this->search($this->editor, 'live state')->json('data.0');
-        $this->assertSame('verified', $row['payout_status']);
-        $this->assertTrue($row['is_verified']);
-
-        // Unverify → back to red, no stale green.
         $org->forceFill(['payout_status' => 'unverified', 'verified_at' => null])->save();
-        $row = $this->search($this->editor, 'live state')->json('data.0');
-        $this->assertSame('unverified', $row['payout_status']);
-        $this->assertFalse($row['is_verified']);
+
+        $this->search($this->editor, 'live state')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
     }
 
     public function test_formula_list_badges_come_from_live_registry(): void
