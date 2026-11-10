@@ -1,56 +1,15 @@
 import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import fs from 'fs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 
-const hotFile = path.join(root, 'public/hot')
-
-const laravelHotFilePlugin = {
-    name: 'laravel-hot-file',
-    configureServer(server) {
-        fs.writeFileSync(hotFile, 'http://localhost:5173/build')
-        server.httpServer?.once('close', () => {
-            if (fs.existsSync(hotFile)) fs.unlinkSync(hotFile)
-        })
-    },
-}
-
 export default defineConfig({
-    root,
-    base: '/build/',
-    publicDir: false,
-    build: {
-        outDir: path.join(root, 'public/build'),
-        emptyOutDir: true,
-        manifest: true,
-        rollupOptions: {
-            input: path.join(root, 'resources/js/app.js'),
-            output: {
-                manualChunks(id) {
-                    if (!id.includes('node_modules')) return
-                    if (/[\\/](vue|vue-router|pinia)[\\/]/.test(id)) {
-                        return 'vue'
-                    }
-                    if (id.includes('@fortawesome')) return 'fontawesome'
-                    if (id.includes('@stripe')) return 'stripe'
-                    if (
-                        id.includes('axios') ||
-                        id.includes('vee-validate') ||
-                        id.includes('yup') ||
-                        id.includes('vue-toast-notification')
-                    ) {
-                        return 'vendor'
-                    }
-                },
-            },
-        },
-    },
     resolve: {
         alias: {
             '~': path.join(root, 'resources/js'),
@@ -58,7 +17,10 @@ export default defineConfig({
         },
     },
     plugins: [
-        laravelHotFilePlugin,
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
         vue(),
         tailwindcss(),
         AutoImport({
@@ -85,6 +47,28 @@ export default defineConfig({
             dts: false,
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) return
+                    if (/[\\/](vue|vue-router|pinia)[\\/]/.test(id)) {
+                        return 'vue'
+                    }
+                    if (id.includes('@fortawesome')) return 'fontawesome'
+                    if (id.includes('@stripe')) return 'stripe'
+                    if (
+                        id.includes('axios') ||
+                        id.includes('vee-validate') ||
+                        id.includes('yup') ||
+                        id.includes('vue-toast-notification')
+                    ) {
+                        return 'vendor'
+                    }
+                },
+            },
+        },
+    },
     server: {
         proxy: {
             '/api': 'http://localhost:8000',
