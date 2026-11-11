@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\OrganizationPayout;
+use App\Rules\SupportedCurrency;
+use App\Services\Payout\OrganizationPayoutService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,6 +25,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class TransactionController extends Controller
 {
+    public function __construct(private OrganizationPayoutService $payouts) {}
+
     /**
      * Paginated merged chronological feed.
      *
@@ -78,31 +82,35 @@ class TransactionController extends Controller
     public function summary(Request $request): JsonResponse
     {
         try {
+            // USD-only, like every other money aggregate: counting a legacy
+            // EUR/GBP donation as dollars would inflate income and payable.
             $totalIncome = (float) $this->applyDateFilter($request, Donation::query())
                 ->where('status', 'completed')
+                ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
                 ->sum('amount');
 
-            $totalPayouts = (float) OrganizationPayout::query()
-                ->where('status', '!=', 'failed')
-                ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
-                ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
-                ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
-                ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
-                ->sum('amount');
+            // Payouts that actually moved or reserved money — the SAME rule the
+            // balance math uses (`ON_BALANCE_STATUSES`, reversed rows excluded).
+            // A failed row never left the balance; a reversed row came back, so
+            // neither may reduce the payable figure or the net-in-hand.
+            $totalPayouts = (float) $this->onBalancePayouts($request)->sum('amount');
 
             // Enforced transaction-cost totals for the same filter window.
             // Gross is `amount`; the org received `net_amount`. Legacy rows
             // were backfilled fee=0/net=gross so the identity always holds.
-            $feeTotals = OrganizationPayout::query()
-                ->where('status', '!=', 'failed')
-                ->when($request->filled('from'), fn ($q) => $q->whereDate('paid_at', '>=', $request->input('from')))
-                ->when($request->filled('to'), fn ($q) => $q->whereDate('paid_at', '<=', $request->input('to')))
-                ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
-                ->when($request->filled('org'), fn ($q) => $q->where('organization_name', 'like', '%'.$request->input('org').'%'))
+            $feeTotals = $this->onBalancePayouts($request)
                 ->selectRaw('COALESCE(SUM(fee_amount), 0) as total_fee, COALESCE(SUM(net_amount), 0) as total_net')
                 ->first();
 
-            [$totalOwed] = $this->computeOwed($request);
+            // Owed comes from the payout service so this figure can never drift
+            // from the balance the payouts feature pays out of (same USD-only,
+            // same per-allocation rounding). Still window-scoped by the date
+            // filter for report consistency.
+            $totalOwed = $this->payouts->totalOwed(function ($donations) use ($request) {
+                $donations
+                    ->when($request->filled('from'), fn ($q) => $q->whereDate('created_at', '>=', $request->input('from')))
+                    ->when($request->filled('to'), fn ($q) => $q->whereDate('created_at', '<=', $request->input('to')));
+            });
 
             return response()->json([
                 'success' => true,
@@ -193,6 +201,32 @@ class TransactionController extends Controller
         return min(max((int) $request->input('per_page', 20), 1), 100);
     }
 
+    /**
+     * Base query for payouts that count against the balance — the SAME rule the
+     * payout service uses: only `paid` + `pending` states, and never a row that
+     * was reversed (that money came back). Failed rows are excluded by the
+     * status list. Applies the shared method + date filters so every payout
+     * aggregate and the expense feed window identically.
+     *
+     * Date filtering mirrors collectRows(): rows with a paid_at are bounded by
+     * it, rows still awaiting confirmation fall back to created_at.
+     */
+    private function onBalancePayouts(Request $request)
+    {
+        return OrganizationPayout::query()
+            ->whereIn('status', OrganizationPayout::ON_BALANCE_STATUSES)
+            ->whereNull('reversed_at')
+            ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
+            ->when($request->filled('from'), fn ($q) => $q->where(function ($qq) use ($request) {
+                $qq->whereDate('paid_at', '>=', $request->input('from'))
+                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '>=', $request->input('from')));
+            }))
+            ->when($request->filled('to'), fn ($q) => $q->where(function ($qq) use ($request) {
+                $qq->whereDate('paid_at', '<=', $request->input('to'))
+                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '<=', $request->input('to')));
+            }));
+    }
+
     private function sortDirection(Request $request): string
     {
         return strtolower($request->input('sort', 'desc')) === 'asc' ? 'asc' : 'desc';
@@ -237,21 +271,12 @@ class TransactionController extends Controller
             ->values();
 
         // ---- Expense rows: organization payouts -------------------------------
-        // Paid + pending reserve money (same rule as balance math); failed
-        // rows never moved funds so they stay out. paid_at is null until
-        // PayPal confirms, so date filters fall back to created_at then.
-        $expense = OrganizationPayout::query()
+        // Only payouts that moved or reserved money appear (same rule as the
+        // balance math): failed rows never left the balance and reversed rows
+        // came back, so neither is a real cash-out. Method + date filters are
+        // applied by onBalancePayouts().
+        $expense = $this->onBalancePayouts($request)
             ->with('actorUser:id,username')
-            ->where('status', '!=', 'failed')
-            ->when($request->filled('method'), fn ($q) => $q->where('payment_method', $request->input('method')))
-            ->when($request->filled('from'), fn ($q) => $q->where(function ($qq) use ($request) {
-                $qq->whereDate('paid_at', '>=', $request->input('from'))
-                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '>=', $request->input('from')));
-            }))
-            ->when($request->filled('to'), fn ($q) => $q->where(function ($qq) use ($request) {
-                $qq->whereDate('paid_at', '<=', $request->input('to'))
-                    ->orWhere(fn ($qqq) => $qqq->whereNull('paid_at')->whereDate('created_at', '<=', $request->input('to')));
-            }))
             ->get()
             ->filter(function ($payout) use ($org) {
                 if ($org !== '' && strcasecmp($payout->organization_name, $org) !== 0) {
@@ -362,68 +387,5 @@ class TransactionController extends Controller
         return collect($formula->formula)->contains(
             fn ($item) => strcasecmp(trim((string) ($item['organization'] ?? '')), $org) === 0
         );
-    }
-
-    /**
-     * Live owed computation across current formula JSON (Option A): for every
-     * (formula_id + organization name) allocation, owed = Σ(completed donation
-     * amount × percentage/100). Paid is summed from the payout ledger.
-     *
-     * @return array{0: float, 1: array<int, array{formula_id:int, organization:string, owed:float, paid:float, balance:float}>}
-     */
-    private function computeOwed(Request $request): array
-    {
-        $allocs = [];
-
-        $donations = (clone $this->applyDateFilter($request, Donation::query()))
-            ->where('status', 'completed')
-            ->with('formula:id,formula')
-            ->get(['id', 'amount', 'donation_formula_id']);
-
-        foreach ($donations as $donation) {
-            $items = $donation->formula?->formula;
-            if (! is_array($items)) {
-                continue;
-            }
-
-            foreach ($items as $item) {
-                $name = trim((string) ($item['organization'] ?? ''));
-                if ($name === '') {
-                    continue;
-                }
-
-                $pct = (float) ($item['percentage'] ?? 0);
-                $allocs[$donation->donation_formula_id.'|'.$name] ??= [
-                    'formula_id' => $donation->donation_formula_id,
-                    'organization' => $name,
-                    'owed' => 0.0,
-                ];
-                $allocs[$donation->donation_formula_id.'|'.$name]['owed'] += (float) $donation->amount * $pct / 100;
-            }
-        }
-
-        $paidBy = OrganizationPayout::query()
-            ->get()
-            ->groupBy(fn ($p) => $p->donation_formula_id.'|'.$p->organization_name);
-
-        $totalOwed = 0.0;
-        $detail = collect($allocs)
-            ->map(function ($alloc) use ($paidBy, &$totalOwed) {
-                $key = $alloc['formula_id'].'|'.$alloc['organization'];
-                $paid = (float) ($paidBy->get($key)?->sum('amount') ?? 0);
-                $totalOwed += $alloc['owed'];
-
-                return [
-                    'formula_id' => $alloc['formula_id'],
-                    'organization' => $alloc['organization'],
-                    'owed' => round($alloc['owed'], 2),
-                    'paid' => round($paid, 2),
-                    'balance' => round($alloc['owed'] - $paid, 2),
-                ];
-            })
-            ->values()
-            ->all();
-
-        return [$totalOwed, $detail];
     }
 }

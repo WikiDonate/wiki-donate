@@ -12,6 +12,7 @@ use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentProviderRegistry;
 use App\Services\PayPalClient;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
@@ -247,6 +248,58 @@ class OrganizationPayoutService
     public function balance(DonationFormula $formula, string $orgName): object
     {
         return $this->owedFor($formula, OrganizationPayout::makeKey($orgName));
+    }
+
+    /**
+     * Total live owed across every allocatable (formula + organization) pair.
+     *
+     * This is the single source of truth for the "remaining payable" figure on
+     * the admin transaction summary, so it can never drift from the balance the
+     * payouts feature actually pays out of. Both use the SAME rules:
+     *  - only completed, supported-currency (USD) donations count;
+     *  - owed = Σ(donated × percentage/100), rounded once per allocation.
+     *
+     * @param  callable(Builder): void|null  $donationFilter
+     *                                                        Optional extra constraint on the donations query (e.g. a date
+     *                                                        window) applied on top of the completed + USD rules.
+     */
+    public function totalOwed(?callable $donationFilter = null): float
+    {
+        $formulaIds = DonationFormula::query()->pluck('id');
+
+        if ($formulaIds->isEmpty()) {
+            return 0.0;
+        }
+
+        $donations = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()]);
+
+        if ($donationFilter !== null) {
+            $donationFilter($donations);
+        }
+
+        $donationSums = $donations
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $total = 0.0;
+
+        DonationFormula::query()
+            ->whereIn('id', $formulaIds)
+            ->select(['id', 'formula'])
+            ->get()
+            ->each(function (DonationFormula $formula) use ($donationSums, &$total) {
+                $donated = (float) ($donationSums->get($formula->id) ?? 0);
+
+                foreach ($this->normalizeItems($formula->formula) as $item) {
+                    $total += round($donated * ($item['percentage'] / 100), 2);
+                }
+            });
+
+        return round($total, 2);
     }
 
     /**
