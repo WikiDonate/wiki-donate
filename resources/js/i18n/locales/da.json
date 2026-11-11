@@ -247,7 +247,11 @@
         "pageOf": "Side {current} / {last} (i alt {total})",
         "completedLabel": "Afsluttet",
         "pendingLabel": "Afventer",
-        "failedLabel": "Mislykkedes"
+        "failedLabel": "Mislykkedes",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distributionsstatus",
+        "distributed": "Distribueret",
+        "partiallyDistributed": "Delvist fordelt"
     },
     "article": {
         "loading": "Indlæser artikel",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distributionsstatus",
+        "distributed": "Distribueret",
+        "partiallyDistributed": "Delvist fordelt"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheder forbeholdes."

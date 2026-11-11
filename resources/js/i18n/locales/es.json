@@ -247,7 +247,11 @@
         "pageOf": "Página {current} / {last} (total {total})",
         "completedLabel": "Completado",
         "pendingLabel": "Pendiente",
-        "failedLabel": "Fallido"
+        "failedLabel": "Fallido",
+        "paymentStatus": "Estado de pago",
+        "distributionStatus": "Estado de distribución",
+        "distributed": "Distribuido",
+        "partiallyDistributed": "Parcialmente distribuido"
     },
     "article": {
         "loading": "Cargando artículo",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Estado de pago",
+        "distributionStatus": "Estado de distribución",
+        "distributed": "Distribuido",
+        "partiallyDistributed": "Parcialmente distribuido"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."

@@ -247,7 +247,11 @@
         "pageOf": "పేజీ {current} / {last} (మొత్తం {total})",
         "completedLabel": "పూర్తయింది",
         "pendingLabel": "పెండింగ్‌లో ఉంది",
-        "failedLabel": "విఫలమైంది"
+        "failedLabel": "విఫలమైంది",
+        "paymentStatus": "చెల్లింపు స్థితి",
+        "distributionStatus": "పంపిణీ స్థితి",
+        "distributed": "పంపిణీ చేయబడింది",
+        "partiallyDistributed": "పాక్షికంగా పంపిణీ చేయబడింది"
     },
     "article": {
         "loading": "కథనం లోడ్ అవుతోంది",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "చెల్లింపు స్థితి",
+        "distributionStatus": "పంపిణీ స్థితి",
+        "distributed": "పంపిణీ చేయబడింది",
+        "partiallyDistributed": "పాక్షికంగా పంపిణీ చేయబడింది"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి."

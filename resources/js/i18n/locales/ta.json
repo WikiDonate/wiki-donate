@@ -247,7 +247,11 @@
         "pageOf": "பக்கம் {current} / {last} (மொத்தம் {total})",
         "completedLabel": "முடிக்கப்பட்டது",
         "pendingLabel": "நிலுவையில் உள்ளது",
-        "failedLabel": "தோல்வியடைந்தது"
+        "failedLabel": "தோல்வியடைந்தது",
+        "paymentStatus": "கட்டண நிலை",
+        "distributionStatus": "விநியோக நிலை",
+        "distributed": "விநியோகிக்கப்பட்டது",
+        "partiallyDistributed": "பகுதி விநியோகம்"
     },
     "article": {
         "loading": "கட்டுரையை ஏற்றுகிறது",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "கட்டண நிலை",
+        "distributionStatus": "விநியோக நிலை",
+        "distributed": "விநியோகிக்கப்பட்டது",
+        "partiallyDistributed": "பகுதி விநியோகம்"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."

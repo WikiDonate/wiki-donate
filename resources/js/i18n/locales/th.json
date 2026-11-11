@@ -247,7 +247,11 @@
         "pageOf": "หน้า {current} / {last} (รวม {total})",
         "completedLabel": "เสร็จสิ้น",
         "pendingLabel": "รอดำเนินการ",
-        "failedLabel": "ล้มเหลว"
+        "failedLabel": "ล้มเหลว",
+        "paymentStatus": "สถานะการชำระเงิน",
+        "distributionStatus": "สถานะการจัดจำหน่าย",
+        "distributed": "กระจาย",
+        "partiallyDistributed": "แจกเป็นบางส่วน"
     },
     "article": {
         "loading": "กำลังโหลดบทความ",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "สถานะการชำระเงิน",
+        "distributionStatus": "สถานะการจัดจำหน่าย",
+        "distributed": "กระจาย",
+        "partiallyDistributed": "แจกเป็นบางส่วน"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org สงวนลิขสิทธิ์."

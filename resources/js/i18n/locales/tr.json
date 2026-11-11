@@ -247,7 +247,11 @@
         "pageOf": "Sayfa {current} / {last} (toplam {total})",
         "completedLabel": "Tamamlandı",
         "pendingLabel": "Beklemede",
-        "failedLabel": "Başarısız"
+        "failedLabel": "Başarısız",
+        "paymentStatus": "Ödeme durumu",
+        "distributionStatus": "Dağıtım durumu",
+        "distributed": "Dağıtılmış",
+        "partiallyDistributed": "Kısmen dağıtılmış"
     },
     "article": {
         "loading": "Makale Yükleniyor",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Ödeme durumu",
+        "distributionStatus": "Dağıtım durumu",
+        "distributed": "Dağıtılmış",
+        "partiallyDistributed": "Kısmen dağıtılmış"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."

@@ -247,7 +247,11 @@
         "pageOf": "صفحه {current} / {last} (کل {total})",
         "completedLabel": "تکمیل شد",
         "pendingLabel": "در انتظار",
-        "failedLabel": "شکست خورد"
+        "failedLabel": "شکست خورد",
+        "paymentStatus": "وضعیت پرداخت",
+        "distributionStatus": "وضعیت توزیع",
+        "distributed": "توزیع شده است",
+        "partiallyDistributed": "به طور جزئی توزیع شده است"
     },
     "article": {
         "loading": "در حال بارگذاری مقاله",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "وضعیت پرداخت",
+        "distributionStatus": "وضعیت توزیع",
+        "distributed": "توزیع شده است",
+        "partiallyDistributed": "به طور جزئی توزیع شده است"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

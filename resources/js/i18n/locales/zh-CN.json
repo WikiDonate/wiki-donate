@@ -247,7 +247,11 @@
         "pageOf": "页面 {current} / {last} （总计 {total}）",
         "completedLabel": "已完成",
         "pendingLabel": "待定",
-        "failedLabel": "失败"
+        "failedLabel": "失败",
+        "paymentStatus": "付款状态",
+        "distributionStatus": "分布状况",
+        "distributed": "分布式",
+        "partiallyDistributed": "部分分布"
     },
     "article": {
         "loading": "加载文章",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "付款状态",
+        "distributionStatus": "分布状况",
+        "distributed": "分布式",
+        "partiallyDistributed": "部分分布"
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"

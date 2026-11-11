@@ -247,7 +247,11 @@
         "pageOf": "Trang {current} / {last} (tổng cộng {total})",
         "completedLabel": "Đã hoàn thành",
         "pendingLabel": "Đang chờ xử lý",
-        "failedLabel": "thất bại"
+        "failedLabel": "thất bại",
+        "paymentStatus": "Trạng thái thanh toán",
+        "distributionStatus": "Tình trạng phân phối",
+        "distributed": "phân phối",
+        "partiallyDistributed": "Phân phối một phần"
     },
     "article": {
         "loading": "Đang tải bài viết",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Trạng thái thanh toán",
+        "distributionStatus": "Tình trạng phân phối",
+        "distributed": "phân phối",
+        "partiallyDistributed": "Phân phối một phần"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

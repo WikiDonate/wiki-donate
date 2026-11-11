@@ -247,7 +247,11 @@
         "pageOf": "Pahina {current} / {last} (kabuuan {total})",
         "completedLabel": "Nakumpleto",
         "pendingLabel": "Nakabinbin",
-        "failedLabel": "Nabigo"
+        "failedLabel": "Nabigo",
+        "paymentStatus": "Katayuan ng pagbabayad",
+        "distributionStatus": "Katayuan ng pamamahagi",
+        "distributed": "Naipamahagi",
+        "partiallyDistributed": "Bahagyang ibinahagi"
     },
     "article": {
         "loading": "Naglo-load ng Artikulo",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Katayuan ng pagbabayad",
+        "distributionStatus": "Katayuan ng pamamahagi",
+        "distributed": "Naipamahagi",
+        "partiallyDistributed": "Bahagyang ibinahagi"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

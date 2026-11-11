@@ -247,7 +247,11 @@
         "pageOf": "oldal {current} / {last} (összesen {total})",
         "completedLabel": "Befejezve",
         "pendingLabel": "Függőben",
-        "failedLabel": "Sikertelen"
+        "failedLabel": "Sikertelen",
+        "paymentStatus": "Fizetési állapot",
+        "distributionStatus": "Elosztási állapot",
+        "distributed": "Elosztott",
+        "partiallyDistributed": "Részben elosztva"
     },
     "article": {
         "loading": "Cikk betöltése",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Fizetési állapot",
+        "distributionStatus": "Elosztási állapot",
+        "distributed": "Elosztott",
+        "partiallyDistributed": "Részben elosztva"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

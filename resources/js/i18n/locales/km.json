@@ -247,7 +247,11 @@
         "pageOf": "ទំព័រ {current} / {last} (សរុប {total})",
         "completedLabel": "បានបញ្ចប់",
         "pendingLabel": "កំពុងរង់ចាំ",
-        "failedLabel": "បរាជ័យ"
+        "failedLabel": "បរាជ័យ",
+        "paymentStatus": "ស្ថានភាពការទូទាត់",
+        "distributionStatus": "ស្ថានភាពចែកចាយ",
+        "distributed": "ចែកចាយ",
+        "partiallyDistributed": "ចែកចាយដោយផ្នែក"
     },
     "article": {
         "loading": "កំពុងផ្ទុកអត្ថបទ",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "ស្ថានភាពការទូទាត់",
+        "distributionStatus": "ស្ថានភាពចែកចាយ",
+        "distributed": "ចែកចាយ",
+        "partiallyDistributed": "ចែកចាយដោយផ្នែក"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

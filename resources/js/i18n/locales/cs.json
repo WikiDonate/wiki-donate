@@ -247,7 +247,11 @@
         "pageOf": "stránku {current} / {last} (celkem {total})",
         "completedLabel": "Dokončeno",
         "pendingLabel": "Čeká na vyřízení",
-        "failedLabel": "Nepodařilo se"
+        "failedLabel": "Nepodařilo se",
+        "paymentStatus": "Stav platby",
+        "distributionStatus": "Stav distribuce",
+        "distributed": "Distribuováno",
+        "partiallyDistributed": "Částečně distribuováno"
     },
     "article": {
         "loading": "Načítání článku",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Stav platby",
+        "distributionStatus": "Stav distribuce",
+        "distributed": "Distribuováno",
+        "partiallyDistributed": "Částečně distribuováno"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

@@ -247,7 +247,11 @@
         "pageOf": "Sida {current} / {last} (totalt {total})",
         "completedLabel": "Avslutad",
         "pendingLabel": "Väntar",
-        "failedLabel": "Misslyckades"
+        "failedLabel": "Misslyckades",
+        "paymentStatus": "Betalningsstatus",
+        "distributionStatus": "Distributionsstatus",
+        "distributed": "Utdelat",
+        "partiallyDistributed": "Delvis distribuerad"
     },
     "article": {
         "loading": "Laddar artikel",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Betalningsstatus",
+        "distributionStatus": "Distributionsstatus",
+        "distributed": "Utdelat",
+        "partiallyDistributed": "Delvis distribuerad"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

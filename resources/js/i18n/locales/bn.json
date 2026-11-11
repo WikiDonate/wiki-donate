@@ -247,7 +247,11 @@
         "pageOf": "পাতা {current} / {last} (মোট {total})",
         "completedLabel": "সম্পন্ন",
         "pendingLabel": "মুলতুবি",
-        "failedLabel": "ব্যর্থ হয়েছে"
+        "failedLabel": "ব্যর্থ হয়েছে",
+        "paymentStatus": "পেমেন্ট স্ট্যাটাস",
+        "distributionStatus": "বিতরণের অবস্থা",
+        "distributed": "বিতরণ করা হয়েছে",
+        "partiallyDistributed": "আংশিক বিতরণ"
     },
     "article": {
         "loading": "প্রবন্ধ লোড হচ্ছে",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "পেমেন্ট স্ট্যাটাস",
+        "distributionStatus": "বিতরণের অবস্থা",
+        "distributed": "বিতরণ করা হয়েছে",
+        "partiallyDistributed": "আংশিক বিতরণ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. সর্বস্বত্ব সংরক্ষিত"

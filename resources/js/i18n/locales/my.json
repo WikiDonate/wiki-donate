@@ -247,7 +247,11 @@
         "pageOf": "စာမျက်နှာ {current} / {last} (စုစုပေါင်း {total})",
         "completedLabel": "ပြီးသွားပြီ",
         "pendingLabel": "ဆိုင်းငံ့ထားသည်။",
-        "failedLabel": "မအောင်မြင်ပါ။"
+        "failedLabel": "မအောင်မြင်ပါ။",
+        "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
+        "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
+        "distributed": "ဖြန့်ဝေခဲ့သည်။",
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
     },
     "article": {
         "loading": "ဆောင်းပါးကို တင်နေသည်။",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
+        "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
+        "distributed": "ဖြန့်ဝေခဲ့သည်။",
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

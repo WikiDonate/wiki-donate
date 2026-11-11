@@ -247,7 +247,11 @@
         "pageOf": "Sivu {current} / {last} (yhteensä {total})",
         "completedLabel": "Valmis",
         "pendingLabel": "Odottaa",
-        "failedLabel": "Epäonnistui"
+        "failedLabel": "Epäonnistui",
+        "paymentStatus": "Maksun tila",
+        "distributionStatus": "Jakelun tila",
+        "distributed": "Jaettu",
+        "partiallyDistributed": "Osittain jaettu"
     },
     "article": {
         "loading": "Ladataan artikkelia",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Maksun tila",
+        "distributionStatus": "Jakelun tila",
+        "distributed": "Jaettu",
+        "partiallyDistributed": "Osittain jaettu"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Kaikki oikeudet pidätetään."

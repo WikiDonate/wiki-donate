@@ -247,7 +247,11 @@
         "pageOf": "પૃષ્ઠ {current} / {last} (કુલ {total})",
         "completedLabel": "પૂર્ણ થયું",
         "pendingLabel": "બાકી છે",
-        "failedLabel": "નિષ્ફળ"
+        "failedLabel": "નિષ્ફળ",
+        "paymentStatus": "ચુકવણી સ્થિતિ",
+        "distributionStatus": "વિતરણ સ્થિતિ",
+        "distributed": "વિતરિત",
+        "partiallyDistributed": "આંશિક રીતે વિતરિત"
     },
     "article": {
         "loading": "લેખ લોડ કરી રહ્યું છે",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "ચુકવણી સ્થિતિ",
+        "distributionStatus": "વિતરણ સ્થિતિ",
+        "distributed": "વિતરિત",
+        "partiallyDistributed": "આંશિક રીતે વિતરિત"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. સર્વાધિકાર આરક્ષિત."

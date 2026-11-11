@@ -247,7 +247,11 @@
         "pageOf": "Σελίδα {current} / {last} (σύνολο {total})",
         "completedLabel": "Ολοκληρώθηκε",
         "pendingLabel": "Σε εκκρεμότητα",
-        "failedLabel": "Απέτυχε"
+        "failedLabel": "Απέτυχε",
+        "paymentStatus": "Κατάσταση πληρωμής",
+        "distributionStatus": "Κατάσταση διανομής",
+        "distributed": "Διανεμήθηκε",
+        "partiallyDistributed": "Μερικώς κατανεμημένο"
     },
     "article": {
         "loading": "Φόρτωση άρθρου",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Κατάσταση πληρωμής",
+        "distributionStatus": "Κατάσταση διανομής",
+        "distributed": "Διανεμήθηκε",
+        "partiallyDistributed": "Μερικώς κατανεμημένο"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Με την επιφύλαξη παντός δικαιώματος."

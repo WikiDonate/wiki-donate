@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\User;
+use App\Rules\SupportedCurrency;
 use App\Services\Payout\OrganizationPayoutService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -174,8 +175,9 @@ class DashboardController extends Controller
                         'amount' => $donation->amount,
                         'currency' => $donation->currency,
                         'status' => $donation->status,
-                        // Only completed money can be distributed.
+                        // Only completed, supported-currency money is payable.
                         'distribution_status' => $donation->status === 'completed'
+                            && strtoupper((string) $donation->currency) === SupportedCurrency::code()
                             ? ($distributionStatuses[$donation->donation_formula_id] ?? null)
                             : null,
                         'date' => $donation->created_at->format('d M, Y'),

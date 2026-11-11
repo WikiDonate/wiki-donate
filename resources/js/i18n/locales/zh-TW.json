@@ -247,7 +247,11 @@
         "pageOf": "頁面{current} /{last} （總計{total}）",
         "completedLabel": "已完成",
         "pendingLabel": "待定",
-        "failedLabel": "失敗"
+        "failedLabel": "失敗",
+        "paymentStatus": "付款狀態",
+        "distributionStatus": "分佈狀況",
+        "distributed": "分散式",
+        "partiallyDistributed": "部分分佈"
     },
     "article": {
         "loading": "載入文章",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "付款狀態",
+        "distributionStatus": "分佈狀況",
+        "distributed": "分散式",
+        "partiallyDistributed": "部分分佈"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"

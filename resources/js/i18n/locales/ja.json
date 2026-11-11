@@ -247,7 +247,11 @@
         "pageOf": "ページ {current} / {last} (合計 {total})",
         "completedLabel": "完了しました",
         "pendingLabel": "保留中",
-        "failedLabel": "失敗しました"
+        "failedLabel": "失敗しました",
+        "paymentStatus": "支払い状況",
+        "distributionStatus": "配布状況",
+        "distributed": "分散型",
+        "partiallyDistributed": "一部配布中"
     },
     "article": {
         "loading": "記事を読み込んでいます",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "支払い状況",
+        "distributionStatus": "配布状況",
+        "distributed": "分散型",
+        "partiallyDistributed": "一部配布中"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

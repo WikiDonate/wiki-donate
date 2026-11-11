@@ -247,7 +247,11 @@
         "pageOf": "Pagina {current} / {last} (total {total})",
         "completedLabel": "Terminat",
         "pendingLabel": "În așteptare",
-        "failedLabel": "A eșuat"
+        "failedLabel": "A eșuat",
+        "paymentStatus": "Starea plății",
+        "distributionStatus": "Starea distribuției",
+        "distributed": "Distribuit",
+        "partiallyDistributed": "Distribuit parțial"
     },
     "article": {
         "loading": "Se încarcă articolul",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Starea plății",
+        "distributionStatus": "Starea distribuției",
+        "distributed": "Distribuit",
+        "partiallyDistributed": "Distribuit parțial"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."
