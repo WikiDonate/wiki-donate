@@ -1,5 +1,5 @@
 <template>
-    <main class="w-full mx-auto max-w-5xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
+    <main class="w-full mx-auto max-w-7xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
         <!-- Gradient Header -->
         <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-6 px-6 text-center">
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wide">

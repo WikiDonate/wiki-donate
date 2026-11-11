@@ -407,4 +407,29 @@ class PaymentReportRegressionTest extends TestCase
         $this->assertCount(1, $filtered);
         $this->assertSame('stripe', $filtered[0]['payment_method']);
     }
+
+    public function test_admin_donations_expose_distribution_status(): void
+    {
+        $admin = $this->admin();
+        $formula = $this->formula();
+
+        $covered = $this->donation([
+            'donation_formula_id' => $formula->id,
+            'amount' => 100,
+        ]);
+        $this->payout($formula, 100, 'paid');
+
+        $unfinished = $this->donation([
+            'donation_formula_id' => $formula->id,
+            'amount' => 25,
+            'status' => 'pending',
+        ]);
+
+        $rows = collect($this->withHeaders($this->userToken($admin))
+            ->getJson('/api/v1/admin/donations')
+            ->json('data'))->keyBy('id');
+
+        $this->assertSame('distributed', $rows[$covered->id]['distribution_status']);
+        $this->assertNull($rows[$unfinished->id]['distribution_status']);
+    }
 }

@@ -1,6 +1,6 @@
 <template>
-    <main class="w-full mx-auto max-w-5xl px-2 sm:px-4 lg:px-6 py-8">
-        <TopBarTitle :page-title="t('report.title')" />
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
+        <PageTitle :title="t('report.title')" />
 
         <!-- Filters -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
@@ -224,8 +224,12 @@
         { key: 'date', label: t('report.date') },
         { key: 'payment_method', label: t('payment.methodLabel') },
         { key: 'amount', label: t('report.amount') },
-        { key: 'status', label: t('report.paymentStatus') },
-        { key: 'distributionStatus', label: t('report.distributionStatus') },
+        { key: 'status', label: t('report.paymentStatus'), thClass: 'whitespace-nowrap' },
+        {
+            key: 'distributionStatus',
+            label: t('report.distributionStatus'),
+            thClass: 'whitespace-nowrap',
+        },
         { key: 'paymentId', label: t('report.paymentId') },
         { key: 'article', label: t('report.article') },
         { key: 'action', label: t('report.action') },

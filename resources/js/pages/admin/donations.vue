@@ -71,6 +71,14 @@
                         <template #cell-status="{ row }">
                             <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
                         </template>
+                        <template #cell-distributionStatus="{ row }">
+                            <AdminBadge
+                                v-if="row.distribution_status"
+                                :variant="distributionVariant(row.distribution_status)"
+                                :text="distributionLabel(row.distribution_status)"
+                            />
+                            <span v-else class="text-xs text-gray-400">—</span>
+                        </template>
                         <template #cell-date="{ row }"
                             ><span class="text-gray-500 text-xs">{{
                                 formatDateUTC(row.date_raw || row.date)
@@ -176,7 +184,12 @@
         { key: 'donor', label: t('admin.donor') },
         { key: 'payment_method', label: t('admin.paymentMethod') },
         { key: 'amount', label: t('admin.amount') },
-        { key: 'status', label: t('admin.status') },
+        { key: 'status', label: t('admin.paymentStatus'), thClass: 'whitespace-nowrap' },
+        {
+            key: 'distributionStatus',
+            label: t('admin.distributionStatus'),
+            thClass: 'whitespace-nowrap',
+        },
         { key: 'paymentId', label: t('admin.paymentId') },
         { key: 'article', label: t('admin.article') },
         { key: 'action', label: t('admin.action') },
@@ -187,6 +200,22 @@
         if (status === 'pending') return 'warning'
         return 'danger'
     }
+
+    const distributionVariants = {
+        distributed: 'success',
+        partial: 'amber',
+        pending: 'warning',
+    }
+
+    const distributionVariant = (status) => distributionVariants[status] || 'warning'
+
+    const distributionLabels = {
+        distributed: 'admin.distributed',
+        partial: 'admin.partiallyDistributed',
+        pending: 'admin.pending',
+    }
+
+    const distributionLabel = (status) => t(distributionLabels[status] || 'admin.pending')
 
     const loadPage = async (page = 1) => {
         loading.value = true
