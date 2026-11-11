@@ -31,7 +31,7 @@ class TransactionController extends Controller
      * Paginated merged chronological feed.
      *
      * GET /admin/transactions
-     * Filters: from, to, type (income|expense), method (stripe|paypal|bank|other), org, article, sort (asc|desc)
+     * Filters: from, to, type (income|expense), method (stripe|paypal|bank|other), org, sort (asc|desc)
      */
     public function index(Request $request): JsonResponse
     {
@@ -240,7 +240,6 @@ class TransactionController extends Controller
     private function collectRows(Request $request): array
     {
         $org = trim((string) $request->input('org', ''));
-        $articleSlug = trim((string) $request->input('article', ''));
 
         // ---- Income rows: completed donations --------------------------------
         $methodFilter = trim((string) $request->input('method', ''));
@@ -248,14 +247,10 @@ class TransactionController extends Controller
             ->where('status', 'completed')
             ->with('formula.article:id,slug,title')
             ->get()
-            ->filter(function (Donation $d) use ($org, $articleSlug, $methodFilter) {
+            ->filter(function (Donation $d) use ($org, $methodFilter) {
                 $formula = $d->formula;
-                $article = $formula?->article;
 
                 if ($org !== '' && ! $this->formulaHasOrg($formula, $org)) {
-                    return false;
-                }
-                if ($articleSlug !== '' && (! $article || $article->slug !== $articleSlug)) {
                     return false;
                 }
                 if ($methodFilter !== '') {

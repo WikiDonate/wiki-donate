@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Donation;
 use App\Models\DonationFormula;
+use App\Models\OrganizationPayout;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -198,6 +199,102 @@ class PaymentReportRegressionTest extends TestCase
         $this->assertSame(1, (int) $res->json('data.summary.byPaymentMethod.0.count'));
         $this->assertSame('unknown', $res->json('data.summary.byPaymentMethod.0.payment_method'));
         $this->assertCount(1, $res->json('data.summary.byPaymentMethod'));
+    }
+
+    // -------------------------------------------------------------------------
+    // Donor report — distribution status (admin payout coverage)
+    // -------------------------------------------------------------------------
+
+    /**
+     * @param  array<string, mixed>  $overrides
+     */
+    private function payout(DonationFormula $formula, float $amount, string $status, array $overrides = []): OrganizationPayout
+    {
+        return OrganizationPayout::create(array_merge([
+            'donation_formula_id' => $formula->id,
+            'organization_name' => 'Wiki Org',
+            'organization_key' => OrganizationPayout::makeKey('Wiki Org'),
+            'actor_id' => User::factory()->create()->id,
+            'amount' => $amount,
+            'currency' => 'usd',
+            'type' => 'partial',
+            'status' => $status,
+            'paid_at' => $status === 'paid' ? now() : null,
+        ], $overrides));
+    }
+
+    public function test_donor_report_distribution_status_tracks_payout_coverage(): void
+    {
+        $donor = User::factory()->create();
+
+        $unpaid = $this->formula();
+        $donationUnpaid = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $unpaid->id,
+            'amount' => 100,
+        ]);
+
+        $partial = $this->formula();
+        $donationPartial = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $partial->id,
+            'amount' => 100,
+        ]);
+        $this->payout($partial, 40, 'paid');
+
+        $settled = $this->formula();
+        $donationSettled = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $settled->id,
+            'amount' => 100,
+        ]);
+        // A pending payout still reserves the balance, so it counts as covered.
+        $this->payout($settled, 100, 'pending');
+
+        $rows = collect($this->withHeaders($this->userToken($donor))
+            ->getJson('/api/v1/report/donations')
+            ->json('data.donations'))->keyBy('id');
+
+        $this->assertSame('pending', $rows[$donationUnpaid->id]['distribution_status']);
+        $this->assertSame('partial', $rows[$donationPartial->id]['distribution_status']);
+        $this->assertSame('distributed', $rows[$donationSettled->id]['distribution_status']);
+    }
+
+    public function test_donor_report_distribution_status_ignores_failed_and_reversed_payouts(): void
+    {
+        $donor = User::factory()->create();
+
+        $failedFormula = $this->formula();
+        $failedDonation = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $failedFormula->id,
+            'amount' => 100,
+        ]);
+        $this->payout($failedFormula, 100, 'failed');
+
+        $reversedFormula = $this->formula();
+        $reversedDonation = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $reversedFormula->id,
+            'amount' => 100,
+        ]);
+        $this->payout($reversedFormula, 100, 'reversed', ['reversed_at' => now()]);
+
+        // An unfinished payment has no distribution status at all.
+        $pendingDonation = $this->donation([
+            'user_id' => $donor->id,
+            'donation_formula_id' => $failedFormula->id,
+            'amount' => 25,
+            'status' => 'pending',
+        ]);
+
+        $rows = collect($this->withHeaders($this->userToken($donor))
+            ->getJson('/api/v1/report/donations')
+            ->json('data.donations'))->keyBy('id');
+
+        $this->assertSame('pending', $rows[$failedDonation->id]['distribution_status']);
+        $this->assertSame('pending', $rows[$reversedDonation->id]['distribution_status']);
+        $this->assertNull($rows[$pendingDonation->id]['distribution_status']);
     }
 
     // -------------------------------------------------------------------------

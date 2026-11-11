@@ -194,7 +194,7 @@ class PaymentLegacyCleanupTest extends TestCase
             'amount' => 15,
             'currency' => 'USD',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
             'payment_method' => 'paypal',
         ]);

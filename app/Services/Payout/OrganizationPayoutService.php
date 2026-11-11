@@ -303,6 +303,72 @@ class OrganizationPayoutService
     }
 
     /**
+     * Payout coverage per formula for read-only donor-facing status labels.
+     *
+     * Uses the SAME rules as the balance math: owed from completed USD
+     * donations against the live formula percentages, paid from on-balance
+     * payouts (paid + pending, reversed excluded). Returns one label per
+     * formula id:
+     *  - `distributed` — payouts cover every owed allocation;
+     *  - `partial`     — some money moved but the formula is not fully paid;
+     *  - `pending`     — nothing has been paid out yet.
+     *
+     * @param  array<int, int|string>  $formulaIds
+     * @return array<int, string> formula id => distributed|partial|pending
+     */
+    public function distributionStatuses(array $formulaIds): array
+    {
+        $formulaIds = array_values(array_unique(array_filter($formulaIds)));
+
+        if ($formulaIds === []) {
+            return [];
+        }
+
+        $donationSums = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $paidSums = OrganizationPayout::query()
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->whereIn('status', OrganizationPayout::ON_BALANCE_STATUSES)
+            ->whereNull('reversed_at')
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $statuses = [];
+
+        DonationFormula::query()
+            ->whereIn('id', $formulaIds)
+            ->select(['id', 'formula'])
+            ->get()
+            ->each(function (DonationFormula $formula) use ($donationSums, $paidSums, &$statuses) {
+                $donated = (float) ($donationSums->get($formula->id) ?? 0);
+                $owed = 0.0;
+
+                foreach ($this->normalizeItems($formula->formula) as $item) {
+                    $owed += round($donated * ($item['percentage'] / 100), 2);
+                }
+
+                $owed = round($owed, 2);
+                $paid = round((float) ($paidSums->get($formula->id) ?? 0), 2);
+
+                $statuses[$formula->id] = match (true) {
+                    $owed <= 0 => $paid > 0 ? 'distributed' : 'pending',
+                    $paid + 0.009 >= $owed => 'distributed',
+                    $paid > 0 => 'partial',
+                    default => 'pending',
+                };
+            });
+
+        return $statuses;
+    }
+
+    /**
      * Transactional payout create with row lock to prevent overpay races.
      *
      * @throws UserFacingException when validation / overpay fails.

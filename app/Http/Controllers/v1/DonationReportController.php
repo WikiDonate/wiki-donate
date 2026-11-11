@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Services\Payout\OrganizationPayoutService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class DonationReportController extends Controller
 {
+    public function __construct(private OrganizationPayoutService $payouts) {}
+
     /**
      * Return the authenticated user's donation report summary and paginated history.
      *
@@ -79,7 +82,13 @@ class DonationReportController extends Controller
                 ->latest()
                 ->paginate($perPage);
 
-            $donations = $paginator->map(function (Donation $donation) {
+            // Admin payout coverage for every formula on this page, computed
+            // once (same USD-only / on-balance rules as the payout balances).
+            $distributionStatuses = $this->payouts->distributionStatuses(
+                $paginator->getCollection()->pluck('donation_formula_id')->filter()->all()
+            );
+
+            $donations = $paginator->map(function (Donation $donation) use ($distributionStatuses) {
                 $formula = $donation->formula;
                 $article = $formula?->article;
                 $metadata = $donation->metadata ?? [];
@@ -97,6 +106,11 @@ class DonationReportController extends Controller
                     'amount' => $donation->amount,
                     'currency' => $donation->currency,
                     'status' => $donation->status,
+                    // Only completed money can be distributed; anything else
+                    // (pending/failed/expired) has no payout status yet.
+                    'distribution_status' => $donation->status === 'completed'
+                        ? ($distributionStatuses[$donation->donation_formula_id] ?? null)
+                        : null,
                     'date' => $donation->created_at->format('d M, Y'),
                     // Exact instant (UTC, ISO 8601) so the SPA can render the
                     // donor's own local date *and time*. `date` stays for

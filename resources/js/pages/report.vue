@@ -119,6 +119,14 @@
                     <template #cell-status="{ row }">
                         <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
                     </template>
+                    <template #cell-distributionStatus="{ row }">
+                        <AdminBadge
+                            v-if="row.distribution_status"
+                            :variant="distributionVariant(row.distribution_status)"
+                            :text="distributionLabel(row.distribution_status)"
+                        />
+                        <span v-else class="text-xs text-gray-400">—</span>
+                    </template>
                     <template #cell-paymentId="{ row }">
                         <span class="text-xs text-gray-400 font-mono">{{
                             row.payment_id || '—'
@@ -216,7 +224,8 @@
         { key: 'date', label: t('report.date') },
         { key: 'payment_method', label: t('payment.methodLabel') },
         { key: 'amount', label: t('report.amount') },
-        { key: 'status', label: t('report.status') },
+        { key: 'status', label: t('report.paymentStatus') },
+        { key: 'distributionStatus', label: t('report.distributionStatus') },
         { key: 'paymentId', label: t('report.paymentId') },
         { key: 'article', label: t('report.article') },
         { key: 'action', label: t('report.action') },
@@ -236,6 +245,22 @@
     }
 
     const statusVariant = (status) => statusVariants[status] || 'danger'
+
+    const distributionVariants = {
+        distributed: 'success',
+        partial: 'amber',
+        pending: 'warning',
+    }
+
+    const distributionVariant = (status) => distributionVariants[status] || 'warning'
+
+    const distributionLabels = {
+        distributed: 'report.distributed',
+        partial: 'report.partiallyDistributed',
+        pending: 'report.pending',
+    }
+
+    const distributionLabel = (status) => t(distributionLabels[status] || 'report.pending')
 
     function openDetail(row) {
         selectedDonation.value = {

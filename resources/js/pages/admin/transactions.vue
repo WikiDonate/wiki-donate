@@ -81,17 +81,6 @@
                         @update:model-value="filterOrg = $event"
                         @clear="loadPage(1)"
                     />
-                    <ArticleSelect
-                        :model-value="filterArticle"
-                        :display-title="filterArticleTitle"
-                        :placeholder="t('admin.articleSlugPlaceholder')"
-                        :clearable="true"
-                        class="flex-1 min-w-[200px]"
-                        @update:model-value="filterArticle = $event"
-                        @update:display-title="filterArticleTitle = $event"
-                        @select="loadPage(1)"
-                        @clear="clearArticleFilter"
-                    />
                     <input
                         v-model="fromDate"
                         type="date"
@@ -266,13 +255,6 @@
     const filterType = ref('')
     const filterMethod = ref('')
     const filterOrg = ref('')
-    const filterArticle = ref('')
-    const filterArticleTitle = ref('')
-
-    const clearArticleFilter = () => {
-        filterArticleTitle.value = ''
-        loadPage(1)
-    }
     const fromDate = ref('')
     const toDate = ref('')
 
@@ -303,7 +285,6 @@
         if (filterType.value) params.type = filterType.value
         if (filterMethod.value) params.method = filterMethod.value
         if (filterOrg.value.trim()) params.org = filterOrg.value.trim()
-        if (filterArticle.value.trim()) params.article = filterArticle.value.trim()
         if (fromDate.value) params.from = fromDate.value
         if (toDate.value) params.to = toDate.value
         return params
