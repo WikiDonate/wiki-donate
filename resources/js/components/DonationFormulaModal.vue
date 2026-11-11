@@ -242,7 +242,7 @@
     const [name, nameProps] = defineField('name')
     const [details, detailsProps] = defineField('details')
 
-    const { fields, push, remove } = useFieldArray('formula')
+    const { fields, push, remove, replace } = useFieldArray('formula')
 
     const localIsSaving = ref(false)
     const showSaveConfirm = ref(false)
@@ -280,34 +280,38 @@
     watch(
         () => props.modelValue,
         (val) => {
-            if (val) {
-                // Reset saving states when modal opens
-                localIsSaving.value = false
-                showSaveConfirm.value = false
-                pendingSaveData.value = null
+            if (!val) return
 
-                const formula =
-                    props.initialData?.formula && props.initialData.formula.length > 0
-                        ? JSON.parse(
-                              JSON.stringify(normalizeFormulaRows(props.initialData.formula)),
-                          )
-                        : [
-                              {
-                                  organization: '',
-                                  ein: null,
-                                  organization_id: null,
-                                  percentage: 0,
-                              },
-                          ]
+            // Reset saving states when modal opens
+            localIsSaving.value = false
+            showSaveConfirm.value = false
+            pendingSaveData.value = null
 
-                resetForm({
-                    values: {
-                        name: props.initialData?.name || '',
-                        details: props.initialData?.details || '',
-                        formula,
-                    },
-                })
-            }
+            const isCreating = !props.isEdit
+            const initialRows =
+                !isCreating && props.initialData?.formula?.length
+                    ? JSON.parse(JSON.stringify(normalizeFormulaRows(props.initialData.formula)))
+                    : [
+                          {
+                              organization: '',
+                              ein: null,
+                              website: null,
+                              organization_id: null,
+                              percentage: 0,
+                          },
+                      ]
+
+            resetForm({
+                values: {
+                    name: isCreating ? '' : props.initialData?.name || '',
+                    details: isCreating ? '' : props.initialData?.details || '',
+                    formula: initialRows,
+                },
+            })
+
+            // Ensure field array rows (including OrganizationSelect bindings) are
+            // fully replaced, so opening "new" after "edit" never keeps stale values.
+            replace(initialRows)
         },
         { immediate: true },
     )

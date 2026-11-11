@@ -447,8 +447,6 @@
     const [editState, editStateProps] = defineOrgField('state')
     const [editCountry, editCountryProps] = defineOrgField('country')
     const [editPayoutMethods] = defineOrgField('payout_methods')
-
-    useHead({ title: t('admin.organizations') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const loading = ref(true)

@@ -1,8 +1,8 @@
 <!-- new article page -->
 <template>
-    <main class="w-full">
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Top bar -->
-        <TopBarTitle :page-title="t('article.newTitle')" />
+        <PageTitle :title="t('article.newTitle')" />
 
         <!-- Alert message -->
         <div class="mt-2">
@@ -75,11 +75,6 @@
     import { articleService } from '~/services/articleService'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('article.newArticleTitle'),
-    })
-
     const route = useRoute()
     const router = useRouter()
     const authStore = useAuthStore()

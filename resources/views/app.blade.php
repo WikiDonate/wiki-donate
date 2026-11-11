@@ -6,30 +6,7 @@
         <title>WikiDonate</title>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="alternate icon" href="/favicon.ico" />
-        @php
-            $hotFile = public_path('hot');
-            $manifestPath = public_path('build/.vite/manifest.json');
-        @endphp
-
-        @if ($hotFile && file_exists($hotFile))
-            @php
-                $devServer = trim(file_get_contents($hotFile));
-            @endphp
-            <script type="module" src="{{ $devServer }}/resources/js/app.js"></script>
-        @elseif (file_exists($manifestPath))
-            @php
-                $manifest = json_decode(file_get_contents($manifestPath), true);
-                $entry = $manifest['resources/js/app.js'] ?? null;
-            @endphp
-            @if ($entry)
-                @foreach (($entry['css'] ?? []) as $css)
-                    <link rel="stylesheet" href="/build/{{ $css }}" />
-                @endforeach
-                <script type="module" src="/build/{{ $entry['file'] }}"></script>
-            @endif
-        @else
-            <script type="module" src="http://localhost:5173/resources/js/app.js"></script>
-        @endif
+        @vite('resources/js/app.js')
     </head>
     <body>
         <div id="app"></div>

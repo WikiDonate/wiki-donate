@@ -247,7 +247,11 @@
         "pageOf": "الصفحة {current} / {last} (المجموع {total})",
         "completedLabel": "مكتمل",
         "pendingLabel": "في انتظار",
-        "failedLabel": "فشل"
+        "failedLabel": "فشل",
+        "paymentStatus": "حالة الدفع",
+        "distributionStatus": "حالة التوزيع",
+        "distributed": "وزعت",
+        "partiallyDistributed": "موزعة جزئيا"
     },
     "article": {
         "loading": "جارٍ تحميل المقالة",
@@ -502,7 +506,7 @@
         "exportFailed": "فشل التصدير",
         "failedToLoadTransactions": "فشل في تحميل المعاملات",
         "payouts": "الدفعات",
-        "orgPayoutsTitle": "مدفوعات المنظمة",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "ادفع للمؤسسات من الأرصدة المباشرة — إلحاق دفتر أستاذ العوائد فقط",
         "loadingAllocations": "جارٍ تحميل المخصصات...",
         "noAllocations": "لا يوجد مخصصات مستحقة الدفع حتى الآن",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "حالة الدفع",
+        "distributionStatus": "حالة التوزيع",
+        "distributed": "وزعت",
+        "partiallyDistributed": "موزعة جزئيا"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."
@@ -708,5 +716,32 @@
         "successHint": "سيتلقى هذا العنوان الآن دفعات التبرعات. شكرًا لك!",
         "failed": "فشل التأكيد.",
         "missingToken": "لم يتم توفير رمز التأكيد في هذا الرابط."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

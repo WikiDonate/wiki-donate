@@ -247,7 +247,11 @@
         "pageOf": "Side {current} / {last} (totalt {total})",
         "completedLabel": "Fullført",
         "pendingLabel": "Venter",
-        "failedLabel": "Mislyktes"
+        "failedLabel": "Mislyktes",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distribusjonsstatus",
+        "distributed": "Distribuert",
+        "partiallyDistributed": "Delvis distribuert"
     },
     "article": {
         "loading": "Laster artikkel",
@@ -502,7 +506,7 @@
         "exportFailed": "Eksporten mislyktes",
         "failedToLoadTransactions": "Kunne ikke laste inn transaksjoner",
         "payouts": "Utbetalinger",
-        "orgPayoutsTitle": "Organisasjonsutbetalinger",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Betal organisasjoner fra aktive saldoer – bare vedlegg utbetalingsreskontro",
         "loadingAllocations": "Laster tildelinger ...",
         "noAllocations": "Ingen betalbare tildelinger ennå",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distribusjonsstatus",
+        "distributed": "Distribuert",
+        "partiallyDistributed": "Delvis distribuert"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."
@@ -708,5 +716,32 @@
         "successHint": "Denne adressen vil nå motta donasjonsutbetalinger. Takk!",
         "failed": "Bekreftelsen mislyktes.",
         "missingToken": "Ingen bekreftelsestoken ble gitt i denne lenken."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

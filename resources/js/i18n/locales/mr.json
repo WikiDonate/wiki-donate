@@ -247,7 +247,11 @@
         "pageOf": "पान {current} / {last} (एकूण {total})",
         "completedLabel": "पूर्ण झाले",
         "pendingLabel": "प्रलंबित",
-        "failedLabel": "अयशस्वी"
+        "failedLabel": "अयशस्वी",
+        "paymentStatus": "देयक स्थिती",
+        "distributionStatus": "वितरण स्थिती",
+        "distributed": "वितरित केले",
+        "partiallyDistributed": "अंशतः वितरित"
     },
     "article": {
         "loading": "लेख लोड करत आहे",
@@ -502,7 +506,7 @@
         "exportFailed": "निर्यात अयशस्वी",
         "failedToLoadTransactions": "व्यवहार लोड करण्यात अयशस्वी",
         "payouts": "पेआउट्स",
-        "orgPayoutsTitle": "संस्था पेआउट",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "लाइव्ह बॅलन्समधून संस्थांना देय द्या — फक्त पेआउट लेजर संलग्न करा",
         "loadingAllocations": "वाटप लोड करत आहे...",
         "noAllocations": "अद्याप देय वाटप नाही",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "देयक स्थिती",
+        "distributionStatus": "वितरण स्थिती",
+        "distributed": "वितरित केले",
+        "partiallyDistributed": "अंशतः वितरित"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."
@@ -708,5 +716,32 @@
         "successHint": "या पत्त्यावर आता देणगीचे पैसे मिळतील. धन्यवाद!",
         "failed": "पुष्टीकरण अयशस्वी.",
         "missingToken": "या लिंकवर कोणतेही पुष्टीकरण टोकन दिलेले नाही."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

@@ -202,7 +202,10 @@
 
     // The tab title must match the outcome too: it used to be the static
     // "Payment Successful" even for a declined checkout.
-    useHead({ title: computed(() => view.value.title) })
+    const appName = import.meta.env.VITE_APP_NAME || 'Wiki Donate'
+    useHead({
+        title: computed(() => (view.value?.title ? `${view.value.title} | ${appName}` : appName)),
+    })
 
     // Normalise the API payload; keeps working against an older backend that
     // only sent `completed`.

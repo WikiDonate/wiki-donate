@@ -247,7 +247,11 @@
         "pageOf": "Pahina {current} / {last} (kabuuan {total})",
         "completedLabel": "Nakumpleto",
         "pendingLabel": "Nakabinbin",
-        "failedLabel": "Nabigo"
+        "failedLabel": "Nabigo",
+        "paymentStatus": "Katayuan ng pagbabayad",
+        "distributionStatus": "Katayuan ng pamamahagi",
+        "distributed": "Naipamahagi",
+        "partiallyDistributed": "Bahagyang ibinahagi"
     },
     "article": {
         "loading": "Naglo-load ng Artikulo",
@@ -502,7 +506,7 @@
         "exportFailed": "Nabigo ang pag-export",
         "failedToLoadTransactions": "Nabigong mag-load ng mga transaksyon",
         "payouts": "Mga pagbabayad",
-        "orgPayoutsTitle": "Mga Pagbabayad ng Organisasyon",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Magbayad ng mga organisasyon mula sa mga live na balanse — idagdag lang ang payout ledger",
         "loadingAllocations": "Naglo-load ng mga alokasyon...",
         "noAllocations": "Wala pang babayarang alokasyon",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Katayuan ng pagbabayad",
+        "distributionStatus": "Katayuan ng pamamahagi",
+        "distributed": "Naipamahagi",
+        "partiallyDistributed": "Bahagyang ibinahagi"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."
@@ -708,5 +716,32 @@
         "successHint": "Ang address na ito ay makakatanggap na ngayon ng mga pagbabayad ng donasyon. salamat po!",
         "failed": "Nabigo ang pagkumpirma.",
         "missingToken": "Walang ibinigay na token ng kumpirmasyon sa link na ito."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

@@ -108,11 +108,6 @@
     import api from '~/config/apiConfig'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('howItWorks.title'),
-    })
-
     const router = useRouter()
     const activeSection = ref('step-0')
     const steps = ref([])

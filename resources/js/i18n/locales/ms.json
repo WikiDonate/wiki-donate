@@ -247,7 +247,11 @@
         "pageOf": "Halaman {current} / {last} (jumlah {total})",
         "completedLabel": "Selesai",
         "pendingLabel": "Belum selesai",
-        "failedLabel": "gagal"
+        "failedLabel": "gagal",
+        "paymentStatus": "Status pembayaran",
+        "distributionStatus": "Status pengedaran",
+        "distributed": "Diedarkan",
+        "partiallyDistributed": "Diedarkan sebahagiannya"
     },
     "article": {
         "loading": "Memuatkan Artikel",
@@ -502,7 +506,7 @@
         "exportFailed": "Eksport gagal",
         "failedToLoadTransactions": "Gagal memuatkan transaksi",
         "payouts": "Bayaran",
-        "orgPayoutsTitle": "Pembayaran Organisasi",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Bayar organisasi daripada baki langsung — tambahkan lejar pembayaran sahaja",
         "loadingAllocations": "Memuatkan peruntukan...",
         "noAllocations": "Tiada peruntukan berbayar lagi",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Status pembayaran",
+        "distributionStatus": "Status pengedaran",
+        "distributed": "Diedarkan",
+        "partiallyDistributed": "Diedarkan sebahagiannya"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."
@@ -708,5 +716,32 @@
         "successHint": "Alamat ini kini akan menerima pembayaran derma. terima kasih!",
         "failed": "Pengesahan gagal.",
         "missingToken": "Tiada token pengesahan diberikan dalam pautan ini."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

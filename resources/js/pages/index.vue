@@ -43,9 +43,6 @@
     import { setLocale } from '~/i18n'
 
     const { t } = useI18n()
-
-    useHead({ title: t('home.title') })
-
     const router = useRouter()
     const route = useRoute()
 

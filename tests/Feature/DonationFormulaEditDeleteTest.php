@@ -122,4 +122,40 @@ class DonationFormulaEditDeleteTest extends TestCase
         $this->assertFalse((bool) $formula->is_edited);
         $this->assertNull($formula->edited_at);
     }
+
+    public function test_name_is_rejected_when_a_soft_deleted_formula_still_holds_it()
+    {
+        $owner = User::factory()->create();
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
+        $formula = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $owner->id,
+            'name' => 'Reused Name',
+            'formula' => [['organization' => 'Org', 'percentage' => 100]],
+        ]);
+
+        // Soft-delete: the row stays in the table, so the DB unique index on
+        // (article_id, user_id, name) still reserves the name.
+        $this->actingEditor($owner)
+            ->deleteJson("/api/v1/donation-formulas/{$formula->uuid}")
+            ->assertOk();
+        $this->assertSoftDeleted('donation_formulas', ['id' => $formula->id]);
+
+        // Recreating the same name must be a clean 422, not a 1062 duplicate
+        // key crash.
+        $response = $this->actingEditor($owner)->postJson('/api/v1/donation-formulas', [
+            'article_slug' => $article->slug,
+            'name' => 'Reused Name',
+            'formula' => [['organization' => 'Org', 'percentage' => 100]],
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertSame(
+            'A formula with this name already exists for this article.',
+            $response->json('message'),
+        );
+    }
 }

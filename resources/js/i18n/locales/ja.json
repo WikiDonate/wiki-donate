@@ -247,7 +247,11 @@
         "pageOf": "ページ {current} / {last} (合計 {total})",
         "completedLabel": "完了しました",
         "pendingLabel": "保留中",
-        "failedLabel": "失敗しました"
+        "failedLabel": "失敗しました",
+        "paymentStatus": "支払い状況",
+        "distributionStatus": "配布状況",
+        "distributed": "分散型",
+        "partiallyDistributed": "一部配布中"
     },
     "article": {
         "loading": "記事を読み込んでいます",
@@ -502,7 +506,7 @@
         "exportFailed": "エクスポートに失敗しました",
         "failedToLoadTransactions": "トランザクションのロードに失敗しました",
         "payouts": "支払い",
-        "orgPayoutsTitle": "組織への支払い",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "ライブ残高から組織に支払い — 追加専用の支払い台帳",
         "loadingAllocations": "割り当てを読み込んでいます...",
         "noAllocations": "支払い可能な割り当てはまだありません",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "支払い状況",
+        "distributionStatus": "配布状況",
+        "distributed": "分散型",
+        "partiallyDistributed": "一部配布中"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"
@@ -708,5 +716,32 @@
         "successHint": "このアドレスは寄付金の支払いを受け取ることになります。ありがとう！",
         "failed": "確認に失敗しました。",
         "missingToken": "このリンクには確認トークンが提供されていませんでした。"
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

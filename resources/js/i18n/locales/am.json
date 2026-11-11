@@ -247,7 +247,11 @@
         "pageOf": "ገጽ {current} / {last} (ጠቅላላ {total})",
         "completedLabel": "ተጠናቀቀ",
         "pendingLabel": "በመጠባበቅ ላይ",
-        "failedLabel": "አልተሳካም።"
+        "failedLabel": "አልተሳካም።",
+        "paymentStatus": "የክፍያ ሁኔታ",
+        "distributionStatus": "የስርጭት ሁኔታ",
+        "distributed": "ተሰራጭቷል።",
+        "partiallyDistributed": "በከፊል ተሰራጭቷል።"
     },
     "article": {
         "loading": "አንቀፅን በመጫን ላይ",
@@ -502,7 +506,7 @@
         "exportFailed": "ወደ ውጭ መላክ አልተሳካም።",
         "failedToLoadTransactions": "ግብይቶችን መጫን አልተሳካም።",
         "payouts": "ክፍያዎች",
-        "orgPayoutsTitle": "የድርጅት ክፍያዎች",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "ድርጅቶችን ከቀጥታ ሂሳቦች ይክፈሉ - አባሪ-ብቻ የክፍያ ደብተር",
         "loadingAllocations": "ምደባዎችን በመጫን ላይ...",
         "noAllocations": "እስካሁን ምንም የሚከፈልባቸው ምደባዎች የሉም",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "የክፍያ ሁኔታ",
+        "distributionStatus": "የስርጭት ሁኔታ",
+        "distributed": "ተሰራጭቷል።",
+        "partiallyDistributed": "በከፊል ተሰራጭቷል።"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"
@@ -708,5 +716,32 @@
         "successHint": "ይህ አድራሻ አሁን የልገሳ ክፍያዎችን ይቀበላል። አመሰግናለሁ!",
         "failed": "ማረጋገጥ አልተሳካም።",
         "missingToken": "በዚህ ማገናኛ ውስጥ ምንም ማረጋገጫ አልቀረበም።"
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

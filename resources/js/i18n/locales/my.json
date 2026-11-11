@@ -247,7 +247,11 @@
         "pageOf": "စာမျက်နှာ {current} / {last} (စုစုပေါင်း {total})",
         "completedLabel": "ပြီးသွားပြီ",
         "pendingLabel": "ဆိုင်းငံ့ထားသည်။",
-        "failedLabel": "မအောင်မြင်ပါ။"
+        "failedLabel": "မအောင်မြင်ပါ။",
+        "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
+        "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
+        "distributed": "ဖြန့်ဝေခဲ့သည်။",
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
     },
     "article": {
         "loading": "ဆောင်းပါးကို တင်နေသည်။",
@@ -502,7 +506,7 @@
         "exportFailed": "တင်ပို့မှု မအောင်မြင်ပါ။",
         "failedToLoadTransactions": "အရောင်းအဝယ်များကို တင်ရန် မအောင်မြင်ပါ။",
         "payouts": "ဆုကြေးငွေများ",
-        "orgPayoutsTitle": "အဖွဲ့အစည်း ပေးချေမှုများ",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "တိုက်ရိုက်လက်ကျန်များမှ အဖွဲ့အစည်းများကို ပေးချေပါ — နောက်ဆက်တွဲ-သာ ပေးချေမှုစာရင်းဇယား",
         "loadingAllocations": "ခွဲဝေချထားမှုများကို ဖွင့်နေသည်...",
         "noAllocations": "ပေးဆောင်ရန် ခွဲဝေပေးခြင်း မရှိသေးပါ။",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
+        "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
+        "distributed": "ဖြန့်ဝေခဲ့သည်။",
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"
@@ -708,5 +716,32 @@
         "successHint": "ဤလိပ်စာသည် အလှူငွေများ လက်ခံရရှိပါမည်။ ကျေးဇူးတင်ပါသည်!",
         "failed": "အတည်ပြုချက် မအောင်မြင်ပါ။",
         "missingToken": "ဤလင့်ခ်တွင် အတည်ပြုချက်တိုကင်ကို ပေးမထားပါ။"
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

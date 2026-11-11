@@ -1,6 +1,6 @@
 <template>
-    <main class="w-full mx-auto max-w-5xl px-2 sm:px-4 lg:px-6 py-8">
-        <TopBarTitle :page-title="t('report.title')" />
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
+        <PageTitle :title="t('report.title')" />
 
         <!-- Filters -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
@@ -119,6 +119,14 @@
                     <template #cell-status="{ row }">
                         <AdminBadge :variant="statusVariant(row.status)" :text="row.status" />
                     </template>
+                    <template #cell-distributionStatus="{ row }">
+                        <AdminBadge
+                            v-if="row.distribution_status"
+                            :variant="distributionVariant(row.distribution_status)"
+                            :text="distributionLabel(row.distribution_status)"
+                        />
+                        <span v-else class="text-xs text-gray-400">—</span>
+                    </template>
                     <template #cell-paymentId="{ row }">
                         <span class="text-xs text-gray-400 font-mono">{{
                             row.payment_id || '—'
@@ -191,8 +199,6 @@
 
     const { t } = useI18n()
     const { loadPaymentMethods, methodLabel, methodVariant } = usePaymentMethods()
-
-    useHead({ title: t('report.title') })
     definePageMeta({ middleware: 'auth' })
 
     const loading = ref(true)
@@ -218,7 +224,12 @@
         { key: 'date', label: t('report.date') },
         { key: 'payment_method', label: t('payment.methodLabel') },
         { key: 'amount', label: t('report.amount') },
-        { key: 'status', label: t('report.status') },
+        { key: 'status', label: t('report.paymentStatus'), thClass: 'whitespace-nowrap' },
+        {
+            key: 'distributionStatus',
+            label: t('report.distributionStatus'),
+            thClass: 'whitespace-nowrap',
+        },
         { key: 'paymentId', label: t('report.paymentId') },
         { key: 'article', label: t('report.article') },
         { key: 'action', label: t('report.action') },
@@ -238,6 +249,22 @@
     }
 
     const statusVariant = (status) => statusVariants[status] || 'danger'
+
+    const distributionVariants = {
+        distributed: 'success',
+        partial: 'amber',
+        pending: 'warning',
+    }
+
+    const distributionVariant = (status) => distributionVariants[status] || 'warning'
+
+    const distributionLabels = {
+        distributed: 'report.distributed',
+        partial: 'report.partiallyDistributed',
+        pending: 'report.pending',
+    }
+
+    const distributionLabel = (status) => t(distributionLabels[status] || 'report.pending')
 
     function openDetail(row) {
         selectedDonation.value = {

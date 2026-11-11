@@ -247,7 +247,11 @@
         "pageOf": "頁面{current} /{last} （總計{total}）",
         "completedLabel": "已完成",
         "pendingLabel": "待定",
-        "failedLabel": "失敗"
+        "failedLabel": "失敗",
+        "paymentStatus": "付款狀態",
+        "distributionStatus": "分佈狀況",
+        "distributed": "分散式",
+        "partiallyDistributed": "部分分佈"
     },
     "article": {
         "loading": "載入文章",
@@ -502,7 +506,7 @@
         "exportFailed": "匯出失敗",
         "failedToLoadTransactions": "無法加載交易",
         "payouts": "支出",
-        "orgPayoutsTitle": "組織支出",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "從即時餘額中向組織付款－僅附加付款分類賬",
         "loadingAllocations": "正在加載分配...",
         "noAllocations": "尚無應付撥款",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "付款狀態",
+        "distributionStatus": "分佈狀況",
+        "distributed": "分散式",
+        "partiallyDistributed": "部分分佈"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"
@@ -708,5 +716,32 @@
         "successHint": "該地址現在將收到捐款。謝謝你！",
         "failed": "確認失敗。",
         "missingToken": "此連結中未提供確認令牌。"
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

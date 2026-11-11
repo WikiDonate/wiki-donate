@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/html-self-closing -->
 <!-- eslint-disable vue/no-v-html -->
 <template>
-    <main class="w-full">
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`My Articles`" />
+        <PageTitle title="My Articles" />
 
         <section class="bg-white p-4 sm:p-6 rounded-2xl shadow-md mt-4">
             <!-- Message -->
@@ -121,11 +121,6 @@
     })
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('article.myArticles'),
-    })
-
     const articleStore = useArticleStore()
 
     const articles = computed(() => articleStore.articles || [])

@@ -111,7 +111,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 30,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
             'payment_method' => 'bank',
         ]);
@@ -139,6 +139,111 @@ class AdminTransactionLogTest extends TestCase
                 'netInHand' => 0.0,
             ],
         ]);
+    }
+
+    public function test_summary_excludes_non_supported_currency_donations(): void
+    {
+        $formula = $this->articleWithFormula(100);
+
+        // USD donation counts; a legacy EUR row must not be added as dollars.
+        Donation::create([
+            'uuid' => (string) Str::uuid(),
+            'donation_formula_id' => $formula->id,
+            'amount' => 100,
+            'currency' => 'usd',
+            'status' => 'completed',
+        ]);
+        Donation::create([
+            'uuid' => (string) Str::uuid(),
+            'donation_formula_id' => $formula->id,
+            'amount' => 500,
+            'currency' => 'eur',
+            'status' => 'completed',
+        ]);
+
+        $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
+
+        $res->assertOk();
+        // Only the USD 100 is income and owed; the EUR 500 is ignored entirely.
+        $this->assertEquals(100.0, $res->json('data.totalIncome'));
+        $this->assertEquals(100.0, $res->json('data.remainingPayable'));
+    }
+
+    public function test_summary_ignores_failed_and_reversed_payouts_in_balance(): void
+    {
+        $formula = $this->articleWithFormula(100);
+
+        Donation::create([
+            'uuid' => (string) Str::uuid(),
+            'donation_formula_id' => $formula->id,
+            'amount' => 100,
+            'currency' => 'usd',
+            'status' => 'completed',
+        ]);
+
+        // A paid 40 reduces the payable balance; failed + reversed must not.
+        $this->createPayout([
+            'donation_formula_id' => $formula->id,
+            'organization_name' => 'Wiki Org',
+            'amount' => 40,
+            'currency' => 'usd',
+            'type' => 'partial',
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+        $this->createPayout([
+            'donation_formula_id' => $formula->id,
+            'organization_name' => 'Wiki Org',
+            'amount' => 25,
+            'currency' => 'usd',
+            'type' => 'partial',
+            'status' => 'failed',
+        ]);
+        $this->createPayout([
+            'donation_formula_id' => $formula->id,
+            'organization_name' => 'Wiki Org',
+            'amount' => 15,
+            'currency' => 'usd',
+            'type' => 'partial',
+            'status' => 'reversed',
+            'reversed_at' => now(),
+        ]);
+
+        $res = $this->getJson('/api/v1/admin/transactions/summary', $this->authHeader());
+
+        $res->assertOk();
+        // owed = 100, on-balance paid = 40 (only the paid row) → remaining 60.
+        $this->assertEquals(60.0, $res->json('data.remainingPayable'));
+    }
+
+    public function test_remaining_payable_is_window_scoped_by_date_filter(): void
+    {
+        $formula = $this->articleWithFormula(100);
+
+        $this->createDonationWithDate([
+            'uuid' => (string) Str::uuid(),
+            'donation_formula_id' => $formula->id,
+            'amount' => 100,
+            'currency' => 'usd',
+            'status' => 'completed',
+            'created_at' => now()->subDays(10),
+        ]);
+        $this->createDonationWithDate([
+            'uuid' => (string) Str::uuid(),
+            'donation_formula_id' => $formula->id,
+            'amount' => 50,
+            'currency' => 'usd',
+            'status' => 'completed',
+            'created_at' => now(),
+        ]);
+
+        // Window covers only the recent 50 donation → owed 50.
+        $from = now()->subDays(2)->toDateString();
+        $res = $this->getJson('/api/v1/admin/transactions/summary?from='.$from, $this->authHeader());
+
+        $res->assertOk();
+        $this->assertEquals(50.0, $res->json('data.totalIncome'));
+        $this->assertEquals(50.0, $res->json('data.remainingPayable'));
     }
 
     private function createPayout(array $attrs): OrganizationPayout
@@ -202,7 +307,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 20,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
 
@@ -239,7 +344,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 20,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
 
@@ -281,7 +386,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 20,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
 
@@ -354,7 +459,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 10,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now()->subDays(9),
         ]);
 
@@ -379,7 +484,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 10,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
         $this->createPayout([
@@ -388,7 +493,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 5,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
 
@@ -422,7 +527,7 @@ class AdminTransactionLogTest extends TestCase
             'amount' => 20,
             'currency' => 'usd',
             'type' => 'partial',
-            'status' => 'completed',
+            'status' => 'paid',
             'paid_at' => now(),
         ]);
 

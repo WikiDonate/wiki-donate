@@ -162,11 +162,6 @@
     import { userService } from '~/services/userService'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('auth.createTitle'),
-    })
-
     const showAlert = ref(false)
     const alertVariant = ref('')
     const alertMessage = ref('')

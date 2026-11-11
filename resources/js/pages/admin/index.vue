@@ -322,8 +322,6 @@
         selectedFormulaUrl.value = row.formula_url || ''
         showDonationDetail.value = true
     }
-
-    useHead({ title: t('admin.dashboard') })
     definePageMeta({ layout: 'admin', middleware: ['auth', 'admin'] })
 
     const loading = ref(true)

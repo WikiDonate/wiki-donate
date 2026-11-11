@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(php artisan test --compact tests/Feature/AdminTransactionLogTest.php tests/Feature/DonationFormulaEditDeleteTest.php 2 >& 1)",
+      "Shell(./vendor/bin/pint:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

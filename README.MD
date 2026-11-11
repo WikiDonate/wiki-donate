@@ -155,6 +155,59 @@ The SPA reads public keys from `GET /v1/payment-methods` (`public_key`) or
 via `App\Services\Payment\PaymentCredentials`. Re-introducing per-gateway env
 keys would create a second source of truth — don't.
 
+#### Gateway credentials
+
+`credentials` is cast `encrypted:array` and is not fillable, so it **must** be
+written through Eloquent. A raw `UPDATE` stores plaintext; decryption then fails
+silently and the value reads back as missing. Use the command:
+
+```bash
+php artisan payment:set-credential paypal client_id <client-id>
+php artisan payment:set-credential paypal client_secret <client-secret>
+php artisan payment:set-credential paypal webhook_id <webhook-id>
+
+php artisan payment:set-credential stripe secret_key <sk_...>
+php artisan payment:set-credential stripe publishable_key <pk_...>
+php artisan payment:set-credential stripe webhook_secret <whsec_...>
+```
+
+- It **merges** into the existing set, so rotating one key never wipes the
+  others.
+- Keys are whitelisted per gateway (`paypal`: `client_id`, `client_secret`,
+  `webhook_id`; `stripe`: `secret_key`, `publishable_key`, `webhook_secret`),
+  so a typo is rejected instead of being stored and silently ignored.
+- Omit the value to be prompted with hidden input, or pipe it so it stays out
+  of shell history:
+
+  ```bash
+  printf %s "$SECRET" | php artisan payment:set-credential paypal client_secret
+  ```
+
+- Values are never echoed back; only the key and its length are printed.
+- The command flushes the `PaymentCredentials` cache, so a running worker sees
+  the new value without a restart.
+
+The same write, if you're already in tinker:
+
+```php
+$m = App\Models\PaymentMethod::where('code', 'paypal')->firstOrFail();
+$c = $m->credentials ?? [];          // merge — a bare array would wipe the rest
+$c['webhook_id'] = '<webhook-id>';
+$m->forceFill(['credentials' => $c])->save();   // fill() ignores it; save() encrypts
+app(App\Services\Payment\PaymentCredentials::class)->flush();
+```
+
+From the shell, wrap that body in **single** quotes
+(`php artisan tinker --execute='…'`); with double quotes bash expands `$m` and
+`$c` before PHP sees them.
+
+To confirm the client ID/secret match the configured `mode` (`sandbox` vs
+`live`):
+
+```bash
+php artisan paypal:verify-credentials
+```
+
 ### Webhooks
 
 There is one webhook endpoint per gateway:
@@ -186,20 +239,31 @@ To wire up PayPal (also required for payouts — see below):
    PAYMENT.PAYOUTS-ITEM.UNCLAIMED
    ```
 
-4. Copy the **Webhook ID** and store it on the registry row (encrypted):
+4. Copy the **Webhook ID** and store it on the registry row (see
+   [Gateway credentials](#gateway-credentials)):
 
-   ```php
-   $m = App\Models\PaymentMethod::where('code', 'paypal')->first();
-   $c = $m->credentials;
-   $c['webhook_id'] = 'WH-XXXXXXXXXXXXXXXX';
-   $m->forceFill(['credentials' => $c])->save();
-   app(App\Services\Payment\PaymentCredentials::class)->flush();
+   ```bash
+   php artisan payment:set-credential paypal webhook_id <webhook-id>
    ```
 
+   The ID must belong to the app matching the row's `config.mode`: a sandbox
+   ID with `mode=live` (or the reverse) fails signature verification and every
+   delivery is rejected with `401`.
+
 PayPal can only reach a **publicly resolvable HTTPS URL**. For local
-development, use a tunnel (`cloudflared tunnel --url http://localhost:8000`, or
-`ngrok http 8000`) and point the webhook at the tunnel URL. Avoid localtunnel /
-`loca.lt` — its interstitial page usually breaks PayPal's delivery.
+development, expose `:8000` through a tunnel and point the webhook at it —
+`npx localtunnel --port 8000`, `cloudflared tunnel --url http://localhost:8000`,
+or `ngrok http 8000`.
+
+Editing the URL on the **existing** webhook keeps its ID, so the stored
+`webhook_id` remains valid. Creating a new webhook instead mints a new ID that
+must be stored again. The tunnel URL changes on every run, so update the
+dashboard each time.
+
+A real delivery is the only way to test verification end to end: the signature
+is checked against PayPal's API, so a hand-written `curl` POST is always
+rejected. Trigger one from the dashboard's **Simulate** control or a sandbox
+checkout, then read `payment_webhook_events` (below).
 
 #### Webhook event log
 
@@ -291,6 +355,13 @@ Live production requires a running scheduler for `payouts:sync`:
 3. Open `http://localhost:5173` (`/api` requests are proxied to Laravel)
 
 The Laravel web route serves the SPA for all non-API, non-asset paths.
+
+**Serving through a tunnel** (e.g. for webhook testing): use the built bundle.
+Run `npm run build`, then `php artisan serve`, and make sure `public/hot` does
+**not** exist. While `npm run dev` runs, Vite writes that file and Laravel emits
+absolute `http://localhost:5173/...` URLs — which the remote browser cannot
+load, leaving a blank page. Start Vite again afterwards if you need HMR, and
+remember it recreates `public/hot` on every restart.
 
 ### Testing
 

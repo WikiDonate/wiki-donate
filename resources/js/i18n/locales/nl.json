@@ -247,7 +247,11 @@
         "pageOf": "Pagina {current} / {last} (totaal {total})",
         "completedLabel": "Voltooid",
         "pendingLabel": "In behandeling",
-        "failedLabel": "Mislukt"
+        "failedLabel": "Mislukt",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distributiestatus",
+        "distributed": "Gedistribueerd",
+        "partiallyDistributed": "Gedeeltelijk verdeeld"
     },
     "article": {
         "loading": "Artikel laden",
@@ -502,7 +506,7 @@
         "exportFailed": "Exporteren is mislukt",
         "failedToLoadTransactions": "Kan transacties niet laden",
         "payouts": "Uitbetalingen",
-        "orgPayoutsTitle": "Organisatie-uitbetalingen",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Betaal organisaties vanuit live-saldi: voeg alleen uitbetalingsgrootboeken toe",
         "loadingAllocations": "Toewijzingen laden...",
         "noAllocations": "Nog geen betaalbare toewijzingen",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Betalingsstatus",
+        "distributionStatus": "Distributiestatus",
+        "distributed": "Gedistribueerd",
+        "partiallyDistributed": "Gedeeltelijk verdeeld"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rechten voorbehouden."
@@ -708,5 +716,32 @@
         "successHint": "Dit adres ontvangt nu donatie-uitbetalingen. Bedankt!",
         "failed": "Bevestiging mislukt.",
         "missingToken": "Er is geen bevestigingstoken verstrekt in deze link."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

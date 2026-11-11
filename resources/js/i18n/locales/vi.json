@@ -247,7 +247,11 @@
         "pageOf": "Trang {current} / {last} (tổng cộng {total})",
         "completedLabel": "Đã hoàn thành",
         "pendingLabel": "Đang chờ xử lý",
-        "failedLabel": "thất bại"
+        "failedLabel": "thất bại",
+        "paymentStatus": "Trạng thái thanh toán",
+        "distributionStatus": "Tình trạng phân phối",
+        "distributed": "phân phối",
+        "partiallyDistributed": "Phân phối một phần"
     },
     "article": {
         "loading": "Đang tải bài viết",
@@ -502,7 +506,7 @@
         "exportFailed": "Xuất không thành công",
         "failedToLoadTransactions": "Không thể tải giao dịch",
         "payouts": "Xuất chi",
-        "orgPayoutsTitle": "Các khoản thanh toán của tổ chức",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Thanh toán cho các tổ chức từ số dư trực tiếp — sổ cái thanh toán chỉ bổ sung",
         "loadingAllocations": "Đang tải phân bổ...",
         "noAllocations": "Chưa có khoản phân bổ phải trả nào",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Trạng thái thanh toán",
+        "distributionStatus": "Tình trạng phân phối",
+        "distributed": "phân phối",
+        "partiallyDistributed": "Phân phối một phần"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."
@@ -708,5 +716,32 @@
         "successHint": "Địa chỉ này hiện sẽ nhận được khoản thanh toán quyên góp. Cảm ơn!",
         "failed": "Xác nhận không thành công.",
         "missingToken": "Không có mã thông báo xác nhận nào được cung cấp trong liên kết này."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

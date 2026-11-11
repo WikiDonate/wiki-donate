@@ -115,11 +115,6 @@
     import { userService } from '~/services/userService'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('auth.emailVerification'),
-    })
-
     const route = useRoute()
     const isLoading = ref(true)
     const isSuccess = ref(false)

@@ -88,11 +88,6 @@
     import { useAuthStore } from '~/stores/authStore'
 
     const { t } = useI18n()
-
-    useHead({
-        title: t('auth.loginTitle'),
-    })
-
     const router = useRouter()
     const showAlert = ref(false)
     const alertVariant = ref('')

@@ -12,6 +12,7 @@ use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentProviderRegistry;
 use App\Services\PayPalClient;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
@@ -247,6 +248,124 @@ class OrganizationPayoutService
     public function balance(DonationFormula $formula, string $orgName): object
     {
         return $this->owedFor($formula, OrganizationPayout::makeKey($orgName));
+    }
+
+    /**
+     * Total live owed across every allocatable (formula + organization) pair.
+     *
+     * This is the single source of truth for the "remaining payable" figure on
+     * the admin transaction summary, so it can never drift from the balance the
+     * payouts feature actually pays out of. Both use the SAME rules:
+     *  - only completed, supported-currency (USD) donations count;
+     *  - owed = Σ(donated × percentage/100), rounded once per allocation.
+     *
+     * @param  callable(Builder): void|null  $donationFilter
+     *                                                        Optional extra constraint on the donations query (e.g. a date
+     *                                                        window) applied on top of the completed + USD rules.
+     */
+    public function totalOwed(?callable $donationFilter = null): float
+    {
+        $formulaIds = DonationFormula::query()->pluck('id');
+
+        if ($formulaIds->isEmpty()) {
+            return 0.0;
+        }
+
+        $donations = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()]);
+
+        if ($donationFilter !== null) {
+            $donationFilter($donations);
+        }
+
+        $donationSums = $donations
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $total = 0.0;
+
+        DonationFormula::query()
+            ->whereIn('id', $formulaIds)
+            ->select(['id', 'formula'])
+            ->get()
+            ->each(function (DonationFormula $formula) use ($donationSums, &$total) {
+                $donated = (float) ($donationSums->get($formula->id) ?? 0);
+
+                foreach ($this->normalizeItems($formula->formula) as $item) {
+                    $total += round($donated * ($item['percentage'] / 100), 2);
+                }
+            });
+
+        return round($total, 2);
+    }
+
+    /**
+     * Payout coverage per formula for read-only donor-facing status labels.
+     *
+     * Uses the SAME rules as the balance math: owed from completed USD
+     * donations against the live formula percentages, paid from on-balance
+     * payouts (paid + pending, reversed excluded). Returns one label per
+     * formula id:
+     *  - `distributed` — payouts cover every owed allocation;
+     *  - `partial`     — some money moved but the formula is not fully paid;
+     *  - `pending`     — nothing has been paid out yet.
+     *
+     * @param  array<int, int|string>  $formulaIds
+     * @return array<int, string> formula id => distributed|partial|pending
+     */
+    public function distributionStatuses(array $formulaIds): array
+    {
+        $formulaIds = array_values(array_unique(array_filter($formulaIds)));
+
+        if ($formulaIds === []) {
+            return [];
+        }
+
+        $donationSums = DB::table('donations')
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->where('status', 'completed')
+            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $paidSums = OrganizationPayout::query()
+            ->whereIn('donation_formula_id', $formulaIds)
+            ->whereIn('status', OrganizationPayout::ON_BALANCE_STATUSES)
+            ->whereNull('reversed_at')
+            ->groupBy('donation_formula_id')
+            ->selectRaw('donation_formula_id, SUM(amount) as total')
+            ->pluck('total', 'donation_formula_id');
+
+        $statuses = [];
+
+        DonationFormula::query()
+            ->whereIn('id', $formulaIds)
+            ->select(['id', 'formula'])
+            ->get()
+            ->each(function (DonationFormula $formula) use ($donationSums, $paidSums, &$statuses) {
+                $donated = (float) ($donationSums->get($formula->id) ?? 0);
+                $owed = 0.0;
+
+                foreach ($this->normalizeItems($formula->formula) as $item) {
+                    $owed += round($donated * ($item['percentage'] / 100), 2);
+                }
+
+                $owed = round($owed, 2);
+                $paid = round((float) ($paidSums->get($formula->id) ?? 0), 2);
+
+                $statuses[$formula->id] = match (true) {
+                    $owed <= 0 => $paid > 0 ? 'distributed' : 'pending',
+                    $paid + 0.009 >= $owed => 'distributed',
+                    $paid > 0 => 'partial',
+                    default => 'pending',
+                };
+            });
+
+        return $statuses;
     }
 
     /**

@@ -240,12 +240,16 @@
     const { t } = useI18n()
 
     const route = useRoute()
-    const title = ref(decodeURIComponent(route.query.title))
+    const title = ref(decodeURIComponent(route.query.title || ''))
     const articleTitle = ref('')
+    const appName = import.meta.env.VITE_APP_NAME || 'Wiki Donate'
 
-    useHead(() => ({
-        title: articleTitle.value ? `${articleTitle.value} - WikiDonate` : t('article.title'),
-    }))
+    useHead(() => {
+        const pageTitle = articleTitle.value || title.value || t('pageTitles.article')
+        return {
+            title: pageTitle ? `${pageTitle} | ${appName}` : appName,
+        }
+    })
 
     const articleStore = useArticleStore()
     const authStore = useAuthStore()

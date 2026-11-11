@@ -39,7 +39,10 @@ Route::middleware(['auth:sanctum', FreshAuthGuard::class, 'role:Admin|Editor'])-
     Route::get('stripe/card', [StripeController::class, 'getCard']);
 });
 
-// Authenticated-user donation report (any logged-in user sees their own)
-Route::middleware('auth:sanctum')->group(function () {
+// Authenticated-user donation report (any logged-in user sees their own).
+// FreshAuthGuard: Sanctum memoizes the first resolved user per process, so
+// long-lived runtimes (tests, Octane) would otherwise serve the previous
+// request's identity and leak another user's donations.
+Route::middleware(['auth:sanctum', FreshAuthGuard::class])->group(function () {
     Route::get('report/donations', [DonationReportController::class, 'index']);
 });

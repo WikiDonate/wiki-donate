@@ -1,7 +1,7 @@
 <template>
-    <main class="w-full">
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Top bartitle -->
-        <TopBarTitle :page-title="'Preferences'" />
+        <PageTitle title="Preferences" />
 
         <!-- Message -->
         <AlertMessage
@@ -232,11 +232,6 @@
     definePageMeta({
         middleware: 'auth',
     })
-
-    useHead({
-        title: 'Preferences',
-    })
-
     const authStore = useAuthStore()
 
     // Active tab state

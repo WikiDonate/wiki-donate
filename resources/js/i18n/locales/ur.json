@@ -247,7 +247,11 @@
         "pageOf": "صفحہ {current} / {last} (کل {total})",
         "completedLabel": "مکمل",
         "pendingLabel": "زیر التواء",
-        "failedLabel": "ناکام"
+        "failedLabel": "ناکام",
+        "paymentStatus": "ادائیگی کی حیثیت",
+        "distributionStatus": "تقسیم کی حیثیت",
+        "distributed": "تقسیم کیا گیا۔",
+        "partiallyDistributed": "جزوی طور پر تقسیم"
     },
     "article": {
         "loading": "آرٹیکل لوڈ ہو رہا ہے۔",
@@ -502,7 +506,7 @@
         "exportFailed": "ایکسپورٹ ناکام ہو گیا۔",
         "failedToLoadTransactions": "لین دین لوڈ کرنے میں ناکام",
         "payouts": "ادائیگیاں",
-        "orgPayoutsTitle": "تنظیم کی ادائیگی",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "لائیو بیلنس سے تنظیموں کو ادائیگی کریں - صرف ادائیگی کا لیجر شامل کریں۔",
         "loadingAllocations": "مختصات لوڈ ہو رہی ہیں...",
         "noAllocations": "ابھی تک کوئی قابل ادائیگی مختص نہیں ہے۔",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "ادائیگی کی حیثیت",
+        "distributionStatus": "تقسیم کی حیثیت",
+        "distributed": "تقسیم کیا گیا۔",
+        "partiallyDistributed": "جزوی طور پر تقسیم"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"
@@ -708,5 +716,32 @@
         "successHint": "اس ایڈریس پر اب عطیہ کی ادائیگیاں موصول ہوں گی۔ شکریہ!",
         "failed": "تصدیق ناکام ہوگئی۔",
         "missingToken": "اس لنک میں کوئی تصدیقی ٹوکن فراہم نہیں کیا گیا۔"
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

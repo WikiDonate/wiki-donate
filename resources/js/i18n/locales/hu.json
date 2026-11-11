@@ -247,7 +247,11 @@
         "pageOf": "oldal {current} / {last} (összesen {total})",
         "completedLabel": "Befejezve",
         "pendingLabel": "Függőben",
-        "failedLabel": "Sikertelen"
+        "failedLabel": "Sikertelen",
+        "paymentStatus": "Fizetési állapot",
+        "distributionStatus": "Elosztási állapot",
+        "distributed": "Elosztott",
+        "partiallyDistributed": "Részben elosztva"
     },
     "article": {
         "loading": "Cikk betöltése",
@@ -502,7 +506,7 @@
         "exportFailed": "Nem sikerült exportálni",
         "failedToLoadTransactions": "Nem sikerült betölteni a tranzakciókat",
         "payouts": "Kifizetések",
-        "orgPayoutsTitle": "Szervezeti kifizetések",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Fizessen a szervezeteknek élő egyenlegekből – csak a kifizetési főkönyv csatolása",
         "loadingAllocations": "Kiosztások betöltése...",
         "noAllocations": "Még nincsenek kifizetendő juttatások",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Fizetési állapot",
+        "distributionStatus": "Elosztási állapot",
+        "distributed": "Elosztott",
+        "partiallyDistributed": "Részben elosztva"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."
@@ -708,5 +716,32 @@
         "successHint": "Mostantól erre a címre kapnak adományokat. Köszönöm!",
         "failed": "A megerősítés sikertelen.",
         "missingToken": "Ezen a linken nem adtak meg megerősítési tokent."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

@@ -200,6 +200,21 @@ class DonationFormulaController extends Controller
     }
 
     /**
+     * Shared 422 for a name already taken on this article. Extracted so store()
+     * and update() return the identical message.
+     */
+    private function duplicateNameError()
+    {
+        $message = 'A formula with this name already exists for this article.';
+
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'errors' => [$message],
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
      * Store a new donation formula for an article.
      */
     public function store(Request $request)
@@ -241,18 +256,20 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Reject duplicate name for the same user on the same article
-            $duplicate = DonationFormula::where('article_id', $article->id)
+            // Reject duplicate name for the same user on the same article.
+            // withTrashed(): the DB unique index is on (article_id, user_id,
+            // name) with NO deleted_at column, so a soft-deleted formula still
+            // reserves its name. Checking only live rows let a create through
+            // and MySQL then threw 1062 — this keeps the app check and the
+            // constraint in sync.
+            $duplicate = DonationFormula::withTrashed()
+                ->where('article_id', $article->id)
                 ->where('user_id', Auth::id())
                 ->whereRaw('LOWER(name) = ?', [strtolower(trim($request->name))])
                 ->exists();
 
             if ($duplicate) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'A formula with this name already exists for this article.',
-                    'errors' => ['A formula with this name already exists for this article.'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->duplicateNameError();
             }
 
             // Calculate total percentage
@@ -370,19 +387,18 @@ class DonationFormulaController extends Controller
             // Immutability check removed: formulas may now be updated even
             // when donations reference them (edits are flagged via is_edited).
 
-            // Reject duplicate name for the same user on the same article
-            $duplicate = DonationFormula::where('article_id', $formula->article_id)
+            // Reject duplicate name for the same user on the same article.
+            // withTrashed() mirrors the DB unique index (which ignores
+            // deleted_at) — see store() for the full rationale.
+            $duplicate = DonationFormula::withTrashed()
+                ->where('article_id', $formula->article_id)
                 ->where('user_id', Auth::id())
                 ->where('id', '!=', $formula->id)
                 ->whereRaw('LOWER(name) = ?', [strtolower(trim($request->name))])
                 ->exists();
 
             if ($duplicate) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'A formula with this name already exists for this article.',
-                    'errors' => ['A formula with this name already exists for this article.'],
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->duplicateNameError();
             }
 
             // Calculate total percentage

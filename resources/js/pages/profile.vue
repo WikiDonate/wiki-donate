@@ -1,11 +1,7 @@
 <template>
-    <main class="w-full mx-auto max-w-4xl px-2 sm:px-4 lg:px-6 py-8">
+    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Page Title -->
-        <h1
-            class="text-3xl sm:text-4xl font-bold text-center bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 mb-8"
-        >
-            {{ t('profile.title') }}
-        </h1>
+        <PageTitle :title="t('profile.title')" />
 
         <!-- Alert -->
         <AlertMessage
@@ -75,7 +71,7 @@
             <!-- Submit Button -->
             <div class="flex justify-center">
                 <FormSubmitButton
-                    class="w-full sm:w-1/2 md:w-1/2"
+                    class="w-full sm:w-40"
                     :text="userStore.isUpdatingUser ? 'Saving...' : 'Save'"
                     type="submit"
                     variant="primary"
@@ -97,8 +93,6 @@
     import { useUserStore } from '@/stores/userStore'
 
     const { t } = useI18n()
-
-    useHead({ title: t('profile.title') })
     definePageMeta({ middleware: 'auth' })
 
     const userStore = useUserStore()

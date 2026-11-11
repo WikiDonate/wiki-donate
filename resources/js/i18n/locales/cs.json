@@ -247,7 +247,11 @@
         "pageOf": "stránku {current} / {last} (celkem {total})",
         "completedLabel": "Dokončeno",
         "pendingLabel": "Čeká na vyřízení",
-        "failedLabel": "Nepodařilo se"
+        "failedLabel": "Nepodařilo se",
+        "paymentStatus": "Stav platby",
+        "distributionStatus": "Stav distribuce",
+        "distributed": "Distribuováno",
+        "partiallyDistributed": "Částečně distribuováno"
     },
     "article": {
         "loading": "Načítání článku",
@@ -502,7 +506,7 @@
         "exportFailed": "Export failed",
         "failedToLoadTransactions": "Transakce se nepodařilo načíst",
         "payouts": "Payouts",
-        "orgPayoutsTitle": "Výplaty organizací",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "Vyplácejte organizacím z aktuálních zůstatků – pouze připojujte výplatní knihu",
         "loadingAllocations": "Načítání přidělení...",
         "noAllocations": "Zatím žádné splatné příděly",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "Stav platby",
+        "distributionStatus": "Stav distribuce",
+        "distributed": "Distribuováno",
+        "partiallyDistributed": "Částečně distribuováno"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."
@@ -708,5 +716,32 @@
         "successHint": "Na tuto adresu budou nyní přijímány dary. Děkuju!",
         "failed": "Potvrzení se nezdařilo.",
         "missingToken": "V tomto odkazu nebyl poskytnut žádný potvrzovací token."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }

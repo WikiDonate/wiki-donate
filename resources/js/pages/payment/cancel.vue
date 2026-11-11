@@ -56,9 +56,6 @@
     import { safeInternalPath } from '~/utils/safeRedirect'
 
     const { t } = useI18n()
-
-    useHead({ title: t('payment.cancelTitle') })
-
     definePageMeta({
         // No auth middleware — users returning from Stripe may not be authenticated
     })

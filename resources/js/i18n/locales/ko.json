@@ -247,7 +247,11 @@
         "pageOf": "페이지 {current} / {last} (합계 {total})",
         "completedLabel": "완료됨",
         "pendingLabel": "보류 중",
-        "failedLabel": "실패"
+        "failedLabel": "실패",
+        "paymentStatus": "결제 상태",
+        "distributionStatus": "유통현황",
+        "distributed": "분산",
+        "partiallyDistributed": "부분적으로 배포됨"
     },
     "article": {
         "loading": "기사 로드 중",
@@ -502,7 +506,7 @@
         "exportFailed": "내보내기 실패",
         "failedToLoadTransactions": "거래를 로드하지 못했습니다.",
         "payouts": "지불금",
-        "orgPayoutsTitle": "조직 지급",
+        "orgPayoutsTitle": "Payouts",
         "orgPayoutsSubtitle": "실시간 잔액을 통해 조직에 지급 — 추가 전용 지급 원장",
         "loadingAllocations": "할당 로드 중...",
         "noAllocations": "아직 지급 가능한 할당이 없습니다.",
@@ -659,7 +663,11 @@
         "payoutsUpdated": "Payout statuses updated for {count} payout(s).",
         "payoutsUnchanged": "Checked {count} pending payout(s); nothing changed yet.",
         "noPendingPayouts": "No pending payouts to sync.",
-        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later."
+        "payoutsSyncErrors": "Some payouts could not be checked ({count}). Try again later.",
+        "paymentStatus": "결제 상태",
+        "distributionStatus": "유통현황",
+        "distributed": "분산",
+        "partiallyDistributed": "부분적으로 배포됨"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."
@@ -708,5 +716,32 @@
         "successHint": "이제 이 주소로 기부금이 지급됩니다. 감사합니다!",
         "failed": "확인에 실패했습니다.",
         "missingToken": "이 링크에는 확인 토큰이 제공되지 않았습니다."
+    },
+    "pageTitles": {
+        "home": "Home",
+        "login": "Login",
+        "createAccount": "Create Account",
+        "forgotPassword": "Forgot Password",
+        "verifyEmail": "Verify Email",
+        "contact": "Contact Us",
+        "howItWorks": "How It Works",
+        "main": "Main",
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "billing": "Billing",
+        "myDonations": "My Donations",
+        "myArticles": "My Articles",
+        "newArticle": "New Article",
+        "article": "Article",
+        "paymentSuccess": "Payment Status",
+        "paymentCancel": "Payment Cancelled",
+        "adminDashboard": "Admin Dashboard",
+        "adminTransactions": "Transactions",
+        "adminDonations": "Donations",
+        "adminArticles": "Articles",
+        "adminHowItWorks": "How It Works",
+        "adminPayouts": "Payouts",
+        "adminOrganizations": "Organizations",
+        "adminTransactionLogs": "Transaction Logs"
     }
 }
