@@ -551,8 +551,6 @@
                 syncMessage.value = t('admin.payoutsUpdated', { count })
             } else if ((meta.checked ?? 0) === 0) {
                 syncMessage.value = t('admin.noPendingPayouts')
-            } else {
-                syncMessage.value = t('admin.payoutsUnchanged', { count: meta.checked })
             }
             if ((meta.errors ?? 0) > 0) {
                 syncError.value = t('admin.payoutsSyncErrors', { count: meta.errors })
