@@ -5,7 +5,11 @@ namespace App\Services;
 use App\Exceptions\PaymentProviderException;
 use App\Models\PaymentMethod;
 use App\Services\Payment\PaymentCredentials;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -82,6 +86,19 @@ class PayPalClient
             return $this->accessToken;
         }
 
+        // The token is shared across processes/requests (a fresh OAuth call
+        // costs ~4s). Keyed by app + mode so switching sandbox/live or rotating
+        // credentials never reuses the wrong token; TTL is the token's own.
+        $cacheKey = 'paypal:access_token:'.sha1($this->baseUrl.'|'.$this->clientId());
+
+        $cached = Cache::get($cacheKey);
+        if (is_string($cached) && $cached !== '') {
+            $this->accessToken = $cached;
+            $this->tokenExpiresAt = time() + 60;
+
+            return $cached;
+        }
+
         $response = Http::withBasicAuth($this->clientId(), $this->clientSecret())
             ->asForm()
             ->post("{$this->baseUrl}/v1/oauth2/token", [
@@ -93,7 +110,10 @@ class PayPalClient
         $body = $response->json();
         $this->accessToken = $body['access_token'];
         // 60-second safety buffer under PayPal's expiry.
-        $this->tokenExpiresAt = time() + (int) ($body['expires_in'] ?? 3600) - 60;
+        $expiresIn = (int) ($body['expires_in'] ?? 3600);
+        $this->tokenExpiresAt = time() + $expiresIn - 60;
+
+        Cache::put($cacheKey, $this->accessToken, max($expiresIn - 120, 60));
 
         Log::info('PayPal access token obtained', ['expires_in' => $body['expires_in'] ?? null]);
 
@@ -290,6 +310,56 @@ class PayPalClient
         $response->throw();
 
         return $response->json();
+    }
+
+    /**
+     * Retrieve several payout batches concurrently.
+     *
+     * The sync command polls every pending row; doing that serially costs one
+     * ~7s round trip per row. Pooling keeps the run bounded by the slowest
+     * request instead of their sum.
+     *
+     * @param  array<int, string|null>  $payoutBatchIds
+     * @return array<string, array{payload: array|null, error: string|null}>
+     *                                                                       batch id => payload or error
+     */
+    public function showBatchPayouts(array $payoutBatchIds): array
+    {
+        $ids = array_values(array_unique(array_filter($payoutBatchIds)));
+
+        if ($ids === []) {
+            return [];
+        }
+
+        $token = $this->getAccessToken();
+
+        $responses = Http::pool(function (Pool $pool) use ($ids, $token) {
+            foreach ($ids as $index => $id) {
+                $pool->as((string) $index)
+                    ->withToken($token)
+                    ->get("{$this->baseUrl}/v1/payments/payouts/{$id}", ['fields' => 'items']);
+            }
+        });
+
+        $result = [];
+
+        foreach ($ids as $index => $id) {
+            $response = $responses[$index] ?? null;
+
+            if ($response instanceof Response && $response->successful()) {
+                $result[$id] = ['payload' => $response->json(), 'error' => null];
+
+                continue;
+            }
+
+            $error = $response instanceof Response
+                ? "PayPal responded {$response->status()}"
+                : ($response instanceof ConnectionException ? $response->getMessage() : 'No response from PayPal');
+
+            $result[$id] = ['payload' => null, 'error' => $error];
+        }
+
+        return $result;
     }
 
     /**

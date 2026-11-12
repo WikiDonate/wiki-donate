@@ -14,11 +14,17 @@
                         :placeholder="t('admin.searchPayoutsPlaceholder')"
                     />
                     <button
-                        class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed sm:flex-initial"
+                        class="inline-flex items-center justify-center p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                         :disabled="syncing"
+                        :title="syncing ? t('admin.syncing') : t('admin.syncStatuses')"
+                        :aria-label="syncing ? t('admin.syncing') : t('admin.syncStatuses')"
                         @click="syncStatuses"
                     >
-                        {{ syncing ? t('admin.syncing') : t('admin.syncStatuses') }}
+                        <font-awesome-icon
+                            :icon="['fas', 'arrows-rotate']"
+                            class="w-4 h-4"
+                            :class="{ 'animate-spin': syncing }"
+                        />
                     </button>
                 </div>
                 <p v-if="syncMessage" class="text-xs text-green-600 mb-2">{{ syncMessage }}</p>
@@ -551,7 +557,11 @@
             if ((meta.errors ?? 0) > 0) {
                 syncError.value = t('admin.payoutsSyncErrors', { count: meta.errors })
             }
-            await fetchAllocations()
+            // Balances only move when a row actually changed — skip the
+            // allocations recompute otherwise.
+            if (count > 0) {
+                await fetchAllocations()
+            }
         } catch (err) {
             syncError.value = apiErrorMessage(err, t('admin.failedToSync'))
         } finally {

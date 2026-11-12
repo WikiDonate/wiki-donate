@@ -783,15 +783,27 @@ class OrganizationPayoutService
             ->whereNotNull('payout_batch_id')
             ->get();
 
-        foreach ($pending as $payout) {
-            if (! $this->canSyncStatus($payout)) {
-                continue;
-            }
+        // One pooled round trip for every batch instead of a serial call per
+        // row (a PayPal poll is ~7s; ten pending rows used to take a minute).
+        $syncablePending = $pending->filter(fn (OrganizationPayout $p) => $this->canSyncStatus($p));
+        $batchResults = $syncablePending->isEmpty()
+            ? []
+            : app(PayPalClient::class)->showBatchPayouts($syncablePending->pluck('payout_batch_id')->all());
 
+        foreach ($syncablePending as $payout) {
             try {
-                $statuses = PayPalClient::extractBatchItemStatuses(
-                    app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id)
-                );
+                $batch = $batchResults[$payout->payout_batch_id] ?? null;
+
+                if ($batch === null || $batch['payload'] === null) {
+                    Log::warning('PayPal payout sync failed for row '.$payout->id, [
+                        'error' => $batch['error'] ?? 'No batch response',
+                    ]);
+                    $failed++;
+
+                    continue;
+                }
+
+                $statuses = PayPalClient::extractBatchItemStatuses($batch['payload']);
                 $info = $statuses[$payout->uuid] ?? null;
 
                 if (! $info) {
@@ -896,15 +908,25 @@ class OrganizationPayoutService
 
             $paidChecked = $recentPaid->count();
 
-            foreach ($recentPaid as $payout) {
-                if (! $this->canSyncStatus($payout)) {
-                    continue;
-                }
+            $syncablePaid = $recentPaid->filter(fn (OrganizationPayout $p) => $this->canSyncStatus($p));
+            $paidBatchResults = $syncablePaid->isEmpty()
+                ? []
+                : app(PayPalClient::class)->showBatchPayouts($syncablePaid->pluck('payout_batch_id')->all());
 
+            foreach ($syncablePaid as $payout) {
                 try {
-                    $statuses = PayPalClient::extractBatchItemStatuses(
-                        app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id)
-                    );
+                    $batch = $paidBatchResults[$payout->payout_batch_id] ?? null;
+
+                    if ($batch === null || $batch['payload'] === null) {
+                        Log::warning('Paid payout recheck failed for row '.$payout->id, [
+                            'error' => $batch['error'] ?? 'No batch response',
+                        ]);
+                        $failed++;
+
+                        continue;
+                    }
+
+                    $statuses = PayPalClient::extractBatchItemStatuses($batch['payload']);
                     $info = $statuses[$payout->uuid] ?? null;
 
                     if ($info && PayPalPayoutEvent::isReversal(strtoupper($info['status']))) {
