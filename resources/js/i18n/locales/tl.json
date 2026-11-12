@@ -667,7 +667,13 @@
         "paymentStatus": "Katayuan ng pagbabayad",
         "distributionStatus": "Katayuan ng pamamahagi",
         "distributed": "Naipamahagi",
-        "partiallyDistributed": "Bahagyang ibinahagi"
+        "partiallyDistributed": "Bahagyang ibinahagi",
+        "estimatedFee": "Tinantyang bayad ({percent}%)",
+        "estimatedNetToOrganization": "Tinantyang net sa organisasyon",
+        "feeEstimateHint": "Ang aktwal na bayad ay ibinabawas sa paglilipat na ito at kinumpirma ng PayPal pagkatapos itong maproseso.",
+        "feePending": "Nakabinbin ang bayad — nakumpirma pagkatapos ng paglipat",
+        "payoutMinimumAmount": "Ang halaga ay dapat na hindi bababa sa {amount}.",
+        "payoutFeeEstimateNote": "Tinantyang bayad sa provider ~{percent}% — ang aktwal na bayad ay nakumpirma pagkatapos ng paglipat."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

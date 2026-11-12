@@ -667,7 +667,13 @@
         "paymentStatus": "Статус платежа",
         "distributionStatus": "Статус распространения",
         "distributed": "Распределенный",
-        "partiallyDistributed": "Частично распределено"
+        "partiallyDistributed": "Частично распределено",
+        "estimatedFee": "Ориентировочная комиссия ({percent}%)",
+        "estimatedNetToOrganization": "Предполагаемая чистая прибыль организации",
+        "feeEstimateHint": "Фактическая комиссия вычитается из этого перевода и подтверждается PayPal после его обработки.",
+        "feePending": "Комиссия в ожидании — подтверждена после перевода",
+        "payoutMinimumAmount": "Сумма должна быть не менее {amount}.",
+        "payoutFeeEstimateNote": "Ориентировочная комиссия провайдера ~{percent}% — фактическая комиссия подтверждается после перевода."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Все права защищены."

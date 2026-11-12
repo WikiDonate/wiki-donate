@@ -47,7 +47,7 @@ class OrganizationController extends Controller
             });
         }
 
-        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
+        $perPage = min(max((int) $request->input('per_page', 15), 1), 100);
 
         return response()->json([
             'success' => true,

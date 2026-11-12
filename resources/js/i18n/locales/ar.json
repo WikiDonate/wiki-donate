@@ -667,7 +667,13 @@
         "paymentStatus": "حالة الدفع",
         "distributionStatus": "حالة التوزيع",
         "distributed": "وزعت",
-        "partiallyDistributed": "موزعة جزئيا"
+        "partiallyDistributed": "موزعة جزئيا",
+        "estimatedFee": "الرسوم المقدرة ({percent}%)",
+        "estimatedNetToOrganization": "صافي المقدر للمنظمة",
+        "feeEstimateHint": "يتم خصم الرسوم الفعلية من هذا التحويل ويتم تأكيده بواسطة PayPal بعد معالجته.",
+        "feePending": "الرسوم معلقة - تم تأكيدها بعد النقل",
+        "payoutMinimumAmount": "يجب أن يكون المبلغ {amount} على الأقل.",
+        "payoutFeeEstimateNote": "رسوم المزود المقدرة ~{percent}% — يتم تأكيد الرسوم الفعلية بعد النقل."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

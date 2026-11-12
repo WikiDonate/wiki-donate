@@ -102,9 +102,8 @@
                             ${{ quickAmount }}
                         </button>
                     </div>
-                    <!-- Display-only donor-side view of the SAME 5% rate the
-                         server enforces on payouts (config/donations.php,
-                         served by /payment-methods). -->
+                    <!-- Display-only donor-side operational cost (platform
+                         fee), unrelated to the provider's payout fee. -->
                     <p
                         v-if="transactionCost !== null"
                         class="text-xs text-red-600 mt-3 italic font-bold"
@@ -227,8 +226,8 @@
     import { donateService } from '~/services/donateService'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import {
-        DEFAULT_TRANSACTION_FEE_PERCENT,
-        calculateTransactionCost,
+        DEFAULT_OPERATIONAL_COST_PERCENT,
+        calculateOperationalCost,
     } from '~/config/donationFees'
 
     const { t, locale } = useI18n()
@@ -236,7 +235,7 @@
         methods,
         loading: loadingMethods,
         loadPaymentMethods,
-        transactionCostPercent: registryCostPercent,
+        operationalCostPercent: registryCostPercent,
         methodLabel,
         hasMethod,
     } = usePaymentMethods()
@@ -324,16 +323,17 @@
     )
 
     // Rate comes from the server config (falls back to the same default while
-    // the registry loads) so donor UI and payout deduction can never drift.
+    // the registry loads). This is the donor-facing operational cost, not the
+    // provider's payout fee.
     const effectiveFeePercent = computed(() => {
         const value = Number(registryCostPercent.value)
-        return Number.isFinite(value) ? value : DEFAULT_TRANSACTION_FEE_PERCENT
+        return Number.isFinite(value) ? value : DEFAULT_OPERATIONAL_COST_PERCENT
     })
 
-    // Live display-only transaction cost; `null` hides the row for empty or
+    // Live display-only operational cost; `null` hides the row for empty or
     // invalid input (see config/donationFees.js).
     const transactionCost = computed(() =>
-        calculateTransactionCost(amount.value, effectiveFeePercent.value),
+        calculateOperationalCost(amount.value, effectiveFeePercent.value),
     )
 
     // Locale-aware percentage so the translated labels keep their decimal

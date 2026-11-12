@@ -667,7 +667,13 @@
         "paymentStatus": "Статус платежу",
         "distributionStatus": "Статус розповсюдження",
         "distributed": "Розповсюджується",
-        "partiallyDistributed": "Частково поширюється"
+        "partiallyDistributed": "Частково поширюється",
+        "estimatedFee": "Приблизна комісія ({percent}%)",
+        "estimatedNetToOrganization": "Очікувана чиста користь організації",
+        "feeEstimateHint": "Фактична комісія вираховується з цього переказу та підтверджується PayPal після обробки.",
+        "feePending": "Комісія очікує на розгляд — підтверджується після переказу",
+        "payoutMinimumAmount": "Сума має бути не менше {amount}.",
+        "payoutFeeEstimateNote": "Орієнтовна комісія постачальника ~{percent}% — фактична комісія підтверджується після переказу."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Всі права захищені."

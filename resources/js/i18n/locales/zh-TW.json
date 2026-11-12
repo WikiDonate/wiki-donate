@@ -667,7 +667,13 @@
         "paymentStatus": "付款狀態",
         "distributionStatus": "分佈狀況",
         "distributed": "分散式",
-        "partiallyDistributed": "部分分佈"
+        "partiallyDistributed": "部分分佈",
+        "estimatedFee": "預計費用 ({percent}%)",
+        "estimatedNetToOrganization": "預計組織淨收益",
+        "feeEstimateHint": "實際費用將從本次轉帳中扣除，並由 PayPal 處理後確認。",
+        "feePending": "費用待定 - 轉帳後確認",
+        "payoutMinimumAmount": "金額必須至少為 {amount}。",
+        "payoutFeeEstimateNote": "預計提供者費用 ~{percent}% — 實際費用在轉帳後確認。"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"

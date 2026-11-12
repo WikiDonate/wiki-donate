@@ -667,7 +667,13 @@
         "paymentStatus": "وضعیت پرداخت",
         "distributionStatus": "وضعیت توزیع",
         "distributed": "توزیع شده است",
-        "partiallyDistributed": "به طور جزئی توزیع شده است"
+        "partiallyDistributed": "به طور جزئی توزیع شده است",
+        "estimatedFee": "کارمزد تخمینی ({percent}%)",
+        "estimatedNetToOrganization": "خالص به سازمان برآورد شده است",
+        "feeEstimateHint": "هزینه واقعی از این انتقال کسر می شود و پس از پردازش توسط پی پال تأیید می شود.",
+        "feePending": "هزینه در انتظار - پس از انتقال تأیید شد",
+        "payoutMinimumAmount": "مقدار باید حداقل {amount} باشد.",
+        "payoutFeeEstimateNote": "هزینه تخمینی ارائه دهنده ~{percent}٪ - هزینه واقعی پس از انتقال تأیید می شود."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

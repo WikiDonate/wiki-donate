@@ -667,7 +667,13 @@
         "paymentStatus": "Κατάσταση πληρωμής",
         "distributionStatus": "Κατάσταση διανομής",
         "distributed": "Διανεμήθηκε",
-        "partiallyDistributed": "Μερικώς κατανεμημένο"
+        "partiallyDistributed": "Μερικώς κατανεμημένο",
+        "estimatedFee": "Εκτιμώμενη χρέωση ({percent}%)",
+        "estimatedNetToOrganization": "Εκτιμώμενο καθαρό σε οργάνωση",
+        "feeEstimateHint": "Η πραγματική χρέωση αφαιρείται από αυτήν τη μεταφορά και επιβεβαιώνεται από το PayPal μετά την επεξεργασία της.",
+        "feePending": "Εκκρεμεί χρέωση — επιβεβαιώνεται μετά τη μεταφορά",
+        "payoutMinimumAmount": "Το ποσό πρέπει να είναι τουλάχιστον {amount}.",
+        "payoutFeeEstimateNote": "Εκτιμώμενη χρέωση παρόχου ~{percent}% — η πραγματική χρέωση επιβεβαιώνεται μετά τη μεταφορά."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Με την επιφύλαξη παντός δικαιώματος."

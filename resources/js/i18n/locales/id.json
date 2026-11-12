@@ -667,7 +667,13 @@
         "paymentStatus": "Status pembayaran",
         "distributionStatus": "Status distribusi",
         "distributed": "Didistribusikan",
-        "partiallyDistributed": "Didistribusikan sebagian"
+        "partiallyDistributed": "Didistribusikan sebagian",
+        "estimatedFee": "Perkiraan biaya ({percent}%)",
+        "estimatedNetToOrganization": "Perkiraan bersih untuk organisasi",
+        "feeEstimateHint": "Biaya sebenarnya dipotong dari transfer ini dan dikonfirmasi oleh PayPal setelah diproses.",
+        "feePending": "Biaya tertunda — dikonfirmasi setelah transfer",
+        "payoutMinimumAmount": "Jumlahnya minimal harus {amount}.",
+        "payoutFeeEstimateNote": "Perkiraan biaya penyedia ~{percent}% — biaya sebenarnya dikonfirmasi setelah transfer."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak dilindungi undang-undang."

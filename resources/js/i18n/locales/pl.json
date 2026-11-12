@@ -667,7 +667,13 @@
         "paymentStatus": "Stan płatności",
         "distributionStatus": "Stan dystrybucji",
         "distributed": "Rozproszone",
-        "partiallyDistributed": "Częściowo rozproszone"
+        "partiallyDistributed": "Częściowo rozproszone",
+        "estimatedFee": "Szacowana opłata ({percent}%)",
+        "estimatedNetToOrganization": "Szacunkowa wartość netto dla organizacji",
+        "feeEstimateHint": "Rzeczywista opłata jest odliczana od tego przelewu i potwierdzana przez PayPal po jego przetworzeniu.",
+        "feePending": "Opłata w toku — potwierdzona po transferze",
+        "payoutMinimumAmount": "Kwota musi wynosić co najmniej {amount}.",
+        "payoutFeeEstimateNote": "Szacunkowa opłata dostawcy ~{percent}% — faktyczna opłata zostanie potwierdzona po dokonaniu przelewu."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Wszelkie prawa zastrzeżone."

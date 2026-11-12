@@ -667,7 +667,13 @@
         "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
         "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
         "distributed": "ဖြန့်ဝေခဲ့သည်။",
-        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။",
+        "estimatedFee": "ခန့်မှန်းအခကြေးငွေ ({percent}%)",
+        "estimatedNetToOrganization": "အဖွဲ့အစည်းအတွက် ခန့်မှန်းခြေ အသားတင်",
+        "feeEstimateHint": "အမှန်တကယ် အခကြေးငွေကို ဤလွှဲပြောင်းမှုမှ နုတ်ယူပြီး ၎င်းကို လုပ်ဆောင်ပြီးနောက် PayPal မှ အတည်ပြုပါသည်။",
+        "feePending": "အခကြေးငွေ စောင့်ဆိုင်းနေပါသည် — လွှဲပြောင်းပြီးနောက် အတည်ပြုသည်။",
+        "payoutMinimumAmount": "ပမာဏသည် အနည်းဆုံး {amount} ဖြစ်ရပါမည်။",
+        "payoutFeeEstimateNote": "ခန့်မှန်းခြေ ပံ့ပိုးသူအခကြေးငွေ ~{percent}% — လွှဲပြောင်းပြီးနောက် အမှန်တကယ်အခကြေးငွေကို အတည်ပြုပါသည်။"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

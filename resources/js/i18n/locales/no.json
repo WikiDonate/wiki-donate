@@ -667,7 +667,13 @@
         "paymentStatus": "Betalingsstatus",
         "distributionStatus": "Distribusjonsstatus",
         "distributed": "Distribuert",
-        "partiallyDistributed": "Delvis distribuert"
+        "partiallyDistributed": "Delvis distribuert",
+        "estimatedFee": "Estimert gebyr ({percent}%)",
+        "estimatedNetToOrganization": "Estimert netto til organisasjon",
+        "feeEstimateHint": "Den faktiske avgiften trekkes fra denne overføringen og bekreftes av PayPal etter at den er behandlet.",
+        "feePending": "Gebyr venter — bekreftet etter overføringen",
+        "payoutMinimumAmount": "Beløpet må være minst {amount}.",
+        "payoutFeeEstimateNote": "Estimert leverandørgebyr ~{percent} % — den faktiske avgiften bekreftes etter overføringen."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

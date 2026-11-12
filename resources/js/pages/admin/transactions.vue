@@ -145,9 +145,10 @@
                                 }}</span>
                             </span>
                         </template>
-                        <!-- Forced payout transaction cost: gross (amount) →
-                            fee → net actually transferred. Income rows have no
-                            fee, so those cells stay empty. -->
+                        <!-- Provider-reported payout fee: gross (amount) →
+                            fee → net the organization receives. Income rows and
+                            not-yet-confirmed payouts have no fee, so those
+                            cells stay empty. -->
                         <template #cell-fee="{ row }">
                             <span
                                 v-if="row.type === 'expense' && row.fee_amount !== null"

@@ -667,7 +667,13 @@
         "paymentStatus": "Betalningsstatus",
         "distributionStatus": "Distributionsstatus",
         "distributed": "Utdelat",
-        "partiallyDistributed": "Delvis distribuerad"
+        "partiallyDistributed": "Delvis distribuerad",
+        "estimatedFee": "Beräknad avgift ({percent}%)",
+        "estimatedNetToOrganization": "Estimated net to organization",
+        "feeEstimateHint": "Den faktiska avgiften dras från denna överföring och bekräftas av PayPal efter att den har behandlats.",
+        "feePending": "Fee pending — confirmed after the transfer",
+        "payoutMinimumAmount": "Amount must be at least {amount}.",
+        "payoutFeeEstimateNote": "Beräknad leverantörsavgift ~{percent}% — den faktiska avgiften bekräftas efter överföringen."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

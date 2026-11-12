@@ -667,7 +667,13 @@
         "paymentStatus": "የክፍያ ሁኔታ",
         "distributionStatus": "የስርጭት ሁኔታ",
         "distributed": "ተሰራጭቷል።",
-        "partiallyDistributed": "በከፊል ተሰራጭቷል።"
+        "partiallyDistributed": "በከፊል ተሰራጭቷል።",
+        "estimatedFee": "የሚገመተው ክፍያ ({percent}%)",
+        "estimatedNetToOrganization": "የተገመተው መረብ ለድርጅት",
+        "feeEstimateHint": "ትክክለኛው ክፍያ ከዚህ ዝውውር ላይ ተቀንሶ በፔይፓል ከተሰራ በኋላ የተረጋገጠ ነው።",
+        "feePending": "ክፍያ በመጠባበቅ ላይ - ከዝውውሩ በኋላ የተረጋገጠ",
+        "payoutMinimumAmount": "መጠኑ ቢያንስ {amount} መሆን አለበት።",
+        "payoutFeeEstimateNote": "የተገመተው የአቅራቢ ክፍያ ~{percent}% - ትክክለኛው ክፍያ ከዝውውሩ በኋላ ተረጋግጧል።"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

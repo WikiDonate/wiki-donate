@@ -667,7 +667,13 @@
         "paymentStatus": "Hali ya malipo",
         "distributionStatus": "Hali ya usambazaji",
         "distributed": "Imesambazwa",
-        "partiallyDistributed": "Imesambazwa kwa kiasi"
+        "partiallyDistributed": "Imesambazwa kwa kiasi",
+        "estimatedFee": "Ada iliyokadiriwa ({percent}%)",
+        "estimatedNetToOrganization": "Kadirio la jumla kwa shirika",
+        "feeEstimateHint": "Ada halisi hukatwa kutoka kwa uhamisho huu na kuthibitishwa na PayPal baada ya kuchakata.",
+        "feePending": "Ada inasubiri - imethibitishwa baada ya uhamisho",
+        "payoutMinimumAmount": "Kiasi lazima kiwe angalau {amount}.",
+        "payoutFeeEstimateNote": "Kadirio la ada ya mtoa huduma ~{percent}% - ada halisi inathibitishwa baada ya uhamisho."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

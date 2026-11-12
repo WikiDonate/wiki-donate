@@ -667,7 +667,13 @@
         "paymentStatus": "Zahlungsstatus",
         "distributionStatus": "Verteilungsstatus",
         "distributed": "Verteilt",
-        "partiallyDistributed": "Teilweise verteilt"
+        "partiallyDistributed": "Teilweise verteilt",
+        "estimatedFee": "Geschätzte Gebühr ({percent}%)",
+        "estimatedNetToOrganization": "Geschätzter Nettowert für die Organisation",
+        "feeEstimateHint": "Die tatsächliche Gebühr wird von dieser Überweisung abgezogen und nach der Verarbeitung von PayPal bestätigt.",
+        "feePending": "Gebühr ausstehend – nach der Überweisung bestätigt",
+        "payoutMinimumAmount": "Der Betrag muss mindestens {amount} betragen.",
+        "payoutFeeEstimateNote": "Geschätzte Anbietergebühr ~{percent}% – die tatsächliche Gebühr wird nach der Überweisung bestätigt."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle Rechte vorbehalten."

@@ -667,7 +667,13 @@
         "paymentStatus": "Stato del pagamento",
         "distributionStatus": "Stato della distribuzione",
         "distributed": "Distribuito",
-        "partiallyDistributed": "Parzialmente distribuito"
+        "partiallyDistributed": "Parzialmente distribuito",
+        "estimatedFee": "Commissione stimata ({percent}%)",
+        "estimatedNetToOrganization": "Netto stimato per l'organizzazione",
+        "feeEstimateHint": "La commissione effettiva viene detratta da questo trasferimento e confermata da PayPal dopo l'elaborazione.",
+        "feePending": "Commissione in sospeso: confermata dopo il trasferimento",
+        "payoutMinimumAmount": "L'importo deve essere almeno {amount}.",
+        "payoutFeeEstimateNote": "Commissione stimata del fornitore ~{percent}%: la commissione effettiva viene confermata dopo il trasferimento."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tutti i diritti riservati."

@@ -667,7 +667,13 @@
         "paymentStatus": "결제 상태",
         "distributionStatus": "유통현황",
         "distributed": "분산",
-        "partiallyDistributed": "부분적으로 배포됨"
+        "partiallyDistributed": "부분적으로 배포됨",
+        "estimatedFee": "예상 수수료({percent}%)",
+        "estimatedNetToOrganization": "조직에 대한 예상 순액",
+        "feeEstimateHint": "실제 수수료는 이 이체에서 공제되며 처리 후 PayPal에서 확인합니다.",
+        "feePending": "수수료 보류 중 - 이체 후 확인됨",
+        "payoutMinimumAmount": "금액은 {amount} 이상이어야 합니다.",
+        "payoutFeeEstimateNote": "예상 공급자 수수료 ~{percent}% — 실제 수수료는 이체 후 확인됩니다."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. 모든 권리 보유."

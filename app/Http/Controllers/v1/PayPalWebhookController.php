@@ -11,6 +11,7 @@ use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentCheckoutService;
+use App\Services\Payout\OrganizationPayoutService;
 use App\Services\Payout\PayPalPayoutEvent;
 use App\Services\PayPalClient;
 use Illuminate\Http\JsonResponse;
@@ -261,6 +262,14 @@ class PayPalWebhookController extends Controller
         $payloadStatus = strtoupper((string) ($resource['transaction_status'] ?? $resource['payout_item_status'] ?? ''));
         // Canonical status from the EVENT NAME wins when the payload omits it.
         $effectiveStatus = $payloadStatus ?: PayPalPayoutEvent::status($normalized);
+
+        // The actual fee is receiver-paid and reported per item; capture it
+        // even for rows that are already terminal (it is audit data, not a
+        // status change).
+        app(OrganizationPayoutService::class)
+            ->applyProviderFee($payout, $resource['payout_item_fee'] ?? null);
+
+        $payout->refresh();
 
         // Reversals are handled even for already-paid rows.
         if (PayPalPayoutEvent::isReversal($effectiveStatus)) {

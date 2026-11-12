@@ -667,7 +667,13 @@
         "paymentStatus": "สถานะการชำระเงิน",
         "distributionStatus": "สถานะการจัดจำหน่าย",
         "distributed": "กระจาย",
-        "partiallyDistributed": "แจกเป็นบางส่วน"
+        "partiallyDistributed": "แจกเป็นบางส่วน",
+        "estimatedFee": "ค่าธรรมเนียมโดยประมาณ ({percent}%)",
+        "estimatedNetToOrganization": "ประมาณการสุทธิต่อองค์กร",
+        "feeEstimateHint": "ค่าธรรมเนียมจริงจะถูกหักออกจากการโอนนี้และได้รับการยืนยันจาก PayPal หลังจากดำเนินการแล้ว",
+        "feePending": "ค่าธรรมเนียมที่รอดำเนินการ — ยืนยันหลังการโอน",
+        "payoutMinimumAmount": "จำนวนเงินต้องมีอย่างน้อย {amount}",
+        "payoutFeeEstimateNote": "ค่าธรรมเนียมผู้ให้บริการโดยประมาณ ~{percent}% — ค่าธรรมเนียมจริงจะได้รับการยืนยันหลังการโอน"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org สงวนลิขสิทธิ์."

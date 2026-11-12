@@ -667,7 +667,13 @@
         "paymentStatus": "Starea plății",
         "distributionStatus": "Starea distribuției",
         "distributed": "Distribuit",
-        "partiallyDistributed": "Distribuit parțial"
+        "partiallyDistributed": "Distribuit parțial",
+        "estimatedFee": "Taxa estimată ({percent}%)",
+        "estimatedNetToOrganization": "Netă estimată pentru organizație",
+        "feeEstimateHint": "Taxa reală este dedusă din acest transfer și confirmată de PayPal după procesare.",
+        "feePending": "Taxa în așteptare — confirmată după transfer",
+        "payoutMinimumAmount": "Suma trebuie să fie de cel puțin {amount}.",
+        "payoutFeeEstimateNote": "Taxa estimată a furnizorului ~{percent}% — taxa reală este confirmată după transfer."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

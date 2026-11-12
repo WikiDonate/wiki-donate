@@ -667,7 +667,13 @@
         "paymentStatus": "Status pembayaran",
         "distributionStatus": "Status pengedaran",
         "distributed": "Diedarkan",
-        "partiallyDistributed": "Diedarkan sebahagiannya"
+        "partiallyDistributed": "Diedarkan sebahagiannya",
+        "estimatedFee": "Anggaran yuran ({percent}%)",
+        "estimatedNetToOrganization": "Anggaran bersih kepada organisasi",
+        "feeEstimateHint": "Yuran sebenar ditolak daripada pemindahan ini dan disahkan oleh PayPal selepas ia diproses.",
+        "feePending": "Yuran belum selesai — disahkan selepas pemindahan",
+        "payoutMinimumAmount": "Jumlah mestilah sekurang-kurangnya {amount}.",
+        "payoutFeeEstimateNote": "Anggaran yuran pembekal ~{percent}% — yuran sebenar disahkan selepas pemindahan."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

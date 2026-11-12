@@ -667,7 +667,13 @@
         "paymentStatus": "Estado de pago",
         "distributionStatus": "Estado de distribución",
         "distributed": "Distribuido",
-        "partiallyDistributed": "Parcialmente distribuido"
+        "partiallyDistributed": "Parcialmente distribuido",
+        "estimatedFee": "Tarifa estimada ({percent}%)",
+        "estimatedNetToOrganization": "Neto estimado para la organización",
+        "feeEstimateHint": "La tarifa real se deduce de esta transferencia y PayPal la confirma después de procesarla.",
+        "feePending": "Tarifa pendiente: confirmada después de la transferencia",
+        "payoutMinimumAmount": "La cantidad debe ser al menos {amount}.",
+        "payoutFeeEstimateNote": "Tarifa estimada del proveedor ~{percent}%: la tarifa real se confirma después de la transferencia."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."

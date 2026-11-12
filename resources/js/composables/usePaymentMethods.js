@@ -19,9 +19,12 @@ import api from '~/config/apiConfig'
 const methods = ref([])
 const payoutMethods = ref([])
 const adminMethods = ref([])
-// Forced transaction-cost rate from the server (config/donations.php). Null
+// Donor-facing operational cost from the server (config/donations.php). Null
 // until the registry loads so callers can fall back to their own default.
-const registryTransactionCostPercent = ref(null)
+const registryOperationalCostPercent = ref(null)
+// Display-only estimate for the admin Pay modal. The real payout fee is
+// provider-reported after the transfer.
+const registryPayoutFeeEstimatePercent = ref(null)
 const loading = ref(false)
 const loaded = ref(false)
 const error = ref('')
@@ -52,8 +55,10 @@ async function fetchRegistry() {
     }
     methods.value = normalize(response.data?.methods)
     payoutMethods.value = normalize(response.data?.payout_methods)
-    const percent = Number(response.data?.transaction_cost_percent)
-    registryTransactionCostPercent.value = Number.isFinite(percent) ? percent : null
+    const percent = Number(response.data?.operational_cost_percent)
+    registryOperationalCostPercent.value = Number.isFinite(percent) ? percent : null
+    const estimate = Number(response.data?.payout_fee_estimate_percent)
+    registryPayoutFeeEstimatePercent.value = Number.isFinite(estimate) ? estimate : null
     loaded.value = true
     error.value = ''
 }
@@ -145,7 +150,8 @@ export function usePaymentMethods() {
         methods,
         payoutMethods,
         adminMethods,
-        transactionCostPercent: registryTransactionCostPercent,
+        operationalCostPercent: registryOperationalCostPercent,
+        payoutFeeEstimatePercent: registryPayoutFeeEstimatePercent,
         allMethods,
         loading,
         loaded,

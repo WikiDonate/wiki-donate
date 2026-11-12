@@ -667,7 +667,13 @@
         "paymentStatus": "Maksun tila",
         "distributionStatus": "Jakelun tila",
         "distributed": "Jaettu",
-        "partiallyDistributed": "Osittain jaettu"
+        "partiallyDistributed": "Osittain jaettu",
+        "estimatedFee": "Arvioitu maksu ({percent} %)",
+        "estimatedNetToOrganization": "Arvioitu netto organisaatiolle",
+        "feeEstimateHint": "Todellinen maksu vähennetään tästä siirrosta ja PayPal vahvistaa sen käsittelyn jälkeen.",
+        "feePending": "Maksu vireillä – vahvistettu siirron jälkeen",
+        "payoutMinimumAmount": "Summan on oltava vähintään {amount}.",
+        "payoutFeeEstimateNote": "Arvioitu palveluntarjoajan maksu ~{percent}% — todellinen maksu vahvistetaan siirron jälkeen."
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Kaikki oikeudet pidätetään."

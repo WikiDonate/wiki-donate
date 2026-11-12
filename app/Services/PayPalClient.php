@@ -252,6 +252,11 @@ class PayPalClient
         $payload = [
             'sender_batch_header' => [
                 'sender_batch_id' => $senderBatchId,
+                // The receiver bears the provider fee: PayPal deducts its
+                // actual (country/currency dependent) fee from the payout
+                // amount instead of charging the platform on top. This is what
+                // lets the ledger report the real fee for each transfer.
+                'fees_payer' => 'RECEIVER',
             ],
             'items' => array_map(function (array $item, int $i) {
                 return [
@@ -383,6 +388,8 @@ class PayPalClient
                 'status' => $item['transaction_status'] ?? ($item['payout_item_status'] ?? 'PENDING'),
                 'payout_item_id' => $item['payout_item_id'] ?? null,
                 'error' => $error,
+                // Actual fee PayPal charged this item (null until processed).
+                'fee' => $item['payout_item_fee'] ?? null,
             ];
         }
 
