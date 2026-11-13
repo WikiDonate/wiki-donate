@@ -34,7 +34,8 @@
         "previousPage": "আগের পৃষ্ঠা",
         "nextPage": "পরবর্তী পৃষ্ঠা",
         "clear": "পরিষ্কার",
-        "create": "Create"
+        "create": "Create",
+        "copy": "কপি"
     },
     "auth": {
         "loginTitle": "আপনার অ্যাকাউন্টে লগইন করুন",
@@ -667,7 +668,18 @@
         "paymentStatus": "পেমেন্ট স্ট্যাটাস",
         "distributionStatus": "বিতরণের অবস্থা",
         "distributed": "বিতরণ করা হয়েছে",
-        "partiallyDistributed": "আংশিক বিতরণ"
+        "partiallyDistributed": "আংশিক বিতরণ",
+        "estimatedFee": "আনুমানিক ফি ({percent}%)",
+        "estimatedNetToOrganization": "প্রতিষ্ঠান থেকে আনুমানিক নেট",
+        "feeEstimateHint": "প্রকৃত ফি এই স্থানান্তর থেকে কেটে নেওয়া হয় এবং এটি প্রক্রিয়া করার পরে PayPal দ্বারা নিশ্চিত করা হয়।",
+        "feePending": "ফি মুলতুবি — স্থানান্তর পরে নিশ্চিত",
+        "payoutMinimumAmount": "পরিমাণ কমপক্ষে {amount} হতে হবে।",
+        "payoutFeeEstimateNote": "আনুমানিক প্রদানকারী ফি ~{percent}% — প্রকৃত ফি স্থানান্তরের পরে নিশ্চিত করা হয়।",
+        "message": "বার্তা",
+        "before": "আগে",
+        "after": "পরে",
+        "copyFailed": "ক্লিপবোর্ডে অনুলিপি করা যায়নি।",
+        "syncStatusesHint": "পেপ্যালের সাথে প্রতিটি মুলতুবি পেআউট পুনর্মিলন করুন"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. সর্বস্বত্ব সংরক্ষিত"

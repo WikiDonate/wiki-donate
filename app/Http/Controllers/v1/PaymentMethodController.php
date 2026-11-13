@@ -67,10 +67,11 @@ class PaymentMethodController extends Controller
                         ->map(fn (PaymentMethod $method) => $this->format($method))
                         ->values()
                         ->all(),
-                    // Single source of truth for the 5% transaction cost:
-                    // config/donations.php. The SPA mirrors the server math
-                    // instead of hard-coding a rate that could drift.
-                    'transaction_cost_percent' => (float) config('donations.transaction_cost_percent', 5),
+                    // Donor-facing operational cost (display only) and the
+                    // admin Pay-modal fee estimate. Neither is the actual
+                    // provider fee, which is reported per payout.
+                    'operational_cost_percent' => (float) config('donations.operational_cost_percent', 5),
+                    'payout_fee_estimate_percent' => (float) config('donations.payout_fee_estimate_percent', 2),
                 ],
             ], Response::HTTP_OK);
         } catch (Exception $e) {

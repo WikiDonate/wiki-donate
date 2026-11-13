@@ -34,7 +34,8 @@
         "previousPage": "మునుపటి పేజీ",
         "nextPage": "తదుపరి పేజీ",
         "clear": "క్లియర్",
-        "create": "Create"
+        "create": "Create",
+        "copy": "కాపీ చేయండి"
     },
     "auth": {
         "loginTitle": "మీ ఖాతాకు లాగిన్ చేయండి",
@@ -667,7 +668,18 @@
         "paymentStatus": "చెల్లింపు స్థితి",
         "distributionStatus": "పంపిణీ స్థితి",
         "distributed": "పంపిణీ చేయబడింది",
-        "partiallyDistributed": "పాక్షికంగా పంపిణీ చేయబడింది"
+        "partiallyDistributed": "పాక్షికంగా పంపిణీ చేయబడింది",
+        "estimatedFee": "అంచనా రుసుము ({percent}%)",
+        "estimatedNetToOrganization": "సంస్థకు నికరంగా అంచనా వేయబడింది",
+        "feeEstimateHint": "అసలు రుసుము ఈ బదిలీ నుండి తీసివేయబడుతుంది మరియు ఇది ప్రాసెస్ అయిన తర్వాత PayPal ద్వారా నిర్ధారించబడుతుంది.",
+        "feePending": "ఫీజు పెండింగ్‌లో ఉంది - బదిలీ తర్వాత నిర్ధారించబడింది",
+        "payoutMinimumAmount": "మొత్తం తప్పనిసరిగా కనీసం {amount} ఉండాలి.",
+        "payoutFeeEstimateNote": "అంచనా వేయబడిన ప్రొవైడర్ రుసుము ~{percent}% — బదిలీ తర్వాత వాస్తవ రుసుము నిర్ధారించబడుతుంది.",
+        "message": "సందేశం",
+        "before": "ముందు",
+        "after": "తర్వాత",
+        "copyFailed": "క్లిప్‌బోర్డ్‌కి కాపీ చేయడం సాధ్యపడలేదు.",
+        "syncStatusesHint": "పేపాల్‌తో పెండింగ్‌లో ఉన్న ప్రతి చెల్లింపును పునరుద్దరించండి"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి."

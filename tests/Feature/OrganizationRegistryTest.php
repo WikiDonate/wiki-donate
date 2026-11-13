@@ -306,8 +306,8 @@ class OrganizationRegistryTest extends TestCase
             ->getJson('/api/v1/admin/transaction-logs?event=organization.upserted');
 
         $res->assertOk();
-        $this->assertCount(1, $res->json('data.data'));
-        $this->assertEquals('organization.upserted', $res->json('data.data.0.event'));
+        $this->assertCount(1, $res->json('data'));
+        $this->assertEquals('organization.upserted', $res->json('data.0.event'));
     }
 
     public function test_transaction_log_export_returns_csv(): void

@@ -34,7 +34,8 @@
         "previousPage": "Página anterior",
         "nextPage": "Próxima página",
         "clear": "Limpar",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Copiar"
     },
     "auth": {
         "loginTitle": "Faça login na sua conta",
@@ -667,7 +668,18 @@
         "paymentStatus": "Status do pagamento",
         "distributionStatus": "Status de distribuição",
         "distributed": "Distribuído",
-        "partiallyDistributed": "Parcialmente distribuído"
+        "partiallyDistributed": "Parcialmente distribuído",
+        "estimatedFee": "Taxa estimada ({percent}%)",
+        "estimatedNetToOrganization": "Líquido estimado para a organização",
+        "feeEstimateHint": "A taxa real é deduzida desta transferência e confirmada pelo PayPal após o processamento.",
+        "feePending": "Taxa pendente – confirmada após a transferência",
+        "payoutMinimumAmount": "O valor deve ser pelo menos {amount}.",
+        "payoutFeeEstimateNote": "Taxa estimada do provedor ~{percent}% — a taxa real é confirmada após a transferência.",
+        "message": "Mensagem",
+        "before": "Antes",
+        "after": "Depois",
+        "copyFailed": "Não foi possível copiar para a área de transferência.",
+        "syncStatusesHint": "Reconcilie todos os pagamentos pendentes com o PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Todos os direitos reservados."

@@ -14,15 +14,19 @@
                         :placeholder="t('admin.searchPayoutsPlaceholder')"
                     />
                     <button
-                        class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed sm:flex-initial"
+                        class="inline-flex items-center justify-center p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                         :disabled="syncing"
+                        :title="syncing ? t('admin.syncing') : t('admin.syncStatusesHint')"
+                        :aria-label="syncing ? t('admin.syncing') : t('admin.syncStatuses')"
                         @click="syncStatuses"
                     >
-                        {{ syncing ? t('admin.syncing') : t('admin.syncStatuses') }}
+                        <font-awesome-icon
+                            :icon="['fas', 'arrows-rotate']"
+                            class="w-4 h-4"
+                            :class="{ 'animate-spin': syncing }"
+                        />
                     </button>
                 </div>
-                <p v-if="syncMessage" class="text-xs text-green-600 mb-2">{{ syncMessage }}</p>
-                <p v-if="syncError" class="text-xs text-red-600 mb-2">{{ syncError }}</p>
                 <LoadingSpinner v-if="loading" text="Loading allocations..." />
                 <template v-else>
                     <!-- Payable allocations, grouped by organization.
@@ -108,7 +112,7 @@
                                         </span>
                                         <span class="block text-xs text-amber-600">
                                             {{
-                                                t('admin.payoutFeeNote', {
+                                                t('admin.payoutFeeEstimateNote', {
                                                     percent: feePercentLabel(row),
                                                 })
                                             }}
@@ -178,26 +182,33 @@
                         {{ payFieldErrors.amount || payError }}
                     </p>
                 </div>
-                <!-- Forced 5% transaction cost: read-only breakdown. The
-                    server recomputes these values; the API rejects any
-                    client-supplied fee or net figure. -->
+                <!-- Estimated provider fee: PayPal reports the ACTUAL
+                    (receiver-paid) fee after the transfer and the server
+                    records it. The API still rejects client fee/net values. -->
                 <div class="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 space-y-1">
                     <div class="flex items-center justify-between text-xs">
                         <span class="text-gray-500">
-                            {{ t('admin.transactionCostLabel', { percent: payFeePercent }) }}
+                            {{ t('admin.estimatedFee', { percent: payFeePercent }) }}
                         </span>
                         <span class="font-medium text-amber-600">
-                            − {{ fmt(payTarget.currency, payFeeAmount) }}
+                            ~ {{ fmt(payTarget.currency, payFeeAmount) }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-500">{{ t('admin.netToOrganization') }}</span>
+                        <span class="text-gray-500">
+                            {{ t('admin.estimatedNetToOrganization') }}
+                        </span>
                         <span class="font-semibold text-gray-800">
                             {{ fmt(payTarget.currency, payNetAmount) }}
                         </span>
                     </div>
-                    <p v-if="payNetTooSmall" class="text-xs text-red-600">
-                        {{ t('admin.payoutNetBelowMinimum') }}
+                    <p class="text-xs text-gray-400">{{ t('admin.feeEstimateHint') }}</p>
+                    <p v-if="payGrossTooSmall" class="text-xs text-red-600">
+                        {{
+                            t('admin.payoutMinimumAmount', {
+                                amount: fmt(payTarget.currency, MIN_PAYOUT_AMOUNT),
+                            })
+                        }}
                     </p>
                 </div>
                 <div v-if="payoutMethods.length">
@@ -237,7 +248,7 @@
                 </button>
                 <button
                     class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40"
-                    :disabled="paying || payNetTooSmall"
+                    :disabled="paying || payGrossTooSmall"
                     @click="submitPay"
                 >
                     {{ paying ? t('admin.paying') : t('admin.recordPayout') }}
@@ -270,15 +281,18 @@
                         </div>
                         <div class="text-xs text-gray-500">
                             {{ t('admin.payoutGross') }}: {{ fmt(h.currency, h.amount) }} ·
-                            {{
-                                t('admin.payoutFee', {
-                                    percent: formatPercent(h.fee_percent),
-                                })
-                            }}: −{{ fmt(h.currency, h.fee_amount ?? 0) }} ·
-                            {{ t('admin.payoutNet') }}:
-                            <span class="font-semibold text-gray-700">
-                                {{ fmt(h.currency, h.net_amount ?? h.amount) }}
-                            </span>
+                            <template v-if="h.fee_amount !== null">
+                                {{
+                                    t('admin.payoutFee', {
+                                        percent: formatPercent(h.fee_percent),
+                                    })
+                                }}: −{{ fmt(h.currency, h.fee_amount) }} ·
+                                {{ t('admin.payoutNet') }}:
+                                <span class="font-semibold text-gray-700">
+                                    {{ fmt(h.currency, h.net_amount ?? h.amount) }}
+                                </span>
+                            </template>
+                            <span v-else>{{ t('admin.feePending') }}</span>
                         </div>
                         <div class="text-xs text-gray-400">
                             {{
@@ -325,7 +339,7 @@
 </template>
 
 <script setup>
-    import { DEFAULT_TRANSACTION_FEE_PERCENT, roundHalfUp } from '@/config/donationFees'
+    import { DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT, roundHalfUp } from '@/config/donationFees'
     import { adminService } from '@/services/adminService'
     import { useForm } from 'vee-validate'
     import { computed, ref } from 'vue'
@@ -354,13 +368,11 @@
         loadAdminMethods,
         methodLabel,
         methodVariant,
-        transactionCostPercent: registryCostPercent,
+        payoutFeeEstimatePercent: registryFeeEstimatePercent,
     } = usePaymentMethods()
     const payMethod = ref('')
 
     const syncing = ref(false)
-    const syncMessage = ref('')
-    const syncError = ref('')
 
     const historyTarget = ref(null)
     const history = ref([])
@@ -368,7 +380,7 @@
     const historyError = ref('')
 
     const { t } = useI18n()
-    const { notifyError } = useToastify()
+    const { notifyError, notifySuccess } = useToastify()
 
     // Same vee-validate + yup stack as the rest of the app (login,
     // formula modal, ...). Invalid fields get a red border + message.
@@ -389,14 +401,15 @@
 
     const [payAmount, payAmountProps] = definePayField('amount')
 
-    // Forced transaction cost (single source: config/donations.php, surfaced
-    // by GET /v1/payment-methods, mirrored per allocation). The modal only
-    // DISPLAYS the split — the server recomputes and rejects any client fee.
+    // Display-only ESTIMATE for the Pay modal. The real fee depends on the
+    // receiver's country/currency and is reported by PayPal after the transfer
+    // (the receiver bears it), then stored on the payout row.
     const payFeePercent = computed(() => {
-        const raw = payTarget.value?.transaction_cost_percent
-        // Allocation → registry payload → shared fallback constant.
-        const value = Number(raw ?? registryCostPercent.value ?? DEFAULT_TRANSACTION_FEE_PERCENT)
-        return Number.isFinite(value) ? value : DEFAULT_TRANSACTION_FEE_PERCENT
+        const raw = payTarget.value?.fee_estimate_percent
+        const value = Number(
+            raw ?? registryFeeEstimatePercent.value ?? DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT,
+        )
+        return Number.isFinite(value) ? value : DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT
     })
 
     const formatPercent = (value) => {
@@ -407,9 +420,9 @@
 
     const feePercentLabel = (row) =>
         formatPercent(
-            row?.transaction_cost_percent ??
-                registryCostPercent.value ??
-                DEFAULT_TRANSACTION_FEE_PERCENT,
+            row?.fee_estimate_percent ??
+                registryFeeEstimatePercent.value ??
+                DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT,
         )
 
     const payGrossAmount = computed(() => {
@@ -425,11 +438,11 @@
 
     const payNetAmount = computed(() => roundHalfUp(payGrossAmount.value - payFeeAmount.value))
 
-    // Mirrors the server's minimum-send guard so the button explains the block
-    // before the request is attempted.
-    const MIN_NET_SEND = 1
-    const payNetTooSmall = computed(
-        () => payGrossAmount.value > 0 && payNetAmount.value < MIN_NET_SEND,
+    // The provider fee is deducted from the transfer itself (receiver pays),
+    // so the minimum applies to the GROSS amount, not an estimated net.
+    const MIN_PAYOUT_AMOUNT = 1
+    const payGrossTooSmall = computed(
+        () => payGrossAmount.value > 0 && payGrossAmount.value < MIN_PAYOUT_AMOUNT,
     )
 
     const rowKey = (row) => `${row.formula_id}:${row.organization_key}`
@@ -492,15 +505,22 @@
     const fmt = (currency, value) =>
         `${(currency || 'usd').toUpperCase()} ${Number(value || 0).toFixed(2)}`
 
-    const fetchAllocations = async () => {
-        loading.value = true
+    // `silent` keeps the current list on screen while refetching, so the page
+    // does not collapse to the spinner and jump back to the top after a pay
+    // or a sync.
+    const fetchAllocations = async ({ silent = false } = {}) => {
+        if (!silent) {
+            loading.value = true
+        }
         try {
             allocations.value = (await adminService.getPayoutAllocations()).data ?? []
         } catch (err) {
             notifyError(apiErrorMessage(err, t('admin.failedToLoadPayouts')))
             allocations.value = []
         } finally {
-            loading.value = false
+            if (!silent) {
+                loading.value = false
+            }
         }
     }
 
@@ -534,26 +554,29 @@
     }
 
     const syncStatuses = async () => {
-        syncError.value = ''
-        syncMessage.value = ''
         syncing.value = true
         try {
             const res = await adminService.syncPayouts()
             const count = (res.data ?? []).length
             const meta = res.meta ?? {}
             if (count > 0) {
-                syncMessage.value = t('admin.payoutsUpdated', { count })
+                notifySuccess(t('admin.payoutsUpdated', { count }))
             } else if ((meta.checked ?? 0) === 0) {
-                syncMessage.value = t('admin.noPendingPayouts')
-            } else {
-                syncMessage.value = t('admin.payoutsUnchanged', { count: meta.checked })
+                notifySuccess(t('admin.noPendingPayouts'))
             }
             if ((meta.errors ?? 0) > 0) {
-                syncError.value = t('admin.payoutsSyncErrors', { count: meta.errors })
+                notifyError(t('admin.payoutsSyncErrors', { count: meta.errors }))
             }
-            await fetchAllocations()
+            // Always recompute: sync can change statuses/fees (or another admin
+            // may have paid), and the refresh must never leave stale
+            // owed/paid/balance figures on screen. Silent refresh keeps the
+            // page position stable.
+            await fetchAllocations({ silent: true })
+            if (historyTarget.value) {
+                await loadHistory(historyTarget.value)
+            }
         } catch (err) {
-            syncError.value = apiErrorMessage(err, t('admin.failedToSync'))
+            notifyError(apiErrorMessage(err, t('admin.failedToSync')))
         } finally {
             syncing.value = false
         }
@@ -568,10 +591,11 @@
             })
             return
         }
-        // Mirrors the server guard: the enforced 5% must still leave a
-        // transferable net amount.
-        if (payNetTooSmall.value) {
-            payError.value = t('admin.payoutNetBelowMinimum')
+        // The provider fee is receiver-paid, so only the gross floor applies.
+        if (payGrossTooSmall.value) {
+            payError.value = t('admin.payoutMinimumAmount', {
+                amount: fmt(payTarget.value.currency, MIN_PAYOUT_AMOUNT),
+            })
             return
         }
         paying.value = true
@@ -587,7 +611,9 @@
                 note: payNote.value || null,
             })
             payTarget.value = null
-            await fetchAllocations()
+            // Silent refresh: the list must not be replaced by the spinner,
+            // otherwise the page height collapses and jumps to the top.
+            await fetchAllocations({ silent: true })
         } catch (err) {
             payError.value = apiErrorMessage(err, t('admin.failedToRecord'))
         } finally {
@@ -595,19 +621,27 @@
         }
     })
 
-    const openHistory = async (row) => {
-        historyTarget.value = row
-        history.value = []
+    const loadHistory = async (row, showSpinner = false) => {
+        if (showSpinner) {
+            historyLoading.value = true
+        }
         historyError.value = ''
-        historyLoading.value = true
         try {
             const res = await adminService.getPayoutHistory(row.formula_id, row.organization_name)
             history.value = res.data ?? []
         } catch (err) {
             historyError.value = apiErrorMessage(err, t('admin.failedToLoadHistory'))
         } finally {
-            historyLoading.value = false
+            if (showSpinner) {
+                historyLoading.value = false
+            }
         }
+    }
+
+    const openHistory = async (row) => {
+        historyTarget.value = row
+        history.value = []
+        await loadHistory(row, true)
     }
 
     fetchAllocations()

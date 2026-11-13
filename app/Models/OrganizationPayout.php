@@ -25,6 +25,7 @@ class OrganizationPayout extends Model
         'fee_percent',
         'fee_amount',
         'net_amount',
+        'fee_source',
         'currency',
         'type',
         'status',

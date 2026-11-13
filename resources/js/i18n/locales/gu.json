@@ -34,7 +34,8 @@
         "previousPage": "પાછલું પૃષ્ઠ",
         "nextPage": "આગલું પૃષ્ઠ",
         "clear": "સાફ કરો",
-        "create": "Create"
+        "create": "Create",
+        "copy": "નકલ કરો"
     },
     "auth": {
         "loginTitle": "તમારા એકાઉન્ટમાં લૉગિન કરો",
@@ -667,7 +668,18 @@
         "paymentStatus": "ચુકવણી સ્થિતિ",
         "distributionStatus": "વિતરણ સ્થિતિ",
         "distributed": "વિતરિત",
-        "partiallyDistributed": "આંશિક રીતે વિતરિત"
+        "partiallyDistributed": "આંશિક રીતે વિતરિત",
+        "estimatedFee": "અંદાજિત ફી ({percent}%)",
+        "estimatedNetToOrganization": "સંસ્થા માટે અંદાજિત ચોખ્ખી",
+        "feeEstimateHint": "આ ટ્રાન્સફરમાંથી વાસ્તવિક ફી કાપવામાં આવે છે અને પેપાલ દ્વારા પ્રક્રિયા કર્યા પછી તેની પુષ્ટિ થાય છે.",
+        "feePending": "ફી બાકી — ટ્રાન્સફર પછી પુષ્ટિ",
+        "payoutMinimumAmount": "રકમ ઓછામાં ઓછી {amount} હોવી જોઈએ.",
+        "payoutFeeEstimateNote": "અંદાજિત પ્રદાતા ફી ~{percent}% — વાસ્તવિક ફી ટ્રાન્સફર પછી કન્ફર્મ થાય છે.",
+        "message": "સંદેશ",
+        "before": "પહેલાં",
+        "after": "પછી",
+        "copyFailed": "ક્લિપબોર્ડ પર કૉપિ કરી શકાયું નથી.",
+        "syncStatusesHint": "PayPal સાથે દરેક બાકી ચૂકવણીનું સમાધાન કરો"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. સર્વાધિકાર આરક્ષિત."

@@ -392,8 +392,9 @@ class OrganizationPayoutTest extends TestCase
         $this->assertNotNull($response->json('data.payout_item_id'));
         $this->assertSame('SUCCESS', $response->json('data.provider_status'));
 
-        // The real transfer was requested: PayPal Payouts API was hit with
-        // the org's receiving email and the NET amount (gross 50 − 5% fee).
+        // The real transfer was requested: gross 50.00, with the receiver
+        // bearing the provider fee (fees_payer=RECEIVER) instead of an
+        // invented 5% deduction.
         Http::assertSent(function ($request) {
             if ($request->url() !== 'https://api-m.sandbox.paypal.com/v1/payments/payouts') {
                 return false;
@@ -402,8 +403,9 @@ class OrganizationPayoutTest extends TestCase
             $item = $body['items'][0];
 
             return $item['receiver'] === 'charitya@paypal.test'
-                && $item['amount']['value'] === '47.50'
-                && $item['amount']['currency'] === 'USD';
+                && $item['amount']['value'] === '50.00'
+                && $item['amount']['currency'] === 'USD'
+                && ($body['sender_batch_header']['fees_payer'] ?? null) === 'RECEIVER';
         });
     }
 

@@ -34,7 +34,8 @@
         "previousPage": "Předchozí stránka",
         "nextPage": "Další stránka",
         "clear": "Jasný",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopírovat"
     },
     "auth": {
         "loginTitle": "Přihlaste se ke svému účtu",
@@ -667,7 +668,18 @@
         "paymentStatus": "Stav platby",
         "distributionStatus": "Stav distribuce",
         "distributed": "Distribuováno",
-        "partiallyDistributed": "Částečně distribuováno"
+        "partiallyDistributed": "Částečně distribuováno",
+        "estimatedFee": "Odhadovaný poplatek ({percent} %)",
+        "estimatedNetToOrganization": "Odhadovaná síť pro organizaci",
+        "feeEstimateHint": "Skutečný poplatek je odečten z tohoto převodu a potvrzen službou PayPal po jeho zpracování.",
+        "feePending": "Poplatek čeká – potvrzeno po převodu",
+        "payoutMinimumAmount": "Částka musí být alespoň {amount}.",
+        "payoutFeeEstimateNote": "Odhadovaný poplatek poskytovatele ~{percent}% — skutečný poplatek je potvrzen po převodu.",
+        "message": "Zpráva",
+        "before": "Předtím",
+        "after": "Po",
+        "copyFailed": "Nelze zkopírovat do schránky.",
+        "syncStatusesHint": "Srovnejte každou čekající platbu s PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Všechna práva vyhrazena."

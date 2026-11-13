@@ -65,5 +65,6 @@ Route::prefix('admin')
         Route::get('transactions/export', [TransactionController::class, 'export']);
 
         Route::get('transaction-logs', [TransactionLogController::class, 'index']);
+        Route::get('transaction-logs/filters', [TransactionLogController::class, 'filters']);
         Route::get('transaction-logs/export', [TransactionLogController::class, 'export']);
     });

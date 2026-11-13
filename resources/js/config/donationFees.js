@@ -1,26 +1,24 @@
 /**
- * Transaction-cost figures for the donor payment modal.
+ * Display-only cost figures (nothing here is a recorded fee).
  *
- * The rate is owned by the SERVER: `config/donations.php` →
- * `donations.transaction_cost_percent`, surfaced by
- * `GET /v1/payment-methods` as `transaction_cost_percent`. The constant below
- * is only the offline fallback for the first paint / a registry outage, kept
- * identical to the config default so no UI ever shows a different rate.
+ * `operational_cost_percent` is the donor-facing platform cost shown in the
+ * donate modal. It comes from `config/donations.php` via
+ * `GET /v1/payment-methods` (`operational_cost_percent`); the constant below is
+ * only the offline fallback for the first paint / a registry outage.
  *
- * The same server rate drives the enforced payout deduction
- * (OrganizationPayoutService), so donor-facing and payout-facing math can
- * never drift apart.
+ * `payout_fee_estimate_percent` is a pre-send ESTIMATE for the admin Pay modal
+ * only. The recorded payout fee is PayPal's actual `payout_item_fee` (the
+ * receiver pays it, `fees_payer=RECEIVER`) and is stored on the payout row
+ * after the transfer.
  */
-export const DEFAULT_TRANSACTION_FEE_PERCENT = 5
-
-/** Fallback rate as a fraction (0.05) for legacy import paths. */
-export const TRANSACTION_FEE_RATE = DEFAULT_TRANSACTION_FEE_PERCENT / 100
+export const DEFAULT_OPERATIONAL_COST_PERCENT = 5
+export const DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT = 2
 
 /** Human-readable percentage for the label (5 → 5, 0.1 → 0.1). */
-export const TRANSACTION_FEE_PERCENT = DEFAULT_TRANSACTION_FEE_PERCENT
+export const OPERATIONAL_COST_PERCENT = DEFAULT_OPERATIONAL_COST_PERCENT
 
 /**
- * Round half-up to cents, matching OrganizationPayoutService::splitTransactionCost.
+ * Round half-up to cents.
  *
  * @param {number} value
  * @returns {number}
@@ -29,19 +27,9 @@ export function roundHalfUp(value) {
     return Math.round((value + Number.EPSILON) * 100) / 100
 }
 
-/**
- * Cost shown under the amount field, rounded to cents.
- *
- * Returns `null` for empty/zero/non-numeric input so the caller can hide the
- * row entirely instead of rendering a meaningless `$0.00`.
- *
- * @param {number|string} amount Donation amount as typed in the modal.
- * @param {number} [percent] Rate in percent; defaults to the config fallback.
- * @returns {number|null}
- */
-export function calculateTransactionCost(amount, percent = DEFAULT_TRANSACTION_FEE_PERCENT) {
+function percentageCost(amount, percent, fallbackPercent) {
     const value = Number(amount)
-    const rate = Number(percent)
+    const rate = Number(percent ?? fallbackPercent)
 
     if (!Number.isFinite(value) || value <= 0) {
         return null
@@ -51,4 +39,29 @@ export function calculateTransactionCost(amount, percent = DEFAULT_TRANSACTION_F
     }
 
     return Math.min(roundHalfUp((value * rate) / 100), roundHalfUp(value))
+}
+
+/**
+ * Donor-facing operational cost for the typed amount.
+ *
+ * Returns `null` for empty/zero/non-numeric input so the caller can hide the
+ * row entirely instead of rendering a meaningless `$0.00`.
+ *
+ * @param {number|string} amount
+ * @param {number} [percent]
+ * @returns {number|null}
+ */
+export function calculateOperationalCost(amount, percent = DEFAULT_OPERATIONAL_COST_PERCENT) {
+    return percentageCost(amount, percent, DEFAULT_OPERATIONAL_COST_PERCENT)
+}
+
+/**
+ * Estimated provider fee shown in the admin Pay modal before sending.
+ *
+ * @param {number|string} amount
+ * @param {number} [percent]
+ * @returns {number|null}
+ */
+export function calculatePayoutFeeEstimate(amount, percent = DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT) {
+    return percentageCost(amount, percent, DEFAULT_PAYOUT_FEE_ESTIMATE_PERCENT)
 }

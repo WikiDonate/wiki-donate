@@ -34,7 +34,8 @@
         "previousPage": "Forrige side",
         "nextPage": "Næste side",
         "clear": "Ryd",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopiér"
     },
     "auth": {
         "loginTitle": "Log ind på din konto",
@@ -667,7 +668,18 @@
         "paymentStatus": "Betalingsstatus",
         "distributionStatus": "Distributionsstatus",
         "distributed": "Distribueret",
-        "partiallyDistributed": "Delvist fordelt"
+        "partiallyDistributed": "Delvist fordelt",
+        "estimatedFee": "Estimeret gebyr ({percent}%)",
+        "estimatedNetToOrganization": "Estimeret netto til organisation",
+        "feeEstimateHint": "Det faktiske gebyr trækkes fra denne overførsel og bekræftes af PayPal, efter den er behandlet.",
+        "feePending": "Gebyr afventer — bekræftet efter overførslen",
+        "payoutMinimumAmount": "Beløbet skal være mindst {amount}.",
+        "payoutFeeEstimateNote": "Anslået udbydergebyr ~{percent}% — det faktiske gebyr bekræftes efter overførslen.",
+        "message": "Besked",
+        "before": "før",
+        "after": "Efter",
+        "copyFailed": "Kunne ikke kopiere til udklipsholderen.",
+        "syncStatusesHint": "Afstem hver afventende udbetaling med PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheder forbeholdes."

@@ -34,7 +34,8 @@
         "previousPage": "Προηγούμενη σελίδα",
         "nextPage": "Επόμενη σελίδα",
         "clear": "Καθαρό",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Αντιγραφή"
     },
     "auth": {
         "loginTitle": "Συνδεθείτε στον λογαριασμό σας",
@@ -667,7 +668,18 @@
         "paymentStatus": "Κατάσταση πληρωμής",
         "distributionStatus": "Κατάσταση διανομής",
         "distributed": "Διανεμήθηκε",
-        "partiallyDistributed": "Μερικώς κατανεμημένο"
+        "partiallyDistributed": "Μερικώς κατανεμημένο",
+        "estimatedFee": "Εκτιμώμενη χρέωση ({percent}%)",
+        "estimatedNetToOrganization": "Εκτιμώμενο καθαρό σε οργάνωση",
+        "feeEstimateHint": "Η πραγματική χρέωση αφαιρείται από αυτήν τη μεταφορά και επιβεβαιώνεται από το PayPal μετά την επεξεργασία της.",
+        "feePending": "Εκκρεμεί χρέωση — επιβεβαιώνεται μετά τη μεταφορά",
+        "payoutMinimumAmount": "Το ποσό πρέπει να είναι τουλάχιστον {amount}.",
+        "payoutFeeEstimateNote": "Εκτιμώμενη χρέωση παρόχου ~{percent}% — η πραγματική χρέωση επιβεβαιώνεται μετά τη μεταφορά.",
+        "message": "Μήνυμα",
+        "before": "Πριν",
+        "after": "Μετά",
+        "copyFailed": "Δεν ήταν δυνατή η αντιγραφή στο πρόχειρο.",
+        "syncStatusesHint": "Συμφιλιώστε κάθε εκκρεμή πληρωμή με το PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Με την επιφύλαξη παντός δικαιώματος."

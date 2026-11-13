@@ -389,12 +389,12 @@
     import AdminBadge from '~/components/admin/AdminBadge.vue'
     import AdminModal from '~/components/admin/AdminModal.vue'
     import AdminSearchInput from '~/components/admin/AdminSearchInput.vue'
-    import LoadingSpinner from '~/components/LoadingSpinner.vue'
-    import ConfirmModal from '~/components/ConfirmModal.vue'
+    import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+    import ConfirmModal from '~/components/ui/ConfirmModal.vue'
     import OrganizationCreateModal from '~/components/admin/OrganizationCreateModal.vue'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
-    import Pagination from '~/components/Pagination.vue'
-    import Button from '~/components/Button.vue'
+    import Pagination from '~/components/ui/Pagination.vue'
+    import Button from '~/components/ui/Button.vue'
 
     const { notifySuccess, notifyError } = useToastify()
     const { t } = useI18n()
@@ -495,7 +495,7 @@
     const loadPage = async (page = 1) => {
         loading.value = true
         try {
-            const params = { page, per_page: 20 }
+            const params = { page, per_page: 15 }
             if (query.value.trim()) params.q = query.value.trim()
             if (statusFilter.value) params.status = statusFilter.value
 

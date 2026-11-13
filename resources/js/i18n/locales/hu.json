@@ -34,7 +34,8 @@
         "previousPage": "Előző oldal",
         "nextPage": "Következő oldal",
         "clear": "Világos",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Másolás"
     },
     "auth": {
         "loginTitle": "Jelentkezzen be fiókjába",
@@ -667,7 +668,18 @@
         "paymentStatus": "Fizetési állapot",
         "distributionStatus": "Elosztási állapot",
         "distributed": "Elosztott",
-        "partiallyDistributed": "Részben elosztva"
+        "partiallyDistributed": "Részben elosztva",
+        "estimatedFee": "Becsült díj ({percent}%)",
+        "estimatedNetToOrganization": "Becsült nettó a szervezet számára",
+        "feeEstimateHint": "A tényleges díj levonásra kerül ebből az átutalásból, és a PayPal jóváhagyja az átutalás feldolgozása után.",
+        "feePending": "Díj függőben – az átutalás után megerősítve",
+        "payoutMinimumAmount": "Az összegnek legalább {amount}-nek kell lennie.",
+        "payoutFeeEstimateNote": "Becsült szolgáltatói díj ~{percent}% — a tényleges díj az átutalás után kerül megerősítésre.",
+        "message": "Üzenet",
+        "before": "Azelőtt",
+        "after": "Utána",
+        "copyFailed": "Nem sikerült a vágólapra másolni.",
+        "syncStatusesHint": "Minden függőben lévő kifizetést egyeztet a PayPal-lal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Minden jog fenntartva."

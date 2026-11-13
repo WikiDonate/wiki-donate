@@ -44,6 +44,8 @@ export default defineConfig({
         Components({
             dirs: [path.join(root, 'resources/js/components')],
             extensions: ['vue'],
+            // Scan nested folders (ui/, layout/, forms/, article/, …).
+            deep: true,
             dts: false,
         }),
     ],

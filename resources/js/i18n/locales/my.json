@@ -34,7 +34,8 @@
         "previousPage": "ယခင်စာမျက်နှာ",
         "nextPage": "နောက်စာမျက်နှာ",
         "clear": "ရှင်းပါတယ်။",
-        "create": "Create"
+        "create": "Create",
+        "copy": "ကော်ပီ"
     },
     "auth": {
         "loginTitle": "သင့်အကောင့်သို့ ဝင်ရောက်ပါ။",
@@ -667,7 +668,18 @@
         "paymentStatus": "ငွေပေးချေမှုအခြေအနေ",
         "distributionStatus": "ဖြန့်ဖြူးမှုအခြေအနေ",
         "distributed": "ဖြန့်ဝေခဲ့သည်။",
-        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။"
+        "partiallyDistributed": "တစ်စိတ်တစ်ပိုင်း ဖြန့်ဝေသည်။",
+        "estimatedFee": "ခန့်မှန်းအခကြေးငွေ ({percent}%)",
+        "estimatedNetToOrganization": "အဖွဲ့အစည်းအတွက် ခန့်မှန်းခြေ အသားတင်",
+        "feeEstimateHint": "အမှန်တကယ် အခကြေးငွေကို ဤလွှဲပြောင်းမှုမှ နုတ်ယူပြီး ၎င်းကို လုပ်ဆောင်ပြီးနောက် PayPal မှ အတည်ပြုပါသည်။",
+        "feePending": "အခကြေးငွေ စောင့်ဆိုင်းနေပါသည် — လွှဲပြောင်းပြီးနောက် အတည်ပြုသည်။",
+        "payoutMinimumAmount": "ပမာဏသည် အနည်းဆုံး {amount} ဖြစ်ရပါမည်။",
+        "payoutFeeEstimateNote": "ခန့်မှန်းခြေ ပံ့ပိုးသူအခကြေးငွေ ~{percent}% — လွှဲပြောင်းပြီးနောက် အမှန်တကယ်အခကြေးငွေကို အတည်ပြုပါသည်။",
+        "message": "မက်ဆေ့ချ်",
+        "before": "မီ",
+        "after": "ပြီးနောက်",
+        "copyFailed": "ကလစ်ဘုတ်သို့ ကူးယူ၍မရပါ။",
+        "syncStatusesHint": "ဆိုင်းငံ့ပေးချေမှုတိုင်းကို PayPal ဖြင့် ပြန်လည်ညှိနှိုင်းပါ။"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org မူပိုင်ခွင့်ကိုလက်ဝယ်ထားသည်။"

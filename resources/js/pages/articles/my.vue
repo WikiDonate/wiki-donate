@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/html-self-closing -->
 <!-- eslint-disable vue/no-v-html -->
 <template>
-    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
+    <main class="w-full mx-auto max-w-screen-2xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Top bar -->
         <PageTitle title="My Articles" />
 

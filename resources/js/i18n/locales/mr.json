@@ -34,7 +34,8 @@
         "previousPage": "मागील पृष्ठ",
         "nextPage": "पुढील पान",
         "clear": "साफ",
-        "create": "Create"
+        "create": "Create",
+        "copy": "कॉपी करा"
     },
     "auth": {
         "loginTitle": "तुमच्या खात्यात लॉगिन करा",
@@ -667,7 +668,18 @@
         "paymentStatus": "देयक स्थिती",
         "distributionStatus": "वितरण स्थिती",
         "distributed": "वितरित केले",
-        "partiallyDistributed": "अंशतः वितरित"
+        "partiallyDistributed": "अंशतः वितरित",
+        "estimatedFee": "अंदाजे शुल्क ({percent}%)",
+        "estimatedNetToOrganization": "संस्थेला अंदाजे नेट",
+        "feeEstimateHint": "या हस्तांतरणातून वास्तविक शुल्क वजा केले जाते आणि प्रक्रिया केल्यानंतर PayPal द्वारे पुष्टी केली जाते.",
+        "feePending": "शुल्क प्रलंबित — हस्तांतरणानंतर पुष्टी",
+        "payoutMinimumAmount": "रक्कम किमान {amount} असणे आवश्यक आहे.",
+        "payoutFeeEstimateNote": "अंदाजे प्रदाता शुल्क ~{percent}% — वास्तविक शुल्क हस्तांतरणानंतर निश्चित केले जाते.",
+        "message": "संदेश",
+        "before": "आधी",
+        "after": "नंतर",
+        "copyFailed": "क्लिपबोर्डवर कॉपी करू शकलो नाही.",
+        "syncStatusesHint": "प्रत्येक प्रलंबित पेआउट PayPal सह समेट करा"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. सर्व हक्क राखीव."

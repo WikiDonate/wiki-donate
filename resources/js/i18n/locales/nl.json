@@ -34,7 +34,8 @@
         "previousPage": "Vorige pagina",
         "nextPage": "Volgende pagina",
         "clear": "Duidelijk",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopieer"
     },
     "auth": {
         "loginTitle": "Log in op uw account",
@@ -667,7 +668,18 @@
         "paymentStatus": "Betalingsstatus",
         "distributionStatus": "Distributiestatus",
         "distributed": "Gedistribueerd",
-        "partiallyDistributed": "Gedeeltelijk verdeeld"
+        "partiallyDistributed": "Gedeeltelijk verdeeld",
+        "estimatedFee": "Geschatte vergoeding ({percent}%)",
+        "estimatedNetToOrganization": "Geschat netto per organisatie",
+        "feeEstimateHint": "De werkelijke kosten worden van deze overboeking afgetrokken en na verwerking door PayPal bevestigd.",
+        "feePending": "Kosten in behandeling — bevestigd na de overdracht",
+        "payoutMinimumAmount": "Bedrag moet minimaal {amount} zijn.",
+        "payoutFeeEstimateNote": "Geschatte providerkosten ~{percent}% — de werkelijke kosten worden na de overdracht bevestigd.",
+        "message": "Bericht",
+        "before": "Voor",
+        "after": "Na",
+        "copyFailed": "Kan niet naar het klembord kopiëren.",
+        "syncStatusesHint": "Stem elke openstaande uitbetaling af met PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rechten voorbehouden."

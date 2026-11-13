@@ -8,7 +8,7 @@ use App\Models\Organization;
 use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
 use App\Models\User;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Testing\TestResponse;
@@ -129,6 +129,31 @@ class PayPalPayoutWebhookTest extends TestCase
         $this->assertNotNull($payout->fresh()->paid_at);
         $this->assertDatabaseHas('transaction_logs', ['event' => 'payout.synced']);
         $this->assertEquals('paypal', TransactionLog::where('event', 'payout.synced')->latest('id')->first()->meta['payment_method']);
+    }
+
+    public function test_item_fee_is_recorded_from_the_webhook(): void
+    {
+        $this->mockPayPalClient();
+        $payout = $this->pendingPayout();
+
+        $this->postWebhook([
+            'id' => 'WH_'.uniqid(),
+            'event_type' => 'PAYMENT.PAYOUTS-ITEM.SUCCEEDED',
+            'resource' => [
+                'payout_item_id' => $payout->payout_item_id,
+                'sender_item_id' => $payout->uuid,
+                'transaction_status' => 'SUCCESS',
+                // The receiver pays the fee, so PayPal reports it here.
+                'payout_item_fee' => ['currency' => 'USD', 'value' => '1.10'],
+            ],
+        ])->assertOk();
+
+        $fresh = $payout->fresh();
+        $this->assertSame('paid', $fresh->status);
+        $this->assertEquals(1.10, (float) $fresh->fee_amount);
+        $this->assertEquals(48.90, (float) $fresh->net_amount);
+        $this->assertEquals(2.2, (float) $fresh->fee_percent);
+        $this->assertSame('paypal', $fresh->fee_source);
     }
 
     public function test_item_denied_marks_payout_failed_with_reason_and_logs(): void

@@ -56,7 +56,6 @@ htmlcov/
 *.cache
 
 # Workspace / agent files
-AGENTS.md
 HEARTBEAT.md
 IDENTITY.md
 openclaw-workspace-state.json

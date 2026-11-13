@@ -34,7 +34,8 @@
         "previousPage": "پچھلا صفحہ",
         "nextPage": "اگلا صفحہ",
         "clear": "صاف",
-        "create": "Create"
+        "create": "Create",
+        "copy": "کاپی"
     },
     "auth": {
         "loginTitle": "اپنے اکاؤنٹ میں لاگ ان کریں۔",
@@ -667,7 +668,18 @@
         "paymentStatus": "ادائیگی کی حیثیت",
         "distributionStatus": "تقسیم کی حیثیت",
         "distributed": "تقسیم کیا گیا۔",
-        "partiallyDistributed": "جزوی طور پر تقسیم"
+        "partiallyDistributed": "جزوی طور پر تقسیم",
+        "estimatedFee": "تخمینی فیس ({percent}%)",
+        "estimatedNetToOrganization": "تنظیم کے لیے تخمینہ جال",
+        "feeEstimateHint": "اصل فیس اس منتقلی سے کاٹی جاتی ہے اور اس کی پروسیسنگ کے بعد پے پال سے تصدیق کی جاتی ہے۔",
+        "feePending": "فیس زیر التواء — منتقلی کے بعد تصدیق ہو گئی۔",
+        "payoutMinimumAmount": "رقم کم از کم {amount} ہونی چاہیے۔",
+        "payoutFeeEstimateNote": "تخمینی فراہم کنندہ فیس ~{percent}% — اصل فیس کی تصدیق منتقلی کے بعد ہو جاتی ہے۔",
+        "message": "پیغام",
+        "before": "اس سے پہلے",
+        "after": "کے بعد",
+        "copyFailed": "کلپ بورڈ پر کاپی نہیں کیا جا سکا۔",
+        "syncStatusesHint": "پے پال کے ساتھ ہر زیر التواء ادائیگی کو ملاپ کریں۔"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org جملہ حقوق محفوظ ہیں۔"

@@ -95,9 +95,10 @@ class TransactionController extends Controller
             // neither may reduce the payable figure or the net-in-hand.
             $totalPayouts = (float) $this->onBalancePayouts($request)->sum('amount');
 
-            // Enforced transaction-cost totals for the same filter window.
-            // Gross is `amount`; the org received `net_amount`. Legacy rows
-            // were backfilled fee=0/net=gross so the identity always holds.
+            // Provider-reported transaction-cost totals for the same filter
+            // window. Gross is `amount`; the organization received `net_amount`
+            // after PayPal's actual (receiver-paid) fee. Pending rows have no
+            // fee yet (NULL) until the provider confirms.
             $feeTotals = $this->onBalancePayouts($request)
                 ->selectRaw('COALESCE(SUM(fee_amount), 0) as total_fee, COALESCE(SUM(net_amount), 0) as total_net')
                 ->first();
@@ -118,11 +119,13 @@ class TransactionController extends Controller
                 'data' => [
                     'totalIncome' => round($totalIncome, 2),
                     'totalPayouts' => round($totalPayouts, 2),
-                    // Transaction cost withheld from payouts in this window.
+                    // Provider fee charged on payouts in this window.
                     'totalPayoutFees' => round((float) ($feeTotals->total_fee ?? 0), 2),
                     // What organizations actually received (gross - fee).
                     'totalPayoutNet' => round((float) ($feeTotals->total_net ?? 0), 2),
-                    'transactionCostPercent' => (float) config('donations.transaction_cost_percent', 5),
+                    // Display-only estimate; actual fees are provider-reported
+                    // and already summed in totalPayoutFees.
+                    'payoutFeeEstimatePercent' => (float) config('donations.payout_fee_estimate_percent', 2),
                     'remainingPayable' => round(max($totalOwed - $totalPayouts, 0), 2),
                     // Income kept after the actual (net) transfers plus the
                     // withheld fee stays with the platform, so net-in-hand is
@@ -198,7 +201,7 @@ class TransactionController extends Controller
 
     private function perPage(Request $request): int
     {
-        return min(max((int) $request->input('per_page', 20), 1), 100);
+        return min(max((int) $request->input('per_page', 15), 1), 100);
     }
 
     /**

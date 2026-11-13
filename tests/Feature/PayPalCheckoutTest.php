@@ -9,7 +9,7 @@ use App\Models\PaymentPendingOrder;
 use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Models\User;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\RequestException;

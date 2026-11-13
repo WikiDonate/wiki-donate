@@ -34,7 +34,8 @@
         "previousPage": "前のページへ",
         "nextPage": "次のページ",
         "clear": "クリア",
-        "create": "Create"
+        "create": "Create",
+        "copy": "コピー"
     },
     "auth": {
         "loginTitle": "アカウントにログイン",
@@ -667,7 +668,18 @@
         "paymentStatus": "支払い状況",
         "distributionStatus": "配布状況",
         "distributed": "分散型",
-        "partiallyDistributed": "一部配布中"
+        "partiallyDistributed": "一部配布中",
+        "estimatedFee": "推定料金 ({percent}%)",
+        "estimatedNetToOrganization": "組織への正味推定値",
+        "feeEstimateHint": "実際の手数料はこの送金から差し引かれ、処理後に PayPal によって確認されます。",
+        "feePending": "料金は保留中 — 送金後に確認される",
+        "payoutMinimumAmount": "金額は少なくとも {amount} である必要があります。",
+        "payoutFeeEstimateNote": "推定プロバイダ料金 ~{percent}% — 実際の料金は送金後に確認されます。",
+        "message": "メッセージ",
+        "before": "以前",
+        "after": "後",
+        "copyFailed": "クリップボードにコピーできませんでした。",
+        "syncStatusesHint": "PayPal で保留中の支払いをすべて調整します"
     },
     "footer": {
         "copyright": "© {year} ウィキドネーション.org。無断転載を禁じます。"

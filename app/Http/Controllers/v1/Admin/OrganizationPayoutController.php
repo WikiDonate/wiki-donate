@@ -55,7 +55,7 @@ class OrganizationPayoutController extends Controller
             });
         }
 
-        $perPage = (int) ($request->input('per_page') ?? 20);
+        $perPage = (int) ($request->input('per_page') ?? 15);
         $perPage = min(max($perPage, 1), 100);
 
         return response()->json([
@@ -119,8 +119,8 @@ class OrganizationPayoutController extends Controller
             'donation_formula_id' => 'required|integer|exists:donation_formulas,id',
             'organization_name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0.01',
-            // The transaction cost is enforced server-side: a client may not
-            // submit a fee or net figure at all (prohibited => 422).
+            // Fee/net are provider-reported: a client may not submit either
+            // (prohibited => 422). The row starts with the fee pending.
             'net_amount' => 'prohibited',
             'net' => 'prohibited',
             'fee_amount' => 'prohibited',
@@ -214,12 +214,14 @@ class OrganizationPayoutController extends Controller
             'organization_name' => $payout->organization_name,
             'organization_id' => $payout->organization_id,
             'destination_paypal_email' => $payout->destination_paypal_email,
-            // amount = GROSS; fee_amount is the enforced transaction cost and
-            // net_amount is what the organization actually received.
+            // amount = GROSS; fee_amount/net_amount/fee_percent are the actual
+            // provider-reported values (null until the transfer is processed).
             'amount' => (float) $payout->amount,
             'fee_percent' => $payout->fee_percent === null ? null : (float) $payout->fee_percent,
             'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
             'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
+            // pending_provider | paypal | legacy_fixed
+            'fee_source' => $payout->fee_source,
             'currency' => $payout->currency,
             'type' => $payout->type,
             'status' => $payout->status,

@@ -34,7 +34,8 @@
         "previousPage": "ទំព័រមុន។",
         "nextPage": "ទំព័របន្ទាប់",
         "clear": "ច្បាស់",
-        "create": "Create"
+        "create": "Create",
+        "copy": "ចម្លង"
     },
     "auth": {
         "loginTitle": "ចូលទៅគណនីរបស់អ្នក។",
@@ -667,7 +668,18 @@
         "paymentStatus": "ស្ថានភាពការទូទាត់",
         "distributionStatus": "ស្ថានភាពចែកចាយ",
         "distributed": "ចែកចាយ",
-        "partiallyDistributed": "ចែកចាយដោយផ្នែក"
+        "partiallyDistributed": "ចែកចាយដោយផ្នែក",
+        "estimatedFee": "តម្លៃប៉ាន់ស្មាន ({percent}%)",
+        "estimatedNetToOrganization": "ការប៉ាន់ស្មានសុទ្ធសម្រាប់អង្គការ",
+        "feeEstimateHint": "ថ្លៃសេវាពិតប្រាកដត្រូវបានកាត់ចេញពីការផ្ទេរនេះ ហើយបញ្ជាក់ដោយ PayPal បន្ទាប់ពីវាដំណើរការ។",
+        "feePending": "កំពុងរង់ចាំថ្លៃសេវា - បញ្ជាក់បន្ទាប់ពីការផ្ទេរ",
+        "payoutMinimumAmount": "ចំនួនទឹកប្រាក់ត្រូវតែមានយ៉ាងហោចណាស់ {amount} ។",
+        "payoutFeeEstimateNote": "ថ្លៃសេវាប៉ាន់ស្មានរបស់អ្នកផ្តល់សេវា ~{percent}% — ថ្លៃសេវាពិតប្រាកដត្រូវបានបញ្ជាក់បន្ទាប់ពីការផ្ទេរ។",
+        "message": "សារ",
+        "before": "ពីមុន",
+        "after": "បន្ទាប់ពី",
+        "copyFailed": "មិនអាចចម្លងទៅក្ដារតម្បៀតខ្ទាស់បានទេ។",
+        "syncStatusesHint": "ផ្សះផ្សារាល់ការទូទាត់ដែលមិនទាន់សម្រេចជាមួយ PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"

@@ -34,7 +34,8 @@
         "previousPage": "Önceki sayfa",
         "nextPage": "Sonraki sayfa",
         "clear": "Temizle",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopyala"
     },
     "auth": {
         "loginTitle": "Hesabınıza Giriş Yapın",
@@ -667,7 +668,18 @@
         "paymentStatus": "Ödeme durumu",
         "distributionStatus": "Dağıtım durumu",
         "distributed": "Dağıtılmış",
-        "partiallyDistributed": "Kısmen dağıtılmış"
+        "partiallyDistributed": "Kısmen dağıtılmış",
+        "estimatedFee": "Tahmini ücret (%{percent})",
+        "estimatedNetToOrganization": "Organizasyona göre tahmini net",
+        "feeEstimateHint": "Gerçek ücret bu transferden düşülür ve işlem tamamlandıktan sonra PayPal tarafından onaylanır.",
+        "feePending": "Ücret beklemede — aktarımdan sonra onaylandı",
+        "payoutMinimumAmount": "Tutar en az {amount} olmalıdır.",
+        "payoutFeeEstimateNote": "Tahmini sağlayıcı ücreti ~%{percent} — gerçek ücret transferden sonra onaylanır.",
+        "message": "Mesaj",
+        "before": "önce",
+        "after": "Sonra",
+        "copyFailed": "Panoya kopyalanamadı.",
+        "syncStatusesHint": "Bekleyen her ödemeyi PayPal ile uzlaştırın"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Her hakkı saklıdır."

@@ -34,7 +34,8 @@
         "previousPage": "העמוד הקודם",
         "nextPage": "העמוד הבא",
         "clear": "ברור",
-        "create": "Create"
+        "create": "Create",
+        "copy": "העתק"
     },
     "auth": {
         "loginTitle": "היכנס לחשבון שלך",
@@ -667,7 +668,18 @@
         "paymentStatus": "מצב תשלום",
         "distributionStatus": "מצב הפצה",
         "distributed": "מופץ",
-        "partiallyDistributed": "מופץ חלקית"
+        "partiallyDistributed": "מופץ חלקית",
+        "estimatedFee": "עמלה משוערת ({percent}%)",
+        "estimatedNetToOrganization": "משוער נטו לארגון",
+        "feeEstimateHint": "העמלה בפועל מנוכה מהעברה זו ומאושרת על ידי PayPal לאחר עיבודה.",
+        "feePending": "עמלה בהמתנה - מאושרת לאחר ההעברה",
+        "payoutMinimumAmount": "הסכום חייב להיות לפחות {amount}.",
+        "payoutFeeEstimateNote": "עמלת ספק משוערת ~{percent}% - העמלה בפועל מאושרת לאחר ההעברה.",
+        "message": "הוֹדָעָה",
+        "before": "לפני",
+        "after": "אחרי",
+        "copyFailed": "לא ניתן היה להעתיק ללוח.",
+        "syncStatusesHint": "התאם כל תשלום ממתין עם PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. כֹּל הַזְכוּיוֹת שְׁמוּרוֹת."

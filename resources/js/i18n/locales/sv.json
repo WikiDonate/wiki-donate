@@ -34,7 +34,8 @@
         "previousPage": "Föregående sida",
         "nextPage": "Nästa sida",
         "clear": "Rensa",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopiera"
     },
     "auth": {
         "loginTitle": "Logga in på ditt konto",
@@ -667,7 +668,18 @@
         "paymentStatus": "Betalningsstatus",
         "distributionStatus": "Distributionsstatus",
         "distributed": "Utdelat",
-        "partiallyDistributed": "Delvis distribuerad"
+        "partiallyDistributed": "Delvis distribuerad",
+        "estimatedFee": "Beräknad avgift ({percent}%)",
+        "estimatedNetToOrganization": "Beräknat netto till organisationen",
+        "feeEstimateHint": "Den faktiska avgiften dras från denna överföring och bekräftas av PayPal efter att den har behandlats.",
+        "feePending": "Avgift väntar – bekräftas efter överföringen",
+        "payoutMinimumAmount": "Beloppet måste vara minst {amount}.",
+        "payoutFeeEstimateNote": "Beräknad leverantörsavgift ~{percent}% — den faktiska avgiften bekräftas efter överföringen.",
+        "message": "Meddelande",
+        "before": "Förut",
+        "after": "Efter",
+        "copyFailed": "Kunde inte kopiera till urklipp.",
+        "syncStatusesHint": "Stäm av alla väntande utbetalningar med PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alla rättigheter reserverade."

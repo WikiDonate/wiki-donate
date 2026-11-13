@@ -11,7 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentProviderRegistry;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
@@ -21,17 +21,18 @@ use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
- * Computes live organization balances from the current donation formula JSON
- * and the append-only payout ledger (Option A: no donation-time snapshots).
+ * Computes organization balances from each donation's frozen formula snapshot
+ * (falling back to the live formula for legacy rows) and the append-only
+ * payout ledger.
  */
 class OrganizationPayoutService
 {
     /**
-     * PayPal Payouts rejects transfers below 1.00 USD-equivalent in most
-     * corridors; keeping our own floor at the same value means we never
-     * submit a batch item the provider would bounce.
+     * Provider minimum for a single payout transfer. The amount is sent GROSS
+     * and the provider fee is borne by the receiver (`fees_payer=RECEIVER`),
+     * so the floor applies to the gross amount — not an estimated net.
      */
-    public const MIN_NET_SEND_AMOUNT = 1.00;
+    public const MIN_PAYOUT_AMOUNT = 1.00;
 
     /**
      * How long a payout row may sit `pending` without a provider batch id
@@ -55,38 +56,48 @@ class OrganizationPayoutService
     public const REVERSAL_RECHECK_DAYS = 45;
 
     /**
-     * Forced transaction-cost rate (percent) from config/donations.php.
+     * Display-only fee estimate for the admin Pay modal.
      *
-     * The admin always types the GROSS amount; this rate is deducted
-     * server-side. Never trust a client-supplied fee/net value.
+     * The real fee depends on the receiver's country/currency and is reported
+     * by the provider only after processing, so this percentage must never be
+     * recorded as the actual fee or used to compute the transfer amount.
      */
-    public function transactionCostPercent(): float
+    public function feeEstimatePercent(): float
     {
-        return (float) config('donations.transaction_cost_percent', 5);
+        return (float) config('donations.payout_fee_estimate_percent', 2);
     }
 
     /**
-     * Split a gross amount into its enforced fee / net parts.
+     * Record the provider-reported fee for a payout row.
      *
-     * Rounding is round-half-up to cents on the FEE, and net is derived as
-     * gross − fee so the pair always sums back to the gross amount exactly
-     * (no lost cent at boundaries such as 0.10 → 0.01 fee / 0.09 net).
+     * PayPal returns the actual fee per item (`payout_item_fee`) once the item
+     * is processed, or a batch total in `batch_header.fees`. `amount` is the
+     * gross the platform sent; the receiver bears the fee, so `net_amount` is
+     * what the organization actually receives.
      *
-     * @return array{percent: float, fee: float, net: float}
+     * @param  array{currency?: string, value?: float|string}|null  $fee
      */
-    public function splitTransactionCost(float $gross): array
+    public function applyProviderFee(OrganizationPayout $payout, ?array $fee): bool
     {
-        $percent = $this->transactionCostPercent();
-        $gross = round($gross, 2);
-        $fee = round($gross * ($percent / 100), 2, PHP_ROUND_HALF_UP);
-        // Guard against float drift making fee > gross on tiny sends.
-        $fee = min($fee, $gross);
+        $value = $fee['value'] ?? null;
 
-        return [
-            'percent' => round($percent, 2),
-            'fee' => $fee,
-            'net' => round($gross - $fee, 2),
-        ];
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        $amount = round((float) $payout->amount, 2);
+        $feeAmount = round((float) $value, 2);
+        // A fee can never exceed the transfer itself (float/rounding guard).
+        $feeAmount = max(0.0, min($feeAmount, $amount));
+
+        $payout->forceFill([
+            'fee_amount' => $feeAmount,
+            'net_amount' => round($amount - $feeAmount, 2),
+            'fee_percent' => $amount > 0 ? round($feeAmount / $amount * 100, 2) : null,
+            'fee_source' => 'paypal',
+        ])->save();
+
+        return true;
     }
 
     /**
@@ -104,17 +115,10 @@ class OrganizationPayoutService
 
         $formulaIds = $formulas->pluck('id');
 
-        // The platform is USD-only (config/donations.php), so donations are
-        // summed into a single total per formula. Legacy rows in another
-        // currency are EXCLUDED: counting EUR/GBP amounts as USD would inflate
-        // the balance and overpay. `donations:legacy-currency` reports them.
-        $donationSums = DB::table('donations')
-            ->whereIn('donation_formula_id', $formulaIds)
-            ->where('status', 'completed')
-            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
-            ->groupBy('donation_formula_id')
-            ->selectRaw('donation_formula_id, SUM(amount) as total')
-            ->pluck('total', 'donation_formula_id');
+        // Owed comes from each donation's frozen snapshot, so a later
+        // percentage edit cannot re-divide money already collected or paid.
+        // Legacy rows without a snapshot fall back to the live formula.
+        $basis = $this->allocationBasis($formulaIds);
 
         // Batch aggregate payouts per (formula_id, organization_key).
         // Paid + pending reserve the balance; failed rows never moved money
@@ -126,26 +130,27 @@ class OrganizationPayoutService
         // Batch-load registry rows so each allocation knows its verification
         // state (Pay button disabled for unverified). Rows saved before
         // organization_id existed resolve via normalized name.
-        $orgIds = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
-            ->pluck('organization_id')->filter())->unique()->values();
+        // Snapshot-only allocations (an org removed from the live formula
+        // after it was donated to) still need their registry row.
+        $allItems = collect($basis)->flatMap(fn ($data) => array_values($data['items']));
+        $orgIds = $allItems->pluck('organization_id')->filter()->unique()->values();
         $orgsById = $orgIds->isEmpty()
             ? collect()
             : Organization::whereIn('id', $orgIds)->get()->keyBy('id');
-        $orgKeys = $formulas->flatMap(fn ($f) => collect($this->normalizeItems($f->formula))
-            ->map(fn ($i) => $i['key']))->unique()->values();
+        $orgKeys = $allItems->pluck('key')->unique()->values();
         $orgsByKey = $orgKeys->isEmpty()
             ? collect()
             : Organization::whereIn('normalized_name', $orgKeys)->get()->keyBy('normalized_name');
 
         foreach ($formulas as $formula) {
-            $totalDonated = round((float) ($donationSums->get($formula->id) ?? 0), 2);
+            $data = $basis[$formula->id] ?? ['items' => [], 'owed' => []];
             $formulaPayouts = collect($payoutSums->get($formula->id, collect()));
 
-            foreach ($this->normalizeItems($formula->formula) as $item) {
+            foreach ($data['items'] as $item) {
                 $org = ($item['organization_id'] ? $orgsById->get($item['organization_id']) : null)
                     ?? $orgsByKey->get($item['key']);
 
-                $owed = round($totalDonated * ($item['percentage'] / 100), 2);
+                $owed = $data['owed'][$item['key']] ?? 0.0;
                 $paid = $this->paidForPayoutSet($formulaPayouts, $item['key'], $org?->id);
 
                 if ($owed <= 0 && $paid <= 0) {
@@ -192,7 +197,9 @@ class OrganizationPayoutService
             'balance' => round($owed - $paid, 2),
             // Forced rate the Pay modal must mirror as read-only
             // "transaction cost" / "net to organization" rows.
-            'transaction_cost_percent' => $this->transactionCostPercent(),
+            // Forced rate shown in the Pay modal as an ESTIMATE only; the
+            // recorded fee comes from the provider after processing.
+            'fee_estimate_percent' => $this->feeEstimatePercent(),
         ];
     }
 
@@ -251,13 +258,14 @@ class OrganizationPayoutService
     }
 
     /**
-     * Total live owed across every allocatable (formula + organization) pair.
+     * Total owed across every allocatable (formula + organization) pair.
      *
-     * This is the single source of truth for the "remaining payable" figure on
-     * the admin transaction summary, so it can never drift from the balance the
-     * payouts feature actually pays out of. Both use the SAME rules:
+     * Single source of truth for the "remaining payable" figure on the admin
+     * transaction summary, so it can never drift from the balance the payouts
+     * feature actually pays out of. Owed is derived per donation snapshot
+     * (live formula only for legacy rows without one):
      *  - only completed, supported-currency (USD) donations count;
-     *  - owed = Σ(donated × percentage/100), rounded once per allocation.
+     *  - owed = Σ(donated × snapshot percentage/100), rounded per allocation.
      *
      * @param  callable(Builder): void|null  $donationFilter
      *                                                        Optional extra constraint on the donations query (e.g. a date
@@ -271,33 +279,11 @@ class OrganizationPayoutService
             return 0.0;
         }
 
-        $donations = DB::table('donations')
-            ->whereIn('donation_formula_id', $formulaIds)
-            ->where('status', 'completed')
-            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()]);
-
-        if ($donationFilter !== null) {
-            $donationFilter($donations);
-        }
-
-        $donationSums = $donations
-            ->groupBy('donation_formula_id')
-            ->selectRaw('donation_formula_id, SUM(amount) as total')
-            ->pluck('total', 'donation_formula_id');
-
         $total = 0.0;
 
-        DonationFormula::query()
-            ->whereIn('id', $formulaIds)
-            ->select(['id', 'formula'])
-            ->get()
-            ->each(function (DonationFormula $formula) use ($donationSums, &$total) {
-                $donated = (float) ($donationSums->get($formula->id) ?? 0);
-
-                foreach ($this->normalizeItems($formula->formula) as $item) {
-                    $total += round($donated * ($item['percentage'] / 100), 2);
-                }
-            });
+        foreach ($this->allocationBasis($formulaIds, $donationFilter) as $data) {
+            $total += array_sum($data['owed']);
+        }
 
         return round($total, 2);
     }
@@ -305,8 +291,8 @@ class OrganizationPayoutService
     /**
      * Payout coverage per formula for read-only donor-facing status labels.
      *
-     * Uses the SAME rules as the balance math: owed from completed USD
-     * donations against the live formula percentages, paid from on-balance
+     * Uses the SAME rules as the balance math: owed from each donation's
+     * frozen snapshot (live formula for legacy rows), paid from on-balance
      * payouts (paid + pending, reversed excluded). Returns one label per
      * formula id:
      *  - `distributed` — payouts cover every owed allocation;
@@ -324,13 +310,7 @@ class OrganizationPayoutService
             return [];
         }
 
-        $donationSums = DB::table('donations')
-            ->whereIn('donation_formula_id', $formulaIds)
-            ->where('status', 'completed')
-            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
-            ->groupBy('donation_formula_id')
-            ->selectRaw('donation_formula_id, SUM(amount) as total')
-            ->pluck('total', 'donation_formula_id');
+        $basis = $this->allocationBasis($formulaIds);
 
         $paidSums = OrganizationPayout::query()
             ->whereIn('donation_formula_id', $formulaIds)
@@ -342,28 +322,17 @@ class OrganizationPayoutService
 
         $statuses = [];
 
-        DonationFormula::query()
-            ->whereIn('id', $formulaIds)
-            ->select(['id', 'formula'])
-            ->get()
-            ->each(function (DonationFormula $formula) use ($donationSums, $paidSums, &$statuses) {
-                $donated = (float) ($donationSums->get($formula->id) ?? 0);
-                $owed = 0.0;
+        foreach ($basis as $formulaId => $data) {
+            $owed = round(array_sum($data['owed']), 2);
+            $paid = round((float) ($paidSums->get($formulaId) ?? 0), 2);
 
-                foreach ($this->normalizeItems($formula->formula) as $item) {
-                    $owed += round($donated * ($item['percentage'] / 100), 2);
-                }
-
-                $owed = round($owed, 2);
-                $paid = round((float) ($paidSums->get($formula->id) ?? 0), 2);
-
-                $statuses[$formula->id] = match (true) {
-                    $owed <= 0 => $paid > 0 ? 'distributed' : 'pending',
-                    $paid + 0.009 >= $owed => 'distributed',
-                    $paid > 0 => 'partial',
-                    default => 'pending',
-                };
-            });
+            $statuses[$formulaId] = match (true) {
+                $owed <= 0 => $paid > 0 ? 'distributed' : 'pending',
+                $paid + 0.009 >= $owed => 'distributed',
+                $paid > 0 => 'partial',
+                default => 'pending',
+            };
+        }
 
         return $statuses;
     }
@@ -456,15 +425,14 @@ class OrganizationPayoutService
                 ));
             }
 
-            // Forced transaction-cost deduction: gross in, net out.
-            $split = $this->splitTransactionCost($amount);
-            if ($split['net'] < self::MIN_NET_SEND_AMOUNT) {
+            // The provider fee is unknown here: it depends on the receiver's
+            // country/currency and is reported by PayPal after processing
+            // (the batch sets fees_payer=RECEIVER). Record the gross now and
+            // reconcile the actual fee on confirmation.
+            if ($amount < self::MIN_PAYOUT_AMOUNT) {
                 throw new UserFacingException(sprintf(
-                    'Net amount of %.2f is below the minimum transfer of %.2f (after the %.2f%% transaction cost on a gross of %.2f).',
-                    $split['net'],
-                    self::MIN_NET_SEND_AMOUNT,
-                    $split['percent'],
-                    $amount
+                    'Payout amount must be at least %.2f.',
+                    self::MIN_PAYOUT_AMOUNT
                 ));
             }
 
@@ -479,9 +447,6 @@ class OrganizationPayoutService
                 'organization_name' => $orgName,
                 'organization_key' => $key,
                 'amount' => $amount,
-                'fee_percent' => $split['percent'],
-                'fee_amount' => $split['fee'],
-                'net_amount' => $split['net'],
                 'currency' => $data['currency'],
                 'type' => $type,
                 'status' => 'pending',
@@ -491,6 +456,7 @@ class OrganizationPayoutService
                 'payment_method' => $paymentMethod,
                 'destination_paypal_email' => $destination->paypal_email,
                 'note' => $data['note'] ?? null,
+                'fee_source' => 'pending_provider',
             ]);
 
             return [$payout, $amount, $type, $key, $formula];
@@ -504,9 +470,9 @@ class OrganizationPayoutService
         // of rolling back and losing the audit trail. The log records the
         // provider-response status in every outcome — including rejections.
         try {
-            // The organization receives the NET amount: the enforced fee can
-            // never be submitted as part of the provider transfer.
-            $this->submitToProvider($payout, (float) $payout->net_amount, $type);
+            // The gross amount is sent; the receiver bears the provider fee
+            // (fees_payer=RECEIVER) and the actual fee is stored on return.
+            $this->submitToProvider($payout, $amount, $type);
         } finally {
             $this->recordLog($payout->refresh(), $amount, $type, $actorId);
         }
@@ -548,6 +514,10 @@ class OrganizationPayoutService
 
             $item = (array) ($batch['items'][0] ?? []);
             $header = (array) ($batch['batch_header'] ?? []);
+
+            // The provider's actual fee (receiver-paid) may be reported with
+            // the create response; sync/webhook fill it in if it is not.
+            $this->applyProviderFee($payout, $item['payout_item_fee'] ?? ($header['fees'] ?? null));
 
             // PayPal accepts the batch; the item now has a transaction status
             // (SUCCESS / PENDING / FAILED).
@@ -757,9 +727,10 @@ class OrganizationPayoutService
                 // Re-submitting with the row's uuid (= sender_batch_id) is
                 // idempotent at PayPal: if it never processed, this creates the
                 // batch; if it did, PayPal points back at the original batch.
+                // The GROSS amount is sent — the receiver bears the fee.
                 $this->submitToProvider(
                     $payout,
-                    (float) ($payout->net_amount ?? $payout->amount),
+                    (float) $payout->amount,
                     $payout->type ?: 'partial',
                 );
             } catch (Throwable $e) {
@@ -783,20 +754,35 @@ class OrganizationPayoutService
             ->whereNotNull('payout_batch_id')
             ->get();
 
-        foreach ($pending as $payout) {
-            if (! $this->canSyncStatus($payout)) {
-                continue;
-            }
+        // One pooled round trip for every batch instead of a serial call per
+        // row (a PayPal poll is ~7s; ten pending rows used to take a minute).
+        $syncablePending = $pending->filter(fn (OrganizationPayout $p) => $this->canSyncStatus($p));
+        $batchResults = $syncablePending->isEmpty()
+            ? []
+            : app(PayPalClient::class)->showBatchPayouts($syncablePending->pluck('payout_batch_id')->all());
 
+        foreach ($syncablePending as $payout) {
             try {
-                $statuses = PayPalClient::extractBatchItemStatuses(
-                    app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id)
-                );
+                $batch = $batchResults[$payout->payout_batch_id] ?? null;
+
+                if ($batch === null || $batch['payload'] === null) {
+                    Log::warning('PayPal payout sync failed for row '.$payout->id, [
+                        'error' => $batch['error'] ?? 'No batch response',
+                    ]);
+                    $failed++;
+
+                    continue;
+                }
+
+                $statuses = PayPalClient::extractBatchItemStatuses($batch['payload']);
                 $info = $statuses[$payout->uuid] ?? null;
 
                 if (! $info) {
                     continue;
                 }
+
+                // Fee is provider-reported and may arrive with any status.
+                $this->applyProviderFee($payout, $info['fee'] ?? null);
 
                 $effective = strtoupper($info['status']);
 
@@ -896,16 +882,28 @@ class OrganizationPayoutService
 
             $paidChecked = $recentPaid->count();
 
-            foreach ($recentPaid as $payout) {
-                if (! $this->canSyncStatus($payout)) {
-                    continue;
-                }
+            $syncablePaid = $recentPaid->filter(fn (OrganizationPayout $p) => $this->canSyncStatus($p));
+            $paidBatchResults = $syncablePaid->isEmpty()
+                ? []
+                : app(PayPalClient::class)->showBatchPayouts($syncablePaid->pluck('payout_batch_id')->all());
 
+            foreach ($syncablePaid as $payout) {
                 try {
-                    $statuses = PayPalClient::extractBatchItemStatuses(
-                        app(PayPalClient::class)->showBatchPayout($payout->payout_batch_id)
-                    );
+                    $batch = $paidBatchResults[$payout->payout_batch_id] ?? null;
+
+                    if ($batch === null || $batch['payload'] === null) {
+                        Log::warning('Paid payout recheck failed for row '.$payout->id, [
+                            'error' => $batch['error'] ?? 'No batch response',
+                        ]);
+                        $failed++;
+
+                        continue;
+                    }
+
+                    $statuses = PayPalClient::extractBatchItemStatuses($batch['payload']);
                     $info = $statuses[$payout->uuid] ?? null;
+
+                    $this->applyProviderFee($payout, $info['fee'] ?? null);
 
                     if ($info && PayPalPayoutEvent::isReversal(strtoupper($info['status']))) {
                         if ($this->markPayoutReversed(
@@ -1050,25 +1048,30 @@ class OrganizationPayoutService
             'actor_id' => $actorId,
             'actor_role' => 'Admin',
             'message' => sprintf(
-                '%s payout of %.2f %s gross (fee %.2f @ %s%%, net %.2f) to %s (%s) via %s',
+                '%s payout of %.2f %s gross to %s (%s) via %s%s',
                 $type,
                 $amount,
                 strtoupper($payout->currency),
-                (float) $payout->fee_amount,
-                rtrim(rtrim(number_format((float) $payout->fee_percent, 2, '.', ''), '0'), '.'),
-                (float) $payout->net_amount,
                 $payout->organization_name,
                 $payout->destination_paypal_email,
-                $payout->payment_method ?: 'paypal'
+                $payout->payment_method ?: 'paypal',
+                $payout->fee_amount === null
+                    ? ' — provider fee pending'
+                    : sprintf(
+                        ' (provider fee %.2f, net %.2f)',
+                        (float) $payout->fee_amount,
+                        (float) $payout->net_amount
+                    )
             ),
             'after' => [
                 'organization_id' => $payout->organization_id,
                 'organization_name' => $payout->organization_name,
                 // amount = gross (consumes the owed balance)
                 'amount' => $amount,
-                'fee_percent' => (float) $payout->fee_percent,
-                'fee_amount' => (float) $payout->fee_amount,
-                'net_amount' => (float) $payout->net_amount,
+                'fee_percent' => $payout->fee_percent === null ? null : (float) $payout->fee_percent,
+                'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+                'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
+                'fee_source' => $payout->fee_source,
                 'currency' => strtoupper($payout->currency),
                 'type' => $type,
                 'status' => $payout->status,
@@ -1080,11 +1083,11 @@ class OrganizationPayoutService
             ],
             'meta' => [
                 'payment_method' => $payout->payment_method ?: 'paypal',
-                // Rate in force at execution time (frozen on the row too).
-                'transaction_cost_percent' => (float) $payout->fee_percent,
+                // Fee is provider-reported; pending rows carry no amount yet.
+                'fee_source' => $payout->fee_source,
                 'gross_amount' => (float) $amount,
-                'fee_amount' => (float) $payout->fee_amount,
-                'net_amount' => (float) $payout->net_amount,
+                'fee_amount' => $payout->fee_amount === null ? null : (float) $payout->fee_amount,
+                'net_amount' => $payout->net_amount === null ? null : (float) $payout->net_amount,
             ],
         ]);
     }
@@ -1147,8 +1150,8 @@ class OrganizationPayoutService
         string $key,
         ?int $organizationId = null,
     ): object {
-        $items = $this->normalizeItems($formula->formula);
-        $item = collect($items)->first(fn ($i) => $i['key'] === $key);
+        $basis = $this->allocationBasis([$formula->id]);
+        $item = $basis[$formula->id]['items'][$key] ?? null;
 
         // Reserved payouts: exclude failed rows and anything reversed. When we
         // know the registry row we also match by organization_id so a rename
@@ -1181,13 +1184,7 @@ class OrganizationPayoutService
             ];
         }
 
-        $total = (float) Donation::query()
-            ->where('donation_formula_id', $formula->id)
-            ->where('status', 'completed')
-            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()])
-            ->sum('amount');
-
-        $owed = round($total * ($item['percentage'] / 100), 2);
+        $owed = $basis[$formula->id]['owed'][$key] ?? 0.0;
 
         return (object) [
             'owed' => $owed,
@@ -1195,6 +1192,95 @@ class OrganizationPayoutService
             'balance' => round($owed - $paid, 2),
             'currency' => SupportedCurrency::code(),
         ];
+    }
+
+    /**
+     * Owed per (formula, organization key) plus the allocatable items.
+     *
+     * Owed is accumulated from each donation's frozen `formula_snapshot`, so
+     * editing a formula's percentages later cannot re-divide money that was
+     * already collected or paid out (which used to produce negative balances
+     * and overpayments). Legacy donations without a snapshot fall back to the
+     * live formula.
+     *
+     * Snapshot-only items (an organization removed from the live formula after
+     * being donated to) are kept so their share stays payable.
+     *
+     * @param  Collection<int, int|string>|array<int, int|string>  $formulaIds
+     * @param  callable(Builder): void|null  $donationFilter
+     * @return array<int, array{items: array<string, array>, owed: array<string, float>}>
+     */
+    private function allocationBasis($formulaIds, ?callable $donationFilter = null): array
+    {
+        $ids = collect($formulaIds)->map(fn ($id) => (int) $id)->unique()->values();
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        $basis = [];
+
+        DonationFormula::query()
+            ->whereIn('id', $ids)
+            ->select(['id', 'formula'])
+            ->get()
+            ->each(function (DonationFormula $formula) use (&$basis) {
+                $items = [];
+
+                foreach ($this->normalizeItems($formula->formula) as $item) {
+                    $items[$item['key']] = $item;
+                }
+
+                $basis[$formula->id] = ['items' => $items, 'owed' => []];
+            });
+
+        // Only completed, supported-currency donations count; other currencies
+        // are excluded so legacy rows are never paid out as USD.
+        $donations = DB::table('donations')
+            ->whereIn('donation_formula_id', $ids)
+            ->where('status', 'completed')
+            ->whereRaw('UPPER(currency) = ?', [SupportedCurrency::code()]);
+
+        if ($donationFilter !== null) {
+            $donationFilter($donations);
+        }
+
+        foreach ($donations->get(['donation_formula_id', 'amount', 'metadata']) as $row) {
+            $formulaId = (int) $row->donation_formula_id;
+
+            if (! isset($basis[$formulaId])) {
+                continue;
+            }
+
+            $metadata = is_string($row->metadata)
+                ? json_decode($row->metadata, true)
+                : $row->metadata;
+            $snapshot = is_array($metadata) ? ($metadata['formula_snapshot'] ?? null) : null;
+            $fromSnapshot = is_array($snapshot) && $snapshot !== [];
+            $items = $fromSnapshot
+                ? $this->normalizeItems($snapshot)
+                : array_values($basis[$formulaId]['items']);
+            $amount = (float) $row->amount;
+
+            foreach ($items as $item) {
+                $key = $item['key'];
+
+                if (! isset($basis[$formulaId]['items'][$key])) {
+                    $basis[$formulaId]['items'][$key] = $item;
+                }
+
+                $basis[$formulaId]['owed'][$key] = ($basis[$formulaId]['owed'][$key] ?? 0.0)
+                    + $amount * ($item['percentage'] / 100);
+            }
+        }
+
+        foreach ($basis as $formulaId => $data) {
+            foreach ($data['owed'] as $key => $owed) {
+                $basis[$formulaId]['owed'][$key] = round($owed, 2);
+            }
+        }
+
+        return $basis;
     }
 
     private function normalizeItems(?array $formula): array

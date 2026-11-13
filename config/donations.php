@@ -3,19 +3,29 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Transaction cost (payment-rail fee) percentage
+    | Operational cost shown to donors (percent)
     |--------------------------------------------------------------------------
     |
-    | Single source of truth for the 5% operational/transaction cost shown to
-    | donors and deducted from organization payouts. Payouts are enforced
-    | server-side: the admin types a GROSS amount, the app deducts this
-    | percentage and transfers the net to the organization.
-    |
-    | Change the rate here only — never hard-code it in a controller, service
-    | or the SPA.
+    | Display-only platform/operational cost shown in the donate modal. It is
+    | NOT the provider payout fee — that one is reported by PayPal per payout
+    | (see payout_fee_estimate_percent below).
     |
     */
-    'transaction_cost_percent' => env('DONATION_TRANSACTION_COST_PERCENT', 5),
+    'operational_cost_percent' => env('DONATION_OPERATIONAL_COST_PERCENT', 5),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payout fee estimate (display only)
+    |--------------------------------------------------------------------------
+    |
+    | The provider fee for a payout is NOT a fixed percentage — it depends on
+    | the receiver's country/currency and is reported by PayPal after the
+    | transfer (`payout_item_fee`, with fees_payer=RECEIVER). The value below
+    | is only used to show an "estimated fee" in the admin Pay modal before
+    | sending; the recorded fee/net always come from the provider.
+    |
+    */
+    'payout_fee_estimate_percent' => env('PAYOUT_FEE_ESTIMATE_PERCENT', 2),
 
     /*
     |--------------------------------------------------------------------------

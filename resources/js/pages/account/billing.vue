@@ -1,5 +1,7 @@
 <template>
-    <main class="w-full mx-auto max-w-7xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
+    <main
+        class="w-full mx-auto max-w-screen-2xl mt-6 bg-white rounded-2xl shadow-md overflow-hidden"
+    >
         <!-- Gradient Header -->
         <div class="bg-linear-to-r from-indigo-600 to-purple-600 py-6 px-6 text-center">
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wide">
@@ -142,9 +144,9 @@
 <script setup>
     import { computed, nextTick, onMounted, ref, watch } from 'vue'
     import { useI18n } from 'vue-i18n'
-    import AlertMessage from '~/components/AlertMessage.vue'
-    import FormSubmitButton from '~/components/FormSubmitButton.vue'
-    import LoadingSpinner from '~/components/LoadingSpinner.vue'
+    import AlertMessage from '~/components/ui/AlertMessage.vue'
+    import FormSubmitButton from '~/components/forms/FormSubmitButton.vue'
+    import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
     import { paymentMethodService } from '~/services/paymentMethodService'
     import { useClientStripe } from '@/plugins/useClientStripe'
 

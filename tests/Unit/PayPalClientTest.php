@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Exceptions\PaymentProviderException;
 use App\Services\Payment\PaymentCredentials;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
