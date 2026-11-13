@@ -13,6 +13,54 @@ The entire application lives in a single Laravel project at the repository root:
 - `routes/`: API and web routes
 - `public/`: the web root (served directly; contains the built Vite assets in `public/build`)
 
+### Backend
+
+```
+app/
+├── Http/
+│   ├── Controllers/v1/        API controllers (Admin/ = admin-only)
+│   ├── Middleware/            FreshAuthGuard, OptionalAuth, …
+│   └── Resources/
+├── Models/                    Eloquent models
+├── Services/
+│   ├── Charity/               external charity lookup
+│   ├── Organization/          registry + verification
+│   ├── Payment/               credentials, providers, PayPalClient
+│   └── Payout/                balances, ledger, reconciliation
+├── Console/Commands/          artisan commands
+├── Rules/  Observers/  Exceptions/  Providers/
+routes/                        api.php + api/{admin,editor}.php, web.php
+database/                      migrations, seeders
+tests/Feature/, tests/Unit/    feature (endpoint) + unit tests
+```
+
+### Frontend
+
+```
+resources/js/
+├── pages/
+│   ├── public/      index, main, how-it-works, contact
+│   ├── auth/        login, create-account, forgot-password, verify-email
+│   ├── account/     profile, preferences, billing, donations (/my-donates)
+│   ├── articles/    index, my, new
+│   ├── payment/     success, cancel
+│   └── admin/       dashboard, articles, donations, organizations,
+│                    payouts, transactions, transaction-logs, how-it-works
+├── components/
+│   ├── ui/          generic controls (Button, Modal, Pagination, …)
+│   ├── layout/      Header, Footer, navigation widgets
+│   ├── forms/       FormInput, FormSubmitButton, FormTextarea
+│   ├── article/     ArticleSelect, DonationFormulaModal
+│   ├── organization/ OrganizationSelect, OrganizationStatusBadge
+│   ├── donation/    DonationPaymentModal
+│   └── admin/       AdminTable, AdminBadge, StatCard, admin modals
+├── composables/  services/  stores/  utils/  config/  i18n/  router/  layouts/
+```
+
+Components are auto-registered from every subfolder (`Components({ deep: true })`),
+so the folder does not change the tag name (`<AdminBadge>`, `<Pagination>`, …).
+Route URLs are unchanged; only `router/index.js` imports the grouped pages.
+
 ## Tech Stack
 
 ### Backend
@@ -135,7 +183,8 @@ consumed in the SPA via `import.meta.env` and must be prefixed with `VITE_`:
 | Variable | Description |
 | --- | --- |
 | `APP_URL` / `APP_FRONTEND_URL` | Must match the serving origin, or emailed links go to the wrong host |
-| `DONATION_TRANSACTION_COST_PERCENT` | Payout/transaction-cost rate (default `5`) |
+| `DONATION_OPERATIONAL_COST_PERCENT` | Donor-facing platform cost shown in the donate modal (default `5`, display only) |
+| `PAYOUT_FEE_ESTIMATE_PERCENT` | Pre-send fee estimate for the admin Pay modal (default `2`, display only) |
 | `DONATION_CURRENCY` | The only supported currency (default `USD`) |
 
 Changing `VITE_*` values requires a re-run of `npm run build` (or `npm run dev`)
@@ -291,11 +340,18 @@ php artisan webhooks:prune --days=90          # scheduled daily
 Verified organizations are paid out from the donations allocated to them.
 
 - **Ledger:** `organization_payouts` is append-only. The live balance for an
-  allocation is always `owed − sum(paid + pending)`, never a stored snapshot.
-- **Flow:** an admin types a **gross** amount; the server deducts the
-  configurable transaction cost (`DONATION_TRANSACTION_COST_PERCENT`) and
-  transfers the **net** to the organization. Client-supplied fee/net values are
-  rejected (`prohibited`) — the split is server-enforced and frozen per row.
+  allocation is always `owed − sum(paid + pending)`, never a stored balance.
+  `owed` is derived from each donation's frozen `metadata.formula_snapshot`
+  (the live formula only for legacy rows without one), so editing a formula's
+  percentages never re-divides money already collected or paid.
+- **Flow & fees:** an admin types a **gross** amount and the full gross is sent;
+  the batch sets `fees_payer=RECEIVER`, so the provider deducts its actual
+  (country/currency dependent) fee from the payout. `fee_amount`,
+  `net_amount` and `fee_percent` are recorded from PayPal's `payout_item_fee`
+  (fallback `batch_header.fees`) on create, sync and webhook, with `fee_source`
+  (`pending_provider` | `paypal` | `legacy_fixed`). `PAYOUT_FEE_ESTIMATE_PERCENT`
+  only drives the "estimated fee" preview in the Pay modal; client-supplied
+  fee/net values are rejected (`prohibited`).
 - **Guard:** payouts are blocked unless the organization is **verified** and the
   requested rail is enabled on it (PayPal additionally needs a receiving email).
 - **Currency:** the platform is **USD-only**. `config('donations.currency')`
@@ -373,6 +429,20 @@ The backend suite runs on sqlite `:memory:` and needs no MySQL/Redis/SMTP
 - Code style: `./vendor/bin/pint --test`
 - Frontend lint / format: `npm run lint` and `npm run format:check`
 - Frontend production build check: `npm run build`
+
+### Endpoint / E2E smoke
+
+`tests/Feature` covers the full endpoint behaviour (with PayPal/Stripe faked).
+For a quick live check against a running instance:
+
+```bash
+php artisan serve                # in another terminal
+./scripts/smoke-endpoints.sh     # BASE_URL=https://host to target elsewhere
+```
+
+It exercises public endpoints, authenticated donor routes, admin lists,
+CSV exports and the `401`/`403` permission gates. Temporary Sanctum tokens are
+minted and deleted on exit; it never calls PayPal/Stripe.
 
 CI (`.github/workflows/ci.yml`) runs all of the above on pushes/PRs to `main`.
 

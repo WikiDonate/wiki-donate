@@ -34,7 +34,8 @@
         "previousPage": "Poprzednia strona",
         "nextPage": "Następna strona",
         "clear": "Jasne",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopiuj"
     },
     "auth": {
         "loginTitle": "Zaloguj się do swojego konta",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Rzeczywista opłata jest odliczana od tego przelewu i potwierdzana przez PayPal po jego przetworzeniu.",
         "feePending": "Opłata w toku — potwierdzona po transferze",
         "payoutMinimumAmount": "Kwota musi wynosić co najmniej {amount}.",
-        "payoutFeeEstimateNote": "Szacunkowa opłata dostawcy ~{percent}% — faktyczna opłata zostanie potwierdzona po dokonaniu przelewu."
+        "payoutFeeEstimateNote": "Szacunkowa opłata dostawcy ~{percent}% — faktyczna opłata zostanie potwierdzona po dokonaniu przelewu.",
+        "message": "Wiadomość",
+        "before": "Przed",
+        "after": "po",
+        "copyFailed": "Nie można skopiować do schowka.",
+        "syncStatusesHint": "Uzgodnij każdą oczekującą wypłatę w systemie PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Wszelkie prawa zastrzeżone."

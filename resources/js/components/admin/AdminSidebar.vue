@@ -169,9 +169,12 @@
 
     const openGroups = ref([])
 
-    const isActive = (link) => route.path === link
+    // The dashboard is served at /admin/index (the router redirects /admin
+    // there), so strict equality never highlights the menu entry.
+    const isActive = (link) =>
+        route.path === link || route.path === `${link.replace(/\/$/, '')}/index`
 
-    const isGroupActive = (children) => children.some((c) => route.path === c.link)
+    const isGroupActive = (children) => children.some((c) => isActive(c.link))
 
     const toggleGroup = (index) => {
         const i = openGroups.value.indexOf(index)

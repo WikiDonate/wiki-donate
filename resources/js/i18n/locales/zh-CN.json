@@ -34,7 +34,8 @@
         "previousPage": "上一页",
         "nextPage": "下一页",
         "clear": "清除",
-        "create": "Create"
+        "create": "Create",
+        "copy": "复制"
     },
     "auth": {
         "loginTitle": "登录您的帐户",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "实际费用将从本次转账中扣除，并由 PayPal 处理后确认。",
         "feePending": "费用待定 - 转账后确认",
         "payoutMinimumAmount": "金额必须至少为 {amount}。",
-        "payoutFeeEstimateNote": "预计提供商费用 ~{percent}% — 实际费用在转账后确认。"
+        "payoutFeeEstimateNote": "预计提供商费用 ~{percent}% — 实际费用在转账后确认。",
+        "message": "信息",
+        "before": "之前",
+        "after": "之后",
+        "copyFailed": "无法复制到剪贴板。",
+        "syncStatusesHint": "与 PayPal 核对每笔待付款"
     },
     "footer": {
         "copyright": "© {year} 维基捐赠.org。版权所有。"

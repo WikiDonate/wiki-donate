@@ -173,9 +173,9 @@
     import { useI18n } from 'vue-i18n'
     import { useFieldArray, useForm } from 'vee-validate'
     import * as yup from 'yup'
-    import FormTextarea from '~/components/FormTextarea.vue'
-    import ConfirmModal from '~/components/ConfirmModal.vue'
-    import OrganizationSelect from '~/components/OrganizationSelect.vue'
+    import FormTextarea from '~/components/forms/FormTextarea.vue'
+    import ConfirmModal from '~/components/ui/ConfirmModal.vue'
+    import OrganizationSelect from '~/components/organization/OrganizationSelect.vue'
 
     const { t } = useI18n()
 

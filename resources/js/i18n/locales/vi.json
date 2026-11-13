@@ -34,7 +34,8 @@
         "previousPage": "Trang trước",
         "nextPage": "Trang tiếp theo",
         "clear": "Xóa",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Sao chép"
     },
     "auth": {
         "loginTitle": "Đăng nhập vào tài khoản của bạn",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Phí thực tế được khấu trừ từ giao dịch chuyển khoản này và được PayPal xác nhận sau khi xử lý.",
         "feePending": "Phí đang chờ xử lý - được xác nhận sau khi chuyển khoản",
         "payoutMinimumAmount": "Số tiền ít nhất phải là {amount}.",
-        "payoutFeeEstimateNote": "Phí nhà cung cấp ước tính ~{percent}% — phí thực tế được xác nhận sau khi chuyển khoản."
+        "payoutFeeEstimateNote": "Phí nhà cung cấp ước tính ~{percent}% — phí thực tế được xác nhận sau khi chuyển khoản.",
+        "message": "Tin nhắn",
+        "before": "trước đây",
+        "after": "Sau",
+        "copyFailed": "Không thể sao chép vào bảng nhớ tạm.",
+        "syncStatusesHint": "Điều chỉnh mọi khoản thanh toán đang chờ xử lý với PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Mọi quyền được bảo lưu."

@@ -34,7 +34,8 @@
         "previousPage": "صفحه قبلی",
         "nextPage": "صفحه بعدی",
         "clear": "پاک کردن",
-        "create": "Create"
+        "create": "Create",
+        "copy": "کپی کنید"
     },
     "auth": {
         "loginTitle": "وارد حساب کاربری خود شوید",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "هزینه واقعی از این انتقال کسر می شود و پس از پردازش توسط پی پال تأیید می شود.",
         "feePending": "هزینه در انتظار - پس از انتقال تأیید شد",
         "payoutMinimumAmount": "مقدار باید حداقل {amount} باشد.",
-        "payoutFeeEstimateNote": "هزینه تخمینی ارائه دهنده ~{percent}٪ - هزینه واقعی پس از انتقال تأیید می شود."
+        "payoutFeeEstimateNote": "هزینه تخمینی ارائه دهنده ~{percent}٪ - هزینه واقعی پس از انتقال تأیید می شود.",
+        "message": "پیام",
+        "before": "قبل از",
+        "after": "بعد از",
+        "copyFailed": "در کلیپ بورد کپی نشد.",
+        "syncStatusesHint": "هر پرداخت معلق را با PayPal تطبیق دهید"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org تمامی حقوق محفوظ است."

@@ -34,7 +34,8 @@
         "previousPage": "上一頁",
         "nextPage": "下一頁",
         "clear": "清除",
-        "create": "Create"
+        "create": "Create",
+        "copy": "複製"
     },
     "auth": {
         "loginTitle": "登入您的帳戶",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "實際費用將從本次轉帳中扣除，並由 PayPal 處理後確認。",
         "feePending": "費用待定 - 轉帳後確認",
         "payoutMinimumAmount": "金額必須至少為 {amount}。",
-        "payoutFeeEstimateNote": "預計提供者費用 ~{percent}% — 實際費用在轉帳後確認。"
+        "payoutFeeEstimateNote": "預計提供者費用 ~{percent}% — 實際費用在轉帳後確認。",
+        "message": "訊息",
+        "before": "之前",
+        "after": "之後",
+        "copyFailed": "無法複製到剪貼簿。",
+        "syncStatusesHint": "與 PayPal 核對每筆待付款"
     },
     "footer": {
         "copyright": "©{year} 維基捐贈.org。版權所有。"

@@ -16,7 +16,7 @@
                     <button
                         class="inline-flex items-center justify-center p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                         :disabled="syncing"
-                        :title="syncing ? t('admin.syncing') : t('admin.syncStatuses')"
+                        :title="syncing ? t('admin.syncing') : t('admin.syncStatusesHint')"
                         :aria-label="syncing ? t('admin.syncing') : t('admin.syncStatuses')"
                         @click="syncStatuses"
                     >
@@ -27,8 +27,6 @@
                         />
                     </button>
                 </div>
-                <p v-if="syncMessage" class="text-xs text-green-600 mb-2">{{ syncMessage }}</p>
-                <p v-if="syncError" class="text-xs text-red-600 mb-2">{{ syncError }}</p>
                 <LoadingSpinner v-if="loading" text="Loading allocations..." />
                 <template v-else>
                     <!-- Payable allocations, grouped by organization.
@@ -375,8 +373,6 @@
     const payMethod = ref('')
 
     const syncing = ref(false)
-    const syncMessage = ref('')
-    const syncError = ref('')
 
     const historyTarget = ref(null)
     const history = ref([])
@@ -384,7 +380,7 @@
     const historyError = ref('')
 
     const { t } = useI18n()
-    const { notifyError } = useToastify()
+    const { notifyError, notifySuccess } = useToastify()
 
     // Same vee-validate + yup stack as the rest of the app (login,
     // formula modal, ...). Invalid fields get a red border + message.
@@ -509,15 +505,22 @@
     const fmt = (currency, value) =>
         `${(currency || 'usd').toUpperCase()} ${Number(value || 0).toFixed(2)}`
 
-    const fetchAllocations = async () => {
-        loading.value = true
+    // `silent` keeps the current list on screen while refetching, so the page
+    // does not collapse to the spinner and jump back to the top after a pay
+    // or a sync.
+    const fetchAllocations = async ({ silent = false } = {}) => {
+        if (!silent) {
+            loading.value = true
+        }
         try {
             allocations.value = (await adminService.getPayoutAllocations()).data ?? []
         } catch (err) {
             notifyError(apiErrorMessage(err, t('admin.failedToLoadPayouts')))
             allocations.value = []
         } finally {
-            loading.value = false
+            if (!silent) {
+                loading.value = false
+            }
         }
     }
 
@@ -551,28 +554,29 @@
     }
 
     const syncStatuses = async () => {
-        syncError.value = ''
-        syncMessage.value = ''
         syncing.value = true
         try {
             const res = await adminService.syncPayouts()
             const count = (res.data ?? []).length
             const meta = res.meta ?? {}
             if (count > 0) {
-                syncMessage.value = t('admin.payoutsUpdated', { count })
+                notifySuccess(t('admin.payoutsUpdated', { count }))
             } else if ((meta.checked ?? 0) === 0) {
-                syncMessage.value = t('admin.noPendingPayouts')
+                notifySuccess(t('admin.noPendingPayouts'))
             }
             if ((meta.errors ?? 0) > 0) {
-                syncError.value = t('admin.payoutsSyncErrors', { count: meta.errors })
+                notifyError(t('admin.payoutsSyncErrors', { count: meta.errors }))
             }
-            // Balances only move when a row actually changed — skip the
-            // allocations recompute otherwise.
-            if (count > 0) {
-                await fetchAllocations()
+            // Always recompute: sync can change statuses/fees (or another admin
+            // may have paid), and the refresh must never leave stale
+            // owed/paid/balance figures on screen. Silent refresh keeps the
+            // page position stable.
+            await fetchAllocations({ silent: true })
+            if (historyTarget.value) {
+                await loadHistory(historyTarget.value)
             }
         } catch (err) {
-            syncError.value = apiErrorMessage(err, t('admin.failedToSync'))
+            notifyError(apiErrorMessage(err, t('admin.failedToSync')))
         } finally {
             syncing.value = false
         }
@@ -607,7 +611,9 @@
                 note: payNote.value || null,
             })
             payTarget.value = null
-            await fetchAllocations()
+            // Silent refresh: the list must not be replaced by the spinner,
+            // otherwise the page height collapses and jumps to the top.
+            await fetchAllocations({ silent: true })
         } catch (err) {
             payError.value = apiErrorMessage(err, t('admin.failedToRecord'))
         } finally {
@@ -615,19 +621,27 @@
         }
     })
 
-    const openHistory = async (row) => {
-        historyTarget.value = row
-        history.value = []
+    const loadHistory = async (row, showSpinner = false) => {
+        if (showSpinner) {
+            historyLoading.value = true
+        }
         historyError.value = ''
-        historyLoading.value = true
         try {
             const res = await adminService.getPayoutHistory(row.formula_id, row.organization_name)
             history.value = res.data ?? []
         } catch (err) {
             historyError.value = apiErrorMessage(err, t('admin.failedToLoadHistory'))
         } finally {
-            historyLoading.value = false
+            if (showSpinner) {
+                historyLoading.value = false
+            }
         }
+    }
+
+    const openHistory = async (row) => {
+        historyTarget.value = row
+        history.value = []
+        await loadHistory(row, true)
     }
 
     fetchAllocations()

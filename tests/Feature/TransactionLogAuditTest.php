@@ -70,9 +70,13 @@ class TransactionLogAuditTest extends TestCase
         $response = $this->asAdmin()->getJson('/api/v1/admin/transaction-logs');
 
         $response->assertOk();
-        $this->assertCount(1, $response->json('data.data'));
-        $this->assertEquals('organization.created', $response->json('data.data.0.event'));
-        $this->assertEquals($this->admin->username, $response->json('data.data.0.actor.username'));
+        $this->assertCount(1, $response->json('data'));
+        $this->assertEquals('organization.created', $response->json('data.0.event'));
+        $this->assertEquals($this->admin->username, $response->json('data.0.actor.username'));
+        // camelCase meta keeps the SPA pagination working.
+        $this->assertSame(1, $response->json('meta.currentPage'));
+        $this->assertSame(1, $response->json('meta.lastPage'));
+        $this->assertSame(1, $response->json('meta.total'));
     }
 
     public function test_transaction_log_filters_by_event_and_category(): void
@@ -95,12 +99,66 @@ class TransactionLogAuditTest extends TestCase
 
         $response = $this->asAdmin()->getJson('/api/v1/admin/transaction-logs?event=payout.created');
         $response->assertOk();
-        $this->assertCount(1, $response->json('data.data'));
-        $this->assertEquals('payout.created', $response->json('data.data.0.event'));
+        $this->assertCount(1, $response->json('data'));
+        $this->assertEquals('payout.created', $response->json('data.0.event'));
 
         $response = $this->asAdmin()->getJson('/api/v1/admin/transaction-logs?category=organization');
         $response->assertOk();
-        $this->assertCount(1, $response->json('data.data'));
+        $this->assertCount(1, $response->json('data'));
+    }
+
+    public function test_search_filter_matches_message_and_event(): void
+    {
+        TransactionLog::record('organization.created', [
+            'actor_id' => $this->admin->id,
+            'message' => 'Organization created: Logged Org',
+        ]);
+        TransactionLog::record('payout.created', [
+            'actor_id' => $this->admin->id,
+            'message' => 'partial payout of 10.00 USD gross',
+        ]);
+
+        $response = $this->asAdmin()->getJson('/api/v1/admin/transaction-logs?search=payout');
+
+        $response->assertOk();
+        $this->assertCount(1, $response->json('data'));
+        $this->assertSame('payout.created', $response->json('data.0.event'));
+        $this->assertSame(1, $response->json('meta.total'));
+    }
+
+    public function test_filters_endpoint_lists_events_and_categories(): void
+    {
+        TransactionLog::record('organization.created', ['actor_id' => $this->admin->id]);
+        TransactionLog::record('payout.created', ['actor_id' => $this->admin->id]);
+
+        $response = $this->asAdmin()->getJson('/api/v1/admin/transaction-logs/filters');
+
+        $response->assertOk();
+        $events = $response->json('data.events');
+        $categories = $response->json('data.categories');
+
+        $this->assertContains('organization.created', $events);
+        $this->assertContains('payout.created', $events);
+        $this->assertSame(['organization', 'payout'], $categories);
+    }
+
+    public function test_export_applies_the_same_filters_as_the_list(): void
+    {
+        TransactionLog::record('organization.created', [
+            'actor_id' => $this->admin->id,
+            'message' => 'Organization created: Logged Org',
+        ]);
+        TransactionLog::record('payout.created', [
+            'actor_id' => $this->admin->id,
+            'message' => 'partial payout of 10.00 USD gross',
+        ]);
+
+        $response = $this->asAdmin()->get('/api/v1/admin/transaction-logs/export?category=payout');
+        $response->assertOk();
+
+        $csv = $response->streamedContent();
+        $this->assertStringContainsString('payout.created', $csv);
+        $this->assertStringNotContainsString('organization.created', $csv);
     }
 
     public function test_payout_creates_transaction_log_with_destination(): void

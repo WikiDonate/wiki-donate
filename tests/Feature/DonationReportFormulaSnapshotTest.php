@@ -7,7 +7,7 @@ use App\Models\Donation;
 use App\Models\DonationFormula;
 use App\Models\PaymentPendingOrder;
 use App\Models\User;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Mockery;

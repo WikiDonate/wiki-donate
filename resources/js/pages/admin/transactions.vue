@@ -232,9 +232,9 @@
     import AdminPageHeader from '~/components/admin/AdminPageHeader.vue'
     import AdminTable from '~/components/admin/AdminTable.vue'
     import StatCard from '~/components/admin/StatCard.vue'
-    import Button from '~/components/Button.vue'
-    import LoadingSpinner from '~/components/LoadingSpinner.vue'
-    import Pagination from '~/components/Pagination.vue'
+    import Button from '~/components/ui/Button.vue'
+    import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+    import Pagination from '~/components/ui/Pagination.vue'
     import { usePaymentMethods } from '~/composables/usePaymentMethods'
     import { useToastify } from '~/composables/useToastify'
     import api from '~/config/apiConfig'
@@ -282,7 +282,7 @@
     }
 
     function buildParams(page) {
-        const params = { page, per_page: 20 }
+        const params = { page, per_page: 15 }
         if (filterType.value) params.type = filterType.value
         if (filterMethod.value) params.method = filterMethod.value
         if (filterOrg.value.trim()) params.org = filterOrg.value.trim()

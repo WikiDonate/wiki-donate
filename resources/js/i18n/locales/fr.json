@@ -34,7 +34,8 @@
         "previousPage": "Page précédente",
         "nextPage": "Page suivante",
         "clear": "Effacer",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Copier"
     },
     "auth": {
         "loginTitle": "Connectez-vous à votre compte",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Les frais réels sont déduits de ce transfert et confirmés par PayPal après son traitement.",
         "feePending": "Frais en attente — confirmés après le transfert",
         "payoutMinimumAmount": "Le montant doit être d'au moins {amount}.",
-        "payoutFeeEstimateNote": "Frais de fournisseur estimés ~{percent}% — les frais réels sont confirmés après le transfert."
+        "payoutFeeEstimateNote": "Frais de fournisseur estimés ~{percent}% — les frais réels sont confirmés après le transfert.",
+        "message": "Message",
+        "before": "Avant",
+        "after": "Après",
+        "copyFailed": "Impossible de copier dans le presse-papiers.",
+        "syncStatusesHint": "Rapprochez chaque paiement en attente avec PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tous droits réservés."

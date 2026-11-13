@@ -34,7 +34,8 @@
         "previousPage": "Forrige side",
         "nextPage": "Neste side",
         "clear": "Tøm",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopier"
     },
     "auth": {
         "loginTitle": "Login to Your Account",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Den faktiske avgiften trekkes fra denne overføringen og bekreftes av PayPal etter at den er behandlet.",
         "feePending": "Gebyr venter — bekreftet etter overføringen",
         "payoutMinimumAmount": "Beløpet må være minst {amount}.",
-        "payoutFeeEstimateNote": "Estimert leverandørgebyr ~{percent} % — den faktiske avgiften bekreftes etter overføringen."
+        "payoutFeeEstimateNote": "Estimert leverandørgebyr ~{percent} % — den faktiske avgiften bekreftes etter overføringen.",
+        "message": "Beskjed",
+        "before": "Før",
+        "after": "Etter",
+        "copyFailed": "Kunne ikke kopiere til utklippstavlen.",
+        "syncStatusesHint": "Avstem hver ventende utbetaling med PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Alle rettigheter forbeholdt."

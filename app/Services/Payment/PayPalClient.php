@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payment;
 
 use App\Exceptions\PaymentProviderException;
 use App\Models\PaymentMethod;
-use App\Services\Payment\PaymentCredentials;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\RequestException;
@@ -376,7 +375,12 @@ class PayPalClient
         $statuses = [];
 
         foreach ($batch['items'] ?? [] as $item) {
-            $senderItemId = $item['sender_item_id'] ?? null;
+            // PayPal nests the sender id under payout_item; some sandbox
+            // responses also expose it at the top level — accept both, or
+            // every item is silently skipped and sync reports no changes.
+            $senderItemId = $item['payout_item']['sender_item_id']
+                ?? $item['sender_item_id']
+                ?? null;
             if ($senderItemId === null) {
                 continue;
             }

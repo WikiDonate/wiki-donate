@@ -34,7 +34,8 @@
         "previousPage": "الصفحة السابقة",
         "nextPage": "الصفحة التالية",
         "clear": "واضح",
-        "create": "Create"
+        "create": "Create",
+        "copy": "نسخ"
     },
     "auth": {
         "loginTitle": "تسجيل الدخول إلى حسابك",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "يتم خصم الرسوم الفعلية من هذا التحويل ويتم تأكيده بواسطة PayPal بعد معالجته.",
         "feePending": "الرسوم معلقة - تم تأكيدها بعد النقل",
         "payoutMinimumAmount": "يجب أن يكون المبلغ {amount} على الأقل.",
-        "payoutFeeEstimateNote": "رسوم المزود المقدرة ~{percent}% — يتم تأكيد الرسوم الفعلية بعد النقل."
+        "payoutFeeEstimateNote": "رسوم المزود المقدرة ~{percent}% — يتم تأكيد الرسوم الفعلية بعد النقل.",
+        "message": "رسالة",
+        "before": "قبل",
+        "after": "بعد",
+        "copyFailed": "تعذر النسخ إلى الحافظة.",
+        "syncStatusesHint": "قم بتسوية كل العوائد المعلقة مع PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. جميع الحقوق محفوظة."

@@ -10,7 +10,7 @@ use App\Models\PaymentWebhookEvent;
 use App\Models\TransactionLog;
 use App\Models\User;
 use App\Services\Payment\PaymentCredentials;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Testing\TestResponse;

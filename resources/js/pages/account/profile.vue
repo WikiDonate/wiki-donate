@@ -1,5 +1,5 @@
 <template>
-    <main class="w-full mx-auto max-w-7xl px-2 sm:px-4 lg:px-6 py-8">
+    <main class="w-full mx-auto max-w-screen-2xl px-2 sm:px-4 lg:px-6 py-8">
         <!-- Page Title -->
         <PageTitle :title="t('profile.title')" />
 
@@ -87,9 +87,9 @@
     import { useI18n } from 'vue-i18n'
     import { useForm } from 'vee-validate'
     import * as yup from 'yup'
-    import FormInput from '~/components/FormInput.vue'
-    import FormSubmitButton from '~/components/FormSubmitButton.vue'
-    import AlertMessage from '~/components/AlertMessage.vue'
+    import FormInput from '~/components/forms/FormInput.vue'
+    import FormSubmitButton from '~/components/forms/FormSubmitButton.vue'
+    import AlertMessage from '~/components/ui/AlertMessage.vue'
     import { useUserStore } from '@/stores/userStore'
 
     const { t } = useI18n()

@@ -201,7 +201,7 @@ class TransactionController extends Controller
 
     private function perPage(Request $request): int
     {
-        return min(max((int) $request->input('per_page', 20), 1), 100);
+        return min(max((int) $request->input('per_page', 15), 1), 100);
     }
 
     /**

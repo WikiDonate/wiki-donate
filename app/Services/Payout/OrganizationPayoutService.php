@@ -11,7 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use App\Rules\SupportedCurrency;
 use App\Services\Payment\PaymentProviderRegistry;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;

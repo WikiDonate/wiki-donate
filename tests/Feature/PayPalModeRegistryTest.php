@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PaymentMethod;
 use App\Services\Payment\PaymentCredentials;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;

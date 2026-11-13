@@ -34,7 +34,8 @@
         "previousPage": "ያለፈው ገጽ",
         "nextPage": "ቀጣይ ገጽ",
         "clear": "ግልጽ",
-        "create": "Create"
+        "create": "Create",
+        "copy": "ቅዳ"
     },
     "auth": {
         "loginTitle": "ወደ መለያዎ ይግቡ",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "ትክክለኛው ክፍያ ከዚህ ዝውውር ላይ ተቀንሶ በፔይፓል ከተሰራ በኋላ የተረጋገጠ ነው።",
         "feePending": "ክፍያ በመጠባበቅ ላይ - ከዝውውሩ በኋላ የተረጋገጠ",
         "payoutMinimumAmount": "መጠኑ ቢያንስ {amount} መሆን አለበት።",
-        "payoutFeeEstimateNote": "የተገመተው የአቅራቢ ክፍያ ~{percent}% - ትክክለኛው ክፍያ ከዝውውሩ በኋላ ተረጋግጧል።"
+        "payoutFeeEstimateNote": "የተገመተው የአቅራቢ ክፍያ ~{percent}% - ትክክለኛው ክፍያ ከዝውውሩ በኋላ ተረጋግጧል።",
+        "message": "መልእክት",
+        "before": "በፊት",
+        "after": "በኋላ",
+        "copyFailed": "ወደ ቅንጥብ ሰሌዳ መቅዳት አልተቻለም።",
+        "syncStatusesHint": "በመጠባበቅ ላይ ያለ ክፍያን ሁሉ ከPayPal ጋር ማስታረቅ"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org ሁሉም መብቶች የተጠበቁ ናቸው።"

@@ -34,7 +34,8 @@
         "previousPage": "Nakaraang pahina",
         "nextPage": "Susunod na pahina",
         "clear": "Maaliwalas",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Kopyahin"
     },
     "auth": {
         "loginTitle": "Mag-login sa Iyong Account",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Ang aktwal na bayad ay ibinabawas sa paglilipat na ito at kinumpirma ng PayPal pagkatapos itong maproseso.",
         "feePending": "Nakabinbin ang bayad — nakumpirma pagkatapos ng paglipat",
         "payoutMinimumAmount": "Ang halaga ay dapat na hindi bababa sa {amount}.",
-        "payoutFeeEstimateNote": "Tinantyang bayad sa provider ~{percent}% — ang aktwal na bayad ay nakumpirma pagkatapos ng paglipat."
+        "payoutFeeEstimateNote": "Tinantyang bayad sa provider ~{percent}% — ang aktwal na bayad ay nakumpirma pagkatapos ng paglipat.",
+        "message": "Mensahe",
+        "before": "dati",
+        "after": "Pagkatapos",
+        "copyFailed": "Hindi makopya sa clipboard.",
+        "syncStatusesHint": "Ipagkasundo ang bawat nakabinbing payout sa PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Lahat ng karapatan ay nakalaan."

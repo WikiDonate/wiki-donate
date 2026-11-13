@@ -34,7 +34,8 @@
         "previousPage": "Pagina anterioară",
         "nextPage": "Pagina următoare",
         "clear": "Clar",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Copiere"
     },
     "auth": {
         "loginTitle": "Conectați-vă la contul dvs",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Taxa reală este dedusă din acest transfer și confirmată de PayPal după procesare.",
         "feePending": "Taxa în așteptare — confirmată după transfer",
         "payoutMinimumAmount": "Suma trebuie să fie de cel puțin {amount}.",
-        "payoutFeeEstimateNote": "Taxa estimată a furnizorului ~{percent}% — taxa reală este confirmată după transfer."
+        "payoutFeeEstimateNote": "Taxa estimată a furnizorului ~{percent}% — taxa reală este confirmată după transfer.",
+        "message": "Mesaj",
+        "before": "Înainte",
+        "after": "După",
+        "copyFailed": "Nu s-a putut copia în clipboard.",
+        "syncStatusesHint": "Reconciliați fiecare plată în așteptare cu PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Toate drepturile rezervate."

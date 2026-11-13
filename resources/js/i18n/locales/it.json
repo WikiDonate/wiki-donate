@@ -34,7 +34,8 @@
         "previousPage": "Pagina precedente",
         "nextPage": "Pagina successiva",
         "clear": "Chiaro",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Copia"
     },
     "auth": {
         "loginTitle": "Accedi al tuo account",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "La commissione effettiva viene detratta da questo trasferimento e confermata da PayPal dopo l'elaborazione.",
         "feePending": "Commissione in sospeso: confermata dopo il trasferimento",
         "payoutMinimumAmount": "L'importo deve essere almeno {amount}.",
-        "payoutFeeEstimateNote": "Commissione stimata del fornitore ~{percent}%: la commissione effettiva viene confermata dopo il trasferimento."
+        "payoutFeeEstimateNote": "Commissione stimata del fornitore ~{percent}%: la commissione effettiva viene confermata dopo il trasferimento.",
+        "message": "Messaggio",
+        "before": "Prima",
+        "after": "Dopo",
+        "copyFailed": "Impossibile copiare negli appunti.",
+        "syncStatusesHint": "Riconcilia ogni pagamento in sospeso con PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Tutti i diritti riservati."

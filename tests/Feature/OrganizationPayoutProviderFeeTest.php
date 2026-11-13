@@ -304,6 +304,43 @@ class OrganizationPayoutProviderFeeTest extends TestCase
         $this->assertEquals(2.0, (float) $allocations->firstWhere('organization_name', 'Charity A')['fee_estimate_percent']);
     }
 
+    public function test_sync_parses_the_real_paypal_nested_item_shape(): void
+    {
+        $this->addDonation(500);
+        $payout = $this->pendingRow('BATCH-NESTED', 'ITEM-NESTED');
+
+        // Shape returned by GET /v1/payments/payouts/{id}?fields=items:
+        // sender_item_id lives under payout_item, not at the item root.
+        Http::fake([
+            '*/v1/oauth2/token' => Http::response(['access_token' => 'fake-token', 'expires_in' => 3600]),
+            '*/v1/payments/payouts/*' => Http::response([
+                'batch_header' => [
+                    'payout_batch_id' => 'BATCH-NESTED',
+                    'batch_status' => 'SUCCESS',
+                    'fees' => ['currency' => 'USD', 'value' => '0.19'],
+                ],
+                'items' => [[
+                    'payout_item_id' => 'ITEM-NESTED',
+                    'transaction_status' => 'SUCCESS',
+                    'payout_item_fee' => ['currency' => 'USD', 'value' => '0.19'],
+                    'payout_item' => [
+                        'amount' => ['currency' => 'USD', 'value' => '50.00'],
+                        'receiver' => 'charitya@paypal.test',
+                        'sender_item_id' => $payout->uuid,
+                    ],
+                ]],
+            ]),
+        ]);
+
+        $this->asAdmin()->postJson('/api/v1/admin/payouts/sync')->assertOk();
+
+        $fresh = $payout->fresh();
+        $this->assertSame('paid', $fresh->status, 'nested sender_item_id must be matched');
+        $this->assertEquals(0.19, (float) $fresh->fee_amount);
+        $this->assertEquals(49.81, (float) $fresh->net_amount);
+        $this->assertSame('paypal', $fresh->fee_source);
+    }
+
     private function pendingRow(string $batchId, string $itemId): OrganizationPayout
     {
         return OrganizationPayout::create([

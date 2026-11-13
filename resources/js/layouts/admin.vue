@@ -46,7 +46,7 @@
                 </div>
 
                 <!-- Page Content -->
-                <div class="flex-1 px-1 py-.5">
+                <div class="flex-1 w-full max-w-screen-2xl mx-auto px-3 sm:px-5 lg:px-8 py-4">
                     <RouterView />
                 </div>
 

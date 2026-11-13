@@ -8,7 +8,7 @@ use App\Models\Organization;
 use App\Models\OrganizationPayout;
 use App\Models\TransactionLog;
 use App\Models\User;
-use App\Services\PayPalClient;
+use App\Services\Payment\PayPalClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Testing\TestResponse;

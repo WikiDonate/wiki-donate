@@ -211,7 +211,8 @@
 
     const distributionLabels = {
         distributed: 'admin.distributed',
-        partial: 'admin.partiallyDistributed',
+        // Short label: the full phrase made the badge unnecessarily wide.
+        partial: 'admin.partial',
         pending: 'admin.pending',
     }
 

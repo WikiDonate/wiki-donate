@@ -34,7 +34,8 @@
         "previousPage": "Ukurasa uliotangulia",
         "nextPage": "Ukurasa unaofuata",
         "clear": "Wazi",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Nakili"
     },
     "auth": {
         "loginTitle": "Ingia kwa Akaunti Yako",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Ada halisi hukatwa kutoka kwa uhamisho huu na kuthibitishwa na PayPal baada ya kuchakata.",
         "feePending": "Ada inasubiri - imethibitishwa baada ya uhamisho",
         "payoutMinimumAmount": "Kiasi lazima kiwe angalau {amount}.",
-        "payoutFeeEstimateNote": "Kadirio la ada ya mtoa huduma ~{percent}% - ada halisi inathibitishwa baada ya uhamisho."
+        "payoutFeeEstimateNote": "Kadirio la ada ya mtoa huduma ~{percent}% - ada halisi inathibitishwa baada ya uhamisho.",
+        "message": "Ujumbe",
+        "before": "Kabla",
+        "after": "Baada ya",
+        "copyFailed": "Haikuweza kunakili kwenye ubao wa kunakili.",
+        "syncStatusesHint": "Sawazisha kila malipo yanayosubiri na PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Haki zote zimehifadhiwa."

@@ -34,7 +34,8 @@
         "previousPage": "Halaman sebelumnya",
         "nextPage": "Halaman seterusnya",
         "clear": "Jelas",
-        "create": "Create"
+        "create": "Create",
+        "copy": "salin"
     },
     "auth": {
         "loginTitle": "Log masuk ke Akaun Anda",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "Yuran sebenar ditolak daripada pemindahan ini dan disahkan oleh PayPal selepas ia diproses.",
         "feePending": "Yuran belum selesai — disahkan selepas pemindahan",
         "payoutMinimumAmount": "Jumlah mestilah sekurang-kurangnya {amount}.",
-        "payoutFeeEstimateNote": "Anggaran yuran pembekal ~{percent}% — yuran sebenar disahkan selepas pemindahan."
+        "payoutFeeEstimateNote": "Anggaran yuran pembekal ~{percent}% — yuran sebenar disahkan selepas pemindahan.",
+        "message": "Mesej",
+        "before": "Sebelum ini",
+        "after": "Selepas",
+        "copyFailed": "Tidak dapat menyalin ke papan keratan.",
+        "syncStatusesHint": "Selaraskan setiap pembayaran yang belum selesai dengan PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Semua hak terpelihara."

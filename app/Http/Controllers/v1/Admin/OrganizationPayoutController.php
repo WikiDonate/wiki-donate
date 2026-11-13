@@ -55,7 +55,7 @@ class OrganizationPayoutController extends Controller
             });
         }
 
-        $perPage = (int) ($request->input('per_page') ?? 20);
+        $perPage = (int) ($request->input('per_page') ?? 15);
         $perPage = min(max($perPage, 1), 100);
 
         return response()->json([

@@ -34,7 +34,8 @@
         "previousPage": "Pagina anterior",
         "nextPage": "Página siguiente",
         "clear": "Borrar",
-        "create": "Create"
+        "create": "Create",
+        "copy": "Copiar"
     },
     "auth": {
         "loginTitle": "Inicie sesión en su cuenta",
@@ -673,7 +674,12 @@
         "feeEstimateHint": "La tarifa real se deduce de esta transferencia y PayPal la confirma después de procesarla.",
         "feePending": "Tarifa pendiente: confirmada después de la transferencia",
         "payoutMinimumAmount": "La cantidad debe ser al menos {amount}.",
-        "payoutFeeEstimateNote": "Tarifa estimada del proveedor ~{percent}%: la tarifa real se confirma después de la transferencia."
+        "payoutFeeEstimateNote": "Tarifa estimada del proveedor ~{percent}%: la tarifa real se confirma después de la transferencia.",
+        "message": "Mensaje",
+        "before": "antes",
+        "after": "después",
+        "copyFailed": "No se pudo copiar al portapapeles.",
+        "syncStatusesHint": "Concilia cada pago pendiente con PayPal"
     },
     "footer": {
         "copyright": "© {year} Wikidonate.org. Reservados todos los derechos."
