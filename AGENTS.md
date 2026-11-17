@@ -24,7 +24,7 @@ php artisan migrate
 
 ```bash
 ./vendor/bin/pint --test
-php artisan test --compact              # full suite ~1–2 min (much faster on a warm cache)
+php artisan test --compact              # full suite ~2–5 min (warm runs ~1–2 min)
 php artisan test --filter=OrganizationPayoutTest
 npm run lint                            # eslint resources/js
 npm run format:check                    # prettier --check resources/js
@@ -33,9 +33,10 @@ npm run build
 ```
 
 - **Every completed task runs all four checks**: `./vendor/bin/pint --test`, `php artisan test`, `npx eslint resources/js`, `npx prettier --check resources/js`. Report the result of each; fix failures before finishing.
+- **Every task that touches files ends with a change summary**: list the files changed, what changed in each, and the reason (why it was needed), followed by the verification results. Keep it concise but explain the rationale — the user uses it to learn the project.
 - There is **no TypeScript** in this repo: no `tsconfig.json`, no `typescript`/`vue-tsc`, no `typecheck` script. The SPA is plain JS + Vue SFCs, so don’t claim a “TS check” ran — say it’s not configured (adding one requires the tooling first).
 - CI (PHP 8.4 / Node 22) gates `deploy.yml`; deploy runs on the VPS: composer, `npm ci` + build, `php artisan migrate --force`, cache rebuild.
-- **Deploy never seeds.** Seeding is manual: `php artisan db:seed` (demo data only when `APP_ENV=local`; other seeders in `database/seeders/`). Never add `--seed` or `migrate:fresh` to a deploy path.
+- **Deploy never seeds.** Seeding is manual: `php artisan db:seed` (demo data only when `APP_ENV=local`; other seeders in `database/seeders/`). Never add `--seed` or `migrate:fresh` to a deploy path. `DemoDataSeeder` creates users **and** formulas/donations/payouts — running it repopulates demo money data even after a manual cleanup.
 - Blade entry `resources/views/app.blade.php` uses `public/hot` (dev) else `public/build/.vite/manifest.json`, else hard-codes `http://localhost:5173`. Blank SPA = missing build or not running Vite.
 
 ## Architecture
@@ -58,8 +59,9 @@ npm run build
 
 ## Conventions
 
+- Operate as a **senior Laravel + Vue engineer**: descriptive variable/function names, comments where the intent or rationale isn’t obvious (not narration), and reuse before creating — extract shared logic into service methods, composables, or UI components instead of duplicating it.
 - Pint uses the `laravel` preset (`pint.json`). Return generic 500 messages; don’t expose `$e->getMessage()` to clients.
-- Migrations: `created_at` / `updated_at` must be the **last** columns — call `$table->timestamps()` last on create. A later `$table->string(...)` lands after the timestamps on MySQL, so use `->after('<existing column>')`. Fix already-deployed ordering only with a new MySQL-only `MODIFY ... AFTER` migration (pattern on `develop`: `2026_10_31_000004_move_timestamps_last_on_payout_tables.php`); sqlite tests build fresh and won’t catch it. Verify with `information_schema.COLUMNS ... ORDER BY ORDINAL_POSITION`. Never rename a deployed migration file — prod re-runs it as new.
+- Migrations: `created_at` / `updated_at` must be the **last** columns — call `$table->timestamps()` last on create, and **every column added later must be placed before them** with `->after('<the last business column>')` (e.g. `->after('metadata')`), never appended after `updated_at`. A plain `$table->string(...)` lands after the timestamps on MySQL. Fix already-deployed ordering only with a new MySQL-only `MODIFY ... AFTER` migration (patterns: `2026_10_31_000004_move_timestamps_last_on_payout_tables.php`, `2026_11_14_000001_move_timestamps_last_on_donations.php`); sqlite tests build fresh and won’t catch it. Verify with `information_schema.COLUMNS ... ORDER BY ORDINAL_POSITION`. Never rename a deployed migration file — prod re-runs it as new.
 - Prettier: `.prettierrc` is authoritative (no-semi, single quotes, 4 spaces, width 100, trailing commas). `.prettierrc.cjs` is a stale duplicate — don’t edit it.
 - ESLint flat config disables `vue/multi-word-component-names`, `vue/max-attributes-per-line`, `vue/html-self-closing` and ignores `public/build`.
 - `resources/js/services/*.js` are thin axios wrappers. Pinia uses `pinia-plugin-persistedstate`; `authStore` persists token/user (XSS-sensitive — don’t widen persisted paths).
@@ -69,7 +71,10 @@ npm run build
 - Tests use sqlite `:memory:` with `QUEUE_CONNECTION=sync`, `CACHE_STORE=array`, `MAIL_MAILER=array` (`phpunit.xml`), so no MySQL/Redis/SMTP is needed. Don’t assume sqlite catches MySQL schema problems.
 - **Never mutate the dev database while verifying.** Tests run on sqlite `:memory:`; for live checks use read-only requests. If a task genuinely needs a DB write (e.g. exercising `payouts:sync`), ask first and revert temporary rows/tokens/cache before finishing — sync runs change payout statuses, fees and balances, which is not cleanly reversible.
 - Keep `phpunit.xml` values in `<server>` tags, not `<env>`: PHPUnit’s `<env>` never overwrites a variable already exported by the shell, and Laravel’s `Env` repository reads `$_SERVER` first. If the surrounding shell exports `DB_CONNECTION=mysql` / `APP_ENV=local` (Docker/dev shells often do), `<env>` is ignored and `RefreshDatabase` runs `migrate:fresh` against the real dev database — wiping it. `<server>` is written to `$_SERVER` unconditionally, so the suite stays on sqlite.
-- Donation lists (donor `GET v1/report/donations` and admin `GET v1/admin/donations`) expose `distribution_status` from `OrganizationPayoutService::distributionStatuses()`: formula-level payout coverage of completed USD owed (`distributed` / `partial` / `pending`), counting `paid` + `pending` payouts and excluding `reversed`. It is `null` unless the donation is completed **and** in the supported currency, and all donations sharing a formula show the same value. Keep it aligned with the payout balance math (don’t add a second coverage calculation).
+- Donation lists (donor `GET v1/report/donations` and admin `GET v1/admin/donations`) expose `distribution_status` from `OrganizationPayoutService::distributionStatuses()`: formula-level payout coverage of completed USD owed (`distributed` / `partial` / `pending`), counting `paid` + `pending` payouts and excluding `reversed`. It is `null` unless the donation is completed **and** in the supported currency, and all donations sharing a formula show the same value — so a donation whose own organization is unpaid can still read `partial` when another organization on the same formula was paid. Keep it aligned with the payout balance math (don’t add a second coverage calculation).
+- `/admin/transactions` is a merged view over two tables: `donations` (income) + `organization_payouts` (expense), joined to `donation_formulas`/`articles`/`users` for display. `transaction_logs` is only the separate `/admin/transaction-logs` audit page (its API returns `data` + camelCase `meta`, with `/filters` for event/category options).
+- **Never leave debug output in API paths**: `dump()` / `dd()` / `var_dump()` write HTML before the JSON response, so the SPA receives HTML with a `200` and fails silently (a leftover `dump(DB::getQueryLog())` in `payableAllocations()` broke the payouts page this way). Remove debug calls (and `enableQueryLog()`) before finishing; grep `app/` for `dump(|dd(|var_dump(`.
+- PayPal batch items nest the id we match on: `items[].payout_item.sender_item_id` (top-level `sender_item_id` only appears in some responses). `PayPalClient::extractBatchItemStatuses()` must read both, or every item is skipped and `payouts:sync` reports “0 changed” forever while statuses/fees stay stale.
 - Stale Vite bundle is the top false “regression”: `VITE_*` bake in at build time. Check the served bundle first — `grep -o "baseURL:[^,}]*" public/build/assets/apiConfig-*.js` — then `npm run build` + hard refresh. Never hand-edit `public/build/`.
 - Fresh MySQL fails where sqlite won’t: `organization_payouts` (2026_09_15) predates `organizations` (2026_09_26), so `->constrained('organizations')` breaks fresh installs (MySQL 1824). Add FKs conditionally (`Schema::hasTable` + try/catch).
 - Mail: `.env.example` ships `MAIL_MAILER=log` (dev SMTP is blocked). `CustomOrganizationNotifier` uses the `failover` mailer (smtp → log) so a dead SMTP can’t crash a worker. Debug in order: `php artisan queue:failed` → `MAIL_*` in the log body → SMTP `535` (credentials) vs `refused/timeout` (server/firewall). Production needs a running `queue:work` or `jobs` piles up.
