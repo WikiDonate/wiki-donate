@@ -3,7 +3,7 @@
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleTitle || title}`" />
+        <TopBarTitle :page-title="displayTitle" />
 
         <div v-if="loading" class="flex items-center justify-center py-12">
             <LoadingSpinner :text="t('article.loading')" />
@@ -236,16 +236,21 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
+    import { useArticleTitleTranslation } from '~/composables/useArticleTitleTranslation'
 
-    const { t } = useI18n()
+    const { t, locale } = useI18n()
 
     const route = useRoute()
     const title = ref(decodeURIComponent(route.query.title || ''))
     const articleTitle = ref('')
     const appName = import.meta.env.VITE_APP_NAME || 'Wiki Donate'
 
+    // Auto-translate the article title into the active language (Google, in-memory).
+    const { translatedTitle } = useArticleTitleTranslation(articleTitle, locale)
+    const displayTitle = computed(() => translatedTitle.value || articleTitle.value || title.value)
+
     useHead(() => {
-        const pageTitle = articleTitle.value || title.value || t('pageTitles.article')
+        const pageTitle = displayTitle.value || t('pageTitles.article')
         return {
             title: pageTitle ? `${pageTitle} | ${appName}` : appName,
         }
