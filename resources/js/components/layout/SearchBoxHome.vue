@@ -11,7 +11,12 @@
                 type="text"
                 :placeholder="t('search.placeholder')"
                 class="grow border-0 p-3 pl-5 text-gray-700 focus:outline-none w-full rounded-l-full"
+                autocomplete="off"
                 @input="fetchSuggestions"
+                @keydown.down.prevent="highlightNext"
+                @keydown.up.prevent="highlightPrev"
+                @keydown.enter.prevent="selectHighlighted"
+                @keydown.escape="clearSuggestions"
             />
 
             <!-- Language Dropdown -->
@@ -36,10 +41,12 @@
         >
             <ul>
                 <li
-                    v-for="suggestion in suggestions"
+                    v-for="(suggestion, index) in suggestions"
                     :key="suggestion.slug || suggestion.title"
-                    class="cursor-pointer px-5 py-3 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                    class="cursor-pointer px-5 py-3 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                    :class="index === highlightedIndex ? 'bg-indigo-50' : 'hover:bg-indigo-50'"
                     @click="selectSuggestion(suggestion)"
+                    @mousemove="highlightedIndex = index"
                 >
                     <div class="flex items-center">
                         <font-awesome-icon
@@ -66,6 +73,7 @@
     const suggestions = ref([])
     const searchContainer = ref(null)
     const selectedSuggestions = ref(null)
+    const highlightedIndex = ref(-1)
 
     const fetchSuggestions = async () => {
         const query = searchQuery.value.trim()
@@ -75,11 +83,38 @@
                 const response = await articleService.searchArticles(query)
                 suggestions.value = response.data
                 selectedSuggestions.value = response.data
+                highlightedIndex.value = -1
             } catch (error) {
                 if (import.meta.env.DEV) console.error(error)
             }
         } else {
             suggestions.value = []
+            highlightedIndex.value = -1
+        }
+    }
+
+    const clearSuggestions = () => {
+        suggestions.value = []
+        highlightedIndex.value = -1
+    }
+
+    const highlightNext = () => {
+        if (suggestions.value.length === 0) return
+        highlightedIndex.value = (highlightedIndex.value + 1) % suggestions.value.length
+    }
+
+    const highlightPrev = () => {
+        if (suggestions.value.length === 0) return
+        highlightedIndex.value =
+            (highlightedIndex.value - 1 + suggestions.value.length) % suggestions.value.length
+    }
+
+    const selectHighlighted = () => {
+        const suggestion = suggestions.value[highlightedIndex.value]
+        if (suggestion) {
+            selectSuggestion(suggestion)
+        } else {
+            handleSearch()
         }
     }
 
@@ -108,23 +143,28 @@
                 }
             }
 
+            // Clear the input after the article is chosen so the user starts fresh.
             searchQuery.value = ''
             suggestions.value = []
             selectedSuggestions.value = []
+            highlightedIndex.value = -1
             router.push(searchUrl)
         }
     }
 
     const selectSuggestion = (suggestion) => {
-        searchQuery.value = suggestion.title
-        const searchUrl = `/article?title=${encodeURIComponent(suggestion.slug)}`
+        // Clear the input after the article is chosen so the user starts fresh.
+        searchQuery.value = ''
         suggestions.value = []
-        router.push(searchUrl)
+        selectedSuggestions.value = []
+        highlightedIndex.value = -1
+        router.push(`/article?title=${encodeURIComponent(suggestion.slug)}`)
     }
 
     const handleClickOutside = (event) => {
         if (searchContainer.value && !searchContainer.value.contains(event.target)) {
             suggestions.value = []
+            highlightedIndex.value = -1
         }
     }
 
