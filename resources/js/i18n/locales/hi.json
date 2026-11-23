@@ -311,7 +311,10 @@
         "sortRecent": "हाल ही में बनाया गया",
         "sortMostDonations": "सर्वाधिक दान",
         "sortMostRaised": "सर्वाधिक उठाया गया",
-        "sortOldest": "सबसे पुराना प्रथम"
+        "sortOldest": "सबसे पुराना प्रथम",
+        "totalDonatedTooltip": "इस फ़ॉर्मूले के लिए कुल जुटाया गया",
+        "donationCountTooltip": "पूर्ण दान",
+        "donationsCount": "{count} दान"
     },
     "formula": {
         "addAtLeastOne": "कम से कम एक संगठन जोड़ें",

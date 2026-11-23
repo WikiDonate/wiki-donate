@@ -311,7 +311,10 @@
         "sortRecent": "Äskettäin luotu",
         "sortMostDonations": "Suurin osa lahjoituksista",
         "sortMostRaised": "Eniten korotettuja",
-        "sortOldest": "Vanhin ensin"
+        "sortOldest": "Vanhin ensin",
+        "totalDonatedTooltip": "Kokonaiskeräys tälle kaavalle",
+        "donationCountTooltip": "Valmiit lahjoitukset",
+        "donationsCount": "{count} lahjoituksia"
     },
     "formula": {
         "addAtLeastOne": "Lisää vähintään yksi organisaatio",

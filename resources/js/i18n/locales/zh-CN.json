@@ -311,7 +311,10 @@
         "sortRecent": "最近创建",
         "sortMostDonations": "最多捐款",
         "sortMostRaised": "最多筹集资金",
-        "sortOldest": "最旧的在前"
+        "sortOldest": "最旧的在前",
+        "totalDonatedTooltip": "该公式筹集的资金总额",
+        "donationCountTooltip": "已完成捐款",
+        "donationsCount": "{count} 捐款"
     },
     "formula": {
         "addAtLeastOne": "添加至少一个组织",

@@ -311,7 +311,10 @@
         "sortRecent": "Mới được tạo",
         "sortMostDonations": "Đóng góp nhiều nhất",
         "sortMostRaised": "Tăng nhiều nhất",
-        "sortOldest": "Cũ nhất đầu tiên"
+        "sortOldest": "Cũ nhất đầu tiên",
+        "totalDonatedTooltip": "Tổng số tiền huy động được cho công thức này",
+        "donationCountTooltip": "Đóng góp đã hoàn thành",
+        "donationsCount": "Đóng góp {count}"
     },
     "formula": {
         "addAtLeastOne": "Thêm ít nhất một tổ chức",

@@ -311,7 +311,10 @@
         "sortRecent": "Nedávno vytvořeno",
         "sortMostDonations": "Nejvíce darů",
         "sortMostRaised": "Nejvíce zvednutý",
-        "sortOldest": "Nejstarší první"
+        "sortOldest": "Nejstarší první",
+        "totalDonatedTooltip": "Celková částka u tohoto vzorce",
+        "donationCountTooltip": "Dokončené dary",
+        "donationsCount": "{count} darů"
     },
     "formula": {
         "addAtLeastOne": "Přidejte alespoň jednu organizaci",

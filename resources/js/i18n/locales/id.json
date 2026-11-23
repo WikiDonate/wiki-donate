@@ -311,7 +311,10 @@
         "sortRecent": "Baru-baru ini Dibuat",
         "sortMostDonations": "Sumbangan Terbanyak",
         "sortMostRaised": "Paling Dibesarkan",
-        "sortOldest": "Tertua Pertama"
+        "sortOldest": "Tertua Pertama",
+        "totalDonatedTooltip": "Total yang dikumpulkan untuk formula ini",
+        "donationCountTooltip": "Donasi yang sudah selesai",
+        "donationsCount": "Donasi {count}"
     },
     "formula": {
         "addAtLeastOne": "Tambahkan setidaknya satu organisasi",

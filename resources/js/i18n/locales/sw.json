@@ -311,7 +311,10 @@
         "sortRecent": "Iliyoundwa Hivi Karibuni",
         "sortMostDonations": "Michango mingi",
         "sortMostRaised": "Iliyoinuliwa Zaidi",
-        "sortOldest": "Mzee Kwanza"
+        "sortOldest": "Mzee Kwanza",
+        "totalDonatedTooltip": "Jumla iliyokusanywa kwa fomula hii",
+        "donationCountTooltip": "Michango iliyokamilishwa",
+        "donationsCount": "Michango ya {count}"
     },
     "formula": {
         "addAtLeastOne": "Ongeza angalau shirika moja",

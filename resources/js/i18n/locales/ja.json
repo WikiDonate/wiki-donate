@@ -311,7 +311,10 @@
         "sortRecent": "最近作成されたもの",
         "sortMostDonations": "最も多くの寄付",
         "sortMostRaised": "最も高く評価された",
-        "sortOldest": "古い順"
+        "sortOldest": "古い順",
+        "totalDonatedTooltip": "このフォーミュラで集まった合計額",
+        "donationCountTooltip": "寄付完了",
+        "donationsCount": "{count} 寄付"
     },
     "formula": {
         "addAtLeastOne": "少なくとも 1 つの組織を追加します",

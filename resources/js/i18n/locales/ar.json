@@ -311,7 +311,10 @@
         "sortRecent": "تم إنشاؤها مؤخرًا",
         "sortMostDonations": "معظم التبرعات",
         "sortMostRaised": "الأكثر رفعا",
-        "sortOldest": "الأقدم أولاً"
+        "sortOldest": "الأقدم أولاً",
+        "totalDonatedTooltip": "المجموع المرفوع لهذه الصيغة",
+        "donationCountTooltip": "التبرعات المكتملة",
+        "donationsCount": "تبرعات {count}"
     },
     "formula": {
         "addAtLeastOne": "أضف مؤسسة واحدة على الأقل",

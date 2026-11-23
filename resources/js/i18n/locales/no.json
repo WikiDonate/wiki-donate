@@ -311,7 +311,10 @@
         "sortRecent": "Nylig opprettet",
         "sortMostDonations": "Flest donasjoner",
         "sortMostRaised": "Mest oppvokst",
-        "sortOldest": "Eldste først"
+        "sortOldest": "Eldste først",
+        "totalDonatedTooltip": "Totalt samlet for denne formelen",
+        "donationCountTooltip": "Fullførte donasjoner",
+        "donationsCount": "{count} donasjoner"
     },
     "formula": {
         "addAtLeastOne": "Legg til minst én organisasjon",

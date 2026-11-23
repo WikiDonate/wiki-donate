@@ -311,7 +311,10 @@
         "sortRecent": "Creat recent",
         "sortMostDonations": "Cele mai multe donații",
         "sortMostRaised": "Cele mai crescute",
-        "sortOldest": "Cel mai vechi primul"
+        "sortOldest": "Cel mai vechi primul",
+        "totalDonatedTooltip": "Total strâns pentru această formulă",
+        "donationCountTooltip": "Donații finalizate",
+        "donationsCount": "donații {count}"
     },
     "formula": {
         "addAtLeastOne": "Adăugați cel puțin o organizație",

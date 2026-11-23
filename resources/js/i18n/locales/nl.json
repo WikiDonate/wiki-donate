@@ -311,7 +311,10 @@
         "sortRecent": "Recent gemaakt",
         "sortMostDonations": "De meeste donaties",
         "sortMostRaised": "Meest verhoogd",
-        "sortOldest": "Oudste eerst"
+        "sortOldest": "Oudste eerst",
+        "totalDonatedTooltip": "Totaal ingezameld voor deze formule",
+        "donationCountTooltip": "Voltooide donaties",
+        "donationsCount": "{count} donaties"
     },
     "formula": {
         "addAtLeastOne": "Voeg ten minste één organisatie toe",

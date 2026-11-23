@@ -311,7 +311,10 @@
         "sortRecent": "Nemrég létrehozva",
         "sortMostDonations": "A legtöbb adomány",
         "sortMostRaised": "A legtöbbet emelt",
-        "sortOldest": "A legrégebbi első"
+        "sortOldest": "A legrégebbi első",
+        "totalDonatedTooltip": "Összesen erre a képletre",
+        "donationCountTooltip": "Befejezett adományok",
+        "donationsCount": "{count} adományok"
     },
     "formula": {
         "addAtLeastOne": "Adjon hozzá legalább egy szervezetet",

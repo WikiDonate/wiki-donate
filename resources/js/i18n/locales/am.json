@@ -311,7 +311,10 @@
         "sortRecent": "በቅርቡ የተፈጠረ",
         "sortMostDonations": "አብዛኞቹ ልገሳዎች",
         "sortMostRaised": "በጣም ያደጉ",
-        "sortOldest": "በጣም ጥንታዊው መጀመሪያ"
+        "sortOldest": "በጣም ጥንታዊው መጀመሪያ",
+        "totalDonatedTooltip": "Total raised for this formula",
+        "donationCountTooltip": "የተጠናቀቁ ልገሳዎች",
+        "donationsCount": "{count} ልገሳዎች"
     },
     "formula": {
         "addAtLeastOne": "ቢያንስ አንድ ድርጅት ይጨምሩ",

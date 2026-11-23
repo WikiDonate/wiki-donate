@@ -311,7 +311,10 @@
         "sortRecent": "Δημιουργήθηκε πρόσφατα",
         "sortMostDonations": "Οι περισσότερες δωρεές",
         "sortMostRaised": "Πιο Μεγαλωμένοι",
-        "sortOldest": "Πρώτος παλαιότερος"
+        "sortOldest": "Πρώτος παλαιότερος",
+        "totalDonatedTooltip": "Σύνολο που συγκεντρώθηκε για αυτόν τον τύπο",
+        "donationCountTooltip": "Ολοκληρωμένες δωρεές",
+        "donationsCount": "{count} δωρεές"
     },
     "formula": {
         "addAtLeastOne": "Προσθέστε τουλάχιστον έναν οργανισμό",

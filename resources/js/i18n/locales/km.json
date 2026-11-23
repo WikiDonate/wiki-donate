@@ -311,7 +311,10 @@
         "sortRecent": "បង្កើតថ្មីៗ",
         "sortMostDonations": "ការបរិច្ចាគភាគច្រើន",
         "sortMostRaised": "កើនឡើងច្រើនបំផុត",
-        "sortOldest": "ទីមួយចាស់ជាងគេ"
+        "sortOldest": "ទីមួយចាស់ជាងគេ",
+        "totalDonatedTooltip": "សរុបកើនឡើងសម្រាប់រូបមន្តនេះ។",
+        "donationCountTooltip": "ការបរិច្ចាគដែលបានបញ្ចប់",
+        "donationsCount": "ការបរិច្ចាគ {count}"
     },
     "formula": {
         "addAtLeastOne": "បន្ថែមអង្គការយ៉ាងហោចណាស់មួយ។",

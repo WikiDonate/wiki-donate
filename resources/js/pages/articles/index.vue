@@ -47,6 +47,32 @@
                                     {{ formula.user?.username }}
                                 </h4>
                                 <span
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2 py-0.5"
+                                    :title="t('article.totalDonatedTooltip')"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'coins']" class="w-3 h-3" />
+                                    {{ formatAmount(formula.total_donated) }}
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-1 text-xs font-medium text-gray-500"
+                                    :title="t('article.donationCountTooltip')"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
+                                    {{
+                                        t('article.donationsCount', {
+                                            count: formula.donations_count ?? 0,
+                                        })
+                                    }}
+                                </span>
+                                <Button
+                                    width="auto"
+                                    class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
+                                    @click="openDonateModal(formula)"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
+                                    <span>{{ t('article.donate') }}</span>
+                                </Button>
+                                <span
                                     v-if="formula.is_edited"
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-red-600"
                                     title="article.editedTooltip"
@@ -57,14 +83,6 @@
                                     />
                                     {{ t('article.editedByUser') }}
                                 </span>
-                                <Button
-                                    width="auto"
-                                    class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
-                                    @click="openDonateModal(formula)"
-                                >
-                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
-                                    <span>{{ t('article.donate') }}</span>
-                                </Button>
                             </div>
 
                             <div class="flex items-center gap-3 sm:gap-4 pb-1 sm:pb-0">
@@ -304,6 +322,15 @@
                 return formulas.sort((a, b) => (b.donations_count ?? 0) - (a.donations_count ?? 0))
         }
     })
+    // USD-only payouts (config/donations.php) — matches the donor/admin
+    // money formatters elsewhere in the app.
+    const usdFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    })
+
+    const formatAmount = (amount) => usdFormatter.format(Number(amount ?? 0))
+
     const openFormulas = ref([])
     const showDonationModal = ref(false)
     const showConfirmDelete = ref(false)

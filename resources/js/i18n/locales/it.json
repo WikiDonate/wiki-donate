@@ -311,7 +311,10 @@
         "sortRecent": "Creato di recente",
         "sortMostDonations": "La maggior parte delle donazioni",
         "sortMostRaised": "Il più sollevato",
-        "sortOldest": "Prima il più vecchio"
+        "sortOldest": "Prima il più vecchio",
+        "totalDonatedTooltip": "Totale raccolto per questa formula",
+        "donationCountTooltip": "Donazioni completate",
+        "donationsCount": "Donazioni {count}"
     },
     "formula": {
         "addAtLeastOne": "Aggiungi almeno un'organizzazione",

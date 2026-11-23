@@ -311,7 +311,10 @@
         "sortRecent": "Kamakailang Nilikha",
         "sortMostDonations": "Karamihan sa mga Donasyon",
         "sortMostRaised": "Most Raised",
-        "sortOldest": "Pinakamatanda Una"
+        "sortOldest": "Pinakamatanda Una",
+        "totalDonatedTooltip": "Kabuuang itinaas para sa formula na ito",
+        "donationCountTooltip": "Nakumpleto ang mga donasyon",
+        "donationsCount": "{count} na mga donasyon"
     },
     "formula": {
         "addAtLeastOne": "Magdagdag ng kahit isang organisasyon",

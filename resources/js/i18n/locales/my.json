@@ -311,7 +311,10 @@
         "sortRecent": "မကြာသေးမီက ဖန်တီးခဲ့သည်။",
         "sortMostDonations": "အလှူငွေအများဆုံး",
         "sortMostRaised": "အတိုးဆုံး",
-        "sortOldest": "အသက်အကြီးဆုံး ပထမ"
+        "sortOldest": "အသက်အကြီးဆုံး ပထမ",
+        "totalDonatedTooltip": "ဤဖော်မြူလာအတွက် စုစုပေါင်း တိုးသည်။",
+        "donationCountTooltip": "အလှူငွေများ ပြီးစီးခဲ့ပါသည်။",
+        "donationsCount": "{count} အလှူ"
     },
     "formula": {
         "addAtLeastOne": "အနည်းဆုံး အဖွဲ့အစည်းတစ်ခု ထည့်ပါ။",

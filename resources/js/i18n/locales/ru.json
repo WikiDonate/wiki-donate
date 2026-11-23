@@ -311,7 +311,10 @@
         "sortRecent": "Недавно создано",
         "sortMostDonations": "Большинство пожертвований",
         "sortMostRaised": "Самый поднятый",
-        "sortOldest": "Сначала самый старый"
+        "sortOldest": "Сначала самый старый",
+        "totalDonatedTooltip": "Всего собрано по этой формуле",
+        "donationCountTooltip": "Завершенные пожертвования",
+        "donationsCount": "{count} пожертвования"
     },
     "formula": {
         "addAtLeastOne": "Добавьте хотя бы одну организацию",

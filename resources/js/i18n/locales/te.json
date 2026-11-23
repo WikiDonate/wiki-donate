@@ -311,7 +311,10 @@
         "sortRecent": "ఇటీవల రూపొందించబడింది",
         "sortMostDonations": "చాలా విరాళాలు",
         "sortMostRaised": "ఎక్కువగా పెరిగింది",
-        "sortOldest": "పురాతన మొదటి"
+        "sortOldest": "పురాతన మొదటి",
+        "totalDonatedTooltip": "ఈ ఫార్ములా కోసం సేకరించిన మొత్తం",
+        "donationCountTooltip": "పూర్తి చేసిన విరాళాలు",
+        "donationsCount": "{count} విరాళాలు"
     },
     "formula": {
         "addAtLeastOne": "కనీసం ఒక సంస్థను జోడించండి",

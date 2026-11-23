@@ -311,7 +311,10 @@
         "sortRecent": "Nyligen skapad",
         "sortMostDonations": "De flesta donationer",
         "sortMostRaised": "Mest uppvuxen",
-        "sortOldest": "Äldst först"
+        "sortOldest": "Äldst först",
+        "totalDonatedTooltip": "Totalt höjt för denna formel",
+        "donationCountTooltip": "Genomförda donationer",
+        "donationsCount": "{count} donationer"
     },
     "formula": {
         "addAtLeastOne": "Lägg till minst en organisation",

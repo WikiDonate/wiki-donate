@@ -311,7 +311,10 @@
         "sortRecent": "Ostatnio utworzone",
         "sortMostDonations": "Większość darowizn",
         "sortMostRaised": "Najbardziej wychowany",
-        "sortOldest": "Najpierw najstarszy"
+        "sortOldest": "Najpierw najstarszy",
+        "totalDonatedTooltip": "Suma zebrana dla tej formuły",
+        "donationCountTooltip": "Skończone darowizny",
+        "donationsCount": "Darowizny {count}"
     },
     "formula": {
         "addAtLeastOne": "Dodaj co najmniej jedną organizację",

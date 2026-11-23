@@ -311,7 +311,10 @@
         "sortRecent": "சமீபத்தில் உருவாக்கப்பட்டது",
         "sortMostDonations": "பெரும்பாலான நன்கொடைகள்",
         "sortMostRaised": "மிகவும் உயர்த்தப்பட்டது",
-        "sortOldest": "பழமையான முதல்"
+        "sortOldest": "பழமையான முதல்",
+        "totalDonatedTooltip": "இந்த ஃபார்முலாவுக்கான மொத்த வசூல்",
+        "donationCountTooltip": "பூர்த்தி செய்யப்பட்ட நன்கொடைகள்",
+        "donationsCount": "{count} நன்கொடைகள்"
     },
     "formula": {
         "addAtLeastOne": "குறைந்தது ஒரு நிறுவனத்தைச் சேர்க்கவும்",

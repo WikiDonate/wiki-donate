@@ -311,7 +311,10 @@
         "sortRecent": "حال ہی میں تخلیق کردہ",
         "sortMostDonations": "زیادہ تر عطیات",
         "sortMostRaised": "سب سے زیادہ اٹھائے گئے",
-        "sortOldest": "سب سے پرانا پہلا"
+        "sortOldest": "سب سے پرانا پہلا",
+        "totalDonatedTooltip": "اس فارمولے کے لیے جمع کردہ کل",
+        "donationCountTooltip": "مکمل عطیات",
+        "donationsCount": "{count} عطیات"
     },
     "formula": {
         "addAtLeastOne": "کم از کم ایک تنظیم شامل کریں۔",

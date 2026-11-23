@@ -311,7 +311,10 @@
         "sortRecent": "נוצר לאחרונה",
         "sortMostDonations": "רוב התרומות",
         "sortMostRaised": "הכי גדל",
-        "sortOldest": "הישן ביותר ראשון"
+        "sortOldest": "הישן ביותר ראשון",
+        "totalDonatedTooltip": "סך הכל הועלה עבור הנוסחה הזו",
+        "donationCountTooltip": "הושלמו תרומות",
+        "donationsCount": "תרומות {count}"
     },
     "formula": {
         "addAtLeastOne": "הוסף לפחות ארגון אחד",

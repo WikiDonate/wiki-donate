@@ -311,7 +311,10 @@
         "sortRecent": "최근 생성됨",
         "sortMostDonations": "최다 기부",
         "sortMostRaised": "가장 많이 제기됨",
-        "sortOldest": "오래된 것부터"
+        "sortOldest": "오래된 것부터",
+        "totalDonatedTooltip": "이 공식에 대해 모금된 총액",
+        "donationCountTooltip": "기부완료",
+        "donationsCount": "{count} 기부"
     },
     "formula": {
         "addAtLeastOne": "조직을 하나 이상 추가하세요.",

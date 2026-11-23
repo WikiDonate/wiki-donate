@@ -311,7 +311,10 @@
         "sortRecent": "Baru Dicipta",
         "sortMostDonations": "Kebanyakan Derma",
         "sortMostRaised": "Paling Dibesarkan",
-        "sortOldest": "Tertua Pertama"
+        "sortOldest": "Tertua Pertama",
+        "totalDonatedTooltip": "Jumlah yang diperoleh untuk formula ini",
+        "donationCountTooltip": "Selesai sumbangan",
+        "donationsCount": "Derma {count}"
     },
     "formula": {
         "addAtLeastOne": "Tambah sekurang-kurangnya satu organisasi",

@@ -311,7 +311,10 @@
         "sortRecent": "Son Oluşturulanlar",
         "sortMostDonations": "En Çok Bağış",
         "sortMostRaised": "En Çok Yükseltilen",
-        "sortOldest": "En Eski İlk"
+        "sortOldest": "En Eski İlk",
+        "totalDonatedTooltip": "Bu formül için toplanan toplam",
+        "donationCountTooltip": "Tamamlanan bağışlar",
+        "donationsCount": "{count} bağış"
     },
     "formula": {
         "addAtLeastOne": "En az bir kuruluş ekleyin",

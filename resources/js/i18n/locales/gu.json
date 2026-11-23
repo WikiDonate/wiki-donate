@@ -311,7 +311,10 @@
         "sortRecent": "તાજેતરમાં બનાવેલ",
         "sortMostDonations": "સૌથી વધુ દાન",
         "sortMostRaised": "સૌથી વધુ ઉછેર",
-        "sortOldest": "સૌથી જૂની પ્રથમ"
+        "sortOldest": "સૌથી જૂની પ્રથમ",
+        "totalDonatedTooltip": "આ ફોર્મ્યુલા માટે કુલ વધારો",
+        "donationCountTooltip": "પૂર્ણ દાન",
+        "donationsCount": "{count} દાન"
     },
     "formula": {
         "addAtLeastOne": "ઓછામાં ઓછી એક સંસ્થા ઉમેરો",

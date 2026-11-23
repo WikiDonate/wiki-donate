@@ -311,7 +311,10 @@
         "sortRecent": "সম্প্রতি তৈরি করা হয়েছে",
         "sortMostDonations": "সর্বাধিক অনুদান",
         "sortMostRaised": "সর্বাধিক উত্থাপিত",
-        "sortOldest": "প্রাচীনতম প্রথম"
+        "sortOldest": "প্রাচীনতম প্রথম",
+        "totalDonatedTooltip": "এই সূত্রের জন্য মোট উত্থাপিত হয়েছে",
+        "donationCountTooltip": "সম্পূর্ণ অনুদান",
+        "donationsCount": "{count} অনুদান"
     },
     "formula": {
         "addAtLeastOne": "অন্তত একটি সংস্থা যোগ করুন",

@@ -311,7 +311,10 @@
         "sortRecent": "สร้างล่าสุด",
         "sortMostDonations": "บริจาคมากที่สุด",
         "sortMostRaised": "เลี้ยงมากที่สุด",
-        "sortOldest": "เก่าแก่ที่สุดก่อน"
+        "sortOldest": "เก่าแก่ที่สุดก่อน",
+        "totalDonatedTooltip": "ยอดรวมที่เพิ่มขึ้นสำหรับสูตรนี้",
+        "donationCountTooltip": "บริจาคเสร็จแล้ว",
+        "donationsCount": "การบริจาค {count}"
     },
     "formula": {
         "addAtLeastOne": "เพิ่มอย่างน้อยหนึ่งองค์กร",
