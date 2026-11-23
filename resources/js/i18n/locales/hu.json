@@ -306,7 +306,12 @@
         "confirmSave": "Biztosan menteni szeretné ezt a cikket?",
         "savedSuccess": "A cikk sikeresen mentve!",
         "saveFailed": "Nem sikerült menteni a cikket",
-        "saveError": "Hiba történt a mentés során"
+        "saveError": "Hiba történt a mentés során",
+        "sortPopular": "Legnépszerűbb",
+        "sortRecent": "Nemrég létrehozva",
+        "sortMostDonations": "A legtöbb adomány",
+        "sortMostRaised": "A legtöbbet emelt",
+        "sortOldest": "A legrégebbi első"
     },
     "formula": {
         "addAtLeastOne": "Adjon hozzá legalább egy szervezetet",

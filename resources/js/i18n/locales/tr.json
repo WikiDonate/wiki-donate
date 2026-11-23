@@ -306,7 +306,12 @@
         "confirmSave": "Bu makaleyi kaydetmek istediğinizden emin misiniz?",
         "savedSuccess": "Makale başarıyla kaydedildi!",
         "saveFailed": "Makale kaydedilemedi",
-        "saveError": "Kaydedilirken bir hata oluştu"
+        "saveError": "Kaydedilirken bir hata oluştu",
+        "sortPopular": "En Popüler",
+        "sortRecent": "Son Oluşturulanlar",
+        "sortMostDonations": "En Çok Bağış",
+        "sortMostRaised": "En Çok Yükseltilen",
+        "sortOldest": "En Eski İlk"
     },
     "formula": {
         "addAtLeastOne": "En az bir kuruluş ekleyin",

@@ -306,7 +306,12 @@
         "confirmSave": "Möchten Sie diesen Artikel wirklich speichern?",
         "savedSuccess": "Artikel erfolgreich gespeichert!",
         "saveFailed": "Artikel konnte nicht gespeichert werden",
-        "saveError": "Beim Speichern ist ein Fehler aufgetreten"
+        "saveError": "Beim Speichern ist ein Fehler aufgetreten",
+        "sortPopular": "Am beliebtesten",
+        "sortRecent": "Kürzlich erstellt",
+        "sortMostDonations": "Die meisten Spenden",
+        "sortMostRaised": "Am meisten erzogen",
+        "sortOldest": "Älteste zuerst"
     },
     "formula": {
         "addAtLeastOne": "Fügen Sie mindestens eine Organisation hinzu",

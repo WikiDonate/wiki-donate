@@ -306,7 +306,12 @@
         "confirmSave": "Er du sikker på at du vil lagre denne artikkelen?",
         "savedSuccess": "Artikkelen er lagret!",
         "saveFailed": "Kunne ikke lagre artikkelen",
-        "saveError": "Det oppsto en feil under lagring"
+        "saveError": "Det oppsto en feil under lagring",
+        "sortPopular": "Mest populær",
+        "sortRecent": "Nylig opprettet",
+        "sortMostDonations": "Flest donasjoner",
+        "sortMostRaised": "Mest oppvokst",
+        "sortOldest": "Eldste først"
     },
     "formula": {
         "addAtLeastOne": "Legg til minst én organisasjon",

@@ -306,7 +306,12 @@
         "confirmSave": "Sigurado ka bang gusto mong i-save ang artikulong ito?",
         "savedSuccess": "Matagumpay na na-save ang artikulo!",
         "saveFailed": "Nabigong i-save ang artikulo",
-        "saveError": "Nagkaroon ng error habang nagse-save"
+        "saveError": "Nagkaroon ng error habang nagse-save",
+        "sortPopular": "Pinakasikat",
+        "sortRecent": "Kamakailang Nilikha",
+        "sortMostDonations": "Karamihan sa mga Donasyon",
+        "sortMostRaised": "Most Raised",
+        "sortOldest": "Pinakamatanda Una"
     },
     "formula": {
         "addAtLeastOne": "Magdagdag ng kahit isang organisasyon",

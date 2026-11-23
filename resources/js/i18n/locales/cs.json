@@ -306,7 +306,12 @@
         "confirmSave": "Opravdu chcete tento článek uložit?",
         "savedSuccess": "Článek byl úspěšně uložen!",
         "saveFailed": "Článek se nepodařilo uložit",
-        "saveError": "Při ukládání došlo k chybě"
+        "saveError": "Při ukládání došlo k chybě",
+        "sortPopular": "Nejoblíbenější",
+        "sortRecent": "Nedávno vytvořeno",
+        "sortMostDonations": "Nejvíce darů",
+        "sortMostRaised": "Nejvíce zvednutý",
+        "sortOldest": "Nejstarší první"
     },
     "formula": {
         "addAtLeastOne": "Přidejte alespoň jednu organizaci",

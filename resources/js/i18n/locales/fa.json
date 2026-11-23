@@ -306,7 +306,12 @@
         "confirmSave": "آیا مطمئن هستید که می خواهید این مقاله را ذخیره کنید؟",
         "savedSuccess": "مقاله با موفقیت ذخیره شد!",
         "saveFailed": "مقاله ذخیره نشد",
-        "saveError": "هنگام ذخیره خطایی روی داد"
+        "saveError": "هنگام ذخیره خطایی روی داد",
+        "sortPopular": "محبوب ترین",
+        "sortRecent": "اخیرا ایجاد شده است",
+        "sortMostDonations": "بیشترین کمک های مالی",
+        "sortMostRaised": "مطرح ترین",
+        "sortOldest": "قدیمی ترین اول"
     },
     "formula": {
         "addAtLeastOne": "حداقل یک سازمان اضافه کنید",

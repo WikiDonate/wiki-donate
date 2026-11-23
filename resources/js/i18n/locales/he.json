@@ -306,7 +306,12 @@
         "confirmSave": "האם אתה בטוח שברצונך לשמור מאמר זה?",
         "savedSuccess": "המאמר נשמר בהצלחה!",
         "saveFailed": "שמירת המאמר נכשלה",
-        "saveError": "אירעה שגיאה במהלך השמירה"
+        "saveError": "אירעה שגיאה במהלך השמירה",
+        "sortPopular": "הכי פופולרי",
+        "sortRecent": "נוצר לאחרונה",
+        "sortMostDonations": "רוב התרומות",
+        "sortMostRaised": "הכי גדל",
+        "sortOldest": "הישן ביותר ראשון"
     },
     "formula": {
         "addAtLeastOne": "הוסף לפחות ארגון אחד",

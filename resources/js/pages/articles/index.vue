@@ -12,19 +12,20 @@
         <section v-else class="bg-white p-2 md:p-4 lg:p-6">
             <!-- Donation Formulas -->
             <div v-if="donationFormulas.length > 0">
-                <h3
-                    class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 flex items-center gap-2"
-                >
-                    <font-awesome-icon
-                        :icon="['fas', 'hand-holding-heart']"
-                        class="text-indigo-600"
-                    />
-                    <span class="hidden sm:inline">{{ t('article.communityFormulas') }}</span>
-                    <span class="sm:hidden">{{ t('article.donationFormulas') }}</span>
-                </h3>
+                <div class="mb-4 md:mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                        <font-awesome-icon
+                            :icon="['fas', 'hand-holding-heart']"
+                            class="text-indigo-600"
+                        />
+                        <span class="hidden sm:inline">{{ t('article.communityFormulas') }}</span>
+                        <span class="sm:hidden">{{ t('article.donationFormulas') }}</span>
+                    </h3>
+                    <FormulaSortSelect v-model="sortBy" :options="sortOptions" />
+                </div>
                 <div class="space-y-3 md:space-y-4">
                     <div
-                        v-for="formula in donationFormulas"
+                        v-for="formula in sortedFormulas"
                         :id="`formula-${formula.uuid}`"
                         :key="formula.uuid"
                         class="bg-white border border-indigo-100 rounded-xl shadow-sm"
@@ -266,6 +267,43 @@
     const submittingDelete = ref(false)
 
     const donationFormulas = ref([])
+    const sortBy = ref('popular')
+    const sortOptions = [
+        { value: 'popular', labelKey: 'article.sortPopular', icon: ['fas', 'fire'] },
+        { value: 'donations', labelKey: 'article.sortMostDonations', icon: ['fas', 'heart'] },
+        { value: 'raised', labelKey: 'article.sortMostRaised', icon: ['fas', 'dollar-sign'] },
+        { value: 'recent', labelKey: 'article.sortRecent', icon: ['fas', 'clock'] },
+        { value: 'oldest', labelKey: 'article.sortOldest', icon: ['fas', 'rotate-left'] },
+    ]
+    // Compare two optional dates. Missing/invalid dates always sort last
+    // regardless of direction (never treated as the epoch, which would fake
+    // "oldest"). Direction only affects the two-valid-dates comparison.
+    const compareDates = (a, b, desc = false) => {
+        const timeA = a ? new Date(a).getTime() : NaN
+        const timeB = b ? new Date(b).getTime() : NaN
+        const validA = !Number.isNaN(timeA)
+        const validB = !Number.isNaN(timeB)
+        if (!validA && !validB) return 0
+        if (!validA) return 1
+        if (!validB) return -1
+        return desc ? timeB - timeA : timeA - timeB
+    }
+
+    const sortedFormulas = computed(() => {
+        const formulas = [...donationFormulas.value]
+        switch (sortBy.value) {
+            case 'donations':
+                return formulas.sort((a, b) => (b.donations_count ?? 0) - (a.donations_count ?? 0))
+            case 'raised':
+                return formulas.sort((a, b) => (b.total_donated ?? 0) - (a.total_donated ?? 0))
+            case 'recent':
+                return formulas.sort((a, b) => compareDates(a.created_at, b.created_at, true))
+            case 'oldest':
+                return formulas.sort((a, b) => compareDates(a.created_at, b.created_at))
+            default:
+                return formulas.sort((a, b) => (b.donations_count ?? 0) - (a.donations_count ?? 0))
+        }
+    })
     const openFormulas = ref([])
     const showDonationModal = ref(false)
     const showConfirmDelete = ref(false)

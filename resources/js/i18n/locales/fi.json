@@ -306,7 +306,12 @@
         "confirmSave": "Haluatko varmasti tallentaa tämän artikkelin?",
         "savedSuccess": "Artikkeli tallennettu onnistuneesti!",
         "saveFailed": "Artikkelin tallennus epäonnistui",
-        "saveError": "Tallennettaessa tapahtui virhe"
+        "saveError": "Tallennettaessa tapahtui virhe",
+        "sortPopular": "Suosituin",
+        "sortRecent": "Äskettäin luotu",
+        "sortMostDonations": "Suurin osa lahjoituksista",
+        "sortMostRaised": "Eniten korotettuja",
+        "sortOldest": "Vanhin ensin"
     },
     "formula": {
         "addAtLeastOne": "Lisää vähintään yksi organisaatio",

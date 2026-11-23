@@ -123,6 +123,62 @@ class DonationFormulaEditDeleteTest extends TestCase
         $this->assertNull($formula->edited_at);
     }
 
+    public function test_formula_list_exposes_completion_count_and_total_for_sorting()
+    {
+        $owner = User::factory()->create();
+        $article = Article::create([
+            'slug' => 'test-article-'.uniqid(),
+            'title' => 'Test Article',
+        ]);
+
+        $popular = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $owner->id,
+            'name' => 'Popular',
+            'formula' => [['organization' => 'Org A', 'percentage' => 100]],
+        ]);
+        $quiet = DonationFormula::create([
+            'article_id' => $article->id,
+            'user_id' => $owner->id,
+            'name' => 'Quiet',
+            'formula' => [['organization' => 'Org B', 'percentage' => 100]],
+        ]);
+
+        // Two completed + one pending on the popular formula: only completed
+        // rows must be counted/summed, or the "most popular" sort lies.
+        foreach ([['completed', 10], ['completed', 15], ['pending', 99]] as [$status, $amount]) {
+            Donation::create([
+                'user_id' => null,
+                'donation_formula_id' => $popular->id,
+                'donor_name' => 'Donor',
+                'donor_email' => 'donor@example.com',
+                'amount' => $amount,
+                'currency' => 'USD',
+                'status' => $status,
+            ]);
+        }
+
+        Donation::create([
+            'user_id' => null,
+            'donation_formula_id' => $quiet->id,
+            'donor_name' => 'Donor',
+            'donor_email' => 'donor@example.com',
+            'amount' => 5,
+            'currency' => 'USD',
+            'status' => 'completed',
+        ]);
+
+        $response = $this->getJson("/api/v1/donation-formulas/article/{$article->slug}");
+        $response->assertOk();
+
+        $rows = collect($response->json('data'))->keyBy('name');
+
+        $this->assertSame(2, $rows['Popular']['donations_count']);
+        $this->assertSame(25.0, (float) $rows['Popular']['total_donated']);
+        $this->assertSame(1, $rows['Quiet']['donations_count']);
+        $this->assertSame(5.0, (float) $rows['Quiet']['total_donated']);
+    }
+
     public function test_name_is_rejected_when_a_soft_deleted_formula_still_holds_it()
     {
         $owner = User::factory()->create();

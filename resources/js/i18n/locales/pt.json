@@ -306,7 +306,12 @@
         "confirmSave": "Tem certeza de que deseja salvar este artigo?",
         "savedSuccess": "Artigo salvo com sucesso!",
         "saveFailed": "Falha ao salvar o artigo",
-        "saveError": "Ocorreu um erro ao salvar"
+        "saveError": "Ocorreu um erro ao salvar",
+        "sortPopular": "Mais populares",
+        "sortRecent": "Criado recentemente",
+        "sortMostDonations": "Maioria das doações",
+        "sortMostRaised": "Mais levantados",
+        "sortOldest": "Mais antigo primeiro"
     },
     "formula": {
         "addAtLeastOne": "Adicione pelo menos uma organização",
