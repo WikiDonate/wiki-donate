@@ -306,7 +306,15 @@
         "confirmSave": "Adakah anda pasti mahu menyimpan artikel ini?",
         "savedSuccess": "Artikel berjaya disimpan!",
         "saveFailed": "Gagal menyimpan artikel",
-        "saveError": "Ralat berlaku semasa menyimpan"
+        "saveError": "Ralat berlaku semasa menyimpan",
+        "sortPopular": "Paling Popular",
+        "sortRecent": "Baru Dicipta",
+        "sortMostDonations": "Kebanyakan Derma",
+        "sortMostRaised": "Paling Dibesarkan",
+        "sortOldest": "Tertua Pertama",
+        "totalDonatedTooltip": "Jumlah yang diperoleh untuk formula ini",
+        "donationCountTooltip": "Selesai sumbangan",
+        "donationsCount": "Derma {count}"
     },
     "formula": {
         "addAtLeastOne": "Tambah sekurang-kurangnya satu organisasi",

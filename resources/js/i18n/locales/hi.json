@@ -306,7 +306,15 @@
         "confirmSave": "क्या आप वाकई इस लेख को सहेजना चाहते हैं?",
         "savedSuccess": "आलेख सफलतापूर्वक सहेजा गया!",
         "saveFailed": "आलेख सहेजने में विफल",
-        "saveError": "सहेजते समय कोई त्रुटि उत्पन्न हुई"
+        "saveError": "सहेजते समय कोई त्रुटि उत्पन्न हुई",
+        "sortPopular": "सर्वाधिक लोकप्रिय",
+        "sortRecent": "हाल ही में बनाया गया",
+        "sortMostDonations": "सर्वाधिक दान",
+        "sortMostRaised": "सर्वाधिक उठाया गया",
+        "sortOldest": "सबसे पुराना प्रथम",
+        "totalDonatedTooltip": "इस फ़ॉर्मूले के लिए कुल जुटाया गया",
+        "donationCountTooltip": "पूर्ण दान",
+        "donationsCount": "{count} दान"
     },
     "formula": {
         "addAtLeastOne": "कम से कम एक संगठन जोड़ें",

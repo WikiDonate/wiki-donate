@@ -306,7 +306,15 @@
         "confirmSave": "Je, una uhakika ungependa kuhifadhi makala haya?",
         "savedSuccess": "Kifungu kimehifadhiwa!",
         "saveFailed": "Imeshindwa kuhifadhi makala",
-        "saveError": "Hitilafu imetokea wakati wa kuhifadhi"
+        "saveError": "Hitilafu imetokea wakati wa kuhifadhi",
+        "sortPopular": "Maarufu Zaidi",
+        "sortRecent": "Iliyoundwa Hivi Karibuni",
+        "sortMostDonations": "Michango mingi",
+        "sortMostRaised": "Iliyoinuliwa Zaidi",
+        "sortOldest": "Mzee Kwanza",
+        "totalDonatedTooltip": "Jumla iliyokusanywa kwa fomula hii",
+        "donationCountTooltip": "Michango iliyokamilishwa",
+        "donationsCount": "Michango ya {count}"
     },
     "formula": {
         "addAtLeastOne": "Ongeza angalau shirika moja",

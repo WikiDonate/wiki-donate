@@ -306,7 +306,15 @@
         "confirmSave": "¿Estás seguro de que quieres guardar este artículo?",
         "savedSuccess": "¡Artículo guardado exitosamente!",
         "saveFailed": "No se pudo guardar el artículo",
-        "saveError": "Ocurrió un error al guardar"
+        "saveError": "Ocurrió un error al guardar",
+        "sortPopular": "Más Popular",
+        "sortRecent": "Creado recientemente",
+        "sortMostDonations": "La mayoría de las donaciones",
+        "sortMostRaised": "Más elevado",
+        "sortOldest": "El más viejo primero",
+        "totalDonatedTooltip": "Total recaudado para esta fórmula",
+        "donationCountTooltip": "Donaciones completadas",
+        "donationsCount": "Donaciones {count}"
     },
     "formula": {
         "addAtLeastOne": "Añade al menos una organización",

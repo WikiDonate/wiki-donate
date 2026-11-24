@@ -306,7 +306,15 @@
         "confirmSave": "Sigur vrei să salvezi acest articol?",
         "savedSuccess": "Articol salvat cu succes!",
         "saveFailed": "Nu s-a putut salva articolul",
-        "saveError": "A apărut o eroare la salvare"
+        "saveError": "A apărut o eroare la salvare",
+        "sortPopular": "Cele mai populare",
+        "sortRecent": "Creat recent",
+        "sortMostDonations": "Cele mai multe donații",
+        "sortMostRaised": "Cele mai crescute",
+        "sortOldest": "Cel mai vechi primul",
+        "totalDonatedTooltip": "Total strâns pentru această formulă",
+        "donationCountTooltip": "Donații finalizate",
+        "donationsCount": "donații {count}"
     },
     "formula": {
         "addAtLeastOne": "Adăugați cel puțin o organizație",

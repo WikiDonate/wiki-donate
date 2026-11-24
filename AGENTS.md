@@ -1,49 +1,142 @@
 # AGENTS.md - WikiDonate
 
-Single repo: Laravel 13 API (`app/`, `routes/api*.php`) + Vue 3 SPA (`resources/js/`). `public/build/` is Vite output — generated, never edit.
+## Project Overview
+
+WikiDonate is a donation platform for causes: users browse and contribute to articles, make donations allocated to verified organizations, and admins manage articles, donations, organizations, and PayPal payouts.
+
+Single repo, two halves:
+
+- **Laravel 13 REST API** (`app/`, `routes/api*.php`) — API-only, token-authenticated via Sanctum.
+- **Vue 3 SPA** (`resources/js/`), built with Vite. `public/build/` is generated Vite output — **never edit it**.
 
 Branches: `main` is the deploy branch and may lag; `develop` is the active feature line and is currently ahead (USD-only currency + payout reconciliation). Run `git branch --show-current` before assuming a command or file below exists — items marked `develop` are not on `main` yet.
 
-## Setup & dev
+## Tech Stack & Technologies
+
+- **Backend:** PHP 8.3+ (CI runs 8.4), Laravel 13. Eloquent models, service classes (`app/Services/`), Artisan console commands.
+- **Auth:** `laravel/sanctum` (SPA bearer tokens) + `spatie/laravel-permission` (roles).
+- **Payments:** `stripe/stripe-php`, plus a custom PayPal client. Gateway config lives in the DB, not env.
+- **API docs:** `darkaonline/l5-swagger` (Swagger UI at `/api/documentation`).
+- **Frontend:** Vue 3 (Composition API, `<script setup>`), Vue Router 5, Pinia (+ `pinia-plugin-persistedstate`), vue-i18n, vee-validate + yup, axios, `@vueuse/head`, vue-toast-notification, FontAwesome, `@stripe/stripe-js`.
+- **Build/CSS:** Vite 8, `laravel-vite-plugin`, Tailwind CSS 4 (`@tailwindcss/vite`), `unplugin-auto-import`, `unplugin-vue-components` (auto-registers all `components/**/*.vue`).
+- **Database:** MySQL in production/dev; tests run on sqlite `:memory:`.
+- **Package managers:** Composer (PHP), npm (JS). CI installs with `npm ci`.
+- **Testing:** PHPUnit 11 via `php artisan test` (Laravel's test runner). No JS test framework.
+- **Formatting/linting:** Pint (`laravel` preset) for PHP; ESLint (flat config) + Prettier for JS/Vue. **No TypeScript and no typechecker** — the SPA is plain JS + Vue SFCs, so there is no `typecheck` step to run.
+
+## Project Structure
+
+```
+app/
+├── Console/Commands/          artisan commands (payouts:sync, donations:legacy-currency, …)
+├── Http/
+│   ├── Controllers/v1/        API controllers (Admin/ = admin-only)
+│   ├── Middleware/            FreshAuthGuard, OptionalAuth, …
+│   ├── Requests/              form-request validation
+│   └── Resources/             API resources
+├── Models/                    Eloquent models
+├── Services/                  business logic (keep controllers thin)
+│   ├── Charity/               external charity lookup
+│   ├── Organization/          registry + verification
+│   ├── Payment/               credentials, providers, PayPalClient
+│   └── Payout/                balances, ledger, reconciliation
+├── Mail/  Observers/  Rules/  Exceptions/  Providers/  Contracts/
+└── helpers.php
+routes/                        api.php + api/{admin,editor}.php, web.php
+config/                        donations.php, services.php, …
+database/                      migrations, seeders, factories
+resources/js/                  the Vue SPA (see below)
+resources/views/app.blade.php  SPA entry
+scripts/                       smoke-endpoints.sh, deploy.sh, locale build/backfill/translate Python
+tests/Unit/, tests/Feature/    unit + feature (endpoint) tests
+public/build/                  generated Vite output — never edit
+.github/workflows/             ci.yml (gates deploy.yml)
+```
+
+```
+resources/js/
+├── pages/         {public,auth,account,articles,payment,admin} — one SFC per route
+├── components/    {ui,layout,forms,article,organization,donation,admin}
+├── composables/   reusable Composition API logic
+├── services/      thin axios wrappers over the API
+├── stores/        Pinia stores (authStore, …)
+├── router/  layouts/  config/  utils/  plugins/  i18n/  assets/  static/
+├── App.vue  app.js  shims.js
+```
+
+Components are auto-registered from every subfolder (`Components({ deep: true })`), so the folder does not change the tag name (`<AdminBadge>`, `<Pagination>`, …). Route URLs are unchanged; only `router/index.js` imports the grouped pages.
+
+## Key Commands
+
+### Install & run
 
 ```bash
 composer install
-npm install            # CI uses `npm ci`
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
+npm install            # CI uses `npm ci`; setup: cp .env.example .env && php artisan key:generate && php artisan migrate
 ```
 
 - A — built SPA: `npm run build` then `php artisan serve` → `:8000`.
 - B — Vite dev: `php artisan serve` + `npm run dev` → `:5173`; `/api` is proxied to `:8000` (`vite.config.js`).
+- `composer run dev` runs server + `queue:listen` + `pail` together (via `concurrently`).
 - `VITE_*` are build-time (`import.meta.env`). After changing them, re-run `npm run build` (or restart Vite).
-- Payment gateway credentials are **DB rows, not env**: no `STRIPE_*` / `PAYPAL_*` / `VITE_*_PUBLIC_KEY` in `.env` (see “Payment config” under Gotchas).
+- Payment gateway credentials are **DB rows, not env**: no `STRIPE_*` / `PAYPAL_*` / `VITE_*_PUBLIC_KEY` in `.env` (see "Payment config" under Gotchas).
 - `.env.example` sets `QUEUE_CONNECTION=database`; queued mail/notifications only send while `php artisan queue:work` is running.
 
-## Verify (mirrors `.github/workflows/ci.yml`)
+### Test
 
 ```bash
-./vendor/bin/pint --test
 php artisan test --compact              # full suite ~2–5 min (warm runs ~1–2 min)
 php artisan test --filter=OrganizationPayoutTest
-npm run lint                            # eslint resources/js
-npm run format:check                    # prettier --check resources/js
-npm run build
 ./scripts/smoke-endpoints.sh            # endpoint E2E smoke (needs `php artisan serve`)
 ```
 
+### Format, lint & static analysis
+
+```bash
+./vendor/bin/pint          # fix PHP style (add --test to check only)
+./vendor/bin/pint --test
+npm run lint               # eslint resources/js
+npm run format             # prettier --write resources/js
+npm run format:check       # prettier --check resources/js
+npm run build              # Vite production build (also used as a build-check in CI)
+```
+
+These mirror `.github/workflows/ci.yml` (backend job runs Pint `--test` + `php artisan test --compact`; frontend job runs `npm run lint`, `npm run format:check`, `npm run build`). CI (PHP 8.4 / Node 22) gates `deploy.yml`; deploy runs on the VPS: composer, `npm ci` + build, `php artisan migrate --force`, cache rebuild.
+
 - **Every completed task runs all four checks**: `./vendor/bin/pint --test`, `php artisan test`, `npx eslint resources/js`, `npx prettier --check resources/js`. Report the result of each; fix failures before finishing.
-- **Every task that touches files ends with a change summary**: list the files changed, what changed in each, and the reason (why it was needed), followed by the verification results. Keep it concise but explain the rationale — the user uses it to learn the project.
-- There is **no TypeScript** in this repo: no `tsconfig.json`, no `typescript`/`vue-tsc`, no `typecheck` script. The SPA is plain JS + Vue SFCs, so don’t claim a “TS check” ran — say it’s not configured (adding one requires the tooling first).
-- CI (PHP 8.4 / Node 22) gates `deploy.yml`; deploy runs on the VPS: composer, `npm ci` + build, `php artisan migrate --force`, cache rebuild.
+- There is **no TypeScript** in this repo: no `tsconfig.json`, no `typescript`/`vue-tsc`, no `typecheck` script. Don't claim a "TS check" ran — say it's not configured.
 - **Deploy never seeds.** Seeding is manual: `php artisan db:seed` (demo data only when `APP_ENV=local`; other seeders in `database/seeders/`). Never add `--seed` or `migrate:fresh` to a deploy path. `DemoDataSeeder` creates users **and** formulas/donations/payouts — running it repopulates demo money data even after a manual cleanup.
 - Blade entry `resources/views/app.blade.php` uses `public/hot` (dev) else `public/build/.vite/manifest.json`, else hard-codes `http://localhost:5173`. Blank SPA = missing build or not running Vite.
+
+## Coding Conventions & Best Practices
+
+- Operate as a **senior Laravel + Vue engineer**: descriptive variable/function names, comments where the intent or rationale isn't obvious (not narration).
+- **Modular & service-based.** Keep controllers/views thin — business logic lives in `app/Services/` (grouped by domain), requests in `app/Http/Requests/`. On the SPA, split UI into small single-responsibility components and move reusable logic into `composables/` or `stores/`. Follow the existing page/component folder grouping (`pages/{public,auth,account,articles,payment,admin}`, `components/{ui,layout,forms,article,organization,donation,admin}`).
+- **DRY & reuse before creating.** Extract shared logic into service methods, traits, composables, or UI components instead of duplicating it. `resources/js/services/*.js` are thin axios wrappers — add a method there rather than calling axios inline.
+- **Clean code & naming.** Clear, meaningful names for variables, functions, classes, files, and components. No vague abbreviations, no magic numbers/strings — use named constants or config.
+- **Well-structured & maintainable.** Keep functions/methods concise and enforce separation of concerns (controllers → services → models). Follow the framework's standard layout rather than inventing new top-level folders.
+- Pint uses the `laravel` preset (`pint.json`). Return generic 500 messages; don't expose `$e->getMessage()` to clients.
+- Prettier: `.prettierrc` is authoritative (no-semi, single quotes, 4 spaces, width 100, trailing commas, `vueIndentScriptAndStyle`). `.prettierrc.cjs` is a stale duplicate — don't edit it.
+- ESLint flat config disables `vue/multi-word-component-names`, `vue/max-attributes-per-line`, `vue/html-self-closing` and ignores `public/build`.
+- `resources/js/services/*.js` are thin axios wrappers. Pinia uses `pinia-plugin-persistedstate`; `authStore` persists token/user (XSS-sensitive — don't widen persisted paths).
+
+## Agent Operating Rules (Mandatory)
+
+- **Dynamic Role Assignment.** Automatically adopt the most appropriate engineering role (e.g., Frontend Engineer, Backend Architect, Full-Stack Developer, QA Engineer, DevOps) based on the user's current task or prompt.
+- **Follow Coding Best Practices.** Strictly write clean, modular, reusable, and well-structured code with meaningful variable and function names, proper separation of concerns, and idiomatic framework patterns.
+- **Keep `AGENTS.md` Updated.** Whenever new technologies, packages, or architectural patterns are introduced to the project, update `AGENTS.md` accordingly.
+- **Strict Development Workflow.** Always follow this exact sequence when making changes:
+  1. **Code:** Implement the requested feature or fix following existing project conventions and coding best practices.
+  2. **Test:** Write or update tests as needed and run the project's test suite (`php artisan test`) to verify everything passes.
+  3. **Format & Validate:** Run the project's configured formatter, linter, and static analyzer before finishing — `./vendor/bin/pint --test`, `npm run lint`, `npm run format:check`, and `npm run build`. (No typechecker exists in this repo.)
+- **Git Restrictions.** **NEVER** run `git commit` or `git push`. Leave all changes uncommitted so the user can review and commit them manually.
+- **Change Summary.** Upon completing any task, provide a clear, structured summary of what was changed, which files were modified/created, and the verification steps run. List the files changed, what changed in each, and the reason (why it was needed), followed by the verification results. Keep it concise but explain the rationale — the user uses it to learn the project.
 
 ## Architecture
 
 - All routes are under `v1` (`routes/api.php`). `require editor.php` runs **before** `articles/{slug}` so `articles/my` is not swallowed by the slug route. `admin.php` loads last (`role:Admin`); `editor.php` is `role:Admin|Editor`. Public article index/show use `OptionalAuth` (selects the sanctum guard without requiring a token).
-- Role-gated `auth:sanctum` groups also use `FreshAuthGuard`, including the donor report (`report/donations`): Sanctum memoizes the first resolved user per process, so long-lived runtimes (tests, Octane, workers) would otherwise reuse a previous request’s identity — for the report that means serving another user’s donations. Don’t remove it as “redundant”, and put it on any new authenticated route.
-- API-only app: `bootstrap/app.php` disables guest redirects and renders JSON `401`; don’t add HTML auth redirects.
+- Role-gated `auth:sanctum` groups also use `FreshAuthGuard`, including the donor report (`report/donations`): Sanctum memoizes the first resolved user per process, so long-lived runtimes (tests, Octane, workers) would otherwise reuse a previous request's identity — for the report that means serving another user's donations. Don't remove it as "redundant", and put it on any new authenticated route.
+- API-only app: `bootstrap/app.php` disables guest redirects and renders JSON `401`; don't add HTML auth redirects.
 - `routes/web.php` SPA catch-all excludes `api|build|storage|vendor|sanctum|up|when|oauth|_ignition|telescope|horizon`. A new top-level path prefix must be added to that negative lookahead or it will serve the SPA.
 - Organization autocomplete has two very different endpoints: `GET v1/organizations/search` (`Admin|Editor`) is **registry-only** for formula rows; `GET v1/charities/search` is **admin-only** despite having no `admin/` prefix (external Charity Navigator/ProPublica, merges local verified orgs first). Donor/editor paths must never call external charity APIs.
 - SPA auth: Bearer token from `localStorage.token` (`resources/js/config/apiConfig.js`). The axios response interceptor returns `res.data` and rejects with `error.response.data`, so callers check `response.success`. A `401` clears `localStorage` and hard-redirects to `/login`.
@@ -54,39 +147,39 @@ npm run build
   - pages: `pages/{public,auth,account,articles,payment,admin}`; router imports `@/pages/<group>/<page>.vue` (URLs unchanged). The donor page is `pages/account/donations.vue` (route stays `/my-donates`).
   - components: `components/{ui,layout,forms,article,organization,donation,admin}`.
   - services: `app/Services/{Charity,Organization,Payment,Payout}` — `PayPalClient` is `App\Services\Payment\PayPalClient`, `CharitySearchService` is `App\Services\Charity\CharitySearchService`.
-- i18n: `vue-i18n`, **42** locales in `resources/js/i18n/locales/`, lazily loaded via `import.meta.glob`; RTL list (`ar, ur, he, fa`) in `index.js`. Don’t re-add the legacy Google Translate widget. Regenerate with `scripts/build_locales.py`, backfill with `scripts/backfill_locales.py`. Adding a key to `en.json` alone fails `PaymentMethodLocaleTest` (it requires every locale to carry the exact same key set) — run the backfill script before finishing.
+- i18n: `vue-i18n`, **42** locales in `resources/js/i18n/locales/`, lazily loaded via `import.meta.glob`; RTL list (`ar, ur, he, fa`) in `index.js`. Don't re-add the legacy Google Translate widget. Regenerate with `scripts/build_locales.py`, backfill with `scripts/backfill_locales.py`. Adding a key to `en.json` alone fails `PaymentMethodLocaleTest` (it requires every locale to carry the exact same key set) — run the backfill script before finishing.
 - Swagger UI at `/api/documentation` (`darkaonline/l5-swagger`).
 
 ## Conventions
 
-- Operate as a **senior Laravel + Vue engineer**: descriptive variable/function names, comments where the intent or rationale isn’t obvious (not narration), and reuse before creating — extract shared logic into service methods, composables, or UI components instead of duplicating it.
-- Pint uses the `laravel` preset (`pint.json`). Return generic 500 messages; don’t expose `$e->getMessage()` to clients.
-- Migrations: `created_at` / `updated_at` must be the **last** columns — call `$table->timestamps()` last on create, and **every column added later must be placed before them** with `->after('<the last business column>')` (e.g. `->after('metadata')`), never appended after `updated_at`. A plain `$table->string(...)` lands after the timestamps on MySQL. Fix already-deployed ordering only with a new MySQL-only `MODIFY ... AFTER` migration (patterns: `2026_10_31_000004_move_timestamps_last_on_payout_tables.php`, `2026_11_14_000001_move_timestamps_last_on_donations.php`); sqlite tests build fresh and won’t catch it. Verify with `information_schema.COLUMNS ... ORDER BY ORDINAL_POSITION`. Never rename a deployed migration file — prod re-runs it as new.
-- Prettier: `.prettierrc` is authoritative (no-semi, single quotes, 4 spaces, width 100, trailing commas). `.prettierrc.cjs` is a stale duplicate — don’t edit it.
+- Operate as a **senior Laravel + Vue engineer**: descriptive variable/function names, comments where the intent or rationale isn't obvious (not narration), and reuse before creating — extract shared logic into service methods, composables, or UI components instead of duplicating it.
+- Pint uses the `laravel` preset (`pint.json`). Return generic 500 messages; don't expose `$e->getMessage()` to clients.
+- Migrations: `created_at` / `updated_at` must be the **last** columns — call `$table->timestamps()` last on create, and **every column added later must be placed before them** with `->after('<the last business column>')` (e.g. `->after('metadata')`), never appended after `updated_at`. A plain `$table->string(...)` lands after the timestamps on MySQL. Fix already-deployed ordering only with a new MySQL-only `MODIFY ... AFTER` migration (patterns: `2026_10_31_000004_move_timestamps_last_on_payout_tables.php`, `2026_11_14_000001_move_timestamps_last_on_donations.php`); sqlite tests build fresh and won't catch it. Verify with `information_schema.COLUMNS ... ORDER BY ORDINAL_POSITION`. Never rename a deployed migration file — prod re-runs it as new.
+- Prettier: `.prettierrc` is authoritative (no-semi, single quotes, 4 spaces, width 100, trailing commas). `.prettierrc.cjs` is a stale duplicate — don't edit it.
 - ESLint flat config disables `vue/multi-word-component-names`, `vue/max-attributes-per-line`, `vue/html-self-closing` and ignores `public/build`.
-- `resources/js/services/*.js` are thin axios wrappers. Pinia uses `pinia-plugin-persistedstate`; `authStore` persists token/user (XSS-sensitive — don’t widen persisted paths).
+- `resources/js/services/*.js` are thin axios wrappers. Pinia uses `pinia-plugin-persistedstate`; `authStore` persists token/user (XSS-sensitive — don't widen persisted paths).
 
 ## Gotchas agents miss
 
-- Tests use sqlite `:memory:` with `QUEUE_CONNECTION=sync`, `CACHE_STORE=array`, `MAIL_MAILER=array` (`phpunit.xml`), so no MySQL/Redis/SMTP is needed. Don’t assume sqlite catches MySQL schema problems.
+- Tests use sqlite `:memory:` with `QUEUE_CONNECTION=sync`, `CACHE_STORE=array`, `MAIL_MAILER=array` (`phpunit.xml`), so no MySQL/Redis/SMTP is needed. Don't assume sqlite catches MySQL schema problems.
 - **Never mutate the dev database while verifying.** Tests run on sqlite `:memory:`; for live checks use read-only requests. If a task genuinely needs a DB write (e.g. exercising `payouts:sync`), ask first and revert temporary rows/tokens/cache before finishing — sync runs change payout statuses, fees and balances, which is not cleanly reversible.
-- Keep `phpunit.xml` values in `<server>` tags, not `<env>`: PHPUnit’s `<env>` never overwrites a variable already exported by the shell, and Laravel’s `Env` repository reads `$_SERVER` first. If the surrounding shell exports `DB_CONNECTION=mysql` / `APP_ENV=local` (Docker/dev shells often do), `<env>` is ignored and `RefreshDatabase` runs `migrate:fresh` against the real dev database — wiping it. `<server>` is written to `$_SERVER` unconditionally, so the suite stays on sqlite.
-- Donation lists (donor `GET v1/report/donations` and admin `GET v1/admin/donations`) expose `distribution_status` from `OrganizationPayoutService::distributionStatuses()`: formula-level payout coverage of completed USD owed (`distributed` / `partial` / `pending`), counting `paid` + `pending` payouts and excluding `reversed`. It is `null` unless the donation is completed **and** in the supported currency, and all donations sharing a formula show the same value — so a donation whose own organization is unpaid can still read `partial` when another organization on the same formula was paid. Keep it aligned with the payout balance math (don’t add a second coverage calculation).
+- Keep `phpunit.xml` values in `<server>` tags, not `<env>`: PHPUnit's `<env>` never overwrites a variable already exported by the shell, and Laravel's `Env` repository reads `$_SERVER` first. If the surrounding shell exports `DB_CONNECTION=mysql` / `APP_ENV=local` (Docker/dev shells often do), `<env>` is ignored and `RefreshDatabase` runs `migrate:fresh` against the real dev database — wiping it. `<server>` is written to `$_SERVER` unconditionally, so the suite stays on sqlite.
+- Donation lists (donor `GET v1/report/donations` and admin `GET v1/admin/donations`) expose `distribution_status` from `OrganizationPayoutService::distributionStatuses()`: formula-level payout coverage of completed USD owed (`distributed` / `partial` / `pending`), counting `paid` + `pending` payouts and excluding `reversed`. It is `null` unless the donation is completed **and** in the supported currency, and all donations sharing a formula show the same value — so a donation whose own organization is unpaid can still read `partial` when another organization on the same formula was paid. Keep it aligned with the payout balance math (don't add a second coverage calculation).
 - `/admin/transactions` is a merged view over two tables: `donations` (income) + `organization_payouts` (expense), joined to `donation_formulas`/`articles`/`users` for display. `transaction_logs` is only the separate `/admin/transaction-logs` audit page (its API returns `data` + camelCase `meta`, with `/filters` for event/category options).
 - **Never leave debug output in API paths**: `dump()` / `dd()` / `var_dump()` write HTML before the JSON response, so the SPA receives HTML with a `200` and fails silently (a leftover `dump(DB::getQueryLog())` in `payableAllocations()` broke the payouts page this way). Remove debug calls (and `enableQueryLog()`) before finishing; grep `app/` for `dump(|dd(|var_dump(`.
-- PayPal batch items nest the id we match on: `items[].payout_item.sender_item_id` (top-level `sender_item_id` only appears in some responses). `PayPalClient::extractBatchItemStatuses()` must read both, or every item is skipped and `payouts:sync` reports “0 changed” forever while statuses/fees stay stale.
-- Stale Vite bundle is the top false “regression”: `VITE_*` bake in at build time. Check the served bundle first — `grep -o "baseURL:[^,}]*" public/build/assets/apiConfig-*.js` — then `npm run build` + hard refresh. Never hand-edit `public/build/`.
-- Fresh MySQL fails where sqlite won’t: `organization_payouts` (2026_09_15) predates `organizations` (2026_09_26), so `->constrained('organizations')` breaks fresh installs (MySQL 1824). Add FKs conditionally (`Schema::hasTable` + try/catch).
-- Mail: `.env.example` ships `MAIL_MAILER=log` (dev SMTP is blocked). `CustomOrganizationNotifier` uses the `failover` mailer (smtp → log) so a dead SMTP can’t crash a worker. Debug in order: `php artisan queue:failed` → `MAIL_*` in the log body → SMTP `535` (credentials) vs `refused/timeout` (server/firewall). Production needs a running `queue:work` or `jobs` piles up.
-- `APP_URL` / `APP_FRONTEND_URL` must match the serving origin or emailed links (`OrganizationEmailConfirmationService::confirmUrl()`) point at the wrong host. Empty `APP_FRONTEND_URL` falls back to `APP_URL` via `?:` — the `config()` default doesn’t rescue an empty string.
-- Formula rows: allocation identity is the normalized org name (`OrganizationPayout::makeKey`). On `develop`, `DonationFormulaController` rejects the same org twice in one formula (the duplicate row would be silently unpayable). Rows store a `payout_status` / `is_verified` snapshot, but reads re-derive it from the `organizations` registry (`enrichWithVerification`) — keep the live registry authoritative or verify/unverify won’t reflect on articles.
+- PayPal batch items nest the id we match on: `items[].payout_item.sender_item_id` (top-level `sender_item_id` only appears in some responses). `PayPalClient::extractBatchItemStatuses()` must read both, or every item is skipped and `payouts:sync` reports "0 changed" forever while statuses/fees stay stale.
+- Stale Vite bundle is the top false "regression": `VITE_*` bake in at build time. Check the served bundle first — `grep -o "baseURL:[^,}]*" public/build/assets/apiConfig-*.js` — then `npm run build` + hard refresh. Never hand-edit `public/build/`.
+- Fresh MySQL fails where sqlite won't: `organization_payouts` (2026_09_15) predates `organizations` (2026_09_26), so `->constrained('organizations')` breaks fresh installs (MySQL 1824). Add FKs conditionally (`Schema::hasTable` + try/catch).
+- Mail: `.env.example` ships `MAIL_MAILER=log` (dev SMTP is blocked). `CustomOrganizationNotifier` uses the `failover` mailer (smtp → log) so a dead SMTP can't crash a worker. Debug in order: `php artisan queue:failed` → `MAIL_*` in the log body → SMTP `535` (credentials) vs `refused/timeout` (server/firewall). Production needs a running `queue:work` or `jobs` piles up.
+- `APP_URL` / `APP_FRONTEND_URL` must match the serving origin or emailed links (`OrganizationEmailConfirmationService::confirmUrl()`) point at the wrong host. Empty `APP_FRONTEND_URL` falls back to `APP_URL` via `?:` — the `config()` default doesn't rescue an empty string.
+- Formula rows: allocation identity is the normalized org name (`OrganizationPayout::makeKey`). On `develop`, `DonationFormulaController` rejects the same org twice in one formula (the duplicate row would be silently unpayable). Rows store a `payout_status` / `is_verified` snapshot, but reads re-derive it from the `organizations` registry (`enrichWithVerification`) — keep the live registry authoritative or verify/unverify won't reflect on articles.
 - `ConfirmModal` renders text via `tx()`: an existing i18n key is translated, anything else is shown verbatim. Pass a key or an already-translated string; the prop defaults are valid keys.
-- Only `App\Services\Organization\OrganizationRegistryService` is live. The old `app/Services/OrganizationRegistryService.php` was deleted — don’t resurrect that path.
+- Only `App\Services\Organization\OrganizationRegistryService` is live. The old `app/Services/OrganizationRegistryService.php` was deleted — don't resurrect that path.
 - Payment config is DB-owned (`payment_methods`): `config` = non-secret metadata (mode, currencies, webhook route/events, limits); `credentials` = encrypted client id/secret/webhook secret (`encrypted:array`, `$hidden`, not fillable). Read via `App\Services\Payment\PaymentCredentials` → `PaymentMethod::mode()` / `credential()` → `App\Services\Payment\PayPalClient` / `StripeProvider`. Public keys come from `GET v1/payment-methods` (`public_key`); admin views read all rows via `GET v1/admin/payment-methods`. `PayPalClient` defaults to sandbox when the registry is unreadable. Donor checkout is method-parameterised (`v1/payment/{method}/create-order|capture-order|status/{reference}`); the only webhook URL is `v1/webhooks/{method}`.
 - Currency (on `develop`): payouts are USD-only (`config/donations.php`, `App\Rules\SupportedCurrency`). Legacy non-USD `completed` donations are excluded from balances — `php artisan donations:legacy-currency` lists them; never sum them as dollars. `main` still has the older multi-currency balance math.
-- Payout reconciliation (on `develop`): an ambiguous submit (timeout with no response, or provider 5xx) must stay `pending`, never `failed` — the money may have moved and `failed` invites a retry. `payouts:sync` re-submits with the same `sender_batch_id` (the row `uuid`); a duplicate-id rejection reconciles to the original batch. Status transitions are guarded (`whereIn('status', …)`) so a webhook reversal racing a poll can’t be overwritten. Never release a stuck pending row or mint a new uuid to retry.
-- Payout sync performance: `syncPending()` polls batches through `PayPalClient::showBatchPayouts()` (`Http::pool`), and the OAuth token is cached (`paypal:access_token:{sha1(baseUrl|client_id)}`). Don’t reintroduce per-row `showBatchPayout()` polling (each call is ~4–7s, so ten pending rows turned a 5s sync into 70s) or per-instance token fetches. Indexes for these queries live in `2026_11_12_000001_add_payout_sync_indexes.php` — keep `(status, payout_batch_id)` covered.
-- Payout balances are snapshot-based: `OrganizationPayoutService::allocationBasis()` derives owed from each donation’s `metadata.formula_snapshot` (the live formula only for legacy rows without one). Never go back to `SUM(donations) × current percentage` — editing a formula rewrote the past, producing negative balances and letting the platform pay out more than it collected. Snapshot-only allocations (org removed from the live formula) stay payable.
-- Payout fees are provider-reported, not a fixed rate: the batch sets `fees_payer=RECEIVER`, `amount` stays gross, and `fee_amount` / `net_amount` / `fee_percent` are filled from PayPal’s `payout_item_fee` (or `batch_header.fees`) on create, sync and webhook. `fee_source` records `pending_provider|paypal|legacy_fixed`. `payout_fee_estimate_percent` is display-only for the Pay modal; `operational_cost_percent` is the donor-facing platform cost. Never reintroduce a computed percentage deduction.
+- Payout reconciliation (on `develop`): an ambiguous submit (timeout with no response, or provider 5xx) must stay `pending`, never `failed` — the money may have moved and `failed` invites a retry. `payouts:sync` re-submits with the same `sender_batch_id` (the row `uuid`); a duplicate-id rejection reconciles to the original batch. Status transitions are guarded (`whereIn('status', …)`) so a webhook reversal racing a poll can't be overwritten. Never release a stuck pending row or mint a new uuid to retry.
+- Payout sync performance: `syncPending()` polls batches through `PayPalClient::showBatchPayouts()` (`Http::pool`), and the OAuth token is cached (`paypal:access_token:{sha1(baseUrl|client_id)}`). Don't reintroduce per-row `showBatchPayout()` polling (each call is ~4–7s, so ten pending rows turned a 5s sync into 70s) or per-instance token fetches. Indexes for these queries live in `2026_11_12_000001_add_payout_sync_indexes.php` — keep `(status, payout_batch_id)` covered.
+- Payout balances are snapshot-based: `OrganizationPayoutService::allocationBasis()` derives owed from each donation's `metadata.formula_snapshot` (the live formula only for legacy rows without one). Never go back to `SUM(donations) × current percentage` — editing a formula rewrote the past, producing negative balances and letting the platform pay out more than it collected. Snapshot-only allocations (org removed from the live formula) stay payable.
+- Payout fees are provider-reported, not a fixed rate: the batch sets `fees_payer=RECEIVER`, `amount` stays gross, and `fee_amount` / `net_amount` / `fee_percent` are filled from PayPal's `payout_item_fee` (or `batch_header.fees`) on create, sync and webhook. `fee_source` records `pending_provider|paypal|legacy_fixed`. `payout_fee_estimate_percent` is display-only for the Pay modal; `operational_cost_percent` is the donor-facing platform cost. Never reintroduce a computed percentage deduction.
 - On `develop`, payout balances/history are rename-safe: match by `organization_key` **or** `organization_id`, never the key alone, or renaming an org blanks its history while the balance still shows paid. Scheduler: `payouts:sync` every 15 min plus `--recheck-paid` daily.
 - Webhook idempotency lives in `payment_webhook_events` (`PaymentWebhookEvent`), **not** in the cache. The unique `(provider, event_id)` key is the lock; a deploy's `cache:clear` used to erase the old file-cache marker, so a PayPal retransmission looked new. Rows are written *before* signature verification (forged requests must leave a trace); a `failed` row is re-opened on retry, `processed`/`ignored` are final. Signature headers are stored as a SHA-256 prefix only — never add the raw header bag. `webhooks:prune --days=90` is scheduled daily and never deletes `failed` rows.

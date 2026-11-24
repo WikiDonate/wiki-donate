@@ -306,7 +306,15 @@
         "confirmSave": "Czy na pewno chcesz zapisać ten artykuł?",
         "savedSuccess": "Artykuł został pomyślnie zapisany!",
         "saveFailed": "Nie udało się zapisać artykułu",
-        "saveError": "Wystąpił błąd podczas zapisywania"
+        "saveError": "Wystąpił błąd podczas zapisywania",
+        "sortPopular": "Najpopularniejsze",
+        "sortRecent": "Ostatnio utworzone",
+        "sortMostDonations": "Większość darowizn",
+        "sortMostRaised": "Najbardziej wychowany",
+        "sortOldest": "Najpierw najstarszy",
+        "totalDonatedTooltip": "Suma zebrana dla tej formuły",
+        "donationCountTooltip": "Skończone darowizny",
+        "donationsCount": "Darowizny {count}"
     },
     "formula": {
         "addAtLeastOne": "Dodaj co najmniej jedną organizację",

@@ -306,7 +306,15 @@
         "confirmSave": "Är du säker på att du vill spara den här artikeln?",
         "savedSuccess": "Artikeln har sparats!",
         "saveFailed": "Det gick inte att spara artikeln",
-        "saveError": "Ett fel uppstod när du sparade"
+        "saveError": "Ett fel uppstod när du sparade",
+        "sortPopular": "Mest populära",
+        "sortRecent": "Nyligen skapad",
+        "sortMostDonations": "De flesta donationer",
+        "sortMostRaised": "Mest uppvuxen",
+        "sortOldest": "Äldst först",
+        "totalDonatedTooltip": "Totalt höjt för denna formel",
+        "donationCountTooltip": "Genomförda donationer",
+        "donationsCount": "{count} donationer"
     },
     "formula": {
         "addAtLeastOne": "Lägg till minst en organisation",

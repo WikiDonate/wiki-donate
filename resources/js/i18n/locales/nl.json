@@ -306,7 +306,15 @@
         "confirmSave": "Weet je zeker dat je dit artikel wilt opslaan?",
         "savedSuccess": "Artikel succesvol opgeslagen!",
         "saveFailed": "Kan artikel niet opslaan",
-        "saveError": "Er is een fout opgetreden tijdens het opslaan"
+        "saveError": "Er is een fout opgetreden tijdens het opslaan",
+        "sortPopular": "Meest populair",
+        "sortRecent": "Recent gemaakt",
+        "sortMostDonations": "De meeste donaties",
+        "sortMostRaised": "Meest verhoogd",
+        "sortOldest": "Oudste eerst",
+        "totalDonatedTooltip": "Totaal ingezameld voor deze formule",
+        "donationCountTooltip": "Voltooide donaties",
+        "donationsCount": "{count} donaties"
     },
     "formula": {
         "addAtLeastOne": "Voeg ten minste één organisatie toe",

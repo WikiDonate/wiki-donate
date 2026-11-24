@@ -3,7 +3,7 @@
 <template>
     <main class="w-full">
         <!-- Top bar -->
-        <TopBarTitle :page-title="`${articleTitle || title}`" />
+        <TopBarTitle :page-title="displayTitle" />
 
         <div v-if="loading" class="flex items-center justify-center py-12">
             <LoadingSpinner :text="t('article.loading')" />
@@ -12,19 +12,20 @@
         <section v-else class="bg-white p-2 md:p-4 lg:p-6">
             <!-- Donation Formulas -->
             <div v-if="donationFormulas.length > 0">
-                <h3
-                    class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 flex items-center gap-2"
-                >
-                    <font-awesome-icon
-                        :icon="['fas', 'hand-holding-heart']"
-                        class="text-indigo-600"
-                    />
-                    <span class="hidden sm:inline">{{ t('article.communityFormulas') }}</span>
-                    <span class="sm:hidden">{{ t('article.donationFormulas') }}</span>
-                </h3>
+                <div class="mb-4 md:mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                        <font-awesome-icon
+                            :icon="['fas', 'hand-holding-heart']"
+                            class="text-indigo-600"
+                        />
+                        <span class="hidden sm:inline">{{ t('article.communityFormulas') }}</span>
+                        <span class="sm:hidden">{{ t('article.donationFormulas') }}</span>
+                    </h3>
+                    <FormulaSortSelect v-model="sortBy" :options="sortOptions" />
+                </div>
                 <div class="space-y-3 md:space-y-4">
                     <div
-                        v-for="formula in donationFormulas"
+                        v-for="formula in sortedFormulas"
                         :id="`formula-${formula.uuid}`"
                         :key="formula.uuid"
                         class="bg-white border border-indigo-100 rounded-xl shadow-sm"
@@ -46,6 +47,32 @@
                                     {{ formula.user?.username }}
                                 </h4>
                                 <span
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2 py-0.5"
+                                    :title="t('article.totalDonatedTooltip')"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'coins']" class="w-3 h-3" />
+                                    {{ formatAmount(formula.total_donated) }}
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-1 text-xs font-medium text-gray-500"
+                                    :title="t('article.donationCountTooltip')"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
+                                    {{
+                                        t('article.donationsCount', {
+                                            count: formula.donations_count ?? 0,
+                                        })
+                                    }}
+                                </span>
+                                <Button
+                                    width="auto"
+                                    class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
+                                    @click="openDonateModal(formula)"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
+                                    <span>{{ t('article.donate') }}</span>
+                                </Button>
+                                <span
                                     v-if="formula.is_edited"
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-red-600"
                                     title="article.editedTooltip"
@@ -56,14 +83,6 @@
                                     />
                                     {{ t('article.editedByUser') }}
                                 </span>
-                                <Button
-                                    width="auto"
-                                    class="py-1! px-2! text-xs! rounded-lg! bg-green-600! hover:bg-green-700! border-none shadow-sm flex items-center gap-1"
-                                    @click="openDonateModal(formula)"
-                                >
-                                    <font-awesome-icon :icon="['fas', 'heart']" class="w-3 h-3" />
-                                    <span>{{ t('article.donate') }}</span>
-                                </Button>
                             </div>
 
                             <div class="flex items-center gap-3 sm:gap-4 pb-1 sm:pb-0">
@@ -236,16 +255,21 @@
 <script setup>
     import { useI18n } from 'vue-i18n'
     import { articleService } from '~/services/articleService'
+    import { useArticleTitleTranslation } from '~/composables/useArticleTitleTranslation'
 
-    const { t } = useI18n()
+    const { t, locale } = useI18n()
 
     const route = useRoute()
     const title = ref(decodeURIComponent(route.query.title || ''))
     const articleTitle = ref('')
     const appName = import.meta.env.VITE_APP_NAME || 'Wiki Donate'
 
+    // Auto-translate the article title into the active language (Google, in-memory).
+    const { translatedTitle } = useArticleTitleTranslation(articleTitle, locale)
+    const displayTitle = computed(() => translatedTitle.value || articleTitle.value || title.value)
+
     useHead(() => {
-        const pageTitle = articleTitle.value || title.value || t('pageTitles.article')
+        const pageTitle = displayTitle.value || t('pageTitles.article')
         return {
             title: pageTitle ? `${pageTitle} | ${appName}` : appName,
         }
@@ -261,6 +285,52 @@
     const submittingDelete = ref(false)
 
     const donationFormulas = ref([])
+    const sortBy = ref('popular')
+    const sortOptions = [
+        { value: 'popular', labelKey: 'article.sortPopular', icon: ['fas', 'fire'] },
+        { value: 'donations', labelKey: 'article.sortMostDonations', icon: ['fas', 'heart'] },
+        { value: 'raised', labelKey: 'article.sortMostRaised', icon: ['fas', 'dollar-sign'] },
+        { value: 'recent', labelKey: 'article.sortRecent', icon: ['fas', 'clock'] },
+        { value: 'oldest', labelKey: 'article.sortOldest', icon: ['fas', 'rotate-left'] },
+    ]
+    // Compare two optional dates. Missing/invalid dates always sort last
+    // regardless of direction (never treated as the epoch, which would fake
+    // "oldest"). Direction only affects the two-valid-dates comparison.
+    const compareDates = (a, b, desc = false) => {
+        const timeA = a ? new Date(a).getTime() : NaN
+        const timeB = b ? new Date(b).getTime() : NaN
+        const validA = !Number.isNaN(timeA)
+        const validB = !Number.isNaN(timeB)
+        if (!validA && !validB) return 0
+        if (!validA) return 1
+        if (!validB) return -1
+        return desc ? timeB - timeA : timeA - timeB
+    }
+
+    const sortedFormulas = computed(() => {
+        const formulas = [...donationFormulas.value]
+        switch (sortBy.value) {
+            case 'donations':
+                return formulas.sort((a, b) => (b.donations_count ?? 0) - (a.donations_count ?? 0))
+            case 'raised':
+                return formulas.sort((a, b) => (b.total_donated ?? 0) - (a.total_donated ?? 0))
+            case 'recent':
+                return formulas.sort((a, b) => compareDates(a.created_at, b.created_at, true))
+            case 'oldest':
+                return formulas.sort((a, b) => compareDates(a.created_at, b.created_at))
+            default:
+                return formulas.sort((a, b) => (b.donations_count ?? 0) - (a.donations_count ?? 0))
+        }
+    })
+    // USD-only payouts (config/donations.php) — matches the donor/admin
+    // money formatters elsewhere in the app.
+    const usdFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    })
+
+    const formatAmount = (amount) => usdFormatter.format(Number(amount ?? 0))
+
     const openFormulas = ref([])
     const showDonationModal = ref(false)
     const showConfirmDelete = ref(false)

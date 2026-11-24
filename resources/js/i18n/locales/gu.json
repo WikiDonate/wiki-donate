@@ -306,7 +306,15 @@
         "confirmSave": "શું તમે ખરેખર આ લેખ સાચવવા માંગો છો?",
         "savedSuccess": "લેખ સફળતાપૂર્વક સાચવ્યો!",
         "saveFailed": "લેખ સાચવવામાં નિષ્ફળ",
-        "saveError": "સાચવતી વખતે એક ભૂલ આવી"
+        "saveError": "સાચવતી વખતે એક ભૂલ આવી",
+        "sortPopular": "સૌથી વધુ લોકપ્રિય",
+        "sortRecent": "તાજેતરમાં બનાવેલ",
+        "sortMostDonations": "સૌથી વધુ દાન",
+        "sortMostRaised": "સૌથી વધુ ઉછેર",
+        "sortOldest": "સૌથી જૂની પ્રથમ",
+        "totalDonatedTooltip": "આ ફોર્મ્યુલા માટે કુલ વધારો",
+        "donationCountTooltip": "પૂર્ણ દાન",
+        "donationsCount": "{count} દાન"
     },
     "formula": {
         "addAtLeastOne": "ઓછામાં ઓછી એક સંસ્થા ઉમેરો",

@@ -70,8 +70,16 @@ class DonationFormulaController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Return all formulas for this article
+            // Return all formulas for this article, with completed-donation
+            // count + total raised so the SPA can offer popularity/amount
+            // sorts without an extra round-trip per formula.
             $formulas = DonationFormula::with('user:id,username')
+                ->withCount(['donations as donations_count' => function ($query) {
+                    $query->where('status', 'completed');
+                }])
+                ->withSum(['donations as total_donated' => function ($query) {
+                    $query->where('status', 'completed');
+                }], 'amount')
                 ->where('article_id', $article->id)
                 ->get()
                 ->each(fn ($f) => $this->enrichWithVerification($f));

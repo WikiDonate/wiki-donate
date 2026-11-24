@@ -10,7 +10,12 @@
                 type="text"
                 :placeholder="t('search.placeholder')"
                 class="grow border-0 p-2 pl-5 text-gray-700 focus:outline-none w-full rounded-l-md"
+                autocomplete="off"
                 @input="onInput"
+                @keydown.down.prevent="highlightNext"
+                @keydown.up.prevent="highlightPrev"
+                @keydown.enter.prevent="selectHighlighted"
+                @keydown.escape="clearSearch"
             />
             <button
                 type="submit"
@@ -33,10 +38,14 @@
                 <template v-else>
                     <template v-if="suggestions.length > 0">
                         <li
-                            v-for="suggestion in suggestions"
+                            v-for="(suggestion, index) in suggestions"
                             :key="suggestion.slug"
-                            class="cursor-pointer px-5 py-2 hover:bg-indigo-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                            class="cursor-pointer px-5 py-2 transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                            :class="
+                                index === highlightedIndex ? 'bg-indigo-50' : 'hover:bg-indigo-50'
+                            "
                             @click="selectSuggestion(suggestion)"
+                            @mousemove="highlightedIndex = index"
                         >
                             <div class="flex items-center">
                                 <font-awesome-icon
@@ -70,6 +79,7 @@
     const searchContainer = ref(null)
     const isSearching = ref(false)
     const timeoutId = ref(null)
+    const highlightedIndex = ref(-1)
 
     const showSuggestions = ref(false)
 
@@ -86,11 +96,33 @@
             try {
                 const response = await articleService.searchArticles(query)
                 suggestions.value = response.data
+                highlightedIndex.value = -1
             } finally {
                 isSearching.value = false
             }
         } else {
             suggestions.value = []
+            highlightedIndex.value = -1
+        }
+    }
+
+    const highlightNext = () => {
+        if (suggestions.value.length === 0) return
+        highlightedIndex.value = (highlightedIndex.value + 1) % suggestions.value.length
+    }
+
+    const highlightPrev = () => {
+        if (suggestions.value.length === 0) return
+        highlightedIndex.value =
+            (highlightedIndex.value - 1 + suggestions.value.length) % suggestions.value.length
+    }
+
+    const selectHighlighted = () => {
+        const suggestion = suggestions.value[highlightedIndex.value]
+        if (suggestion) {
+            selectSuggestion(suggestion)
+        } else {
+            handleSearch()
         }
     }
 
@@ -98,6 +130,7 @@
         searchQuery.value = ''
         suggestions.value = []
         showSuggestions.value = false
+        highlightedIndex.value = -1
         clearTimeout(timeoutId.value)
         timeoutId.value = null
     }
@@ -133,15 +166,21 @@
     }
 
     const selectSuggestion = (suggestion) => {
-        searchQuery.value = suggestion.title
-        const searchUrl = `/article?title=${encodeURIComponent(suggestion.slug)}`
+        // Clear the input after the article is chosen so the user starts fresh.
+        searchQuery.value = ''
         suggestions.value = []
-        router.push(searchUrl)
+        showSuggestions.value = false
+        highlightedIndex.value = -1
+        clearTimeout(timeoutId.value)
+        timeoutId.value = null
+        router.push(`/article?title=${encodeURIComponent(suggestion.slug)}`)
     }
 
     const handleClickOutside = (event) => {
         if (searchContainer.value && !searchContainer.value.contains(event.target)) {
-            clearSearch()
+            suggestions.value = []
+            showSuggestions.value = false
+            highlightedIndex.value = -1
         }
     }
 
@@ -151,6 +190,6 @@
 
     onBeforeUnmount(() => {
         document.removeEventListener('click', handleClickOutside)
-        clearSearch()
+        clearTimeout(timeoutId.value)
     })
 </script>

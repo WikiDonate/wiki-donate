@@ -306,7 +306,15 @@
         "confirmSave": "この記事を保存してもよろしいですか?",
         "savedSuccess": "記事が正常に保存されました。",
         "saveFailed": "記事の保存に失敗しました",
-        "saveError": "保存中にエラーが発生しました"
+        "saveError": "保存中にエラーが発生しました",
+        "sortPopular": "最も人気のある",
+        "sortRecent": "最近作成されたもの",
+        "sortMostDonations": "最も多くの寄付",
+        "sortMostRaised": "最も高く評価された",
+        "sortOldest": "古い順",
+        "totalDonatedTooltip": "このフォーミュラで集まった合計額",
+        "donationCountTooltip": "寄付完了",
+        "donationsCount": "{count} 寄付"
     },
     "formula": {
         "addAtLeastOne": "少なくとも 1 つの組織を追加します",

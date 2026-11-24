@@ -306,7 +306,15 @@
         "confirmSave": "Êtes-vous sûr de vouloir enregistrer cet article ?",
         "savedSuccess": "Article enregistré avec succès !",
         "saveFailed": "Échec de l'enregistrement de l'article",
-        "saveError": "Une erreur s'est produite lors de l'enregistrement"
+        "saveError": "Une erreur s'est produite lors de l'enregistrement",
+        "sortPopular": "Les plus populaires",
+        "sortRecent": "Créé récemment",
+        "sortMostDonations": "La plupart des dons",
+        "sortMostRaised": "Les plus élevés",
+        "sortOldest": "Le plus âgé en premier",
+        "totalDonatedTooltip": "Total récolté pour cette formule",
+        "donationCountTooltip": "Dons complétés",
+        "donationsCount": "Dons {count}"
     },
     "formula": {
         "addAtLeastOne": "Ajouter au moins une organisation",

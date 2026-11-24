@@ -306,7 +306,15 @@
         "confirmSave": "هل أنت متأكد أنك تريد حفظ هذه المقالة؟",
         "savedSuccess": "تم حفظ المقالة بنجاح!",
         "saveFailed": "فشل حفظ المقالة",
-        "saveError": "حدث خطأ أثناء الحفظ"
+        "saveError": "حدث خطأ أثناء الحفظ",
+        "sortPopular": "الأكثر شعبية",
+        "sortRecent": "تم إنشاؤها مؤخرًا",
+        "sortMostDonations": "معظم التبرعات",
+        "sortMostRaised": "الأكثر رفعا",
+        "sortOldest": "الأقدم أولاً",
+        "totalDonatedTooltip": "المجموع المرفوع لهذه الصيغة",
+        "donationCountTooltip": "التبرعات المكتملة",
+        "donationsCount": "تبرعات {count}"
     },
     "formula": {
         "addAtLeastOne": "أضف مؤسسة واحدة على الأقل",

@@ -1,5 +1,5 @@
 # Taste
-- Expects senior-level coding hygiene in every change: meaningful variable/function names, comments only where intent or rationale isn't obvious, and logic extracted into reusable functions (backend) and reusable components (Vue) instead of duplicated code. Confidence: 0.75
+- Expects the working role to be declared up front before starting a task (senior software engineer specialising in Laravel and Vue), then senior-level coding hygiene in every change: meaningful variable/function names, comments only where intent or rationale isn't obvious, and logic extracted into reusable functions (backend) and reusable components (Vue) instead of duplicated code. Confidence: 0.8
 - Wants code organized into clearly understandable type/domain folders (controllers, models, pages, components grouped by concern like `public/auth/account/admin`, `ui/layout/forms`) with the proposed tree presented before the move — flat, undifferentiated folders (e.g. 24 components in one directory) are the thing to fix. Confidence: 0.5
 - When a UI feature/filter is removed, prefers the matching backend/API code removed too — no dead or unused-endpoint code left behind "for safety." Confidence: 0.65
 - Payment gateway credentials are owned by the database (`payment_methods` table), never by `.env`/config env vars — don't propose env-based key injection. Confidence: 0.65

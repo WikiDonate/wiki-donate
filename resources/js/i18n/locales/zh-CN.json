@@ -306,7 +306,15 @@
         "confirmSave": "您确定要保存这篇文章吗？",
         "savedSuccess": "文章保存成功！",
         "saveFailed": "保存文章失败",
-        "saveError": "保存时发生错误"
+        "saveError": "保存时发生错误",
+        "sortPopular": "最受欢迎",
+        "sortRecent": "最近创建",
+        "sortMostDonations": "最多捐款",
+        "sortMostRaised": "最多筹集资金",
+        "sortOldest": "最旧的在前",
+        "totalDonatedTooltip": "该公式筹集的资金总额",
+        "donationCountTooltip": "已完成捐款",
+        "donationsCount": "{count} 捐款"
     },
     "formula": {
         "addAtLeastOne": "添加至少一个组织",

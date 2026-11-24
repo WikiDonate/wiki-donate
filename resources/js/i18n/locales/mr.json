@@ -306,7 +306,15 @@
         "confirmSave": "तुमची खात्री आहे की तुम्ही हा लेख जतन करू इच्छिता?",
         "savedSuccess": "लेख यशस्वीरित्या जतन झाला!",
         "saveFailed": "लेख जतन करण्यात अयशस्वी",
-        "saveError": "सेव्ह करताना एरर आली"
+        "saveError": "सेव्ह करताना एरर आली",
+        "sortPopular": "सर्वाधिक लोकप्रिय",
+        "sortRecent": "अलीकडे तयार केले",
+        "sortMostDonations": "सर्वाधिक देणग्या",
+        "sortMostRaised": "सर्वाधिक वाढवलेले",
+        "sortOldest": "सर्वात जुने पहिले",
+        "totalDonatedTooltip": "या सूत्रासाठी एकूण उठवले",
+        "donationCountTooltip": "देणग्या पूर्ण केल्या",
+        "donationsCount": "{count} देणग्या"
     },
     "formula": {
         "addAtLeastOne": "किमान एक संस्था जोडा",

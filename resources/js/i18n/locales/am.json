@@ -306,7 +306,15 @@
         "confirmSave": "እርግጠኛ ነዎት ይህን ጽሑፍ ማስቀመጥ ይፈልጋሉ?",
         "savedSuccess": "ጽሑፉ በተሳካ ሁኔታ ተቀምጧል!",
         "saveFailed": "ጽሁፍ ማስቀመጥ አልተሳካም።",
-        "saveError": "በማስቀመጥ ላይ ስህተት ተከስቷል።"
+        "saveError": "በማስቀመጥ ላይ ስህተት ተከስቷል።",
+        "sortPopular": "በጣም ታዋቂ",
+        "sortRecent": "በቅርቡ የተፈጠረ",
+        "sortMostDonations": "አብዛኞቹ ልገሳዎች",
+        "sortMostRaised": "በጣም ያደጉ",
+        "sortOldest": "በጣም ጥንታዊው መጀመሪያ",
+        "totalDonatedTooltip": "Total raised for this formula",
+        "donationCountTooltip": "የተጠናቀቁ ልገሳዎች",
+        "donationsCount": "{count} ልገሳዎች"
     },
     "formula": {
         "addAtLeastOne": "ቢያንስ አንድ ድርጅት ይጨምሩ",

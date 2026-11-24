@@ -306,7 +306,15 @@
         "confirmSave": "Ви впевнені, що хочете зберегти цю статтю?",
         "savedSuccess": "Стаття успішно збережена!",
         "saveFailed": "Не вдалося зберегти статтю",
-        "saveError": "Під час збереження сталася помилка"
+        "saveError": "Під час збереження сталася помилка",
+        "sortPopular": "Найпопулярніший",
+        "sortRecent": "Нещодавно створений",
+        "sortMostDonations": "Більшість пожертв",
+        "sortMostRaised": "Найбільш піднятий",
+        "sortOldest": "Спочатку найстаріший",
+        "totalDonatedTooltip": "Загальна сума, зібрана для цієї формули",
+        "donationCountTooltip": "Завершені пожертви",
+        "donationsCount": "{count} пожертвувань"
     },
     "formula": {
         "addAtLeastOne": "Додайте хоча б одну організацію",
